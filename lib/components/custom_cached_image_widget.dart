@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class CustomCachedImageWidget extends StatefulWidget {
   final String url;
   final double height;
-  final width;
+  final double? width;
   final bool showProgressLoading;
   final fitType;
 
@@ -37,7 +37,7 @@ class _CustomCachedImageWidgetState extends State<CustomCachedImageWidget> {
       progressIndicatorBuilder: (context, url, downloadProgress) =>
       widget.showProgressLoading?
       CircularProgressIndicator(value: downloadProgress.progress):
-      SvgPicture.asset("images/illustrations/profile_pic.svg",
+      Image.asset("images/placeholder.png",
         width:widget.width ?? widget.height, height: widget.height,
         fit: BoxFit.cover,),
 
@@ -45,7 +45,7 @@ class _CustomCachedImageWidgetState extends State<CustomCachedImageWidget> {
       // Text("Error")
       //
       SvgPicture.asset("images/illustrations/profile_pic.svg",
-            width:widget.width ?? widget.height, height: widget.height,
+        width:widget.width ?? widget.height, height: widget.height,
           fit: BoxFit.cover,)
       ,
     );

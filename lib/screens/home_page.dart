@@ -1,12 +1,7 @@
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
-import 'package:akwaaba/components/custom_elevated_button.dart';
-import 'package:akwaaba/components/custom_outlined_button.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/models/client_account_info.dart';
-import 'package:akwaaba/models/client_model.dart';
 import 'package:akwaaba/providers/member_provider.dart';
-import 'package:akwaaba/screens/attendance_report_preview.dart';
-import 'package:akwaaba/dialogs_modals/current_event_preview.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/screens/excuse_input_page.dart';
 import 'package:akwaaba/screens/members_page.dart';
@@ -17,10 +12,7 @@ import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-
-import '../Networks/feeManagerApi.dart';
 import '../components/label_widget_container.dart';
 import '../models/meeting_event_item.dart';
 import '../providers/client_provider.dart';
@@ -94,141 +86,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children:  [
 
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)
-                      ),
-                      elevation: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 12),
-                        child: Column(
-                          children: const [
-                            Text("Registered Members",
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 13),),
-                            Text("400",
-                            style: TextStyle(fontSize: 19,
-                                color: Colors.green,
-                                fontWeight: FontWeight.w700),)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8,),
-                  Expanded(
-                    flex: 3,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)
-                      ),
-                      elevation: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 12),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  const Text("Assigned Bill",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 13),),
-                                  Text("GHS $subscriptionFee",
-                                    style: const TextStyle(fontSize: 19,
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w700),)
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 4,),
-                            Expanded(
-                              child: Column(
-                                children: const [
-                                  Text("Arrears",
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 13),),
-                                  Text("GHS 250",
-                                    style: TextStyle(fontSize: 19,
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w700),)
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)
-                      ),
-                      elevation: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 12),
-                        child: Column(
-                          children: [
-                            Text("Your Account will expire in",
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 13),),
-                            Text("$subscriptionDuration Days ",
-                              style: TextStyle(fontSize: 19,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w700),),
-
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8,),
-                  Expanded(
-                    flex: 3,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)
-                      ),
-                      elevation: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 12),
-                        child: Column(
-                          children: const [
-                            Text("Renew/Pay",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 13),),
-                            Text("Now",
-                              style: TextStyle(fontSize: 19,
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.w700),),
-
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-
               const SizedBox(height: 12,),
-
 
               const SizedBox(height: 24,),
 

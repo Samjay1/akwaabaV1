@@ -1,8 +1,4 @@
-import 'dart:ffi';
-
 import 'package:akwaaba/dialogs_modals/new_registrations_modal_sheet_view.dart';
-import 'package:akwaaba/models/client_model.dart';
-import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/screens/connect_users_page.dart';
 import 'package:akwaaba/screens/birthday_alerts_page.dart';
@@ -19,8 +15,6 @@ import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../providers/schoolManager_provider.dart';
 import 'attendance_report_page.dart';
 import 'post_master_menus_page.dart';
@@ -68,18 +62,18 @@ class _MorePageState extends State<MorePage> {
 
                     }),
 
-                    directoryItemWidget(iconData: Icons.dashboard_outlined,
-                        title: "Akwaaba Modules",
-                    function: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (_)=>const AkwaabaModules()));
-                    }),
+                    // directoryItemWidget(iconData: Icons.dashboard_outlined,
+                    //     title: "Akwaaba Modules",
+                    // function: (){
+                    //   Navigator.push(context, MaterialPageRoute(builder: (_)=>const AkwaabaModules()));
+                    // }),
 
 
-                    directoryItemWidget(iconData: Icons.monitor_heart_outlined,
-                        title: "Staff Duty Tracker",
-                        function: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (_)=>const DutyTrackerMainPage()));
-                        }),
+                    // directoryItemWidget(iconData: Icons.monitor_heart_outlined,
+                    //     title: "Staff Duty Tracker",
+                    //     function: (){
+                    //       Navigator.push(context, MaterialPageRoute(builder: (_)=>const DutyTrackerMainPage()));
+                    //     }),
 
 
 

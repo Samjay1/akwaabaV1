@@ -45,13 +45,13 @@ class _MainPageState extends State<MainPage> {
     {"title":"Home","icon_data":CupertinoIcons.home},
     {"title":"Events","icon_data":Icons.calendar_month_outlined},
     {"title":"Clocking","icon_data":CupertinoIcons.alarm},
-    {"title":"More","icon_data":Icons.menu},
+   // {"title":"More","icon_data":Icons.menu},
   ];
   List<Map>bottomNavItemsFiled=[
     {"title":"Home","icon_data":CupertinoIcons.house_alt_fill},
     {"title":"Events","icon_data":Icons.calendar_month},
     {"title":"Clocking","icon_data":CupertinoIcons.alarm_fill},
-    {"title":"More","icon_data":Icons.menu},
+   // {"title":"More","icon_data":Icons.menu},
   ];
 
   int _selectedBottomNavIndex=0;
@@ -60,7 +60,7 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),
     const AllEventsPage(),
     const ClockingPage(),//only show this if user is an admin
-    const MorePage()
+   // const MorePage()
   ];
   String userType="";
 
@@ -73,8 +73,6 @@ class _MainPageState extends State<MainPage> {
         .addPostFrameCallback((_) {
       initFunctions();
     });
-
-
 
   }
   
@@ -169,36 +167,7 @@ class _MainPageState extends State<MainPage> {
               "More",
           style: const TextStyle(color: Colors.black),
         ),
-        actions: [
-          Stack(
-            children: [
-              IconButton(onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                const MyAccountPage()));
-              }, icon: const Icon(CupertinoIcons.person_fill,size: 25,)),
-            ],
-          ),
 
-          Stack(
-            children: [
-              IconButton(onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                const AlertsPage()));
-              }, icon: const Icon(Icons.notifications,size: 25,)),
-
-                 const Positioned(
-                top: 10,
-                right: 7,
-                child: CircleAvatar(
-                  radius: 9,
-                  backgroundColor: Colors.white,
-                  child: Text("12",
-                  style: TextStyle(color: Colors.black,fontSize: 10),),
-                ),
-              )
-            ],
-          )
-        ],
       ),
       drawer: Consumer<ClientProvider>(
         builder: (context,data,child){
@@ -228,10 +197,14 @@ class _MainPageState extends State<MainPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CustomCachedImageWidget(url: logo,
-                    height: 130),
+                Align(
+                  alignment: Alignment.center,
+                  child: CustomCachedImageWidget(url: logo??"",
+                      height: 100,),
+                ),
+
                 const SizedBox(height: 8,),
-                Text("$applicantFirstname $applicantSurname",
+                Text("${applicantFirstname??""} ${applicantSurname??""}",
                 style: const TextStyle(
                   fontSize: 20
                 ),
@@ -260,34 +233,8 @@ class _MainPageState extends State<MainPage> {
                             MyAccountPage()));
                           },index: 8),
 
-                      drawerItemView(title: "Update Users Profile", iconData: Icons.person_outline,
-                          function: (){
-                            Navigator.pop(context);//close the drawer
-                            ///supposed to be a webview
-                            showNormalToast("Webview url");
-                            // Navigator.push(context, MaterialPageRoute(builder: (_)=>const
-                            // MyConnectionsPage()));
-                          },index: 8),
 
-                      drawerItemView(title: "My Connections", iconData: Icons.person_outline,
-                          function: (){
-                            Navigator.pop(context);//close the drawer
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=>const
-                            MyConnectionsPage()));
-                          },index: 8),
 
-                      drawerItemView(title: "View Members", iconData: Icons.people_outline,
-                          function: (){
-                            Navigator.pop(context);//close the drawer
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=>const MembersPage()));
-                          },index: 8),
-
-                      drawerItemView(title: "View Users", iconData: Icons.people_outline,
-                          function: (){
-                            Navigator.pop(context);//close the drawer
-                            Navigator.push(context, MaterialPageRoute(builder:
-                                (_)=>const ViewUsersPage()));
-                          },index: 8),
 
 
                       drawerItemView(title: "Attendance History", iconData: Icons.history,
@@ -305,70 +252,24 @@ class _MainPageState extends State<MainPage> {
                           ),
 
 
-                      drawerItemView(title: "Contact Leaders", iconData: Icons.support_agent_outlined,
-                          function: (){
-                            Navigator.pop(context);//close the drawer
-                        Navigator.push(context, MaterialPageRoute(builder: (_)=>ContactLeadersPage()));
-                          },index: 8),
 
-                      drawerItemView(title: "Info Center", iconData: Icons.info_outline,
-                          function: (){
-                            Navigator.pop(context);//close the drawer
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=>const InfoCenterPage()));
-                          },index: 8),
+                      drawerItemView(title: "Fee Manager",
+                        iconData: Icons.money,
+                        function: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (_)=>const AttendanceReportPage()));
+                        },
+                      ),
 
-                      drawerItemView(title: "Post Manager", iconData: Icons.info_outline,
-                          function: (){
-                            Navigator.pop(context);//close the drawer
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=>const
-                            PostMasterMenusPage()));
-                          },index: 8),
-
-                      drawerItemView(title: "Akwaaba Messenger ", iconData: Icons.info_outline,
-                          function: (){
-                            Navigator.pop(context);//close the drawer
-                            showNormalToast("Webview URl");
-                          },index: 8),
-
-                      ///only show this when user device is ot already activated
                       drawerItemView(title: "Request Device Activation",
-                          iconData: Icons.phone_android_outlined,
-                                                function: (){
-                                                  Navigator.pop(context);//close the drawer
-                                              Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                                                  const DeviceActivationRequestPage()));
-                                                },index: 8),
+                        iconData: Icons.phone_android,
+                        function: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                          const DeviceActivationRequestPage()));
+                        },
+                      ),
 
-                      data.userIsAdmin?
-                      Column(
-                        children: [
-                          drawerItemView(title: "Connect Users", iconData: Icons.phone_android,
-                              function: (){
-                                Navigator.pop(context);//close the drawer
-                                Navigator.push(context, MaterialPageRoute(builder: (_)=>const ConnectUsersPage()));
-                              },index: 8),
 
-                          drawerItemView(title: "Register Connecting Users", iconData: Icons.phone_android,
-                              function: (){
-                                Navigator.pop(context);//close the drawer
-                                Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                                const RegisterConnectingUsersPage()));
-                              },index: 8),
 
-                          drawerItemView(title: "Assign  Leaders", iconData: Icons.person_add_alt_outlined,
-                              function: (){
-                                Navigator.pop(context);//close the drawer
-                                Navigator.push(context, MaterialPageRoute(builder: (_)=>const AssignLeadersPage()));
-                              },index: 0),
-
-                          // drawerItemView(title: "Post Info", iconData: Icons.people_outline,
-                          //     function: (){
-                          //       Navigator.pop(context);//close the drawer
-                          //     },index: 8),
-
-                        ],
-                      ):
-                      Container(),
 
 
                      

@@ -1,10 +1,7 @@
 import 'dart:convert';
-
-import 'package:akwaaba/Networks/admin_api.dart';
 import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/components/bottom_border_textfield.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
-import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
@@ -349,7 +346,8 @@ class _LoginPageState extends State<LoginPage> {
         Provider.of<ClientProvider>(context,listen: false).login(context: context,phoneEmail: email, password: password).then((value) {
           setState(() {
             showProgressIndicator=false;
-            Provider.of<GeneralProvider>(context,listen: false).setAdminStatus(isAdmin: true);
+            Provider.of<GeneralProvider>(context,listen: false).
+            setAdminStatus(isAdmin: true);
           });
 
 
@@ -361,13 +359,6 @@ class _LoginPageState extends State<LoginPage> {
         });
 
 
-        // Provider.of<ClientProvider>(context,listen: false).
-        // login(context:context, phoneEmail: email, password: password).then((value) {
-        //   setState(() {
-        //     showProgressIndicator=true;
-        //   });
-        // });
-
         SharedPrefs().setUserType(userType: "admin");
 
       }else{
@@ -375,6 +366,7 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           showProgressIndicator=true;
         });
+
 
         MemberAPI().userLogin(phoneEmail: email, password: password,
             checkDeviceInfo: false).
