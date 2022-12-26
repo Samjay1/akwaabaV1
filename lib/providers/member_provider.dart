@@ -51,6 +51,7 @@ class MemberProvider extends ChangeNotifier{
       return;
     }else{
       _memberProfile = value;
+      debugPrint('TESTING ${value.memberToken}');
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> const MainPage()));
     }
   });

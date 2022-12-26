@@ -28,7 +28,7 @@ class _DeviceActivationRequestPageState extends State<DeviceActivationRequestPag
     var memberToken = memberProfile.memberToken;
 
     debugPrint('MEMBER INFO ____ ${memberProfile.id}');
-    debugPrint('MEMBER memberToken ____ ${memberProfile.memberToken}');
+    debugPrint('MEMBER memberToken ____ ${memberProfile.memberToken.toString()}');
 
     var deviceInfo = Provider.of<MemberProvider>(context,listen: false).deviceInfoModel;
 
@@ -45,8 +45,8 @@ class _DeviceActivationRequestPageState extends State<DeviceActivationRequestPag
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
 
-              Container(
-                 height: height*0.3,
+              SizedBox(
+                 height: height*0.25,
                  child: Column(
 
                    children: [
@@ -68,17 +68,75 @@ class _DeviceActivationRequestPageState extends State<DeviceActivationRequestPag
                    ],
                  ),
                ),
+            const Center(
+              child: Text('Device Requests',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            ),
               Container(
-                height: height*0.7,
-                color: Colors.blue,
+                height: height*0.65,
+                padding: EdgeInsets.symmetric(vertical: 10,horizontal: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.orange)
+                ),
+                // color: Colors.blue,
                 child: Consumer<MemberProvider>(
                   builder: (context, data, child){
                     return data.deviceRequestList!= null ?  ListView.builder(
                         itemCount: data.deviceRequestList.length,
                         itemBuilder: (context, index){
+                          var item = data?.deviceRequestList[index];
                           return Column(
-                            children:const [
-                               Text('hello')
+                            children:[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Device ID'),
+                                  Text('${item.deviceId}',style: TextStyle(fontWeight: FontWeight.bold)),
+
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Device Type'),
+                                  Text('${item.deviceType}',style: TextStyle(fontWeight: FontWeight.bold),),
+
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Device Request'),
+                                  item.approved ?
+                                  Container(
+                                    padding:  EdgeInsets.symmetric(vertical: 3,horizontal: 5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(color: Colors.green),
+                                      color: Colors.green,
+                                    ),
+                                    child:const Text('Device Approved'),
+                                  )
+
+                                      : Container(
+                                        padding:  EdgeInsets.symmetric(vertical: 3,horizontal: 5),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(color: Colors.orange),
+                                          color: Colors.orange,
+                                        ),
+                                        child:const Text('Approval Pending'),
+                                      )
+                                ],
+                              ),
+                             const Divider(
+                                color: Colors.orange,
+                              ),
+
+
+
+                              SizedBox(height: 10,)
                             ],
                           );
                       }
