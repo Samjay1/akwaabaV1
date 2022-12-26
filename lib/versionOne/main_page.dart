@@ -5,14 +5,14 @@ import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/screens/connect_users_page.dart';
 import 'package:akwaaba/screens/alerts_page.dart';
 import 'package:akwaaba/screens/assign_leaders_menus_page.dart';
-import 'package:akwaaba/screens/attendance_history_page.dart';
+import 'package:akwaaba/versionOne/attendance_history_page.dart';
 import 'package:akwaaba/screens/clocking_page.dart';
 import 'package:akwaaba/screens/contact_leaders_page.dart';
-import 'package:akwaaba/screens/device_activation_request_page.dart';
+import 'package:akwaaba/versionOne/device_activation_request_page.dart';
 import 'package:akwaaba/screens/info_center_page.dart';
 import 'package:akwaaba/screens/more_menus_page.dart';
-import 'package:akwaaba/screens/home_page.dart';
-import 'package:akwaaba/screens/login_page.dart';
+import 'package:akwaaba/versionOne/home_page.dart';
+import 'package:akwaaba/versionOne/login_page.dart';
 import 'package:akwaaba/screens/all_events_page.dart';
 import 'package:akwaaba/screens/akwaaba_modules.dart';
 import 'package:akwaaba/screens/post_master_menus_page.dart';
@@ -29,9 +29,9 @@ import 'package:provider/provider.dart';
 import '../components/custom_cached_image_widget.dart';
 import '../models/client_account_info.dart';
 import '../utils/shared_prefs.dart';
-import 'attendance_report_page.dart';
-import 'members_page.dart';
-import 'my_account_page.dart';
+import '../versionOne/attendance_report_page.dart';
+import '../screens/members_page.dart';
+import '../screens/my_account_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -157,7 +157,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    Provider.of<MemberProvider>(context,listen: false).gettingDeviceInfo();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
@@ -169,9 +169,13 @@ class _MainPageState extends State<MainPage> {
         ),
 
       ),
-      drawer: Consumer<ClientProvider>(
+      drawer: userType=='admin'? Consumer<ClientProvider>(
         builder: (context,data,child){
-          return drawerView(logo:data.getUser?.logo, applicantFirstname: data.getUser?.applicantFirstname, applicantSurname:data.getUser?.applicantSurname);
+          return adminDrawerView(logo:data.getUser?.logo, applicantFirstname: data.getUser?.applicantFirstname, applicantSurname:data.getUser?.applicantSurname);
+        },
+      ): Consumer<MemberProvider>(
+        builder: (context,data,child){
+          return memberDrawerView(logo:data.memberProfile?.profilePicture, applicantFirstname: data.memberProfile?.firstname, applicantSurname:data.memberProfile?.surname);
         },
       ),
       // drawerView(logo:logo, applicantFirstname:applicantFirstname, applicantSurname:applicantSurname),
@@ -184,7 +188,7 @@ class _MainPageState extends State<MainPage> {
 
   }
 
-  Widget drawerView({var logo, var applicantFirstname, var applicantSurname}){
+  Widget adminDrawerView({var logo, var applicantFirstname, var applicantSurname}){
     return Drawer(
       backgroundColor: Colors.grey.shade300,
       child: Column(
@@ -223,20 +227,6 @@ class _MainPageState extends State<MainPage> {
                     physics: const BouncingScrollPhysics(),
 
                     children: [
-
-                      data.userIsAdmin ?  drawerItemView(title: "", iconData: Icons.person_outline,
-                          function: (){},index: 8):
-                      drawerItemView(title: "My Account", iconData: Icons.person_outline,
-                          function: (){
-                            Navigator.pop(context);//close the drawer
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=>const
-                            MyAccountPage()));
-                          },index: 8),
-
-
-
-
-
                       drawerItemView(title: "Attendance History", iconData: Icons.history,
                           function: (){
                             Navigator.pop(context);//close the drawer
@@ -284,6 +274,92 @@ class _MainPageState extends State<MainPage> {
                   );
                 },
               )
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget memberDrawerView({var logo, var applicantFirstname, var applicantSurname}){
+    return Drawer(
+      backgroundColor: Colors.grey.shade300,
+      child: Column(
+
+        children: [
+
+          const SizedBox(height: 40,),
+          SizedBox(
+            height: 180,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: CustomCachedImageWidget(url: logo??"",
+                    height: 100,),
+                ),
+
+                const SizedBox(height: 8,),
+                Text("${applicantFirstname??""} ${applicantSurname??""}",
+                  style: const TextStyle(
+                      fontSize: 20
+                  ),
+                  textAlign: TextAlign.center,)
+              ],
+            ),
+          ),
+
+          Expanded(
+            child: Container(
+                color: Colors.white,
+                child :
+                Consumer<GeneralProvider>(
+                  builder: (context,data,child){
+                    return ListView(
+                      physics: const BouncingScrollPhysics(),
+
+                      children: [
+                        // drawerItemView(title: "My Account", iconData: Icons.person_outline,
+                        //     function: (){
+                        //       Navigator.pop(context);//close the drawer
+                        //       Navigator.push(context, MaterialPageRoute(builder: (_)=>const
+                        //       MyAccountPage()));
+                        //     },index: 8),
+
+                        drawerItemView(title: "Attendance History", iconData: Icons.history,
+                          function: (){
+                            Navigator.pop(context);//close the drawer
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                            const AttendanceHistoryPage()));
+                          },index: 8,),
+
+                        drawerItemView(title: "Attendance Report",
+                          iconData: Icons.bar_chart,
+                          function: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=>const AttendanceReportPage()));
+                          },
+                        ),
+
+                        drawerItemView(title: "Request Device Activation",
+                          iconData: Icons.phone_android,
+                          function: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                            const DeviceActivationRequestPage()));
+                          },
+                        ),
+
+                        drawerItemView(title: "Log out", iconData: Icons.logout_rounded,
+                            function: (){
+                              Navigator.pop(context);//close the drawers
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginPage()));
+                            },index: 21),
+
+
+                      ],
+                    );
+                  },
+                )
             ),
           ),
         ],

@@ -1,6 +1,6 @@
 import 'package:akwaaba/components/custom_progress_indicator.dart';
-import 'package:akwaaba/screens/login_page.dart';
-import 'package:akwaaba/screens/main_page.dart';
+import 'package:akwaaba/versionOne/login_page.dart';
+import 'package:akwaaba/versionOne/main_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';

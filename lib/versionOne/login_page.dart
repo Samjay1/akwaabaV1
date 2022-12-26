@@ -6,8 +6,8 @@ import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/screens/forgot_password_page.dart';
-import 'package:akwaaba/screens/main_page.dart';
-import 'package:akwaaba/screens/webview_page.dart';
+import 'package:akwaaba/versionOne/main_page.dart';
+import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -367,41 +367,56 @@ class _LoginPageState extends State<LoginPage> {
           showProgressIndicator=true;
         });
 
+        Provider.of<MemberProvider>(context,listen: false).login(context: context,phoneEmail: email, password: password, checkDeviceInfo: false).then((value) {
+          setState(() {
+            showProgressIndicator=false;
+            Provider.of<GeneralProvider>(context,listen: false).
+            setAdminStatus(isAdmin: false);
+          });
 
-        MemberAPI().userLogin(phoneEmail: email, password: password,
-            checkDeviceInfo: false).
-        then((value) {
+
+        }).catchError((e){
+          showErrorToast("$e");
           setState(() {
             showProgressIndicator=false;
           });
-          if(value.isNotEmpty){
-            try{
-              Map decodedResponse = json.decode(value);
-              var token = decodedResponse["token"];
-              MemberProfile memberProfile = MemberProfile.fromJson(decodedResponse["user"]);
-
-              Provider.of<MemberProvider>(context,listen: false).setToken(token: token);
-              Provider.of<MemberProvider>(context,listen: false).setMemberProfileInfo(memberProfile: memberProfile);
-
-              SharedPrefs().setUserType(userType: "member");
-              SharedPrefs().saveLoginCredentials(emailOrPhone: email, password: password);
-              SharedPrefs().saveMemberInfo(memberProfile: memberProfile);
-
-              Navigator.push(context, MaterialPageRoute(builder: (_)=>const MainPage()));
-            }catch(e){
-              debugPrint("Login error caught ~ $e");
-
-            }
-          }else{
-            //if the response is empty, a toast would be shown from function making
-            // the api call
-          }
-        }).catchError((e){
-          showErrorToast("$e");
-            setState(() {
-              showProgressIndicator=false;
-            });
         });
+
+
+        // MemberAPI().userLogin(phoneEmail: email, password: password,
+        //     checkDeviceInfo: false).
+        // then((value) {
+        //   setState(() {
+        //     showProgressIndicator=false;
+        //   });
+        //   if(value.isNotEmpty){
+        //     try{
+        //       Map decodedResponse = json.decode(value);
+        //       var token = decodedResponse["token"];
+        //       MemberProfile memberProfile = MemberProfile.fromJson(decodedResponse["user"]);
+        //
+        //       Provider.of<MemberProvider>(context,listen: false).setToken(token: token);
+        //       Provider.of<MemberProvider>(context,listen: false).setMemberProfileInfo(memberProfile: memberProfile);
+        //
+        //       SharedPrefs().setUserType(userType: "member");
+        //       SharedPrefs().saveLoginCredentials(emailOrPhone: email, password: password);
+        //       SharedPrefs().saveMemberInfo(memberProfile: memberProfile);
+        //
+        //       Navigator.push(context, MaterialPageRoute(builder: (_)=>const MainPage()));
+        //     }catch(e){
+        //       debugPrint("Login error caught ~ $e");
+        //
+        //     }
+        //   }else{
+        //     //if the response is empty, a toast would be shown from function making
+        //     // the api call
+        //   }
+        // }).catchError((e){
+        //   showErrorToast("$e");
+        //     setState(() {
+        //       showProgressIndicator=false;
+        //     });
+        // });
 
 
       }

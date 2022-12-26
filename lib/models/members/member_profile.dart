@@ -1,40 +1,36 @@
 class MemberProfile {
-  int? id;
+  var id;
   String? firstname;
   String? surname;
   String? profilePicture;
   String? phone;
   String? email;
   int? clientId;
+  String? memberToken;
 
   MemberProfile(
-      {this.id,
+      this.id,
         this.firstname,
         this.surname,
         this.profilePicture,
         this.phone,
         this.email,
-        this.clientId});
+        this.clientId,
+        this.memberToken
+      );
 
-  MemberProfile.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    firstname = json['firstname'];
-    surname = json['surname'];
-    profilePicture = json['profilePicture'];
-    phone = json['phone'];
-    email = json['email'];
-    clientId = json['clientId'];
+  factory MemberProfile.fromJson(Map<String, dynamic> json, memberToken) {
+   return MemberProfile(
+         json['id'],
+         json['firstname'],
+         json['surname'],
+         json['profilePicture'],
+         json['phone'],
+         json['email'],
+         json['clientId'],
+         memberToken
+   );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['firstname'] = this.firstname;
-    data['surname'] = this.surname;
-    data['profilePicture'] = this.profilePicture;
-    data['phone'] = this.phone;
-    data['email'] = this.email;
-    data['clientId'] = this.clientId;
-    return data;
-  }
+
 }

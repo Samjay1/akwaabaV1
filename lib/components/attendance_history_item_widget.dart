@@ -1,5 +1,5 @@
 import 'package:akwaaba/models/attendance_history_item.dart';
-import 'package:akwaaba/screens/attendance_history_item_preview_page.dart';
+import 'package:akwaaba/versionOne/attendance_history_item_preview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
 import 'package:akwaaba/utils/widget_utils.dart';

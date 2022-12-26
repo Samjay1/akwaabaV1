@@ -1,6 +1,6 @@
 import 'package:akwaaba/components/message_manager_menu_widget.dart';
 import 'package:akwaaba/providers/general_provider.dart';
-import 'package:akwaaba/screens/webview_page.dart';
+import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

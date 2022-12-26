@@ -3,7 +3,7 @@ import 'package:akwaaba/providers/feeManager_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/schoolManager_provider.dart';
-import 'package:akwaaba/screens/splash_screen.dart';
+import 'package:akwaaba/versionOne/splash_screen.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

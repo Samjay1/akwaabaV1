@@ -4,11 +4,11 @@ import 'package:akwaaba/screens/connect_users_page.dart';
 import 'package:akwaaba/screens/birthday_alerts_page.dart';
 import 'package:akwaaba/screens/duty_tracker_main_page.dart';
 import 'package:akwaaba/screens/fee_manager_menus_page.dart';
-import 'package:akwaaba/screens/login_page.dart';
+import 'package:akwaaba/versionOne/login_page.dart';
 import 'package:akwaaba/screens/member_registration_page_individual.dart';
 import 'package:akwaaba/screens/akwaaba_modules.dart';
 import 'package:akwaaba/screens/school_manager_menus_page.dart';
-import 'package:akwaaba/screens/webview_page.dart';
+import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
@@ -16,7 +16,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/schoolManager_provider.dart';
-import 'attendance_report_page.dart';
+import '/versionOne/attendance_report_page.dart';
 import 'post_master_menus_page.dart';
 
 class MorePage extends StatefulWidget {

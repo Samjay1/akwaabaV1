@@ -1,4 +1,4 @@
-import 'package:akwaaba/screens/attendance_report_preview.dart';
+import 'package:akwaaba/versionOne/attendance_report_preview.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 

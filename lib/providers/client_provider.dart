@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../Networks/admin_api.dart';
-import '../screens/main_page.dart';
+import '../versionOne/main_page.dart';
 
 class ClientProvider extends ChangeNotifier {
   ClientAccountInfo? _user;

@@ -1,4 +1,4 @@
-import 'package:akwaaba/screens/webview_page.dart';
+import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';

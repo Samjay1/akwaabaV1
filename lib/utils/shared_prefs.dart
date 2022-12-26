@@ -35,16 +35,16 @@ class SharedPrefs{
 
   }
 
-  Future<void>saveMemberInfo({required MemberProfile memberProfile})async {
-    var sd =await sharedPreferences;
-    sd.setString("member_info", json.encode(memberProfile.toJson()));
-  }
+  // Future<void>saveMemberInfo({required MemberProfile memberProfile})async {
+  //   var sd =await sharedPreferences;
+  //   sd.setString("member_info", json.encode(memberProfile.toJson()));
+  // }
 
   Future<MemberProfile?>getMemberProfile()async{
     var sd =await sharedPreferences;
     if(sd.getString("member_info")!=null){
       try{
-        return MemberProfile.fromJson(json.decode(sd.getString("member_info")!));
+        return MemberProfile.fromJson(json.decode(sd.getString("member_info")!),'');
       }catch(e){
         return null;
       }
@@ -86,4 +86,19 @@ class SharedPrefs{
   }
 
 
+//  ------------------------------- SAVES bools
+  Future<void>saveDeviceRequestState({required bool deviceRequestState})async{
+    var sd =await sharedPreferences;
+    sd.setBool("deviceRequestState", deviceRequestState);
+    //index 0 is email or phone,  1 is password
+  }
+
+  Future<bool?>getDeviceRequestState()async{
+    var sd =await sharedPreferences;
+    if(sd.getBool("deviceRequestState")!=null){
+      return sd.getBool("deviceRequestState");
+    }else{
+      return null;
+    }
+  }
 }
