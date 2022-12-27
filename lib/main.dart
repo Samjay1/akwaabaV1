@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-void main()async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setPreferredOrientations([
@@ -17,35 +17,25 @@ void main()async {
     DeviceOrientation.portraitDown,
   ]);
 
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => GeneralProvider()),
+        ChangeNotifierProvider(create: (_) => ClientProvider()),
+        ChangeNotifierProvider(create: (_) => SchoolProvider()),
+        ChangeNotifierProvider(create: (_) => MemberProvider()),
+        ChangeNotifierProvider(create: (_) => FeeProvider()),
+      ],
+      child: MaterialApp(
+          initialRoute: 'splashScreen',
+          onGenerateRoute: (RouteSettings settings) {
+            assert(false, 'Need to implement ${settings.name}');
 
-  runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_)=>GeneralProvider()),
-          ChangeNotifierProvider(create: (_)=>ClientProvider()),
-          ChangeNotifierProvider(create: (_)=>SchoolProvider()),
-          ChangeNotifierProvider(create: (_)=>MemberProvider()),
-          ChangeNotifierProvider(create: (_)=>FeeProvider())
-        ],
-        child:
-        MaterialApp(
-            initialRoute: 'splashScreen',
-            onGenerateRoute: (RouteSettings settings) {
-              assert(false, 'Need to implement ${settings.name}');
-
-              return null;
-            },
-            routes: {
-              "splashScreen":(context)=>const SplashScreen(),
-
-            },
-            title: "Akwaaba",
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.defaultTheme
-
-        )
-      )
-      );
+            return null;
+          },
+          routes: {
+            "splashScreen": (context) => const SplashScreen(),
+          },
+          title: "Akwaaba",
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.defaultTheme)));
 }
-
-

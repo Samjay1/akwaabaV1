@@ -14,11 +14,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool loggedIn=false;
-
-
-
-
+  bool loggedIn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
           statusBarBrightness: Brightness.light, // For iOS (dark icons)
         ),
       ),
-      body:  Center(
+      body: Center(
         child: Stack(
           children: [
             Image.asset("images/logo_transparent.png"),
@@ -48,25 +44,20 @@ class _SplashScreenState extends State<SplashScreen> {
     initFunctions();
   }
 
-  initFunctions()async{
-
+  initFunctions() async {
     SharedPrefs().getLoginCredentials().then((value) {
-      if(value.isNotEmpty){
+      if (value.isNotEmpty) {
         //login credentials exists, open home page
-
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_)=>const MainPage()));
-
-      }else{
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => const MainPage()));
+      } else {
         //no login credentials, open login page
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_)=>const LoginPage()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => const LoginPage()));
       }
-    }).catchError((e){
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (_)=>const LoginPage()));
+    }).catchError((e) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => const LoginPage()));
     });
-
   }
 }

@@ -1,6 +1,8 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:akwaaba/Networks/member_api.dart';
+import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,56 +12,72 @@ import '../models/general/deviceInfoModel.dart';
 import '../utils/widget_utils.dart';
 import '../versionOne/main_page.dart';
 
-class MemberProvider extends ChangeNotifier{
+class MemberProvider with ChangeNotifier {
   String? _memberToken;
   MemberProfile? _memberProfile;
   DeviceInfoModel? deviceInfoModel;
-  bool _showLoginProgressIndicator=false;
+  bool _showLoginProgressIndicator = false;
+  bool _loading = false;
   var deviceRequestList;
-  var meetingEventList;
-  var upcomingMeetingEventList;
 
+  List<MeetingEventModel> _meetingEventList = [];
+  List<MeetingEventModel> _upcomingMeetingEventList = [];
 
-  get memberToken=>_memberToken;
-  get memberProfile=>_memberProfile;
+  // Retrieve all meetings
+  List<MeetingEventModel> get todayMeetings => _meetingEventList;
+  List<MeetingEventModel> get upcomingMeetings => _upcomingMeetingEventList;
+  bool get loading => _loading;
+  get memberToken => _memberToken;
+  get memberProfile => _memberProfile;
 
+  Future<void> memberLogin({required}) async {}
 
-  Future<void>memberLogin({required })async {}
+  setLoading(bool loading) {
+    _loading = !loading;
+    notifyListeners();
+  }
 
-  setToken({required String token}){
-      _memberToken=token;
+  setToken({required String token}) {
+    _memberToken = token;
+    notifyListeners();
+  }
+
+  setMemberProfileInfo({required MemberProfile memberProfile}) {
+    _memberProfile = memberProfile;
+    notifyListeners();
+  }
+
+  Future<void> login(
+      {required BuildContext context,
+      var phoneEmail,
+      var password,
+      required bool checkDeviceInfo}) async {
+    debugPrint('PROVIDER LOGIN CLIENT');
+    _showLoginProgressIndicator = true;
+    MemberAPI()
+        .login(
+            context: context,
+            phoneEmail: phoneEmail,
+            password: password,
+            checkDeviceInfo: checkDeviceInfo)
+        .then((value) {
+      _showLoginProgressIndicator = false;
       notifyListeners();
-  }
-
-  setMemberProfileInfo({required MemberProfile memberProfile}){
-    _memberProfile=memberProfile;
+      if (value == 'login_error') {
+        showErrorSnackBar(context, "Incorrect Login Details");
+        return;
+      } else if (value == 'network_error') {
+        showErrorSnackBar(context, "Network Issue");
+        return;
+      } else {
+        _memberProfile = value;
+        debugPrint('TESTING ${value.memberToken}');
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => const MainPage()));
+      }
+    });
     notifyListeners();
   }
-
-
-  Future<void> login({required BuildContext context, var phoneEmail, var password,required bool checkDeviceInfo}) async {
-  debugPrint('PROVIDER LOGIN CLIENT');
-  _showLoginProgressIndicator=true;
-  MemberAPI().login(context:context,phoneEmail: phoneEmail, password: password, checkDeviceInfo: checkDeviceInfo).
-  then((value){
-    _showLoginProgressIndicator=false;
-    notifyListeners();
-    if(value=='login_error'){
-
-      showErrorSnackBar(context, "Incorrect Login Details");
-      return;
-    }else if(value == 'network_error'){
-      showErrorSnackBar(context, "Network Issue");
-      return;
-    }else{
-      _memberProfile = value;
-      debugPrint('TESTING ${value.memberToken}');
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> const MainPage()));
-    }
-  });
-  notifyListeners();
-}
-
 
   Future gettingDeviceInfo() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -67,43 +85,59 @@ class MemberProvider extends ChangeNotifier{
     AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
     IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
 
-    if(Platform.isAndroid){
+    if (Platform.isAndroid) {
       var deviceInfoObj = {
-        'systemDevice':3,
+        'systemDevice': 3,
         'deviceType': androidDeviceInfo.brand,
         'deviceId': androidDeviceInfo.id
       };
 
-      print('Running on $deviceInfoObj');//deviceType
+      print('Running on $deviceInfoObj'); //deviceType
 
-      deviceInfoModel =  DeviceInfoModel.fromJson(deviceInfoObj);
-    }else if(Platform.isIOS){
+      deviceInfoModel = DeviceInfoModel.fromJson(deviceInfoObj);
+    } else if (Platform.isIOS) {
       var deviceInfoObj = {
-        'systemDevice':2,
+        'systemDevice': 2,
         'deviceType': iosDeviceInfo.systemVersion,
         'deviceId': iosDeviceInfo.identifierForVendor
       };
       print('Running on ${iosDeviceInfo.utsname.machine}');
-      deviceInfoModel =  DeviceInfoModel.fromJson(deviceInfoObj);
+      deviceInfoModel = DeviceInfoModel.fromJson(deviceInfoObj);
     }
     return null;
   }
 
-
-  void callDeviceRequestList({required var memberToken, required var memberID, required BuildContext context}) async{
+  void callDeviceRequestList(
+      {required var memberToken,
+      required var memberID,
+      required BuildContext context}) async {
     // print('UserProvider token $token');
-    this.deviceRequestList = await MemberAPI().getDeviceRequestList(context, memberToken, memberID);
-
+    deviceRequestList =
+        await MemberAPI().getDeviceRequestList(context, memberToken, memberID);
     notifyListeners();
   }
 
-  void callmeetingEventList({required String memberToken, required BuildContext context}) async{
-    this.meetingEventList = await MemberAPI().getMeetingEventList(context, memberToken);
+  Future<void> getTodayMeetingEvents({
+    required var memberToken,
+    required BuildContext context,
+  }) async {
+    debugPrint("callTodayMeetingEventList");
+    _meetingEventList = await MemberAPI().getTodayMeetingEventList(
+      context,
+      memberToken,
+    );
     notifyListeners();
   }
 
-  void callUpcomingMeetingEventList({required var memberToken, required BuildContext context}) async{
-    this.upcomingMeetingEventList = await MemberAPI().getUpcomingMeetingEventList(context, memberToken);
+  Future<void> getUpcomingMeetingEvents({
+    required var memberToken,
+    required BuildContext context,
+  }) async {
+    debugPrint("callUpcomingMeetingEventList");
+    _upcomingMeetingEventList = await MemberAPI().getUpcomingMeetingEventList(
+      context,
+      memberToken,
+    );
     notifyListeners();
   }
 }
