@@ -16,6 +16,8 @@ class MemberProvider extends ChangeNotifier{
   DeviceInfoModel? deviceInfoModel;
   bool _showLoginProgressIndicator=false;
   var deviceRequestList;
+  var meetingEventList;
+  var upcomingMeetingEventList;
 
 
   get memberToken=>_memberToken;
@@ -88,10 +90,20 @@ class MemberProvider extends ChangeNotifier{
   }
 
 
-void callDeviceRequestList({required var memberToken, required var memberID, required BuildContext context}) async{
-  // print('UserProvider token $token');
-  this.deviceRequestList = await MemberAPI().getDeviceRequestList(context, memberToken, memberID);
+  void callDeviceRequestList({required var memberToken, required var memberID, required BuildContext context}) async{
+    // print('UserProvider token $token');
+    this.deviceRequestList = await MemberAPI().getDeviceRequestList(context, memberToken, memberID);
 
-  notifyListeners();
-}
+    notifyListeners();
+  }
+
+  void callmeetingEventList({required String memberToken, required BuildContext context}) async{
+    this.meetingEventList = await MemberAPI().getMeetingEventList(context, memberToken);
+    notifyListeners();
+  }
+
+  void callUpcomingMeetingEventList({required var memberToken, required BuildContext context}) async{
+    this.upcomingMeetingEventList = await MemberAPI().getUpcomingMeetingEventList(context, memberToken);
+    notifyListeners();
+  }
 }

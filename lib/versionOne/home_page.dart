@@ -1,6 +1,7 @@
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/models/client_account_info.dart';
+import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/screens/excuse_input_page.dart';
@@ -12,7 +13,9 @@ import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../components/label_widget_container.dart';
 import '../models/meeting_event_item.dart';
 import '../providers/client_provider.dart';
@@ -35,6 +38,9 @@ class _HomePageState extends State<HomePage> {
   double screenHeight=0;
   double screenWidth=0;
   String userType="";
+  SharedPreferences? prefs;
+  var memberToken;
+  var clientToken;
 
 
   @override
@@ -58,12 +64,38 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         userType=value!;
       });
+      loadMeetingEventsByUserType(userType: userType);
     });
+
 
   }
 
+  void loadMeetingEventsByUserType({var userType}) async{
+    if(userType=='member'){
+      prefs = await SharedPreferences.getInstance();
+      memberToken = prefs?.getString('memberToken');
+
+      print('HOMEPAGE USER TYPE : $userType');
+      print('HOMEPAGE TOKEN ${memberToken}');
+      // MemberProfile memberProfile =  Provider.of<MemberProvider>(context, listen: false).memberProfile;
+      // print('HOMEPAGE member id ${memberProfile.id}');
+      Provider.of<MemberProvider>(context, listen: false).callmeetingEventList(memberToken: memberToken, context: context);
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Provider.of<MemberProvider>(context, listen: false).callUpcomingMeetingEventList(memberToken: memberToken, context: context);
+      });
+    }
+    else{
+      print('HOMEPAGE USER TYPE : $userType');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    // loadMeetingEventsByUserType(userType: userType);
+    // Provider.of<MemberProvider>(context, listen: false).callmeetingEventList(memberToken: memberToken!, context: context);
+
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     ClientAccountInfo? userInfo = Provider.of<ClientProvider>(context, listen: false).getUser;
@@ -75,7 +107,11 @@ class _HomePageState extends State<HomePage> {
     var subscriptionDuration = 0;
     // new FeeManagerAPi().feeTypesFunc(clientId: 180);
 
-    //print('PROFILE IMAGE : $profileImage');
+
+
+
+
+    // Provider.of<MemberProvider>(context, listen: false).getUser;
     return Scaffold(
       body: Container(
 
@@ -85,8 +121,6 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children:  [
-
-              const SizedBox(height: 12,),
 
               const SizedBox(height: 24,),
 
@@ -112,9 +146,24 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: FontWeight.w600),),
 
               const SizedBox(height: 12,),
-
-              todaysEvents(),
-
+          //----------------------------------------------------------------------
+          Container(
+            height: MediaQuery.of(context).size.height*0.2,
+            width: MediaQuery.of(context).size.width,
+            child: Consumer<MemberProvider>(
+              builder: (context, data, child){
+                return data.meetingEventList != null ?  ListView.builder(
+                    itemCount: data.meetingEventList.length,
+                    itemBuilder: (context, index){
+                      var item = data?.meetingEventList[index];
+                      debugPrint('MEETING LIST ${item.memberType}');
+                      return todaysEvents(name: item.name, date: item.updateDate, startTime: item.startTime, closeTime: item.closeTime);
+                    }
+                ): const Center(child: CircularProgressIndicator());
+              },
+            ),
+          ),
+          //----------------------------------------------------------------------
               const SizedBox(height: 12,),
               ClipRRect(
                 borderRadius: BorderRadius.circular(defaultRadius),
@@ -134,7 +183,22 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     children: <Widget>[
-                     upcomingEvents()
+                      Container(
+                        height: MediaQuery.of(context).size.height*0.3,
+                        width: MediaQuery.of(context).size.width,
+                        child: Consumer<MemberProvider>(
+                          builder: (context, data, child){
+                            return data.upcomingMeetingEventList != null ?  ListView.builder(
+                                itemCount: data.upcomingMeetingEventList.length,
+                                itemBuilder: (context, index){
+                                  var item = data?.upcomingMeetingEventList[index];
+                                  debugPrint('MEETING LIST ${item.memberType}');
+                                  return upcomingEvents(name: item.name, date: item.updateDate, startTime: item.startTime, closeTime: item.closeTime);
+                                }
+                            ): const Center(child: CircularProgressIndicator());
+                          },
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -414,7 +478,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget todaysEvents(){
+  Widget todaysEvents({name, date, startTime,closeTime}){
+    var months = ['','Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    DateTime formatedDate = DateTime.parse(date.toString());
+    var month = formatedDate.month;
+    var day = formatedDate.day;
+    var year = formatedDate.year;
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -441,14 +510,14 @@ class _HomePageState extends State<HomePage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Text("Weekday Office Work",
-                          style: TextStyle(fontSize: 19,),),
+                          Text("$name",
+                          style: const TextStyle(fontSize: 19,),),
                           const SizedBox(height: 12,),
                           Row(
-                            children: const [
-                              Icon(Icons.calendar_month_outlined,size: 16,
+                            children: [
+                              const Icon(Icons.calendar_month_outlined,size: 16,
                                 color: primaryColor,),
-                              Text("16, Aug 2022",style: TextStyle(fontSize: 13,
+                              Text("$day, ${months[month]} $year",style: const TextStyle(fontSize: 13,
                                   color: textColorLight),)
                             ],
                           ),
@@ -457,20 +526,20 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Expanded(
                                 child: Row(
-                                  children: const [
-                                    Icon(CupertinoIcons.alarm,size: 16,
+                                  children: [
+                                    const Icon(CupertinoIcons.alarm,size: 16,
                                       color: primaryColor,),
-                                    Text("8:00AM",style: TextStyle(fontSize: 13,
+                                    Text("$startTime",style: const TextStyle(fontSize: 13,
                                         color: textColorLight))
                                   ],
                                 ),
                               ),
                               Expanded(
                                 child: Row(
-                                  children: const [
-                                    Icon(CupertinoIcons.alarm,size: 16,
+                                  children: [
+                                    const Icon(CupertinoIcons.alarm,size: 16,
                                       color: primaryColor,),
-                                    Text("4:30PM",style: TextStyle(fontSize: 13,
+                                    Text("$closeTime",style: const TextStyle(fontSize: 13,
                                         color: textColorLight))
                                   ],
                                 ),
@@ -555,11 +624,26 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  Widget upcomingEvents(){
-    return Column(
-      children: List.generate(events.length, (index){
-        return MeetingEventWidget(events[index]);
-      }),
-    );
+  Widget upcomingEvents({name, date, startTime,closeTime}){
+    var months = ['','Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    DateTime formatedDate = DateTime.parse(date.toString());
+    var month = formatedDate.month;
+    var day = formatedDate.day;
+    var year = formatedDate.year;
+      return MeetingEventWidget(
+           MeetingEventItem(name, "$day, ${months[month]} $year", startTime, closeTime)
+      );
+
+    // return Consumer<MemberProvider>(
+    //   builder: (context, data, child){
+    //     return data.meetingEventList.length!= 0 ?  ListView.builder(
+    //         itemCount: data.meetingEventList.length,
+    //         itemBuilder: (context, index){
+    //           var item = data?.meetingEventList[index];
+    //           return Text('hello');
+    //         }
+    //     ): const Center(child: CircularProgressIndicator());
+    //   },
+    // );
   }
 }

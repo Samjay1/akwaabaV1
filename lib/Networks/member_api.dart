@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -145,7 +146,57 @@ class MemberAPI{
         Iterable dataList = decodedresponse['results'];
         return dataList.map((data) => DeviceRequestModel.fromJson(data)).toList();
       }else{
-        print('Transaction error ${jsonDecode(response.body)}');
+        print('DeviceRequestModel error ${jsonDecode(response.body)}');
+        return [];
+      }
+    } on SocketException catch(_){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Network issue')));
+      return [];
+    }
+  }
+
+
+  Future<List<MeetingEventModel>> getMeetingEventList(BuildContext context,String memberToken) async{
+
+    try{
+      http.Response response = await http.get(Uri.parse('$baseUrl/attendance/meeting-event/schedule/today?datatable_plugin'),
+          headers: {
+            'Authorization': 'Token $memberToken',
+            'Content-Type': 'application/json'
+          } );
+      if(response.statusCode==200){
+        var decodedresponse = jsonDecode(response.body);
+        print("MeetingEventModel success: $decodedresponse");
+        Iterable dataList = decodedresponse['data'];
+
+        return dataList.map((data) => MeetingEventModel.fromJson(data)).toList();
+      }else{
+        // print('MeetingEventModel error ${jsonDecode(response.body)}');
+        return [];
+      }
+    } on SocketException catch(_){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Network issue')));
+      return [];
+    }
+  }
+
+
+
+  Future<List<MeetingEventModel>> getUpcomingMeetingEventList(BuildContext context,var memberToken) async{
+    try{
+      http.Response response = await http.get(Uri.parse('$baseUrl/attendance/meeting-event/schedule/upcoming'),
+          headers: {
+            'Authorization': 'Token $memberToken',
+            'Content-Type': 'application/json'
+          } );
+      if(response.statusCode==200){
+        var decodedresponse = jsonDecode(response.body);
+        print("UPCOMING MeetingEventModel success: $decodedresponse");
+        Iterable dataList = decodedresponse['results'];
+
+        return dataList.map((data) => MeetingEventModel.fromJson(data)).toList();
+      }else{
+        // print('MeetingEventModel error ${jsonDecode(response.body)}');
         return [];
       }
     } on SocketException catch(_){

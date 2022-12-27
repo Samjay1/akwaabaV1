@@ -153,7 +153,8 @@ class _LoginPageState extends State<LoginPage> {
                               child: TabBarView(
                                   children: [
                                     memberLoginView(),
-                                    adminLoginView()
+                                    memberLoginView()
+                                    // adminLoginView()
                                   ]),
                             ),
 

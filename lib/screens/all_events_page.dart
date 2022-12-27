@@ -5,11 +5,14 @@ import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../components/custom_elevated_button.dart';
 import '../components/form_button.dart';
 import '../components/label_widget_container.dart';
 import '../models/meeting_event_item.dart';
+import '../providers/member_provider.dart';
 import '../utils/app_theme.dart';
 
 class AllEventsPage extends StatefulWidget {
@@ -38,6 +41,8 @@ class _AllEventsPageState extends State<AllEventsPage> {
   ];
   int listType=0;//0= events, 1 = meetings
   int selectedEventType=-1;
+  SharedPreferences? prefs;
+  var memberToken;
 
   selectStartPeriod(){
 
@@ -68,9 +73,27 @@ class _AllEventsPageState extends State<AllEventsPage> {
   }
 
 
+  void loadMeetingEventsByUserType() async{
+      prefs = await SharedPreferences.getInstance();
+      memberToken = prefs?.getString('memberToken');
+
+      print('HOMEPAGE TOKEN ${memberToken}');
+      // print('HOMEPAGE member id ${memberProfile.id}');
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Provider.of<MemberProvider>(context, listen: false).callUpcomingMeetingEventList(memberToken: memberToken, context: context);
+      });
+  }
+
+  @override
+  initState(){
+    super.initState();
+    loadMeetingEventsByUserType();
+    }
+
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height,
       padding: const EdgeInsets.all(16),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -94,7 +117,6 @@ class _AllEventsPageState extends State<AllEventsPage> {
                         (index) {
                   return Expanded(
                     child: Row(
-
                       children: [
                         Row(
                           children: [
@@ -121,7 +143,6 @@ class _AllEventsPageState extends State<AllEventsPage> {
             const SizedBox(height: 24,),
 
             Row(
-
               children: [
                 Expanded(
                   child:
@@ -156,13 +177,30 @@ class _AllEventsPageState extends State<AllEventsPage> {
 
             //const SizedBox(height: 24,),
 
-          ListView(
-            shrinkWrap: true,
+          // ListView(
+          //   shrinkWrap: true,
+          //
+          //   physics: const NeverScrollableScrollPhysics(),
+          //   children:List.generate(events.length, (index) {
+          //   return  MeetingEventWidget(events[index]);
+          // }),),
 
-            physics: const NeverScrollableScrollPhysics(),
-            children:List.generate(events.length, (index) {
-            return  MeetingEventWidget(events[index]);
-          }),)
+            Container(
+              height: MediaQuery.of(context).size.height*0.3,
+              width: MediaQuery.of(context).size.width,
+              child: Consumer<MemberProvider>(
+                builder: (context, data, child){
+                  return data.upcomingMeetingEventList != null ?  ListView.builder(
+                      itemCount: data.upcomingMeetingEventList.length,
+                      itemBuilder: (context, index){
+                        var item = data?.upcomingMeetingEventList[index];
+                        debugPrint('MEETING LIST ${item.memberType}');
+                        return upcomingEvents(name: item.name, date: item.updateDate, startTime: item.startTime, closeTime: item.closeTime);
+                      }
+                  ): const Center(child: CircularProgressIndicator());
+                },
+              ),
+            )
 
           ],
         ),
@@ -170,6 +208,15 @@ class _AllEventsPageState extends State<AllEventsPage> {
     );
   }
 
-
+  Widget upcomingEvents({name, date, startTime,closeTime}){
+    var months = ['','Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    DateTime formatedDate = DateTime.parse(date.toString());
+    var month = formatedDate.month;
+    var day = formatedDate.day;
+    var year = formatedDate.year;
+    return MeetingEventWidget(
+        MeetingEventItem(name, "$day, ${months[month]} $year", startTime, closeTime)
+    );
+  }
 
 }

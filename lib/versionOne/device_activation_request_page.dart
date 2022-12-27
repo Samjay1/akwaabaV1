@@ -7,6 +7,7 @@ import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/members/member_profile.dart';
 
@@ -19,20 +20,31 @@ class DeviceActivationRequestPage extends StatefulWidget {
 
 class _DeviceActivationRequestPageState extends State<DeviceActivationRequestPage> {
   final TextEditingController _controllerEmailAddress = TextEditingController();
+  SharedPreferences? prefs;
+  var memberToken;
+
+
+  void loadToken({var memberId}) async{
+      prefs = await SharedPreferences.getInstance();
+      memberToken = prefs?.getString('memberToken');
+
+      Provider.of<MemberProvider>(context,listen: false).callDeviceRequestList(memberToken: memberToken, memberID: memberId, context: context);
+      print('DEVICE ACTIVATION TOKEN ${memberToken}');
+    }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
+    //GETS MEMBER PROFILE INFO
     MemberProfile memberProfile = Provider.of<MemberProvider>(context,listen: false).memberProfile;
-    var memberId = memberProfile.id;
-    var memberToken = memberProfile.memberToken;
-
-    debugPrint('MEMBER INFO ____ ${memberProfile.id}');
+    var memberId = memberProfile.id; // GETS THE MEMBER ID
     debugPrint('MEMBER memberToken ____ ${memberProfile.memberToken.toString()}');
 
+    //GETS DEVICE INFO
     var deviceInfo = Provider.of<MemberProvider>(context,listen: false).deviceInfoModel;
 
-    Provider.of<MemberProvider>(context,listen: false).callDeviceRequestList(memberToken: memberToken, memberID: memberId, context: context);
+    //GETS TOKEN AND LOADS DEVICE REQUEST LIST
+    loadToken(memberId:memberId);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Device Activation"),
@@ -44,7 +56,6 @@ class _DeviceActivationRequestPageState extends State<DeviceActivationRequestPag
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-
               SizedBox(
                  height: height*0.25,
                  child: Column(
