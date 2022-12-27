@@ -241,16 +241,6 @@ class _MainPageState extends State<MainPage> {
                             Navigator.push(context, MaterialPageRoute(builder: (_)=>const AttendanceReportPage()));
                           },
                           ),
-
-
-
-                      drawerItemView(title: "Fee Manager",
-                        iconData: Icons.money,
-                        function: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (_)=>const AttendanceReportPage()));
-                        },
-                      ),
-
                       drawerItemView(title: "Request Device Activation",
                         iconData: Icons.phone_android,
                         function: (){
@@ -259,11 +249,6 @@ class _MainPageState extends State<MainPage> {
                         },
                       ),
 
-
-
-
-
-                     
                       drawerItemView(title: "Log out", iconData: Icons.logout_rounded,
                           function: (){
                             Navigator.pop(context);//close the drawers
