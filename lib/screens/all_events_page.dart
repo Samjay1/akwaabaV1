@@ -1,4 +1,5 @@
 import 'package:akwaaba/components/meeting_event_widget.dart';
+import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/screens/all_events_filter_page.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -76,7 +77,7 @@ class _AllEventsPageState extends State<AllEventsPage> {
     print('HOMEPAGE TOKEN ${memberToken}');
     // print('HOMEPAGE member id ${memberProfile.id}');
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<MemberProvider>(context, listen: false)
+      Provider.of<AttendanceProvider>(context, listen: false)
           .getUpcomingMeetingEvents(memberToken: memberToken, context: context);
     });
   }
@@ -198,7 +199,7 @@ class _AllEventsPageState extends State<AllEventsPage> {
             Container(
               height: MediaQuery.of(context).size.height * 0.3,
               width: MediaQuery.of(context).size.width,
-              child: Consumer<MemberProvider>(
+              child: Consumer<AttendanceProvider>(
                 builder: (context, data, child) {
                   return data.upcomingMeetings != null
                       ? ListView.builder(

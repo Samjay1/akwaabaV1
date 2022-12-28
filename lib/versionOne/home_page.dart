@@ -1,8 +1,8 @@
-import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
+import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
-import 'package:akwaaba/models/members/member_profile.dart';
+import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/screens/excuse_input_page.dart';
@@ -14,7 +14,6 @@ import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/label_widget_container.dart';
@@ -45,6 +44,8 @@ class _HomePageState extends State<HomePage> {
 
   MemberProvider? memberProvider;
 
+  AttendanceProvider? attendanceProvider;
+
   @override
   void initState() {
     super.initState();
@@ -67,29 +68,39 @@ class _HomePageState extends State<HomePage> {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('memberToken');
 
-      debugPrint('HOMEPAGE USER TYPE : $userType');
+      debugPrint('HOMEPAGE USER TYPE: $userType');
       //debugPrint('HOMEPAGE TOKEN $memberToken');
       // MemberProfile memberProfile =  Provider.of<MemberProvider>(context, listen: false).memberProfile;
       // print('HOMEPAGE member id ${memberProfile.id}');
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        Provider.of<MemberProvider>(context, listen: false)
+      Future.delayed(Duration.zero, () {
+        Provider.of<AttendanceProvider>(context, listen: false)
             .getUpcomingMeetingEvents(
           memberToken: memberToken,
           context: context,
         );
-        //setState(() {});
+        setState(() {});
       });
+
+      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      //   Provider.of<AttendanceProvider>(context, listen: false)
+      //       .getUpcomingMeetingEvents(
+      //     memberToken: memberToken,
+      //     context: context,
+      //   );
+      //   setState(() {});
+      // });
     } else {
-      debugPrint('HOMEPAGE USER TYPE : $userType');
+      prefs = await SharedPreferences.getInstance();
+      memberToken = prefs?.getString('memberToken');
     }
+    debugPrint('Token: $memberToken');
   }
 
   @override
   Widget build(BuildContext context) {
     // loadMeetingEventsByUserType(userType: userType);
     // Provider.of<MemberProvider>(context, listen: false).callmeetingEventList(memberToken: memberToken!, context: context);
-
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     ClientAccountInfo? userInfo =
@@ -101,6 +112,8 @@ class _HomePageState extends State<HomePage> {
     var subscriptionFee = 0;
     var subscriptionDuration = 0;
     // new FeeManagerAPi().feeTypesFunc(clientId: 180);
+
+    var isClockedIn = context.watch<AttendanceProvider>().isClockedIn;
 
     // Provider.of<MemberProvider>(context, listen: false).getUser;
     return Scaffold(
@@ -151,7 +164,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.2,
                 width: MediaQuery.of(context).size.width,
-                child: Consumer<MemberProvider>(
+                child: Consumer<AttendanceProvider>(
                   builder: (context, data, child) {
                     if (data.loading) {
                       return const Center(
@@ -173,6 +186,8 @@ class _HomePageState extends State<HomePage> {
                           var item = data.todayMeetings[index];
                           debugPrint('MEETING LIST ${item.memberType}');
                           return todaysEvents(
+                            isClockedIn,
+                            meeting: item,
                             name: item.name,
                             date: item.updateDate,
                             startTime: item.startTime,
@@ -195,6 +210,7 @@ class _HomePageState extends State<HomePage> {
                     tilePadding: EdgeInsets.zero,
                     backgroundColor: backgroundColor,
                     collapsedBackgroundColor: backgroundColor,
+                    initiallyExpanded: true,
                     title: const Text(
                       "Upcoming",
                       style: TextStyle(
@@ -208,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         height: MediaQuery.of(context).size.height * 0.3,
                         width: MediaQuery.of(context).size.width,
-                        child: Consumer<MemberProvider>(
+                        child: Consumer<AttendanceProvider>(
                           builder: (context, data, child) {
                             if (data.loading) {
                               return const Center(
@@ -287,7 +303,7 @@ class _HomePageState extends State<HomePage> {
               Text(
                 "$firstName $surName",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                 ),
               ),
@@ -306,7 +322,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: const [
                       Text(
                         "Date : 17/10/2022",
                         style: TextStyle(
@@ -537,7 +553,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget todaysEvents({name, date, startTime, closeTime}) {
+  Widget todaysEvents(isClockedIn,
+      {meeting, name, date, startTime, closeTime}) {
     var months = [
       '',
       'Jan',
@@ -615,10 +632,11 @@ class _HomePageState extends State<HomePage> {
                                       size: 16,
                                       color: primaryColor,
                                     ),
-                                    Text("$startTime",
-                                        style: const TextStyle(
-                                            fontSize: 13,
-                                            color: textColorLight))
+                                    Text(
+                                      "$startTime",
+                                      style: const TextStyle(
+                                          fontSize: 13, color: textColorLight),
+                                    )
                                   ],
                                 ),
                               ),
@@ -687,11 +705,55 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onPressed: () {
-                        showNormalToast("Work in Progress");
-                        // Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                        // const ExcuseInputPage()));
+                        Provider.of<AttendanceProvider>(context, listen: false)
+                            .setSelectedMeeting(meeting);
+
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            insetPadding: const EdgeInsets.all(10),
+                            backgroundColor: Colors.transparent,
+                            elevation: 0,
+                            content: ConfirmDialog(
+                              title: isClockedIn ? 'Clock Out' : 'Clock In',
+                              content:
+                                  '${isClockedIn ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re close to the premise of the meeting or event to continue.',
+                              onConfirmTap: () {
+                                Provider.of<AttendanceProvider>(context,
+                                        listen: false)
+                                    .getMeetingCoordinates(
+                                  meetingEventModel: meeting,
+                                );
+                                Navigator.pop(context);
+                              },
+                              onCancelTap: () => Navigator.pop(context),
+                              confirmText: 'Yes',
+                              cancelText: 'Cancel',
+                            ),
+                          ),
+                        );
+
+                        // Provider.of<AttendanceProvider>(context, listen: false)
+                        //     .clockMemberIn(
+                        //   context: context,
+                        //   meetingID: meeting.id,
+                        //   memberToken: memberToken,
+                        // );
                       },
-                      child: const Text("Clock In"),
+                      child: Provider.of<AttendanceProvider>(context,
+                                  listen: false)
+                              .clocking
+                          ? const Center(
+                              child: SizedBox(
+                                width: 15,
+                                height: 15,
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            )
+                          : Text(isClockedIn ? 'Clock Out' : 'Clock In'),
                     ),
                     const SizedBox(
                       width: 12,
@@ -703,9 +765,11 @@ class _HomePageState extends State<HomePage> {
                                 borderRadius: BorderRadius.circular(23))),
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const ExcuseInputPage()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ExcuseInputPage(),
+                            ),
+                          );
                         },
                         child: const Text("Excuse"))
                   ],

@@ -29,6 +29,7 @@ dependencies:
   file_picker: ^5.2.3
   syncfusion_flutter_datepicker: ^20.3.50
   device_info_plus: ^8.0.0
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:

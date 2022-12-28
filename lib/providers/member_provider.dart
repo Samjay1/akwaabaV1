@@ -7,6 +7,7 @@ import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../models/general/deviceInfoModel.dart';
 import '../utils/widget_utils.dart';
@@ -18,15 +19,13 @@ class MemberProvider with ChangeNotifier {
   DeviceInfoModel? deviceInfoModel;
   bool _showLoginProgressIndicator = false;
   bool _loading = false;
+  bool _clocking = false;
   var deviceRequestList;
 
-  List<MeetingEventModel> _meetingEventList = [];
-  List<MeetingEventModel> _upcomingMeetingEventList = [];
+  final TextEditingController excuseTEC = TextEditingController();
 
-  // Retrieve all meetings
-  List<MeetingEventModel> get todayMeetings => _meetingEventList;
-  List<MeetingEventModel> get upcomingMeetings => _upcomingMeetingEventList;
   bool get loading => _loading;
+  bool get clocking => _clocking;
   get memberToken => _memberToken;
   get memberProfile => _memberProfile;
 
@@ -34,6 +33,11 @@ class MemberProvider with ChangeNotifier {
 
   setLoading(bool loading) {
     _loading = loading;
+    notifyListeners();
+  }
+
+  setClocking(bool clocking) {
+    _clocking = clocking;
     notifyListeners();
   }
 
@@ -73,7 +77,11 @@ class MemberProvider with ChangeNotifier {
         _memberProfile = value;
         debugPrint('TESTING ${value.memberToken}');
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const MainPage()));
+          context,
+          MaterialPageRoute(
+            builder: (_) => const MainPage(),
+          ),
+        );
       }
     });
     notifyListeners();
@@ -114,37 +122,6 @@ class MemberProvider with ChangeNotifier {
     // print('UserProvider token $token');
     deviceRequestList =
         await MemberAPI().getDeviceRequestList(context, memberToken, memberID);
-    notifyListeners();
-  }
-
-  Future<void> getTodayMeetingEvents({
-    required var memberToken,
-    required BuildContext context,
-  }) async {
-    debugPrint("callTodayMeetingEventList");
-    _meetingEventList = await MemberAPI().getTodayMeetingEventList(
-      context,
-      memberToken,
-    );
-    setLoading(false);
-    notifyListeners();
-  }
-
-  Future<void> getUpcomingMeetingEvents({
-    required var memberToken,
-    required BuildContext context,
-  }) async {
-    setLoading(true);
-    debugPrint("DateTime: ${DateTime.now()}");
-    debugPrint("callUpcomingMeetingEventList");
-    _upcomingMeetingEventList = await MemberAPI().getUpcomingMeetingEventList(
-      context,
-      memberToken,
-    );
-    getTodayMeetingEvents(
-      memberToken: memberToken,
-      context: context,
-    );
     notifyListeners();
   }
 }

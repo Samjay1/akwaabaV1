@@ -4,35 +4,34 @@ import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPrefs{
+class SharedPrefs {
   static final SharedPrefs _instance = SharedPrefs.internal();
-  factory SharedPrefs()=>_instance;
+  factory SharedPrefs() => _instance;
 
   static SharedPreferences? _sharedPreferences;
 
-  Future<SharedPreferences> get sharedPreferences async=>_sharedPreferences?? await SharedPreferences.getInstance();
+  Future<SharedPreferences> get sharedPreferences async =>
+      _sharedPreferences ?? await SharedPreferences.getInstance();
 
   SharedPrefs.internal();
 
-  logOut()async{
-    var sd =await sharedPreferences;
+  logOut() async {
+    var sd = await sharedPreferences;
     sd.clear();
   }
 
-
-  setUserType({required String userType})async{
-    var sd =await sharedPreferences;
+  setUserType({required String userType}) async {
+    var sd = await sharedPreferences;
     sd.setString("user_type", userType);
   }
 
-  Future<String?>getUserType()async{
-    var sd =await sharedPreferences;
-    if(sd.getString("user_type")!=null){
-      return  sd.getString("user_type");
-    }else{
+  Future<String?> getUserType() async {
+    var sd = await sharedPreferences;
+    if (sd.getString("user_type") != null) {
+      return sd.getString("user_type");
+    } else {
       return "";
     }
-
   }
 
   // Future<void>saveMemberInfo({required MemberProfile memberProfile})async {
@@ -40,64 +39,66 @@ class SharedPrefs{
   //   sd.setString("member_info", json.encode(memberProfile.toJson()));
   // }
 
-  Future<MemberProfile?>getMemberProfile()async{
-    var sd =await sharedPreferences;
-    if(sd.getString("member_info")!=null){
-      try{
-        return MemberProfile.fromJson(json.decode(sd.getString("member_info")!),'');
-      }catch(e){
+  Future<MemberProfile?> getMemberProfile() async {
+    var sd = await sharedPreferences;
+    if (sd.getString("member_info") != null) {
+      try {
+        return MemberProfile.fromJson(
+            json.decode(sd.getString("member_info")!), '');
+      } catch (e) {
         return null;
       }
     }
     return null;
   }
 
-  Future<void>saveAdminInfo({required AdminProfile adminProfile})async {
-    var sd =await sharedPreferences;
+  Future<void> saveAdminInfo({required AdminProfile adminProfile}) async {
+    var sd = await sharedPreferences;
     sd.setString("admin_info", json.encode(adminProfile.toJson()));
   }
 
-  Future<AdminProfile?>getAdminProfile()async{
-    var sd =await sharedPreferences;
-    if(sd.getString("admin_info")!=null){
-      try{
+  Future<AdminProfile?> getAdminProfile() async {
+    var sd = await sharedPreferences;
+    if (sd.getString("admin_info") != null) {
+      try {
         return AdminProfile.fromJson(json.decode(sd.getString("admin_info")!));
-      }catch(e){
+      } catch (e) {
         return null;
       }
     }
     return null;
   }
 
-  Future<void>saveLoginCredentials({required String emailOrPhone, required String password})async{
-    var sd =await sharedPreferences;
-    sd.setStringList("login_credentials", [emailOrPhone,password]);
+  Future<void> saveLoginCredentials(
+      {required String emailOrPhone, required String password}) async {
+    var sd = await sharedPreferences;
+    sd.setStringList("login_credentials", [emailOrPhone, password]);
     //index 0 is email or phone,  1 is password
   }
 
-  Future<List<String>>getLoginCredentials()async{
-    var sd =await sharedPreferences;
-    if(sd.getStringList("login_credentials")!=null){
-      return sd.getStringList("login_credentials")??[];
-    }else{
+  Future<List<String>> getLoginCredentials() async {
+    var sd = await sharedPreferences;
+    if (sd.getStringList("login_credentials") != null) {
+      return sd.getStringList("login_credentials") ?? [];
+    } else {
       [];
     }
-    return[];
+    return [];
   }
 
-
 //  ------------------------------- SAVES bools
-  Future<void>saveDeviceRequestState({required bool deviceRequestState})async{
-    var sd =await sharedPreferences;
+  Future<void> saveDeviceRequestState(
+      {required bool deviceRequestState}) async {
+    var sd = await sharedPreferences;
     sd.setBool("deviceRequestState", deviceRequestState);
     //index 0 is email or phone,  1 is password
   }
 
-  Future<bool?>getDeviceRequestState()async{
-    var sd =await sharedPreferences;
-    if(sd.getBool("deviceRequestState")!=null){
+  Future<bool?> getDeviceRequestState() async {
+    var sd = await sharedPreferences;
+    if (sd.getBool("deviceRequestState") != null) {
       return sd.getBool("deviceRequestState");
-    }else{
+    } else {
       return null;
     }
   }

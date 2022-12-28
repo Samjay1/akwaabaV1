@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:akwaaba/Networks/api_responses/clockin_response.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -156,145 +158,6 @@ class MemberAPI {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Network issue')));
       return [];
-    }
-  }
-
-  Future<List<MeetingEventModel>> getTodayMeetingEventList(
-      BuildContext context, var memberToken) async {
-    try {
-      http.Response response = await http.get(
-          Uri.parse(
-              '$baseUrl/attendance/meeting-event/schedule/today?datatable_plugin'),
-          headers: {
-            'Authorization': 'Token $memberToken',
-            'Content-Type': 'application/json'
-          });
-      if (response.statusCode == 200) {
-        var decodedresponse = jsonDecode(response.body);
-        debugPrint("TODAY MeetingEventModel success: $decodedresponse");
-        Iterable meetingList = decodedresponse['data'];
-        return meetingList
-            .map((data) => MeetingEventModel.fromJson(data))
-            .toList();
-      } else {
-        // print('MeetingEventModel error ${jsonDecode(response.body)}');
-        return [];
-      }
-    } on SocketException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Network issue'),
-        ),
-      );
-      return [];
-    }
-  }
-
-  Future<List<MeetingEventModel>> getUpcomingMeetingEventList(
-      BuildContext context, var memberToken) async {
-    try {
-      http.Response response = await http.get(
-          Uri.parse('$baseUrl/attendance/meeting-event/schedule/upcoming'),
-          headers: {
-            'Authorization': 'Token $memberToken',
-            'Content-Type': 'application/json'
-          });
-      if (response.statusCode == 200) {
-        var decodedresponse = jsonDecode(response.body);
-        debugPrint("UPCOMING MeetingEventModel success: $decodedresponse");
-        Iterable dataList = decodedresponse['results'];
-
-        return dataList
-            .map((data) => MeetingEventModel.fromJson(data))
-            .toList();
-      } else {
-        // print('MeetingEventModel error ${jsonDecode(response.body)}');
-        return [];
-      }
-    } on SocketException catch (_) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Network issue')));
-      return [];
-    }
-  }
-
-  // clock-in data source
-  Future<dynamic> clockIn({
-    required BuildContext context,
-    required String memberToken,
-    required String meetingID,
-    required String time,
-  }) async {
-    try {
-      http.Response response = await http.patch(
-          Uri.parse(
-              '$baseUrl/attendance/meeting-event/attendance/clock-in/$meetingID'),
-          body: {
-            'time': time,
-          },
-          headers: {
-            'Authorization': 'Token $memberToken',
-            'Content-Type': 'application/json'
-          });
-      if (response.statusCode == 200) {
-        var decodedresponse = jsonDecode(response.body);
-        debugPrint("Clock-in response: $decodedresponse");
-        // Iterable dataList = decodedresponse['results'];
-
-        // return dataList
-        //     .map((data) => MeetingEventModel.fromJson(data))
-        //     .toList();
-      } else {
-        // print('MeetingEventModel error ${jsonDecode(response.body)}');
-        return null;
-      }
-    } on SocketException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Network issue'),
-        ),
-      );
-      return null;
-    }
-  }
-
-  // clock-out data source
-  Future<dynamic> clockOut({
-    required BuildContext context,
-    required String memberToken,
-    required String meetingID,
-    required double radius,
-  }) async {
-    try {
-      http.Response response = await http.patch(
-          Uri.parse(
-              '$baseUrl/attendance/meeting-event/attendance/clock-out/$meetingID'),
-          body: {
-            'radius': radius,
-          },
-          headers: {
-            'Authorization': 'Token $memberToken',
-            'Content-Type': 'application/json'
-          });
-      if (response.statusCode == 200) {
-        var decodedresponse = jsonDecode(response.body);
-        debugPrint("Clock-out response: $decodedresponse");
-        // Iterable dataList = decodedresponse['results'];
-
-        // return dataList
-        //     .map((data) => MeetingEventModel.fromJson(data))
-        //     .toList();
-      } else {
-        // print('MeetingEventModel error ${jsonDecode(response.body)}');
-        return null;
-      }
-    } on SocketException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Network issue'),
-        ),
-      );
-      return null;
     }
   }
 }
