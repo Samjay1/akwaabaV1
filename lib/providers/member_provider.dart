@@ -33,7 +33,7 @@ class MemberProvider with ChangeNotifier {
   Future<void> memberLogin({required}) async {}
 
   setLoading(bool loading) {
-    _loading = !loading;
+    _loading = loading;
     notifyListeners();
   }
 
@@ -126,6 +126,7 @@ class MemberProvider with ChangeNotifier {
       context,
       memberToken,
     );
+    setLoading(false);
     notifyListeners();
   }
 
@@ -133,10 +134,16 @@ class MemberProvider with ChangeNotifier {
     required var memberToken,
     required BuildContext context,
   }) async {
+    setLoading(true);
+    debugPrint("DateTime: ${DateTime.now()}");
     debugPrint("callUpcomingMeetingEventList");
     _upcomingMeetingEventList = await MemberAPI().getUpcomingMeetingEventList(
       context,
       memberToken,
+    );
+    getTodayMeetingEvents(
+      memberToken: memberToken,
+      context: context,
     );
     notifyListeners();
   }

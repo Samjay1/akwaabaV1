@@ -249,8 +249,11 @@ class MemberAPI {
         return null;
       }
     } on SocketException catch (_) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Network issue')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Network issue'),
+        ),
+      );
       return null;
     }
   }
@@ -286,8 +289,11 @@ class MemberAPI {
         return null;
       }
     } on SocketException catch (_) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Network issue')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Network issue'),
+        ),
+      );
       return null;
     }
   }

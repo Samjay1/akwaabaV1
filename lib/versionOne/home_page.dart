@@ -59,15 +59,6 @@ class _HomePageState extends State<HomePage> {
         userType = value!;
       });
       loadMeetingEventsByUserType(userType: userType);
-      memberProvider = Provider.of<MemberProvider>(context, listen: false);
-      memberProvider!.getTodayMeetingEvents(
-        memberToken: memberToken,
-        context: context,
-      );
-      memberProvider!.getTodayMeetingEvents(
-        memberToken: memberToken,
-        context: context,
-      );
     });
   }
 
@@ -81,25 +72,13 @@ class _HomePageState extends State<HomePage> {
       // MemberProfile memberProfile =  Provider.of<MemberProvider>(context, listen: false).memberProfile;
       // print('HOMEPAGE member id ${memberProfile.id}');
 
-      // Future.delayed(Duration.zero, () {
-      //   Provider.of<MemberProvider>(context, listen: false)
-      //       .getTodayMeetingEvents(
-      //     memberToken: memberToken,
-      //     context: context,
-      //   );
-      // });
-
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        //memberProvider = Provider.of<MemberProvider>(context, listen: false);
-        // Provider.of<MemberProvider>(context, listen: false)
-        //     .getTodayMeetingEvents(
-        //   memberToken: memberToken,
-        //   context: context,
-        // );
-        // memberProvider!.callUpcomingMeetingEventList(
-        //   memberToken: memberToken,
-        //   context: context,
-        // );
+        Provider.of<MemberProvider>(context, listen: false)
+            .getUpcomingMeetingEvents(
+          memberToken: memberToken,
+          context: context,
+        );
+        //setState(() {});
       });
     } else {
       debugPrint('HOMEPAGE USER TYPE : $userType');
@@ -231,22 +210,30 @@ class _HomePageState extends State<HomePage> {
                         width: MediaQuery.of(context).size.width,
                         child: Consumer<MemberProvider>(
                           builder: (context, data, child) {
-                            return data.upcomingMeetings != null
-                                ? ListView.builder(
-                                    itemCount: data.upcomingMeetings.length,
-                                    itemBuilder: (context, index) {
-                                      var item = data.upcomingMeetings[index];
-                                      debugPrint(
-                                          'MEETING LIST ${item.memberType}');
-                                      return upcomingEvents(
-                                          name: item.name,
-                                          date: item.updateDate,
-                                          startTime: item.startTime,
-                                          closeTime: item.closeTime);
-                                    })
-                                : const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
+                            if (data.loading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            if (data.upcomingMeetings.isEmpty) {
+                              return const Center(
+                                child: Text(
+                                  'You currently have no upcoming \nmeetings at the moment!',
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            }
+                            return ListView.builder(
+                                itemCount: data.upcomingMeetings.length,
+                                itemBuilder: (context, index) {
+                                  var item = data.upcomingMeetings[index];
+                                  debugPrint('MEETING LIST ${item.memberType}');
+                                  return upcomingEvents(
+                                      name: item.name,
+                                      date: item.updateDate,
+                                      startTime: item.startTime,
+                                      closeTime: item.closeTime);
+                                });
                           },
                         ),
                       )
@@ -693,16 +680,19 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.green,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(23))),
-                        onPressed: () {
-                          showNormalToast("Work in Progress");
-                          // Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                          // const ExcuseInputPage()));
-                        },
-                        child: const Text("Clock In")),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(23),
+                        ),
+                      ),
+                      onPressed: () {
+                        showNormalToast("Work in Progress");
+                        // Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                        // const ExcuseInputPage()));
+                      },
+                      child: const Text("Clock In"),
+                    ),
                     const SizedBox(
                       width: 12,
                     ),
