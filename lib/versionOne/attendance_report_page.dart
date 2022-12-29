@@ -7,9 +7,11 @@ import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../components/AttendanceReportItem.dart';
 import '../components/form_button.dart';
 import '../components/label_widget_container.dart';
 import '../utils/app_theme.dart';
+import 'attendance_report_preview.dart';
 
 class AttendanceReportPage extends StatefulWidget {
   const AttendanceReportPage({Key? key}) : super(key: key);
@@ -24,6 +26,24 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
   final TextEditingController _controllerId = TextEditingController();
   final TextEditingController _controllerMinAge = TextEditingController();
   final TextEditingController _controllerMaxAge = TextEditingController();
+
+
+
+  List<Map>members=[
+    {"status":false},
+    {"status":false},
+    {"status":false},
+    {"status":false},
+    {"status":false},
+    {"status":false},
+    {"status":false},
+    {"status":false},
+    {"status":false},
+    {"status":false},
+  ];
+  bool checkAll=false;
+  bool itemHasBeenSelected=false;//at least 1 member has been selected, so show options menu
+  List<Map>selectedMembersList=[];
 
 
   selectGender(){
@@ -44,21 +64,109 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: Column(
-
+          child:  Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: const [
+                      Text('Total users'),
+                      Text('30', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),)
+                    ],
+                  ),
+                  Column(
+                    children: const [
+                      Text('Total Males'),
+                      Text('20', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),)
+                    ],
+                  ),
+                  Column(
+                    children: const [
+                      Text('Total Females'),
+                      Text('10', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),)
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12,),
+              
               filterButton(),
 
               const SizedBox(height: 12,),
 
-              Column(
-                children: List.generate(10, (index) {
-                  return  AttendanceReportItemWidget(
-                    isLate: index % 3==0);
-                })
+              Row(
+                children: [
+                  Checkbox(
+                      activeColor: primaryColor,
+                      shape: const CircleBorder(),
+                      value: checkAll, onChanged: (val){
+                    setState(() {
+                      checkAll=val!;
+                      for (Map map in members){
+                        map["status"]=checkAll;
+                      }
+                    });
+                  }),
+                  const Text("Check All"),
+                  const SizedBox(width: 25,),
+                  InkWell(
+                    onTap: (){
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Attendees validated...')));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      child: const Text("Validate"),
+                    ),
+                  )
+                ],
               ),
+
+              Column(
+                children: List.generate(members.length, (index){
+                  return  GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          if(members[index]["status"]){
+                            //remove it
+                            members[index]["status"]=false;
+                            selectedMembersList.remove(members[index]);
+                          }else{
+                            members[index]["status"]=true;
+                            selectedMembersList.add(members[index]);
+                          }
+                          if(selectedMembersList.isNotEmpty){
+                            itemHasBeenSelected=true;
+                          }else{
+                            itemHasBeenSelected=false;
+                          }
+                        });
+                      },
+                      onLongPress: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                            const AttendanceReportDetailsPage()));
+                      },
+                      child: AttendanceReportItem(members[index],true));
+                }),
+
+
+
+
+              ),
+             // Container(
+             //   child:  Column(
+             //       children: List.generate(1, (index) {
+             //         return  AttendanceReportItemWidget(
+             //             isLate: index % 3==0);
+             //       })
+             //   ),
+             // )
             ],
           ),
         ),

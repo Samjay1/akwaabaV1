@@ -3,6 +3,7 @@ import 'package:akwaaba/utils/dimens.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/app_theme.dart';
 
@@ -44,12 +45,38 @@ class _AttendanceReportDetailsPageState extends State<AttendanceReportDetailsPag
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset("images/icons/whatsapp_icon.png",
-                        width: 17,height: 17,),
-                      const SizedBox(width: 4,),
-                      const Text("0205287979",style: TextStyle(
-                          fontWeight: FontWeight.w400,fontSize: 14,color: textColorLight
-                      ),),
+                      IconButton(
+                          onPressed: ()async{
+                            var whatsappUrl =
+                                "whatsapp://send?phone=${'+2332034549084'}";
+                            if (await launchUrl(Uri.parse(whatsappUrl))) {
+                              //dialer opened
+                            }else{
+                              //dailer is not opened
+                            }
+                          },
+                          icon: Image.asset("images/icons/whatsapp_icon.png",
+                            width: 19,height: 19,),
+                      ),
+
+                      const SizedBox(width: 30,),
+                      IconButton(
+                          onPressed: ()async{
+                            Uri phoneno = Uri.parse('tel:+2332034549084');
+                            if (await launchUrl(phoneno)) {
+                              //dialer opened
+                            }else{
+                              //dailer is not opened
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.phone,
+                            color: Colors.green,
+                          )
+                      ),
+                      // const Text("0205287979",style: TextStyle(
+                      //     fontWeight: FontWeight.w400,fontSize: 14,color: textColorLight
+                      // ),),
 
                     ],
                   ),
@@ -163,11 +190,36 @@ class _AttendanceReportDetailsPageState extends State<AttendanceReportDetailsPag
               const SizedBox(height: 16,),
 
 
-              CupertinoButton(
-                color: Colors.red,
-                onPressed: (){},
-                child: Text("Cancel",style: TextStyle(color: Colors.white),),
-              ),
+             Row(
+               mainAxisSize: MainAxisSize.max,
+               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+               children: [
+                 InkWell(
+                   onTap: (){},
+                   child: Container(
+                     padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 13),
+                     decoration: BoxDecoration(
+                       color: Colors.red,
+                       borderRadius: BorderRadius.circular(10)
+                     ),
+                     child: const Text("Cancel",style: TextStyle(color: Colors.black),),
+                   )
+                 ),
+                 InkWell(
+                     onTap: (){},
+                     child: Container(
+                       padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 13),
+                       decoration: BoxDecoration(
+                           color: Colors.orange,
+                           borderRadius: BorderRadius.circular(10)
+                       ),
+                         child: const Text("Follow up",style: TextStyle(color: Colors.black),),
+                     )
+                 ),
+
+
+               ],
+             )
 
 
 

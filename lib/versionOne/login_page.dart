@@ -363,6 +363,7 @@ class _LoginPageState extends State<LoginPage> {
 
 
         SharedPrefs().setUserType(userType: "admin");
+        SharedPrefs().saveLoginCredentials(emailOrPhone: email, password: password);
 
       }else{
 
@@ -385,6 +386,9 @@ class _LoginPageState extends State<LoginPage> {
           });
         });
 
+        SharedPrefs().setUserType(userType: "member");
+        SharedPrefs().saveLoginCredentials(emailOrPhone: email, password: password);
+        //
 
         // MemberAPI().userLogin(phoneEmail: email, password: password,
         //     checkDeviceInfo: false).
