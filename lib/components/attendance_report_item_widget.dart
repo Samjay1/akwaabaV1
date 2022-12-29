@@ -83,60 +83,6 @@ class AttendanceReportItemWidget extends StatelessWidget {
                   ],
                 ),
 
-                // const SizedBox(height: 6,),
-                // // Row(
-                //   children: const [
-                //     Icon(Icons.phone,size: 15, color: primaryColor,),
-                //     SizedBox(width: 3,),
-                //     Text("0205287971",
-                //       style: TextStyle(fontSize: 13, color: textColorLight),),
-                //   ],
-                // ),
-
-                // const SizedBox(height: 16,),
-
-
-
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Expanded(
-                //       child: Row(
-                //         children: const [
-                //           // Icon(Icons.alarm,size: 16,color: primaryColor,),
-                //           // SizedBox(width: 6,),
-                //           Text("Clock Time : " ,style: TextStyle(fontSize: 14),),
-                //         ],
-                //       ),
-                //     ),
-                //     _customTextWidget(label: "In", text: "5:00"),
-                //     const SizedBox(width: 24,),
-                //     _customTextWidget(label: "Out", text: "5:00"),
-                //     //Container()
-                //   ],
-                // ),
-                //
-                // const SizedBox(height: 6,),
-                //
-                // const SizedBox(height: 3,),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Expanded(
-                //       child: Row(
-                //         children: const [
-                //           // Icon(Icons.alarm,size: 16,color: primaryColor,),
-                //           // SizedBox(width: 6,),
-                //           Text("Break Time : ",style: TextStyle(fontSize: 14),),
-                //         ],
-                //       ),
-                //     ),
-                //     _customTextWidget(label: "Start", text: "5:00"),
-                //     const SizedBox(width: 24,),
-                //     _customTextWidget(label: "End", text: "5:00"),
-                //
-                //   ],
-                // ),
               ],
             ) ,
           ),

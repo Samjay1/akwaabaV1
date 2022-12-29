@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/client_provider.dart';
+import 'member_registration_page_individual.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -248,7 +249,12 @@ class _LoginPageState extends State<LoginPage> {
                       style: const TextStyle(color: primaryColor, fontSize: 17),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          createAccountButtonTap();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      const MemberRegistrationPageIndividual()));
+                          // createAccountButtonTap();
                         })
                 ]),
           ),
@@ -391,6 +397,8 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       SharedPrefs().setUserType(userType: "admin");
+      SharedPrefs()
+          .saveLoginCredentials(emailOrPhone: email, password: password);
     } else {
       setState(() {
         showProgressIndicator = true;
@@ -414,6 +422,11 @@ class _LoginPageState extends State<LoginPage> {
           showProgressIndicator = false;
         });
       });
+
+      SharedPrefs().setUserType(userType: "member");
+      SharedPrefs()
+          .saveLoginCredentials(emailOrPhone: email, password: password);
+      //
 
       // MemberAPI().userLogin(phoneEmail: email, password: password,
       //     checkDeviceInfo: false).
