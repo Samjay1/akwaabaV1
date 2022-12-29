@@ -28,6 +28,7 @@ class MemberProvider with ChangeNotifier {
   bool get clocking => _clocking;
   get memberToken => _memberToken;
   get memberProfile => _memberProfile;
+  get showLoginProgressIndicator => _showLoginProgressIndicator;
 
   Future<void> memberLogin({required}) async {}
 
@@ -76,6 +77,7 @@ class MemberProvider with ChangeNotifier {
       } else {
         _memberProfile = value;
         debugPrint('TESTING ${value.memberToken}');
+        debugPrint('INFO ${_memberProfile!.toJson()}');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

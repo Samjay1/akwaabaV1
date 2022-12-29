@@ -1,5 +1,6 @@
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
+import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
@@ -113,8 +114,6 @@ class _HomePageState extends State<HomePage> {
     var subscriptionDuration = 0;
     // new FeeManagerAPi().feeTypesFunc(clientId: 180);
 
-    var isClockedIn = context.watch<AttendanceProvider>().isClockedIn;
-
     // Provider.of<MemberProvider>(context, listen: false).getUser;
     return Scaffold(
       body: Container(
@@ -183,10 +182,9 @@ class _HomePageState extends State<HomePage> {
                         itemCount: data.todayMeetings.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          var item = data.todayMeetings[index];
+                          final item = data.todayMeetings[index];
                           debugPrint('MEETING LIST ${item.memberType}');
                           return todaysEvents(
-                            isClockedIn,
                             meeting: item,
                             name: item.name,
                             date: item.updateDate,
@@ -275,31 +273,36 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const UpdateAccountPage()));
-                  },
-                  child: profileImage != null
-                      ? Align(
-                          child: CustomCachedImageWidget(
-                              url: profileImage, height: 130),
-                        )
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const UpdateAccountPage(),
+                    ),
+                  );
+                },
+                child: profileImage != null
+                    ? Align(
+                        child: CustomCachedImageWidget(
+                          url: profileImage,
+                          height: 130,
+                        ),
+                      )
 
-                      // FadeInImage(
-                      //   image: NetworkImage("$profileImage"),
-                      //   placeholder: const AssetImage(
-                      //       "images/illustrations/profile_pic.svg"),
-                      //   imageErrorBuilder:
-                      //       (context, error, stackTrace) {
-                      //     return SvgPicture.asset(
-                      //         'images/illustrations/profile_pic.svg',
-                      //         height:130,);
-                      //   },
-                      //   fit: BoxFit.fitWidth,
-                      // )
-                      : defaultProfilePic(height: 130)),
+                    // FadeInImage(
+                    //   image: NetworkImage("$profileImage"),
+                    //   placeholder: const AssetImage(
+                    //       "images/illustrations/profile_pic.svg"),
+                    //   imageErrorBuilder:
+                    //       (context, error, stackTrace) {
+                    //     return SvgPicture.asset(
+                    //         'images/illustrations/profile_pic.svg',
+                    //         height:130,);
+                    //   },
+                    //   fit: BoxFit.fitWidth,
+                    // )
+                    : defaultProfilePic(height: 130),
+              ),
               Text(
                 "$firstName $surName",
                 textAlign: TextAlign.center,
@@ -553,8 +556,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget todaysEvents(isClockedIn,
-      {meeting, name, date, startTime, closeTime}) {
+  Widget todaysEvents({meeting, name, date, startTime, closeTime}) {
     var months = [
       '',
       'Jan',
@@ -686,9 +688,19 @@ class _HomePageState extends State<HomePage> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(23))),
                               onPressed: () {
-                                showNormalToast("Work in Progress");
-                                // Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                                // const ExcuseInputPage()));
+                                Provider.of<AttendanceProvider>(context,
+                                        listen: false)
+                                    .setSelectedMeeting(meeting);
+                                showModalBottomSheet(
+                                  context: context,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16.0),
+                                      topRight: Radius.circular(16.0),
+                                    ),
+                                  ),
+                                  builder: (context) => const AgendaDialog(),
+                                );
                               },
                               child: const Text(
                                 "Agenda",
@@ -715,9 +727,9 @@ class _HomePageState extends State<HomePage> {
                             backgroundColor: Colors.transparent,
                             elevation: 0,
                             content: ConfirmDialog(
-                              title: isClockedIn ? 'Clock Out' : 'Clock In',
+                              title: meeting.inOrOut ? 'Clock Out' : 'Clock In',
                               content:
-                                  '${isClockedIn ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re close to the premise of the meeting or event to continue.',
+                                  '${meeting.inOrOut ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
                               onConfirmTap: () {
                                 Provider.of<AttendanceProvider>(context,
                                         listen: false)
@@ -732,13 +744,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         );
-
-                        // Provider.of<AttendanceProvider>(context, listen: false)
-                        //     .clockMemberIn(
-                        //   context: context,
-                        //   meetingID: meeting.id,
-                        //   memberToken: memberToken,
-                        // );
                       },
                       child: Provider.of<AttendanceProvider>(context,
                                   listen: false)
@@ -753,7 +758,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             )
-                          : Text(isClockedIn ? 'Clock Out' : 'Clock In'),
+                          : Text(meeting.inOrOut! ? 'Clock Out' : 'Clock In'),
                     ),
                     const SizedBox(
                       width: 12,

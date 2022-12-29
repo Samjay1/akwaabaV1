@@ -34,10 +34,10 @@ class SharedPrefs {
     }
   }
 
-  // Future<void>saveMemberInfo({required MemberProfile memberProfile})async {
-  //   var sd =await sharedPreferences;
-  //   sd.setString("member_info", json.encode(memberProfile.toJson()));
-  // }
+  Future<void> saveMemberInfo({required MemberProfile memberProfile}) async {
+    var sd = await sharedPreferences;
+    sd.setString("member_info", json.encode(memberProfile.toJson()));
+  }
 
   Future<MemberProfile?> getMemberProfile() async {
     var sd = await sharedPreferences;

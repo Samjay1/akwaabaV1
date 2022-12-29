@@ -20,91 +20,116 @@ class ClockingPage extends StatefulWidget {
 }
 
 class _ClockingPageState extends State<ClockingPage> {
-  List<Map>members=[
-    {"status":false},
-    {"status":false},
-    {"status":false},
-    {"status":false},
-    {"status":false},
-    {"status":false},
-    {"status":false},
-    {"status":false},
-    {"status":false},
-    {"status":false},
+  List<Map> members = [
+    {"status": false},
+    {"status": false},
+    {"status": false},
+    {"status": false},
+    {"status": false},
+    {"status": false},
+    {"status": false},
+    {"status": false},
+    {"status": false},
+    {"status": false},
   ];
-  bool itemHasBeenSelected=false;//at least 1 member has been selected, so show options menu
-  List<Map>selectedMembersList=[];
+  bool itemHasBeenSelected =
+      false; //at least 1 member has been selected, so show options menu
+  List<Map> selectedMembersList = [];
   DateTime? generalClockTime;
-  bool checkAll=false;
-
-
-
+  bool checkAll = false;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0,horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-
             filterButton(),
 
-            const SizedBox(height: 24,),
+            const SizedBox(
+              height: 24,
+            ),
 
             // Row(
             //   children: [
-                //const Expanded(child:
-                CupertinoSearchTextField(),
-                //),
-                // IconButton(onPressed: (){
-                //   Navigator.push(context, MaterialPageRoute(builder: (_)
-                //   =>const FilterPageClocking()));
-                // },
-                //     icon: const Icon(Icons.filter_alt,color: primaryColor,))
+            //const Expanded(child:
+            CupertinoSearchTextField(),
+            //),
+            // IconButton(onPressed: (){
+            //   Navigator.push(context, MaterialPageRoute(builder: (_)
+            //   =>const FilterPageClocking()));
+            // },
+            //     icon: const Icon(Icons.filter_alt,color: primaryColor,))
             //   ],
             // ),
 
-            const SizedBox(height: 12,),
+            const SizedBox(
+              height: 12,
+            ),
 
-            const CupertinoSearchTextField(placeholder: "Enter ID",),
+            const CupertinoSearchTextField(
+              placeholder: "Enter ID",
+            ),
 
-            const SizedBox(height: 8,),
+            const SizedBox(
+              height: 8,
+            ),
 
-            CustomElevatedButton(label: "Filter", function: (){}),
+            CustomElevatedButton(label: "Filter", function: () {}),
 
-            const SizedBox(height: 8,),
+            const SizedBox(
+              height: 8,
+            ),
 
             // CustomElevatedButton(label: "Filter", function: (){}),\
 
-
-
-            const SizedBox(height: 24,),
-            LabelWidgetContainer(label: "Clocked In/Out",
+            const SizedBox(
+              height: 24,
+            ),
+            LabelWidgetContainer(
+                label: "Clocked In/Out",
                 child: Row(
                   children: [
                     Text("Checked"),
-                    const SizedBox(width: 24,),
-
-                    Expanded(child: CustomOutlinedButton(label: "In", function: (){})),
-                    const SizedBox(width: 16,),
-                    Expanded(child: CustomOutlinedButton(label: "Out", function: (){}))
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    Expanded(
+                        child:
+                            CustomOutlinedButton(label: "In", function: () {})),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                        child:
+                            CustomOutlinedButton(label: "Out", function: () {}))
                   ],
                 )),
 
-            const SizedBox(height: 12,),
+            const SizedBox(
+              height: 12,
+            ),
 
-            LabelWidgetContainer(label: "Break Time",
+            LabelWidgetContainer(
+                label: "Break Time",
                 child: Row(
                   children: [
                     Text(""),
-                    const SizedBox(width: 24,),
-
-                    Expanded(child: CustomOutlinedButton(label: "Start", function: (){})),
-                    const SizedBox(width: 16,),
-                    Expanded(child: CustomOutlinedButton(label: "End", function: (){}))
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    Expanded(
+                        child: CustomOutlinedButton(
+                            label: "Start", function: () {})),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                        child:
+                            CustomOutlinedButton(label: "End", function: () {}))
                   ],
                 )),
 
@@ -113,45 +138,41 @@ class _ClockingPageState extends State<ClockingPage> {
                 Checkbox(
                     activeColor: primaryColor,
                     shape: const CircleBorder(),
-                    value: checkAll, onChanged: (val){
-                  setState(() {
-                    checkAll=val!;
-                    for (Map map in members){
-                      map["status"]=checkAll;
-                    }
-                  });
-                }),
+                    value: checkAll,
+                    onChanged: (val) {
+                      setState(() {
+                        checkAll = val!;
+                        for (Map map in members) {
+                          map["status"] = checkAll;
+                        }
+                      });
+                    }),
                 Text("Check All")
               ],
             ),
 
-
             Column(
-              children: List.generate(members.length, (index){
-                return  GestureDetector(
-                    onTap: (){
+              children: List.generate(members.length, (index) {
+                return GestureDetector(
+                    onTap: () {
                       setState(() {
-                        if(members[index]["status"]){
+                        if (members[index]["status"]) {
                           //remove it
-                          members[index]["status"]=false;
+                          members[index]["status"] = false;
                           selectedMembersList.remove(members[index]);
-                        }else{
-                          members[index]["status"]=true;
+                        } else {
+                          members[index]["status"] = true;
                           selectedMembersList.add(members[index]);
                         }
-                        if(selectedMembersList.isNotEmpty){
-                          itemHasBeenSelected=true;
-                        }else{
-                          itemHasBeenSelected=false;
+                        if (selectedMembersList.isNotEmpty) {
+                          itemHasBeenSelected = true;
+                        } else {
+                          itemHasBeenSelected = false;
                         }
                       });
                     },
                     child: MemberClockSelectionWidget(members[index]));
               }),
-
-
-
-
             ),
             // itemHasBeenSelected?
             //     Container(
@@ -177,7 +198,7 @@ class _ClockingPageState extends State<ClockingPage> {
     );
   }
 
-  Widget filterButton(){
+  Widget filterButton() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: Theme(
@@ -187,55 +208,68 @@ class _ClockingPageState extends State<ClockingPage> {
           collapsedBackgroundColor: Colors.white,
           title: const Text(
             "More Filters ",
-            style: TextStyle(fontSize: 17.0,
-              fontWeight: FontWeight.w500,
-              color: textColorPrimary
-            ),
+            style: TextStyle(
+                fontSize: 17.0,
+                fontWeight: FontWeight.w500,
+                color: textColorPrimary),
           ),
-          children: <Widget>[
-            filterOptionsListView()
-          ],
+          children: <Widget>[filterOptionsListView()],
         ),
       ),
     );
   }
 
-  Widget filterOptionsListView(){
+  Widget filterOptionsListView() {
     return Column(
       children: [
-
-        LabelWidgetContainer(label: "Branch",
-          child: FormButton(label: "All", function: () {  },),),
-
-        LabelWidgetContainer(label: "Member Category",
-          child: FormButton(label: "All", function: () {  },),),
-
-        LabelWidgetContainer(label: "Group",
-          child: FormButton(label: "Select Group", function: () {  },),),
-
-
-        LabelWidgetContainer(label: "Sub Group",
-          child: FormButton(label: "Select Sub Group", function: () {  },),),
-
-
-        LabelWidgetContainer(label: "Meeting Type",
-            child: FormButton(label: "Select Meeting Type",
-              function: (){},)),
-
-        LabelWidgetContainer(label: "Date",
-            child: FormButton(label: "Select Date",
-              function: (){},)),
-
-        LabelWidgetContainer(label: "Set Mass Time",
-            child:  FormButton(label: generalClockTime!=null?
-            DateFormat("hh:mm").format(generalClockTime!):"Select time",
-                function: (){})),
+        LabelWidgetContainer(
+          label: "Branch",
+          child: FormButton(
+            label: "All",
+            function: () {},
+          ),
+        ),
+        LabelWidgetContainer(
+          label: "Member Category",
+          child: FormButton(
+            label: "All",
+            function: () {},
+          ),
+        ),
+        LabelWidgetContainer(
+          label: "Group",
+          child: FormButton(
+            label: "Select Group",
+            function: () {},
+          ),
+        ),
+        LabelWidgetContainer(
+          label: "Sub Group",
+          child: FormButton(
+            label: "Select Sub Group",
+            function: () {},
+          ),
+        ),
+        LabelWidgetContainer(
+            label: "Meeting Type",
+            child: FormButton(
+              label: "Select Meeting Type",
+              function: () {},
+            )),
+        LabelWidgetContainer(
+            label: "Date",
+            child: FormButton(
+              label: "Select Date",
+              function: () {},
+            )),
+        LabelWidgetContainer(
+            label: "Set Mass Time",
+            child: FormButton(
+                label: generalClockTime != null
+                    ? DateFormat("hh:mm").format(generalClockTime!)
+                    : "Select time",
+                function: () {})),
       ],
     );
   }
-
-
-
-
-
 }

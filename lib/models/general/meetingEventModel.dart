@@ -26,33 +26,36 @@ class MeetingEventModel {
   int? updatedBy;
   String? updateDate;
   String? date;
+  bool? inOrOut = false;
 
-  MeetingEventModel(
-      {this.id,
-      this.type,
-      this.memberType,
-      this.name,
-      this.clientId,
-      this.branchId,
-      this.memberCategoryId,
-      this.meetingSpan,
-      this.startTime,
-      this.closeTime,
-      this.latenessTime,
-      this.isRecuring,
-      this.hasBreakTime,
-      this.hasDuty,
-      this.hasOvertime,
-      this.virtualMeetingLink,
-      this.virtualMeetingType,
-      this.meetingLocation,
-      this.expectedMonthlyAttendance,
-      this.activeMonthlyAttendance,
-      this.agenda,
-      this.agendaFile,
-      this.updatedBy,
-      this.updateDate,
-      this.date});
+  MeetingEventModel({
+    this.id,
+    this.type,
+    this.memberType,
+    this.name,
+    this.clientId,
+    this.branchId,
+    this.memberCategoryId,
+    this.meetingSpan,
+    this.startTime,
+    this.closeTime,
+    this.latenessTime,
+    this.isRecuring,
+    this.hasBreakTime,
+    this.hasDuty,
+    this.hasOvertime,
+    this.virtualMeetingLink,
+    this.virtualMeetingType,
+    this.meetingLocation,
+    this.expectedMonthlyAttendance,
+    this.activeMonthlyAttendance,
+    this.agenda,
+    this.agendaFile,
+    this.updatedBy,
+    this.updateDate,
+    this.date,
+    this.inOrOut,
+  });
 
   MeetingEventModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

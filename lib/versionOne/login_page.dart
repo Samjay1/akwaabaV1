@@ -32,8 +32,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _controllerAdminPassword =
       TextEditingController();
   bool showPassword = false;
-  bool showProgressIndicator = false;
-  bool showAdminProgressIndicator = false;
   double screenHeight = 0;
   double screenWidth = 0;
   // final _formKey = GlobalKey<FormState>();
@@ -210,9 +208,11 @@ class _LoginPageState extends State<LoginPage> {
             child: TextButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const ForgotPasswordPage()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ForgotPasswordPage(),
+                    ),
+                  );
                 },
                 child: const Text(
                   "Forgot Password ?",
@@ -225,12 +225,16 @@ class _LoginPageState extends State<LoginPage> {
           height: 24,
         ),
 
-        CustomElevatedButton(
-          label: "Login",
-          function: () {
-            login(isAdmin: false);
+        Consumer<MemberProvider>(
+          builder: (context, data, child) {
+            return CustomElevatedButton(
+              label: "Login",
+              function: () {
+                login(isAdmin: false);
+              },
+              showProgress: data.showLoginProgressIndicator,
+            );
           },
-          showProgress: showProgressIndicator,
         ),
 
         const SizedBox(
@@ -250,10 +254,12 @@ class _LoginPageState extends State<LoginPage> {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) =>
-                                      const MemberRegistrationPageIndividual()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const MemberRegistrationPageIndividual(),
+                            ),
+                          );
                           // createAccountButtonTap();
                         })
                 ]),
@@ -375,52 +381,41 @@ class _LoginPageState extends State<LoginPage> {
       //save password and email in shared prefs
     }
 
-    //show progress indicator
-    setState(() {
-      showProgressIndicator = true;
-    });
-
     if (isAdmin) {
       Provider.of<ClientProvider>(context, listen: false)
           .login(context: context, phoneEmail: email, password: password)
           .then((value) {
         setState(() {
-          showProgressIndicator = false;
           Provider.of<GeneralProvider>(context, listen: false)
               .setAdminStatus(isAdmin: true);
         });
       }).catchError((e) {
         showErrorToast("$e");
-        setState(() {
-          showProgressIndicator = false;
-        });
       });
 
       SharedPrefs().setUserType(userType: "admin");
       SharedPrefs()
           .saveLoginCredentials(emailOrPhone: email, password: password);
     } else {
-      setState(() {
-        showProgressIndicator = true;
-      });
-
       Provider.of<MemberProvider>(context, listen: false)
           .login(
-              context: context,
-              phoneEmail: email,
-              password: password,
-              checkDeviceInfo: false)
+        context: context,
+        phoneEmail: email,
+        password: password,
+        checkDeviceInfo: false,
+      )
           .then((value) {
         setState(() {
-          showProgressIndicator = false;
           Provider.of<GeneralProvider>(context, listen: false)
               .setAdminStatus(isAdmin: false);
+          SharedPrefs().saveMemberInfo(
+              memberProfile: Provider.of<MemberProvider>(
+            context,
+            listen: false,
+          ).memberProfile);
         });
       }).catchError((e) {
         showErrorToast("$e");
-        setState(() {
-          showProgressIndicator = false;
-        });
       });
 
       SharedPrefs().setUserType(userType: "member");
