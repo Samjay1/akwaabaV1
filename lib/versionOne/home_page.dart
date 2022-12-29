@@ -764,6 +764,10 @@ class _HomePageState extends State<HomePage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(23))),
                         onPressed: () {
+                          // set meeting as selected
+                          context
+                              .read<AttendanceProvider>()
+                              .setSelectedMeeting(meeting);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
