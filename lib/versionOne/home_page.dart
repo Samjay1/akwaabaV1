@@ -148,18 +148,25 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 12,),
           //----------------------------------------------------------------------
           Container(
-            height: MediaQuery.of(context).size.height*0.2,
-            width: MediaQuery.of(context).size.width,
             child: Consumer<MemberProvider>(
               builder: (context, data, child){
-                return data.meetingEventList != null ?  ListView.builder(
-                    itemCount: data.meetingEventList.length,
-                    itemBuilder: (context, index){
-                      var item = data?.meetingEventList[index];
-                      debugPrint('MEETING LIST ${item.memberType}');
-                      return todaysEvents(name: item.name, date: item.updateDate, startTime: item.startTime, closeTime: item.closeTime);
-                    }
-                ): const Center(child: CircularProgressIndicator());
+                return data.meetingEventList != null ?
+                Container(
+                  height: data.meetingEventList.length != 0 ? MediaQuery.of(context).size.height*0.28 : 22,
+                  width: MediaQuery.of(context).size.width,
+                  // color:Colors.green,
+                  child: ListView.builder(
+                      itemCount: data.meetingEventList.length,
+                      itemBuilder: (context, index){
+                        var item = data?.meetingEventList[index];
+                        debugPrint('MEETING LIST ${item.memberType}');
+                        return data.meetingEventList.length != 0 ?
+                        todaysEvents(name: item.name, date: item.updateDate, startTime: item.startTime, closeTime: item.closeTime):
+                        const Text('No Meeting/Event');
+                      }
+                  ),
+                )
+                : const Center(child: CircularProgressIndicator());
               },
             ),
           ),
@@ -193,7 +200,9 @@ class _HomePageState extends State<HomePage> {
                                 itemBuilder: (context, index){
                                   var item = data?.upcomingMeetingEventList[index];
                                   debugPrint('MEETING LIST ${item.memberType}');
-                                  return upcomingEvents(name: item.name, date: item.updateDate, startTime: item.startTime, closeTime: item.closeTime);
+                                  return data.meetingEventList.length != 0 ?
+                                  upcomingEvents(name: item.name, date: item.updateDate, startTime: item.startTime, closeTime: item.closeTime):
+                                  const Text('No Meeting/Event');
                                 }
                             ): const Center(child: CircularProgressIndicator());
                           },
@@ -550,40 +559,26 @@ class _HomePageState extends State<HomePage> {
 
                         ],
                       )),
-                      CircleAvatar(
-                        radius: 13,
-                        backgroundColor: Colors.grey.shade200,
-                        child: const Icon(Icons.chevron_right,size: 24,
-                        color: Colors.orange,),
-                      )
+
                     ],
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child:Row(
-                        children: [
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.grey,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(23)
-                                  )
-                              ),
-                              onPressed: (){
-                                showNormalToast("Work in Progress");
-                                // Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                                // const ExcuseInputPage()));
-                              },
-                              child: const Text("Agenda",style: TextStyle(color:
-                              Colors.white),)
-                          ),
-                        ],
-                      ) ,
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.red,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(23)
+                            )
+                        ),
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                          const ExcuseInputPage()));
+                        },
+                        child: const Text("Excuse")
                     ),
-
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             primary: Colors.green,
@@ -598,10 +593,34 @@ class _HomePageState extends State<HomePage> {
                         },
                         child: const Text("Clock In")
                     ),
-                    const SizedBox(width: 12,),
+
+
+
+
+
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            primary: Colors.red,
+                            primary: Colors.grey,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(23)
+                            )
+                        ),
+                        onPressed: (){
+                          showNormalToast("Work in Progress");
+                          // Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                          // const ExcuseInputPage()));
+                        },
+                        child: const Text("Agenda",style: TextStyle(color:
+                        Colors.white),)
+                    ),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.blue,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(23)
                             )
@@ -610,9 +629,9 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(context, MaterialPageRoute(builder: (_)=>
                           const ExcuseInputPage()));
                         },
-                        child: const Text("Excuse")
+                        child: const Text("Start Break")
                     )
-                  ],
+                  ]
                 )
               ],
             ),
