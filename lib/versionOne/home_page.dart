@@ -593,11 +593,6 @@ class _HomePageState extends State<HomePage> {
                         },
                         child: const Text("Clock In")
                     ),
-
-
-
-
-
                   ],
                 ),
                 Row(
@@ -626,8 +621,7 @@ class _HomePageState extends State<HomePage> {
                             )
                         ),
                         onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                          const ExcuseInputPage()));
+                          showNormalToast("Break started");
                         },
                         child: const Text("Start Break")
                     )
