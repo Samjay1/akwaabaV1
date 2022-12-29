@@ -1,6 +1,6 @@
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/register_connecting_user_widget.dart';
-import 'package:akwaaba/screens/member_registration_page_individual.dart';
+import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

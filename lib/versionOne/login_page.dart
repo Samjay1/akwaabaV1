@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/client_provider.dart';
+import 'member_registration_page_individual.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -233,7 +234,8 @@ class _LoginPageState extends State<LoginPage> {
                           color: primaryColor, fontSize: 17),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          createAccountButtonTap();
+                          Navigator.push(context, MaterialPageRoute(builder: (_)=>const MemberRegistrationPageIndividual()));
+                          // createAccountButtonTap();
                         }
                   )
                 ]

@@ -5,7 +5,7 @@ import 'package:akwaaba/screens/birthday_alerts_page.dart';
 import 'package:akwaaba/screens/duty_tracker_main_page.dart';
 import 'package:akwaaba/screens/fee_manager_menus_page.dart';
 import 'package:akwaaba/versionOne/login_page.dart';
-import 'package:akwaaba/screens/member_registration_page_individual.dart';
+import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/screens/akwaaba_modules.dart';
 import 'package:akwaaba/screens/school_manager_menus_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';

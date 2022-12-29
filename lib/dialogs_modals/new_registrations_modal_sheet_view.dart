@@ -3,7 +3,7 @@ import 'package:akwaaba/utils/app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/member_registration_page_individual.dart';
+import '../versionOne/member_registration_page_individual.dart';
 
 class NewRegistrationModalSheetView extends StatefulWidget {
   const NewRegistrationModalSheetView({Key? key}) : super(key: key);

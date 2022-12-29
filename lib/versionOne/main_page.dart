@@ -20,7 +20,7 @@ import 'package:akwaaba/screens/my_connections_page.dart';
 import 'package:akwaaba/screens/register_connecting_users_page.dart';
 import 'package:akwaaba/screens/view_users_page.dart';
 import 'package:akwaaba/screens/web_admin_setup_page.dart';
-import 'package:akwaaba/screens/member_registration_page_individual.dart';
+import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
