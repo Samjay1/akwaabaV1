@@ -1,3 +1,4 @@
+import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
@@ -357,11 +358,33 @@ class _MainPageState extends State<MainPage> {
                             title: "Log out",
                             iconData: Icons.logout_rounded,
                             function: () {
-                              Navigator.pop(context); //close the drawers
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => LoginPage()));
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  insetPadding: const EdgeInsets.all(10),
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  content: ConfirmDialog(
+                                    title: 'Logout',
+                                    content:
+                                        'Do you really want to logout? \n\nWe appreciate your time and can\'t wait to have you back!',
+                                    onConfirmTap: () {
+                                      SharedPrefs().clear();
+                                      Navigator.pop(
+                                          context); //close the drawers
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const LoginPage(),
+                                        ),
+                                      );
+                                    },
+                                    onCancelTap: () => Navigator.pop(context),
+                                    confirmText: 'Confirm',
+                                    cancelText: 'Cancel',
+                                  ),
+                                ),
+                              );
                             },
                             index: 21),
                       ],

@@ -51,7 +51,9 @@ class ExcuseInputPage extends StatelessWidget {
               CustomElevatedButton(
                 label: "Submit",
                 showProgress: attendanceProvider.submitting,
-                function: () async => attendanceProvider.validateExcuseField(),
+                function: () async => attendanceProvider.validateExcuseField(
+                  context: context,
+                ),
               )
             ],
           )),

@@ -27,6 +27,10 @@ class MeetingEventModel {
   String? updateDate;
   String? date;
   bool? inOrOut = false;
+  dynamic startBreak;
+  dynamic endBreak;
+  dynamic inTime;
+  dynamic outTime;
 
   MeetingEventModel({
     this.id,

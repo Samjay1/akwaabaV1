@@ -88,7 +88,7 @@ class AttendanceProvider extends ChangeNotifier {
         branchId: meeting.branchId!,
       );
     }
-    setLoading(false);
+
     notifyListeners();
   }
 
@@ -114,10 +114,14 @@ class AttendanceProvider extends ChangeNotifier {
 
   // queries for coordinates of a particular meeting
   Future<void> getMeetingCoordinates({
+    required BuildContext context,
+    required bool isBreak,
     required MeetingEventModel meetingEventModel,
   }) async {
-    setClocking(true);
+    //setClocking(true);
+    showLoadingDialog(context);
     getCurrentUserLocation();
+
     var response = await AttendanceAPI.getMeetingCoordinates(
       meetingEventModel: meetingEventModel,
     );
@@ -132,7 +136,10 @@ class AttendanceProvider extends ChangeNotifier {
     );
 
     if (totalDistance <= response.results![0].radius!) {
-      getAttendanceList(meetingEventModel: meetingEventModel);
+      await getAttendanceList(
+          context: context,
+          meetingEventModel: meetingEventModel,
+          isBreak: isBreak);
       debugPrint('You\'re within the radius of the premise');
     } else {
       debugPrint('You\'re not within the radius of the premise');
@@ -160,6 +167,8 @@ class AttendanceProvider extends ChangeNotifier {
 
   // queries for attendance of a particular meeting
   Future<void> getAttendanceList({
+    required BuildContext context,
+    required bool isBreak,
     required MeetingEventModel meetingEventModel,
   }) async {
     final filterDate =
@@ -167,33 +176,88 @@ class AttendanceProvider extends ChangeNotifier {
             .substring(0, 10)
             .trim();
     debugPrint("Filter DateTime: $filterDate");
-    var response = await AttendanceAPI.getAttendanceList(
-      meetingEventModel: meetingEventModel,
-      filterDate: filterDate,
-    );
-    if (response.results!.isNotEmpty) {
-      var clockingId = response.results![0].id!;
-      debugPrint("ClockingId: $clockingId");
-      if (response.results![0].inOrOut!) {
-        if (response.results![0].outTime == null) {
-          // user has not clocked out
-          // so clock user out of meeting
-          clockMemberOut(clockingId: clockingId);
-        } else {
-          // user has already clocked out
-          // hide loading widget
-          // and display a user friendly message
-          setClocking(false);
-          showNormalToast('You\'ve already clocked out. Good Bye!');
+    try {
+      var response = await AttendanceAPI.getAttendanceList(
+        meetingEventModel: meetingEventModel,
+        filterDate: filterDate,
+      );
+      if (isBreak) {
+        if (response.results!.isNotEmpty) {
+          var clockingId = response.results![0].id!;
+          debugPrint("ClockingId: $clockingId");
+          if (response.results![0].inOrOut!) {
+            if (response.results![0].startBreak == null &&
+                response.results![0].endBreak == null) {
+              // user has not started a break
+              // so start break
+              startMeetingBreak(
+                context: context,
+                clockingId: clockingId,
+                meetingEventModel: meetingEventModel,
+              );
+            } else if (response.results![0].startBreak != null &&
+                response.results![0].endBreak == null) {
+              // user has started a break
+              // so end break
+              endMeetingBreak(
+                context: context,
+                clockingId: clockingId,
+                meetingEventModel: meetingEventModel,
+              );
+            } else if (response.results![0].startBreak != null &&
+                response.results![0].endBreak != null) {
+              // user has started and ended a break
+              // so show message
+              // ignore: use_build_context_synchronously
+              Navigator.pop(context);
+              showNormalToast('You\'ve already ended your break. Good Bye!');
+            }
+          } else {
+            showNormalToast(
+                'Hi there, you\'ve not clocked in. \nPlease clock-in before you can start your break.');
+          }
+          debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
         }
       } else {
-        clockMemberIn(clockingId: clockingId);
+        if (response.results!.isNotEmpty) {
+          var clockingId = response.results![0].id!;
+          debugPrint("ClockingId: $clockingId");
+          if (response.results![0].inOrOut!) {
+            if (response.results![0].outTime == null) {
+              // user has not clocked out
+              // so clock user out of meeting
+              clockMemberOut(
+                context: context,
+                clockingId: clockingId,
+                meetingEventModel: meetingEventModel,
+              );
+            } else {
+              // user has already clocked out
+              // hide loading widget
+              // and display a user friendly message
+              setClocking(false);
+              showNormalToast('You\'ve already clocked out. Good Bye!');
+            }
+          } else {
+            clockMemberIn(
+              context: context,
+              clockingId: clockingId,
+              meetingEventModel: meetingEventModel,
+            );
+          }
+          debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
+        }
       }
-      debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
+    } catch (err) {
+      debugPrint('Error ${err.toString()}');
+      showErrorToast(err.toString());
     }
   }
 
+// clocks a member in of a meeting or event
   Future<void> clockMemberIn({
+    required BuildContext context,
+    required MeetingEventModel meetingEventModel,
     required int clockingId,
   }) async {
     try {
@@ -203,10 +267,12 @@ class AttendanceProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: clockingTime,
       );
+      meetingEventModel.inOrOut = response.inOrOut; // update clock status
       debugPrint("SUCCESS ${response.message}");
       showNormalToast('You\'re Welcome');
-      setClocking(false);
+      Navigator.pop(context);
     } catch (err) {
+      Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -214,17 +280,74 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
   Future<void> clockMemberOut({
+    required BuildContext context,
+    required MeetingEventModel meetingEventModel,
     required int clockingId,
   }) async {
     try {
-      setClocking(true);
       var response = await AttendanceAPI.clockOut(
         clockingId: clockingId,
       );
+      meetingEventModel.inOrOut = response.inOrOut; // update clock status
       debugPrint("SUCCESS ${response.message}");
       showNormalToast('Good Bye!');
-      setClocking(false);
+      Navigator.pop(context);
     } catch (err) {
+      Navigator.pop(context);
+      debugPrint('Error ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+// starts break time for meeting
+  Future<void> startMeetingBreak({
+    required BuildContext context,
+    required MeetingEventModel meetingEventModel,
+    required int clockingId,
+  }) async {
+    try {
+      var response = await AttendanceAPI.startBreak(
+        clockingId: clockingId,
+      );
+      // update fields of meeting event model
+      meetingEventModel.inOrOut = response.inOrOut;
+      meetingEventModel.startBreak = response.startBreak;
+      meetingEventModel.endBreak = response.endBreak;
+      meetingEventModel.inTime = response.inTime;
+      meetingEventModel.outTime = response.outTime;
+      debugPrint("SUCCESS ${response.message}");
+      showNormalToast('Enjoy Break Time!');
+      Navigator.pop(context);
+    } catch (err) {
+      Navigator.pop(context);
+      debugPrint('Error ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+// ends break time for meeting
+  Future<void> endMeetingBreak({
+    required BuildContext context,
+    required MeetingEventModel meetingEventModel,
+    required int clockingId,
+  }) async {
+    try {
+      var response = await AttendanceAPI.endBreak(
+        clockingId: clockingId,
+      );
+      // update fields of meeting event model
+      meetingEventModel.inOrOut = response.inOrOut;
+      meetingEventModel.startBreak = response.startBreak;
+      meetingEventModel.endBreak = response.endBreak;
+      meetingEventModel.inTime = response.inTime;
+      meetingEventModel.outTime = response.outTime;
+      debugPrint("SUCCESS ${response.message}");
+      showNormalToast('Welcome Back!');
+      Navigator.pop(context);
+    } catch (err) {
+      Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -245,10 +368,21 @@ class AttendanceProvider extends ChangeNotifier {
         meetingEventModel: meetingEventModel,
         filterDate: currentDate,
       );
-      meetingEventModel.inOrOut = response.results![0].inOrOut;
-      debugPrint('Meeting name: ${meetingEventModel.name}');
-      debugPrint('inOrOut: ${meetingEventModel.inOrOut}');
+      if (response.results!.isNotEmpty) {
+        meetingEventModel.inOrOut = response.results![0].inOrOut;
+        meetingEventModel.startBreak = response.results![0].startBreak;
+        meetingEventModel.endBreak = response.results![0].endBreak;
+        meetingEventModel.inTime = response.results![0].inTime;
+        meetingEventModel.outTime = response.results![0].outTime;
+        debugPrint('Has break: ${meetingEventModel.hasBreakTime}');
+        debugPrint('Meeting name: ${meetingEventModel.name}');
+        debugPrint('inOrOut: ${meetingEventModel.inOrOut}');
+        debugPrint('Start break time: ${meetingEventModel.startBreak}');
+        debugPrint('End break time: ${meetingEventModel.endBreak}');
+      }
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       debugPrint('Error ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -256,7 +390,9 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
   // validate field for submitting an excuse for a meeting
-  void validateExcuseField() async {
+  void validateExcuseField({
+    required BuildContext context,
+  }) async {
     if (excuseTEC.text.isEmpty) {
       showErrorToast('Please enter your excuse for the meeting or event');
       return;
@@ -266,6 +402,7 @@ class AttendanceProvider extends ChangeNotifier {
       meetingEventModel: selectedMeeting,
     ); // retrieve clocking id
     await submitExcuse(
+      context: context,
       meetingId: selectedMeeting.id!,
       clockingId: clockingId,
       excuse: excuseTEC.text.trim(),
@@ -273,6 +410,7 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
   Future<void> submitExcuse({
+    required BuildContext context,
     required int meetingId,
     required int clockingId,
     required String excuse,
@@ -283,10 +421,11 @@ class AttendanceProvider extends ChangeNotifier {
         clockingId: clockingId,
         excuse: excuse,
       );
+      setSubmitting(false);
+      Navigator.of(context).pop();
       showNormalToast(response.message ??
           'Hi there, you\'ve already submitted an excuse for this meeting');
       excuseTEC.clear();
-      setSubmitting(false);
     } catch (err) {
       setSubmitting(false);
       debugPrint('Error: ${err.toString()}');

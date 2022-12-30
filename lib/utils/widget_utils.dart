@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -53,7 +56,7 @@ Future displayCustomDropDown(
             title: title != null
                 ? Text(
                     "$title",
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   )
                 : null,
             message: message != null ? Text("$message") : null,
@@ -148,6 +151,35 @@ Future<DateTime?> displayTimeSelector(
   );
 
   return selectedDate;
+}
+
+showLoadingDialog(BuildContext context, [String? message]) {
+  return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Platform.isAndroid
+                ? const CircularProgressIndicator()
+                : const CupertinoActivityIndicator(
+                    radius: 20,
+                  ),
+            SizedBox(
+              height: displayHeight(context) * 0.02,
+            ),
+            Text(
+              message ?? 'Please wait a moment...',
+              style: const TextStyle(
+                color: whiteColor,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        );
+      });
 }
 
 void showNormalSnackBar(BuildContext context, String message) {

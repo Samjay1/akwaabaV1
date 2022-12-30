@@ -102,4 +102,9 @@ class SharedPrefs {
       return null;
     }
   }
+
+  Future<bool> clear() async {
+    var sd = await sharedPreferences;
+    return sd.clear();
+  }
 }

@@ -183,7 +183,7 @@ class AttendanceAPI {
   }) async {
     ClockInResponse clockOutResponse;
     var url = Uri.parse(
-        '$baseUrl/attendance/meeting-event/attendance/clock-out/$clockingId');
+        '${getBaseUrl()}/attendance/meeting-event/attendance/clock-out/$clockingId');
     try {
       http.Response response = await http.patch(
         url,
@@ -197,6 +197,50 @@ class AttendanceAPI {
       throw FetchDataException('No Internet connection');
     }
     return clockOutResponse;
+  }
+
+  // Start break data source
+  static Future<ClockInResponse> startBreak({
+    required int clockingId,
+  }) async {
+    ClockInResponse clockInResponse;
+    try {
+      var url = Uri.parse(
+          '${getBaseUrl()}/attendance/meeting-event/attendance/start-break/$clockingId');
+      http.Response response = await http.patch(
+        url,
+        headers: await getAllHeaders(),
+      );
+      clockInResponse = ClockInResponse.fromJson(
+        await returnResponse(response),
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return clockInResponse;
+  }
+
+  // End break data source
+  static Future<ClockInResponse> endBreak({
+    required int clockingId,
+  }) async {
+    ClockInResponse clockInResponse;
+    try {
+      var url = Uri.parse(
+          '${getBaseUrl()}/attendance/meeting-event/attendance/end-break/$clockingId');
+      http.Response response = await http.patch(
+        url,
+        headers: await getAllHeaders(),
+      );
+      clockInResponse = ClockInResponse.fromJson(
+        await returnResponse(response),
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return clockInResponse;
   }
 
   // submit an excuse data source

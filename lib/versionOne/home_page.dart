@@ -127,28 +127,29 @@ class _HomePageState extends State<HomePage> {
                 height: 24,
               ),
 
-              userType.compareTo("member") == 0
-                  ? Consumer<MemberProvider>(
-                      builder: (context, data, child) {
-                        return headerView(
-                            firstName: data.memberProfile.firstname,
-                            surName: data.memberProfile.surname,
-                            profileImage: data.memberProfile.profilePicture);
-                      },
-                    )
-                  : userType.compareTo("admin") == 0
-                      ? Consumer<ClientProvider>(
-                          builder: (context, data, child) {
-                          return headerView(
-                              firstName: data.getUser?.firstName,
-                              surName: data.getUser?.surName,
-                              profileImage: data.getUser?.profilePicture);
-                        })
-                      : const Text("Unknown User type"),
+              // TODO: Uncomment it when recent clocking API is available
+              // userType.compareTo("member") == 0
+              //     ? Consumer<MemberProvider>(
+              //         builder: (context, data, child) {
+              //           return headerView(
+              //               firstName: data.memberProfile.firstname,
+              //               surName: data.memberProfile.surname,
+              //               profileImage: data.memberProfile.profilePicture);
+              //         },
+              //       )
+              //     : userType.compareTo("admin") == 0
+              //         ? Consumer<ClientProvider>(
+              //             builder: (context, data, child) {
+              //             return headerView(
+              //                 firstName: data.getUser?.firstName,
+              //                 surName: data.getUser?.surName,
+              //                 profileImage: data.getUser?.profilePicture);
+              //           })
+              //         : const Text("Unknown User type"),
 
-              const SizedBox(
-                height: 36,
-              ),
+              // const SizedBox(
+              //   height: 36,
+              // ),
 
               const Text(
                 "Today's Meetings",
@@ -160,40 +161,36 @@ class _HomePageState extends State<HomePage> {
               ),
 
               //----------------------------------------------------------------------
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.2,
-                width: MediaQuery.of(context).size.width,
-                child: Consumer<AttendanceProvider>(
-                  builder: (context, data, child) {
-                    if (data.loading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (data.todayMeetings.isEmpty) {
-                      return const Center(
-                        child: Text(
-                          'You currently have no \nmeetings today!',
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                        itemCount: data.todayMeetings.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          final item = data.todayMeetings[index];
-                          debugPrint('MEETING LIST ${item.memberType}');
-                          return todaysEvents(
-                            meeting: item,
-                            name: item.name,
-                            date: item.updateDate,
-                            startTime: item.startTime,
-                            closeTime: item.closeTime,
-                          );
-                        });
-                  },
-                ),
+              Consumer<AttendanceProvider>(
+                builder: (context, data, child) {
+                  if (data.loading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (data.todayMeetings.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'You currently have no \nmeetings today!',
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                      itemCount: data.todayMeetings.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final item = data.todayMeetings[index];
+                        debugPrint('MEETING LIST ${item.memberType}');
+                        return todaysEvents(
+                          meeting: item,
+                          name: item.name,
+                          date: item.updateDate,
+                          startTime: item.startTime,
+                          closeTime: item.closeTime,
+                        );
+                      });
+                },
               ),
               //----------------------------------------------------------------------
               const SizedBox(
@@ -345,7 +342,7 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     height: 2,
                   ),
-                  Text(
+                  const Text(
                     "Time : 7 am to 5pm",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
@@ -361,9 +358,9 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(24)),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                      child: Text(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 12),
+                      child: const Text(
                         "Online",
                         style: TextStyle(fontSize: 13, color: Colors.white),
                       ),
@@ -436,21 +433,22 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(
           height: 16,
         ),
-        LabelWidgetContainer(label: "Overtime", child: Text("2:00 hrs")),
+        const LabelWidgetContainer(label: "Overtime", child: Text("2:00 hrs")),
         const Divider(
           color: textColorPrimary,
         ),
         const SizedBox(
           height: 8,
         ),
-        LabelWidgetContainer(label: "Clocked In By:", child: Text("Self")),
+        const LabelWidgetContainer(
+            label: "Clocked In By:", child: Text("Self")),
         const Divider(
           color: textColorPrimary,
         ),
         const SizedBox(
           height: 8,
         ),
-        LabelWidgetContainer(
+        const LabelWidgetContainer(
             label: "Clocked Out by:", child: Text("Kofi Mensah (Admin)")),
         const Divider(
           color: textColorPrimary,
@@ -477,7 +475,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (_) => MembersPage()));
+            context, MaterialPageRoute(builder: (_) => const MembersPage()));
       },
       child: Card(
         elevation: 4,
@@ -504,10 +502,9 @@ class _HomePageState extends State<HomePage> {
                           fontSize: screenWidth * 0.05,
                           fontWeight: FontWeight.w600),
                     ),
-                    Text(
+                    const Text(
                       "members ",
-                      style:
-                          const TextStyle(fontSize: 13, color: textColorLight),
+                      style: TextStyle(fontSize: 13, color: textColorLight),
                     )
                   ],
                 ),
@@ -676,93 +673,116 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.grey,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(23))),
-                              onPressed: () {
-                                Provider.of<AttendanceProvider>(context,
-                                        listen: false)
-                                    .setSelectedMeeting(meeting);
-                                showModalBottomSheet(
-                                  context: context,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(16.0),
-                                      topRight: Radius.circular(16.0),
-                                    ),
-                                  ),
-                                  builder: (context) => const AgendaDialog(),
-                                );
-                              },
-                              child: const Text(
-                                "Agenda",
-                                style: TextStyle(color: Colors.white),
-                              )),
-                        ],
-                      ),
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(23),
-                        ),
-                      ),
-                      onPressed: () {
-                        Provider.of<AttendanceProvider>(context, listen: false)
-                            .setSelectedMeeting(meeting);
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.end,
+                //   children: [
+                //     Expanded(
+                //       child: Row(
+                //         children: [
+                //           ElevatedButton(
+                //               style: ElevatedButton.styleFrom(
+                //                   primary: Colors.grey,
+                //                   shape: RoundedRectangleBorder(
+                //                       borderRadius: BorderRadius.circular(23))),
+                //               onPressed: () {
+                //                 Provider.of<AttendanceProvider>(context,
+                //                         listen: false)
+                //                     .setSelectedMeeting(meeting);
+                //                 showModalBottomSheet(
+                //                   context: context,
+                //                   shape: const RoundedRectangleBorder(
+                //                     borderRadius: BorderRadius.only(
+                //                       topLeft: Radius.circular(16.0),
+                //                       topRight: Radius.circular(16.0),
+                //                     ),
+                //                   ),
+                //                   builder: (context) => const AgendaDialog(),
+                //                 );
+                //               },
+                //               child: const Text(
+                //                 "Agenda",
+                //                 style: TextStyle(color: Colors.white),
+                //               )),
+                //         ],
+                //       ),
+                //     ),
+                //     ElevatedButton(
+                //       style: ElevatedButton.styleFrom(
+                //         primary: Colors.green,
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(23),
+                //         ),
+                //       ),
+                //       onPressed: () {
+                //         Provider.of<AttendanceProvider>(context, listen: false)
+                //             .setSelectedMeeting(meeting);
 
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            insetPadding: const EdgeInsets.all(10),
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                            content: ConfirmDialog(
-                              title: meeting.inOrOut ? 'Clock Out' : 'Clock In',
-                              content:
-                                  '${meeting.inOrOut ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
-                              onConfirmTap: () {
-                                Provider.of<AttendanceProvider>(context,
-                                        listen: false)
-                                    .getMeetingCoordinates(
-                                  meetingEventModel: meeting,
-                                );
-                                Navigator.pop(context);
-                              },
-                              onCancelTap: () => Navigator.pop(context),
-                              confirmText: 'Yes',
-                              cancelText: 'Cancel',
-                            ),
-                          ),
-                        );
-                      },
-                      child: Provider.of<AttendanceProvider>(context,
-                                  listen: false)
-                              .clocking
-                          ? const Center(
-                              child: SizedBox(
-                                width: 15,
-                                height: 15,
-                                child: CircularProgressIndicator(
-                                  backgroundColor: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                            )
-                          : Text(meeting.inOrOut! ? 'Clock Out' : 'Clock In'),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
+                //         showDialog(
+                //           context: context,
+                //           builder: (_) => AlertDialog(
+                //             insetPadding: const EdgeInsets.all(10),
+                //             backgroundColor: Colors.transparent,
+                //             elevation: 0,
+                //             content: ConfirmDialog(
+                //               title: meeting.inOrOut ? 'Clock Out' : 'Clock In',
+                //               content:
+                //                   '${meeting.inOrOut ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
+                //               onConfirmTap: () {
+                //                 Provider.of<AttendanceProvider>(context,
+                //                         listen: false)
+                //                     .getMeetingCoordinates(
+                //                   meetingEventModel: meeting,
+                //                 );
+                //                 Navigator.pop(context);
+                //               },
+                //               onCancelTap: () => Navigator.pop(context),
+                //               confirmText: 'Yes',
+                //               cancelText: 'Cancel',
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //       child: Provider.of<AttendanceProvider>(context,
+                //                   listen: false)
+                //               .clocking
+                //           ? const Center(
+                //               child: SizedBox(
+                //                 width: 15,
+                //                 height: 15,
+                //                 child: CircularProgressIndicator(
+                //                   backgroundColor: Colors.white,
+                //                   strokeWidth: 2,
+                //                 ),
+                //               ),
+                //             )
+                //           : Text(meeting.inOrOut! ? 'Clock Out' : 'Clock In'),
+                //     ),
+                //     const SizedBox(
+                //       width: 12,
+                //     ),
+                //     ElevatedButton(
+                //         style: ElevatedButton.styleFrom(
+                //             primary: Colors.red,
+                //             shape: RoundedRectangleBorder(
+                //                 borderRadius: BorderRadius.circular(23))),
+                //         onPressed: () {
+                //           // set meeting as selected
+                //           context
+                //               .read<AttendanceProvider>()
+                //               .setSelectedMeeting(meeting);
+                //           Navigator.push(
+                //             context,
+                //             MaterialPageRoute(
+                //               builder: (_) => ExcuseInputPage(),
+                //             ),
+                //           );
+                //         },
+                //         child: const Text("Excuse"))
+                //   ],
+                // )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             primary: Colors.red,
@@ -780,9 +800,145 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                         },
-                        child: const Text("Excuse"))
+                        child: const Text("Excuse")),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.green,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(23))),
+                      onPressed: () {
+                        Provider.of<AttendanceProvider>(context, listen: false)
+                            .setSelectedMeeting(meeting);
+
+                        if (meeting.outTime != null) {
+                          showNormalToast(
+                              'You\'ve already clocked out. \nGood Bye!');
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              insetPadding: const EdgeInsets.all(10),
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              content: ConfirmDialog(
+                                title:
+                                    meeting.inOrOut ? 'Clock Out' : 'Clock In',
+                                content:
+                                    '${meeting.inOrOut ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
+                                onConfirmTap: () {
+                                  Navigator.pop(context);
+                                  Provider.of<AttendanceProvider>(context,
+                                          listen: false)
+                                      .getMeetingCoordinates(
+                                    context: context,
+                                    isBreak: false,
+                                    meetingEventModel: meeting,
+                                  );
+                                },
+                                onCancelTap: () => Navigator.pop(context),
+                                confirmText: 'Yes',
+                                cancelText: 'Cancel',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      child: Text(meeting.inOrOut! ? 'Clock Out' : 'Clock In'),
+                    ),
                   ],
-                )
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.grey,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(23))),
+                        onPressed: () {
+                          Provider.of<AttendanceProvider>(context,
+                                  listen: false)
+                              .setSelectedMeeting(meeting);
+                          showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16.0),
+                                topRight: Radius.circular(16.0),
+                              ),
+                            ),
+                            builder: (context) => const AgendaDialog(),
+                          );
+                        },
+                        child: const Text(
+                          "Agenda",
+                          style: TextStyle(color: Colors.white),
+                        )),
+                    // if user has clocked out, there is no need to show 'Start Break' button
+                    meeting.hasBreakTime && meeting.outTime == null
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(23),
+                              ),
+                            ),
+                            onPressed: () {
+                              Provider.of<AttendanceProvider>(context,
+                                      listen: false)
+                                  .setSelectedMeeting(meeting);
+
+                              if (meeting.startBreak != null &&
+                                  meeting.endBreak != null) {
+                                showNormalToast(
+                                    'You\'ve already ended your break. \nGood Bye!');
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    insetPadding: const EdgeInsets.all(10),
+                                    backgroundColor: Colors.transparent,
+                                    elevation: 0,
+                                    content: ConfirmDialog(
+                                      title: (meeting.startBreak == null &&
+                                              meeting.endBreak == null)
+                                          ? 'Start Break'
+                                          : 'End Break',
+                                      content: (meeting.startBreak == null &&
+                                              meeting.endBreak == null)
+                                          ? 'Are you sure you want to start your break? \nMake sure you\'re closer to the premise of the meeting or event to continue.'
+                                          : 'Are you sure you want to end your break? \nMake sure you\'re closer to the premise of the meeting or event to continue.',
+                                      //'${meeting.startBreak != null ? 'Are you sure you want to end?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
+                                      onConfirmTap: () {
+                                        Navigator.pop(context);
+                                        Provider.of<AttendanceProvider>(context,
+                                                listen: false)
+                                            .getMeetingCoordinates(
+                                          context: context,
+                                          isBreak: true,
+                                          meetingEventModel: meeting,
+                                        );
+                                      },
+                                      onCancelTap: () => Navigator.pop(context),
+                                      confirmText: 'Yes',
+                                      cancelText: 'Cancel',
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Text(
+                              (meeting.startBreak == null &&
+                                      meeting.endBreak == null)
+                                  ? 'Start Break'
+                                  : 'End Break',
+                            ),
+                          )
+                        : (meeting.hasBreakTime && meeting.inTime == null)
+                            ? const SizedBox()
+                            : const SizedBox()
+                  ],
+                ),
               ],
             ),
           ],

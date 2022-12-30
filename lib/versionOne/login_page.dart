@@ -408,11 +408,11 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           Provider.of<GeneralProvider>(context, listen: false)
               .setAdminStatus(isAdmin: false);
-          SharedPrefs().saveMemberInfo(
-              memberProfile: Provider.of<MemberProvider>(
-            context,
-            listen: false,
-          ).memberProfile);
+          // SharedPrefs().saveMemberInfo(
+          //     memberProfile: Provider.of<MemberProvider>(
+          //   context,
+          //   listen: false,
+          // ).memberProfile);
         });
       }).catchError((e) {
         showErrorToast("$e");
