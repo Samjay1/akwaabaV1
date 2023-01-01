@@ -7,7 +7,7 @@ import 'package:akwaaba/screens/connect_users_page.dart';
 import 'package:akwaaba/screens/alerts_page.dart';
 import 'package:akwaaba/screens/assign_leaders_menus_page.dart';
 import 'package:akwaaba/versionOne/attendance_history_page.dart';
-import 'package:akwaaba/screens/clocking_page.dart';
+import 'package:akwaaba/versionOne/clocking_page.dart';
 import 'package:akwaaba/screens/contact_leaders_page.dart';
 import 'package:akwaaba/versionOne/device_activation_request_page.dart';
 import 'package:akwaaba/screens/info_center_page.dart';

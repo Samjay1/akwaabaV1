@@ -12,6 +12,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../components/clocked_member_item.dart';
+import '../components/clocking_member_item.dart';
+import '../components/form_textfield.dart';
+
 class ClockingPage extends StatefulWidget {
   const ClockingPage({Key? key}) : super(key: key);
 
@@ -20,9 +24,13 @@ class ClockingPage extends StatefulWidget {
 }
 
 class _ClockingPageState extends State<ClockingPage> {
+
+  final TextEditingController _controllerMinAge = TextEditingController();
+  final TextEditingController _controllerMaxAge = TextEditingController();
+
   List<Map> members = [
-    {"status": false},
-    {"status": false},
+    {"status": true},
+    {"status": true},
     {"status": false},
     {"status": false},
     {"status": false},
@@ -37,6 +45,9 @@ class _ClockingPageState extends State<ClockingPage> {
   List<Map> selectedMembersList = [];
   DateTime? generalClockTime;
   bool checkAll = false;
+
+
+  bool clockingListState = true;
 
   @override
   Widget build(BuildContext context) {
@@ -78,13 +89,91 @@ class _ClockingPageState extends State<ClockingPage> {
               height: 8,
             ),
 
+            Text("Age Bracket"),
+            const SizedBox(height: 12,),
+
+            Row(
+              children: [
+                Expanded(
+                  child: LabelWidgetContainer(
+                    label: "Minimum Age",
+                    child: FormTextField(
+                      controller: _controllerMinAge,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12,),
+                Expanded(
+                  child: LabelWidgetContainer(
+                    label: "Maximum Age",
+                    child: FormTextField(
+                      controller: _controllerMaxAge,
+                    ),
+                  ),
+                )
+              ],
+            ),
+
+            const SizedBox(
+              height: 8,
+            ),
+
             CustomElevatedButton(label: "Filter", function: () {}),
 
             const SizedBox(
               height: 8,
             ),
 
-            // CustomElevatedButton(label: "Filter", function: (){}),\
+            Divider(height:2, color: Colors.orange,),
+            const SizedBox(
+              height: 8,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                //REFRESING BUTTON
+                GestureDetector(
+                  onTap: (){},
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal:10),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(5)
+                    ),
+                    child: const Text('Refresh', style:TextStyle(color:Colors.white)),
+                  )
+                ),
+                //POST CLOCK DATE BUTTON
+                GestureDetector(
+                    onTap: (){},
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal:10),
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(5)
+                      ),
+                      child: const Text('Post Clock Date', style:TextStyle(color:Colors.white)),
+                    )
+                ),
+                //POST CLOCK TIME BUTTON
+                GestureDetector(
+                    onTap: (){},
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal:10),
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(5)
+                      ),
+                      child: const Text('Post Clock Time', style:TextStyle(color:Colors.white)),
+                    )
+                )
+              ],
+            ),// CustomElevatedButton(label: "Filter", function: (){}),\
+            const SizedBox(
+              height: 8,
+            ),
+            Divider(height:2, color: Colors.orange,),
+
 
             const SizedBox(
               height: 24,
@@ -93,19 +182,19 @@ class _ClockingPageState extends State<ClockingPage> {
                 label: "Clocked In/Out",
                 child: Row(
                   children: [
-                    Text("Checked"),
+                    Text("Bulk Clock"),
                     const SizedBox(
                       width: 24,
                     ),
                     Expanded(
                         child:
-                            CustomOutlinedButton(label: "In", function: () {})),
+                            CustomOutlinedButton(label: "In",mycolor:Colors.green, radius: 5, function: () {})),
                     const SizedBox(
                       width: 16,
                     ),
                     Expanded(
                         child:
-                            CustomOutlinedButton(label: "Out", function: () {}))
+                        CustomOutlinedButton(label: "Out",mycolor:Colors.red, radius: 5, function: () {})),
                   ],
                 )),
 
@@ -117,21 +206,58 @@ class _ClockingPageState extends State<ClockingPage> {
                 label: "Break Time",
                 child: Row(
                   children: [
-                    Text(""),
+                    Text("Bulk Break"),
                     const SizedBox(
                       width: 24,
                     ),
                     Expanded(
-                        child: CustomOutlinedButton(
-                            label: "Start", function: () {})),
+                        child:
+                        CustomElevatedButton(label: "Start", radius: 5, function: () {})),
                     const SizedBox(
                       width: 16,
                     ),
                     Expanded(
                         child:
-                            CustomOutlinedButton(label: "End", function: () {}))
+                        CustomElevatedButton(label: "End",color:Colors.blue, radius: 5, function: () {})),
                   ],
                 )),
+
+
+
+            const SizedBox(
+              height: 8,
+            ),
+            Divider(height:2, color: Colors.orange,),
+            const SizedBox(
+              height: 8,
+            ),
+            Row(
+            children: [
+
+              Expanded(
+                  child:
+                  CustomElevatedButton(label: "Clocking List", radius: 5, function: () {
+                    setState(() {
+                      clockingListState = true;
+                      checkAll = false;
+                      debugPrint('     clockingListState = $clockingListState');
+                    });
+                  })),
+              const SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                  child:
+                  CustomElevatedButton(label: "Clocked List",color:Colors.green, radius: 5, function: () {
+
+                    setState(() {
+                      clockingListState = false;
+                      checkAll = false;
+                      debugPrint('     clockingListState = $clockingListState');
+                    });
+                  })),
+            ],
+          ),
 
             Row(
               children: [
@@ -151,6 +277,32 @@ class _ClockingPageState extends State<ClockingPage> {
               ],
             ),
 
+
+            Divider(height:2, color: Colors.orange,),
+
+            clockingListState? Column(
+              children: List.generate(members.length, (index) {
+                return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (members[index]["status"]) {
+                          //remove it
+                          members[index]["status"] = false;
+                          selectedMembersList.remove(members[index]);
+                        } else {
+                          members[index]["status"] = true;
+                          selectedMembersList.add(members[index]);
+                        }
+                        if (selectedMembersList.isNotEmpty) {
+                          itemHasBeenSelected = true;
+                        } else {
+                          itemHasBeenSelected = false;
+                        }
+                      });
+                    },
+                    child: ClockingMemberItem(members[index]));
+              }),
+            ):
             Column(
               children: List.generate(members.length, (index) {
                 return GestureDetector(
@@ -171,7 +323,7 @@ class _ClockingPageState extends State<ClockingPage> {
                         }
                       });
                     },
-                    child: MemberClockSelectionWidget(members[index]));
+                    child: ClockedMemberItem(members[index]));
               }),
             ),
             // itemHasBeenSelected?

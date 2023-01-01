@@ -11,12 +11,14 @@ class CustomElevatedButton extends StatelessWidget {
   final Color color;
   final double labelSize;
   final Color textColor;
+  final double radius;
 
   const CustomElevatedButton({
   required this.label,
   required this.function,
     this.showProgress=false,
     this.color = primaryColor,
+    this.radius = defaultRadius,
     this.textColor = Colors.black,
     this.labelSize=18,
   Key? key}) : super(key: key);
@@ -29,7 +31,7 @@ class CustomElevatedButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(defaultRadius)
+            borderRadius: BorderRadius.circular(radius)
           )
         ),
           onPressed: function,
