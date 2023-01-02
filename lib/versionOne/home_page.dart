@@ -1,4 +1,6 @@
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
+import 'package:akwaaba/components/custom_progress_indicator.dart';
+import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
@@ -12,9 +14,11 @@ import 'package:akwaaba/screens/update_account_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/label_widget_container.dart';
@@ -67,7 +71,7 @@ class _HomePageState extends State<HomePage> {
   void loadMeetingEventsByUserType({var userType}) async {
     if (userType == 'member') {
       prefs = await SharedPreferences.getInstance();
-      memberToken = prefs?.getString('memberToken');
+      memberToken = prefs?.getString('token');
 
       debugPrint('HOMEPAGE USER TYPE: $userType');
       //debugPrint('HOMEPAGE TOKEN $memberToken');
@@ -93,7 +97,15 @@ class _HomePageState extends State<HomePage> {
       // });
     } else {
       prefs = await SharedPreferences.getInstance();
-      memberToken = prefs?.getString('memberToken');
+      memberToken = prefs?.getString('token');
+      Future.delayed(Duration.zero, () {
+        Provider.of<AttendanceProvider>(context, listen: false)
+            .getUpcomingMeetingEvents(
+          memberToken: memberToken,
+          context: context,
+        );
+        setState(() {});
+      });
     }
     debugPrint('Token: $memberToken');
   }
@@ -164,16 +176,11 @@ class _HomePageState extends State<HomePage> {
               Consumer<AttendanceProvider>(
                 builder: (context, data, child) {
                   if (data.loading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const CustomProgressIndicator();
                   }
                   if (data.todayMeetings.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'You currently have no \nmeetings today!',
-                        textAlign: TextAlign.center,
-                      ),
+                    return const EmptyStateWidget(
+                      text: 'You currently have no \nmeetings today!',
                     );
                   }
                   return ListView.builder(
@@ -216,22 +223,18 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     children: <Widget>[
-                      Container(
+                      SizedBox(
                         height: MediaQuery.of(context).size.height * 0.3,
                         width: MediaQuery.of(context).size.width,
                         child: Consumer<AttendanceProvider>(
                           builder: (context, data, child) {
                             if (data.loading) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
+                              return const CustomProgressIndicator();
                             }
                             if (data.upcomingMeetings.isEmpty) {
-                              return const Center(
-                                child: Text(
-                                  'You currently have no upcoming \nmeetings at the moment!',
-                                  textAlign: TextAlign.center,
-                                ),
+                              return const EmptyStateWidget(
+                                text:
+                                    'You currently have no upcoming \nmeetings at the moment!',
                               );
                             }
                             return ListView.builder(
@@ -830,10 +833,10 @@ class _HomePageState extends State<HomePage> {
                                   Provider.of<AttendanceProvider>(context,
                                           listen: false)
                                       .getMeetingCoordinates(
-                                    context: context,
-                                    isBreak: false,
-                                    meetingEventModel: meeting,
-                                  );
+                                          context: context,
+                                          isBreak: false,
+                                          meetingEventModel: meeting,
+                                          time: null);
                                 },
                                 onCancelTap: () => Navigator.pop(context),
                                 confirmText: 'Yes',
@@ -916,6 +919,7 @@ class _HomePageState extends State<HomePage> {
                                             .getMeetingCoordinates(
                                           context: context,
                                           isBreak: true,
+                                          time: null,
                                           meetingEventModel: meeting,
                                         );
                                       },

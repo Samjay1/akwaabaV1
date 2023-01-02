@@ -159,12 +159,13 @@ class AttendanceAPI {
     ClockInResponse clockInResponse;
     try {
       var url = Uri.parse(
-          '$baseUrl/attendance/meeting-event/attendance/clock-in/$clockingId');
+          '${getBaseUrl()}/attendance/meeting-event/attendance/clock-in/$clockingId');
+
       http.Response response = await http.patch(
         url,
-        // body: {
-        //   'time': time,
-        // },
+        body: {
+          'time': time,
+        },
         headers: await getAllHeaders(),
       );
       clockInResponse = ClockInResponse.fromJson(
@@ -180,6 +181,7 @@ class AttendanceAPI {
   // clock-out data source
   static Future<dynamic> clockOut({
     required int clockingId,
+    required String time,
   }) async {
     ClockInResponse clockOutResponse;
     var url = Uri.parse(
@@ -187,6 +189,9 @@ class AttendanceAPI {
     try {
       http.Response response = await http.patch(
         url,
+        body: {
+          'time': time,
+        },
         headers: await getAllHeaders(),
       );
       clockOutResponse = ClockInResponse.fromJson(
@@ -202,6 +207,7 @@ class AttendanceAPI {
   // Start break data source
   static Future<ClockInResponse> startBreak({
     required int clockingId,
+    required String time,
   }) async {
     ClockInResponse clockInResponse;
     try {
@@ -209,6 +215,9 @@ class AttendanceAPI {
           '${getBaseUrl()}/attendance/meeting-event/attendance/start-break/$clockingId');
       http.Response response = await http.patch(
         url,
+        body: {
+          'time': time,
+        },
         headers: await getAllHeaders(),
       );
       clockInResponse = ClockInResponse.fromJson(
@@ -224,6 +233,7 @@ class AttendanceAPI {
   // End break data source
   static Future<ClockInResponse> endBreak({
     required int clockingId,
+    required String time,
   }) async {
     ClockInResponse clockInResponse;
     try {
@@ -231,6 +241,9 @@ class AttendanceAPI {
           '${getBaseUrl()}/attendance/meeting-event/attendance/end-break/$clockingId');
       http.Response response = await http.patch(
         url,
+        body: {
+          'time': time,
+        },
         headers: await getAllHeaders(),
       );
       clockInResponse = ClockInResponse.fromJson(
@@ -274,7 +287,7 @@ class AttendanceAPI {
 
   static Future<Map<String, String>> getTokenHeader() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? memberToken = prefs.getString('memberToken');
+    String? memberToken = prefs.getString('token');
     return {
       'Authorization': 'Token $memberToken',
     };
@@ -282,7 +295,7 @@ class AttendanceAPI {
 
   static Future<Map<String, String>> getAllHeaders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? memberToken = prefs.getString('memberToken');
+    String? memberToken = prefs.getString('token');
     return {
       'Authorization': 'Token $memberToken',
       'Content-Type': 'application/json'

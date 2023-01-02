@@ -12,14 +12,15 @@ class CustomElevatedButton extends StatelessWidget {
   final double labelSize;
   final Color textColor;
 
-  const CustomElevatedButton({
-  required this.label,
-  required this.function,
-    this.showProgress=false,
-    this.color = primaryColor,
-    this.textColor = Colors.black,
-    this.labelSize=18,
-  Key? key}) : super(key: key);
+  const CustomElevatedButton(
+      {required this.label,
+      required this.function,
+      this.showProgress = false,
+      this.color = primaryColor,
+      this.textColor = Colors.black,
+      this.labelSize = 18,
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +30,18 @@ class CustomElevatedButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(defaultRadius)
-          )
+            borderRadius: BorderRadius.circular(defaultRadius),
+          ),
         ),
-          onPressed: function,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(label,style:  TextStyle(fontSize: labelSize,
-                color: textColor),),
-          )),
+        onPressed: function,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            label,
+            style: TextStyle(fontSize: labelSize, color: textColor),
+          ),
+        ),
+      ),
       child: const CustomProgressIndicator(),
     );
   }

@@ -36,7 +36,7 @@ class MemberAPI {
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         var memberToken = decodedResponse['token'];
-        prefs.setString('memberToken', memberToken);
+        prefs.setString('token', memberToken);
         debugPrint('MEMBER TOKEN---------- --------------------- $memberToken');
         return response.body;
       } else {
@@ -74,7 +74,7 @@ class MemberAPI {
       if (response.statusCode == 200) {
         var memberToken = decodedResponse['token'];
         var memberInfo = decodedResponse['user'];
-        prefs.setString('memberToken', memberToken);
+        prefs.setString('token', memberToken);
         debugPrint('MEMBER TOKEN---------- --------------------- $memberToken');
 
         debugPrint('MEMBER INFO---------- --------------------- $memberInfo');

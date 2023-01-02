@@ -77,18 +77,20 @@ class AttendanceProvider extends ChangeNotifier {
     required var memberToken,
     required BuildContext context,
   }) async {
-    debugPrint("callTodayMeetingEventList");
     _meetingEventList = await AttendanceAPI.getTodayMeetingEventList(
       context,
       memberToken,
     );
-    for (var meeting in _meetingEventList) {
-      await checkClockedMeetings(
-        meetingEventModel: meeting,
-        branchId: meeting.branchId!,
-      );
+    if (_meetingEventList.isNotEmpty) {
+      for (var meeting in _meetingEventList) {
+        await checkClockedMeetings(
+          meetingEventModel: meeting,
+          branchId: meeting.branchId!,
+        );
+      }
+    } else {
+      setLoading(false);
     }
-
     notifyListeners();
   }
 
@@ -97,8 +99,6 @@ class AttendanceProvider extends ChangeNotifier {
     required BuildContext context,
   }) async {
     setLoading(true);
-    final clockingTime = DateTime.now().toIso8601String().substring(0, 19);
-    debugPrint("Current DateTime: $clockingTime");
     _upcomingMeetingEventList = await AttendanceAPI.getUpcomingMeetingEventList(
       context,
       memberToken,
@@ -117,6 +117,7 @@ class AttendanceProvider extends ChangeNotifier {
     required BuildContext context,
     required bool isBreak,
     required MeetingEventModel meetingEventModel,
+    required String? time,
   }) async {
     //setClocking(true);
     showLoadingDialog(context);
@@ -137,9 +138,11 @@ class AttendanceProvider extends ChangeNotifier {
 
     if (totalDistance <= response.results![0].radius!) {
       await getAttendanceList(
-          context: context,
-          meetingEventModel: meetingEventModel,
-          isBreak: isBreak);
+        context: context,
+        meetingEventModel: meetingEventModel,
+        time: null,
+        isBreak: isBreak,
+      );
       debugPrint('You\'re within the radius of the premise');
     } else {
       debugPrint('You\'re not within the radius of the premise');
@@ -150,17 +153,29 @@ class AttendanceProvider extends ChangeNotifier {
     debugPrint('Premise Radius: ${response.results![0].radius!}');
   }
 
-  // queries for clockingId of a particular meeting
-  Future<int> getClockingId({
-    required MeetingEventModel meetingEventModel,
-  }) async {
+// get current date and format for filtering
+  String getFilterDate() {
     final filterDate =
         DateUtil.formatDate('yyyy-MM-dd', dateTime: DateTime.now())
             .substring(0, 10)
             .trim();
+    return filterDate;
+  }
+
+  // get current date and format for filtering
+  String getClockingTime() {
+    final clockingTime = DateTime.now().toIso8601String().substring(0, 19);
+    debugPrint("Clocking DT: $clockingTime");
+    return clockingTime;
+  }
+
+  // queries for clockingId of a particular meeting
+  Future<int> getClockingId({
+    required MeetingEventModel meetingEventModel,
+  }) async {
     var response = await AttendanceAPI.getAttendanceList(
       meetingEventModel: meetingEventModel,
-      filterDate: filterDate,
+      filterDate: getFilterDate(),
     );
     return response.results![0].id!;
   }
@@ -170,16 +185,12 @@ class AttendanceProvider extends ChangeNotifier {
     required BuildContext context,
     required bool isBreak,
     required MeetingEventModel meetingEventModel,
+    required String? time,
   }) async {
-    final filterDate =
-        DateUtil.formatDate('yyyy-MM-dd', dateTime: DateTime.now())
-            .substring(0, 10)
-            .trim();
-    debugPrint("Filter DateTime: $filterDate");
     try {
       var response = await AttendanceAPI.getAttendanceList(
         meetingEventModel: meetingEventModel,
-        filterDate: filterDate,
+        filterDate: getFilterDate(),
       );
       if (isBreak) {
         if (response.results!.isNotEmpty) {
@@ -191,19 +202,19 @@ class AttendanceProvider extends ChangeNotifier {
               // user has not started a break
               // so start break
               startMeetingBreak(
-                context: context,
-                clockingId: clockingId,
-                meetingEventModel: meetingEventModel,
-              );
+                  context: context,
+                  clockingId: clockingId,
+                  meetingEventModel: meetingEventModel,
+                  time: null);
             } else if (response.results![0].startBreak != null &&
                 response.results![0].endBreak == null) {
               // user has started a break
               // so end break
               endMeetingBreak(
-                context: context,
-                clockingId: clockingId,
-                meetingEventModel: meetingEventModel,
-              );
+                  context: context,
+                  clockingId: clockingId,
+                  meetingEventModel: meetingEventModel,
+                  time: null);
             } else if (response.results![0].startBreak != null &&
                 response.results![0].endBreak != null) {
               // user has started and ended a break
@@ -227,10 +238,10 @@ class AttendanceProvider extends ChangeNotifier {
               // user has not clocked out
               // so clock user out of meeting
               clockMemberOut(
-                context: context,
-                clockingId: clockingId,
-                meetingEventModel: meetingEventModel,
-              );
+                  context: context,
+                  clockingId: clockingId,
+                  meetingEventModel: meetingEventModel,
+                  time: null);
             } else {
               // user has already clocked out
               // hide loading widget
@@ -240,10 +251,10 @@ class AttendanceProvider extends ChangeNotifier {
             }
           } else {
             clockMemberIn(
-              context: context,
-              clockingId: clockingId,
-              meetingEventModel: meetingEventModel,
-            );
+                context: context,
+                clockingId: clockingId,
+                meetingEventModel: meetingEventModel,
+                time: null);
           }
           debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
         }
@@ -255,17 +266,15 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
 // clocks a member in of a meeting or event
-  Future<void> clockMemberIn({
-    required BuildContext context,
-    required MeetingEventModel meetingEventModel,
-    required int clockingId,
-  }) async {
+  Future<void> clockMemberIn(
+      {required BuildContext context,
+      required MeetingEventModel meetingEventModel,
+      required int clockingId,
+      required String? time}) async {
     try {
-      final clockingTime = DateTime.now().toIso8601String().substring(0, 19);
-      debugPrint("DateTime: $clockingTime");
       var response = await AttendanceAPI.clockIn(
         clockingId: clockingId,
-        time: clockingTime,
+        time: time ?? getClockingTime(),
       );
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
       debugPrint("SUCCESS ${response.message}");
@@ -279,14 +288,15 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> clockMemberOut({
-    required BuildContext context,
-    required MeetingEventModel meetingEventModel,
-    required int clockingId,
-  }) async {
+  Future<void> clockMemberOut(
+      {required BuildContext context,
+      required MeetingEventModel meetingEventModel,
+      required int clockingId,
+      required String? time}) async {
     try {
       var response = await AttendanceAPI.clockOut(
         clockingId: clockingId,
+        time: time ?? getClockingTime(),
       );
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
       debugPrint("SUCCESS ${response.message}");
@@ -301,14 +311,15 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
 // starts break time for meeting
-  Future<void> startMeetingBreak({
-    required BuildContext context,
-    required MeetingEventModel meetingEventModel,
-    required int clockingId,
-  }) async {
+  Future<void> startMeetingBreak(
+      {required BuildContext context,
+      required MeetingEventModel meetingEventModel,
+      required int clockingId,
+      required String? time}) async {
     try {
       var response = await AttendanceAPI.startBreak(
         clockingId: clockingId,
+        time: time ?? getClockingTime(),
       );
       // update fields of meeting event model
       meetingEventModel.inOrOut = response.inOrOut;
@@ -328,14 +339,15 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
 // ends break time for meeting
-  Future<void> endMeetingBreak({
-    required BuildContext context,
-    required MeetingEventModel meetingEventModel,
-    required int clockingId,
-  }) async {
+  Future<void> endMeetingBreak(
+      {required BuildContext context,
+      required MeetingEventModel meetingEventModel,
+      required int clockingId,
+      required String? time}) async {
     try {
       var response = await AttendanceAPI.endBreak(
         clockingId: clockingId,
+        time: time ?? getClockingTime(),
       );
       // update fields of meeting event model
       meetingEventModel.inOrOut = response.inOrOut;

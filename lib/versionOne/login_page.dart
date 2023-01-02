@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _controllerAdminEmail = TextEditingController();
   final TextEditingController _controllerAdminPassword =
       TextEditingController();
-  bool showPassword = false;
+  bool showPassword = true;
   double screenHeight = 0;
   double screenWidth = 0;
   // final _formKey = GlobalKey<FormState>();
@@ -408,11 +408,6 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           Provider.of<GeneralProvider>(context, listen: false)
               .setAdminStatus(isAdmin: false);
-          // SharedPrefs().saveMemberInfo(
-          //     memberProfile: Provider.of<MemberProvider>(
-          //   context,
-          //   listen: false,
-          // ).memberProfile);
         });
       }).catchError((e) {
         showErrorToast("$e");
