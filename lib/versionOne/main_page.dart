@@ -45,13 +45,13 @@ class _MainPageState extends State<MainPage> {
   List<Map> bottomNavItems = [
     {"title": "Home", "icon_data": CupertinoIcons.home},
     {"title": "Events", "icon_data": Icons.calendar_month_outlined},
-    {"title": "Clocking", "icon_data": CupertinoIcons.alarm},
+    // {"title": "Clocking", "icon_data": CupertinoIcons.alarm},
     // {"title":"More","icon_data":Icons.menu},
   ];
   List<Map> bottomNavItemsFiled = [
     {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
     {"title": "Events", "icon_data": Icons.calendar_month},
-    {"title": "Clocking", "icon_data": CupertinoIcons.alarm_fill},
+    // {"title": "Clocking", "icon_data": CupertinoIcons.alarm_fill},
     // {"title":"More","icon_data":Icons.menu},
   ];
 
@@ -89,9 +89,9 @@ class _MainPageState extends State<MainPage> {
 
         if (userType.isNotEmpty) {
           if (userType.compareTo("member") == 0) {
-            bottomNavItems.removeAt(2);
-            bottomNavItemsFiled.removeAt(2);
-            children.removeAt(2);
+            // bottomNavItems.removeAt(2);
+            // bottomNavItemsFiled.removeAt(2);
+            // children.removeAt(2);
 
             SharedPrefs().getMemberProfile().then((value) {
               Provider.of<MemberProvider>(context, listen: false)

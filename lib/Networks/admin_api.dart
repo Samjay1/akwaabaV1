@@ -40,6 +40,8 @@ class UserApi{
         prefs.setString('client_token', clientToken);
         prefs.setString('account_type', 'client');
 
+
+        debugPrint(' CLIENT token $clientToken');
         Provider.of<ClientProvider>(context,listen: false).setClientToken(token: clientToken);
 
         var accountId = decodedResponse['user']['accountId'];

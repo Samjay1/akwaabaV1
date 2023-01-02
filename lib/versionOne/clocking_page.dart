@@ -51,300 +51,305 @@ class _ClockingPageState extends State<ClockingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            filterButton(),
-
-            const SizedBox(
-              height: 24,
-            ),
-
-            // Row(
-            //   children: [
-            //const Expanded(child:
-            CupertinoSearchTextField(),
-            //),
-            // IconButton(onPressed: (){
-            //   Navigator.push(context, MaterialPageRoute(builder: (_)
-            //   =>const FilterPageClocking()));
-            // },
-            //     icon: const Icon(Icons.filter_alt,color: primaryColor,))
-            //   ],
-            // ),
-
-            const SizedBox(
-              height: 12,
-            ),
-
-            const CupertinoSearchTextField(
-              placeholder: "Enter ID",
-            ),
-
-            const SizedBox(
-              height: 8,
-            ),
-
-            Text("Age Bracket"),
-            const SizedBox(height: 12,),
-
-            Row(
-              children: [
-                Expanded(
-                  child: LabelWidgetContainer(
-                    label: "Minimum Age",
-                    child: FormTextField(
-                      controller: _controllerMinAge,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12,),
-                Expanded(
-                  child: LabelWidgetContainer(
-                    label: "Maximum Age",
-                    child: FormTextField(
-                      controller: _controllerMaxAge,
-                    ),
-                  ),
-                )
-              ],
-            ),
-
-            const SizedBox(
-              height: 8,
-            ),
-
-            CustomElevatedButton(label: "Filter", function: () {}),
-
-            const SizedBox(
-              height: 8,
-            ),
-
-            Divider(height:2, color: Colors.orange,),
-            const SizedBox(
-              height: 8,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                //REFRESING BUTTON
-                GestureDetector(
-                  onTap: (){},
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal:10),
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(5)
-                    ),
-                    child: const Text('Refresh', style:TextStyle(color:Colors.white)),
-                  )
-                ),
-                //POST CLOCK DATE BUTTON
-                GestureDetector(
-                    onTap: (){},
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal:10),
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(5)
-                      ),
-                      child: const Text('Post Clock Date', style:TextStyle(color:Colors.white)),
-                    )
-                ),
-                //POST CLOCK TIME BUTTON
-                GestureDetector(
-                    onTap: (){},
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal:10),
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(5)
-                      ),
-                      child: const Text('Post Clock Time', style:TextStyle(color:Colors.white)),
-                    )
-                )
-              ],
-            ),// CustomElevatedButton(label: "Filter", function: (){}),\
-            const SizedBox(
-              height: 8,
-            ),
-            Divider(height:2, color: Colors.orange,),
-
-
-            const SizedBox(
-              height: 24,
-            ),
-            LabelWidgetContainer(
-                label: "Clocked In/Out",
-                child: Row(
-                  children: [
-                    Text("Bulk Clock"),
-                    const SizedBox(
-                      width: 24,
-                    ),
-                    Expanded(
-                        child:
-                            CustomOutlinedButton(label: "In",mycolor:Colors.green, radius: 5, function: () {})),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Expanded(
-                        child:
-                        CustomOutlinedButton(label: "Out",mycolor:Colors.red, radius: 5, function: () {})),
-                  ],
-                )),
-
-            const SizedBox(
-              height: 12,
-            ),
-
-            LabelWidgetContainer(
-                label: "Break Time",
-                child: Row(
-                  children: [
-                    Text("Bulk Break"),
-                    const SizedBox(
-                      width: 24,
-                    ),
-                    Expanded(
-                        child:
-                        CustomElevatedButton(label: "Start", radius: 5, function: () {})),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Expanded(
-                        child:
-                        CustomElevatedButton(label: "End",color:Colors.blue, radius: 5, function: () {})),
-                  ],
-                )),
-
-
-
-            const SizedBox(
-              height: 8,
-            ),
-            Divider(height:2, color: Colors.orange,),
-            const SizedBox(
-              height: 8,
-            ),
-            Row(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Clock member'),
+      ),
+      body: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              filterButton(),
 
-              Expanded(
-                  child:
-                  CustomElevatedButton(label: "Clocking List", radius: 5, function: () {
-                    setState(() {
-                      clockingListState = true;
-                      checkAll = false;
-                      debugPrint('     clockingListState = $clockingListState');
-                    });
-                  })),
               const SizedBox(
-                width: 16,
+                height: 24,
               ),
-              Expanded(
-                  child:
-                  CustomElevatedButton(label: "Clocked List",color:Colors.green, radius: 5, function: () {
 
-                    setState(() {
-                      clockingListState = false;
-                      checkAll = false;
-                      debugPrint('     clockingListState = $clockingListState');
-                    });
-                  })),
+              // Row(
+              //   children: [
+              //const Expanded(child:
+              CupertinoSearchTextField(),
+              //),
+              // IconButton(onPressed: (){
+              //   Navigator.push(context, MaterialPageRoute(builder: (_)
+              //   =>const FilterPageClocking()));
+              // },
+              //     icon: const Icon(Icons.filter_alt,color: primaryColor,))
+              //   ],
+              // ),
+
+              const SizedBox(
+                height: 12,
+              ),
+
+              const CupertinoSearchTextField(
+                placeholder: "Enter ID",
+              ),
+
+              const SizedBox(
+                height: 8,
+              ),
+
+              Text("Age Bracket"),
+              const SizedBox(height: 12,),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: LabelWidgetContainer(
+                      label: "Minimum Age",
+                      child: FormTextField(
+                        controller: _controllerMinAge,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12,),
+                  Expanded(
+                    child: LabelWidgetContainer(
+                      label: "Maximum Age",
+                      child: FormTextField(
+                        controller: _controllerMaxAge,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+
+              const SizedBox(
+                height: 8,
+              ),
+
+              CustomElevatedButton(label: "Filter", function: () {}),
+
+              const SizedBox(
+                height: 8,
+              ),
+
+              Divider(height:2, color: Colors.orange,),
+              const SizedBox(
+                height: 8,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  //REFRESING BUTTON
+                  GestureDetector(
+                    onTap: (){},
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal:10),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(5)
+                      ),
+                      child: const Text('Refresh', style:TextStyle(color:Colors.white)),
+                    )
+                  ),
+                  //POST CLOCK DATE BUTTON
+                  GestureDetector(
+                      onTap: (){},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal:10),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(5)
+                        ),
+                        child: const Text('Post Clock Date', style:TextStyle(color:Colors.white)),
+                      )
+                  ),
+                  //POST CLOCK TIME BUTTON
+                  GestureDetector(
+                      onTap: (){},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal:10),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(5)
+                        ),
+                        child: const Text('Post Clock Time', style:TextStyle(color:Colors.white)),
+                      )
+                  )
+                ],
+              ),// CustomElevatedButton(label: "Filter", function: (){}),\
+              const SizedBox(
+                height: 8,
+              ),
+              Divider(height:2, color: Colors.orange,),
+
+
+              const SizedBox(
+                height: 24,
+              ),
+              LabelWidgetContainer(
+                  label: "Clocked In/Out",
+                  child: Row(
+                    children: [
+                      Text("Bulk Clock"),
+                      const SizedBox(
+                        width: 24,
+                      ),
+                      Expanded(
+                          child:
+                              CustomOutlinedButton(label: "In",mycolor:Colors.green, radius: 5, function: () {})),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                          child:
+                          CustomOutlinedButton(label: "Out",mycolor:Colors.red, radius: 5, function: () {})),
+                    ],
+                  )),
+
+              const SizedBox(
+                height: 12,
+              ),
+
+              LabelWidgetContainer(
+                  label: "Break Time",
+                  child: Row(
+                    children: [
+                      Text("Bulk Break"),
+                      const SizedBox(
+                        width: 24,
+                      ),
+                      Expanded(
+                          child:
+                          CustomElevatedButton(label: "Start", radius: 5, function: () {})),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                          child:
+                          CustomElevatedButton(label: "End",color:Colors.blue, radius: 5, function: () {})),
+                    ],
+                  )),
+
+
+
+              const SizedBox(
+                height: 8,
+              ),
+              Divider(height:2, color: Colors.orange,),
+              const SizedBox(
+                height: 8,
+              ),
+              Row(
+              children: [
+
+                Expanded(
+                    child:
+                    CustomElevatedButton(label: "Clocking List", radius: 5, function: () {
+                      setState(() {
+                        clockingListState = true;
+                        checkAll = false;
+                        debugPrint('     clockingListState = $clockingListState');
+                      });
+                    })),
+                const SizedBox(
+                  width: 16,
+                ),
+                Expanded(
+                    child:
+                    CustomElevatedButton(label: "Clocked List",color:Colors.green, radius: 5, function: () {
+
+                      setState(() {
+                        clockingListState = false;
+                        checkAll = false;
+                        debugPrint('     clockingListState = $clockingListState');
+                      });
+                    })),
+              ],
+            ),
+
+              Row(
+                children: [
+                  Checkbox(
+                      activeColor: primaryColor,
+                      shape: const CircleBorder(),
+                      value: checkAll,
+                      onChanged: (val) {
+                        setState(() {
+                          checkAll = val!;
+                          for (Map map in members) {
+                            map["status"] = checkAll;
+                          }
+                        });
+                      }),
+                  Text("Check All")
+                ],
+              ),
+
+
+              Divider(height:2, color: Colors.orange,),
+
+              clockingListState? Column(
+                children: List.generate(members.length, (index) {
+                  return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (members[index]["status"]) {
+                            //remove it
+                            members[index]["status"] = false;
+                            selectedMembersList.remove(members[index]);
+                          } else {
+                            members[index]["status"] = true;
+                            selectedMembersList.add(members[index]);
+                          }
+                          if (selectedMembersList.isNotEmpty) {
+                            itemHasBeenSelected = true;
+                          } else {
+                            itemHasBeenSelected = false;
+                          }
+                        });
+                      },
+                      child: ClockingMemberItem(members[index]));
+                }),
+              ):
+              Column(
+                children: List.generate(members.length, (index) {
+                  return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (members[index]["status"]) {
+                            //remove it
+                            members[index]["status"] = false;
+                            selectedMembersList.remove(members[index]);
+                          } else {
+                            members[index]["status"] = true;
+                            selectedMembersList.add(members[index]);
+                          }
+                          if (selectedMembersList.isNotEmpty) {
+                            itemHasBeenSelected = true;
+                          } else {
+                            itemHasBeenSelected = false;
+                          }
+                        });
+                      },
+                      child: ClockedMemberItem(members[index]));
+                }),
+              ),
+              // itemHasBeenSelected?
+              //     Container(
+              //
+              //       padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
+              //       child: CustomElevatedButton(label: "Proceed to Clock",
+              //       function: (){
+              //         displayCustomCupertinoDialog(context: context,
+              //             title: "Proceed to Clock", msg: "100 members have been selected,"
+              //                 " do you want to clock them all now?",
+              //             actionsMap: {"No":(){Navigator.pop(context);},
+              //               "Yes":(){
+              //               Navigator.pop(context);
+              //               Navigator.push(context, MaterialPageRoute(builder: (_)=>
+              //               const ClockingOptionsPage()));
+              //               }});
+              //       },),
+              //     )
+              //     :const SizedBox.shrink()
             ],
           ),
-
-            Row(
-              children: [
-                Checkbox(
-                    activeColor: primaryColor,
-                    shape: const CircleBorder(),
-                    value: checkAll,
-                    onChanged: (val) {
-                      setState(() {
-                        checkAll = val!;
-                        for (Map map in members) {
-                          map["status"] = checkAll;
-                        }
-                      });
-                    }),
-                Text("Check All")
-              ],
-            ),
-
-
-            Divider(height:2, color: Colors.orange,),
-
-            clockingListState? Column(
-              children: List.generate(members.length, (index) {
-                return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (members[index]["status"]) {
-                          //remove it
-                          members[index]["status"] = false;
-                          selectedMembersList.remove(members[index]);
-                        } else {
-                          members[index]["status"] = true;
-                          selectedMembersList.add(members[index]);
-                        }
-                        if (selectedMembersList.isNotEmpty) {
-                          itemHasBeenSelected = true;
-                        } else {
-                          itemHasBeenSelected = false;
-                        }
-                      });
-                    },
-                    child: ClockingMemberItem(members[index]));
-              }),
-            ):
-            Column(
-              children: List.generate(members.length, (index) {
-                return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (members[index]["status"]) {
-                          //remove it
-                          members[index]["status"] = false;
-                          selectedMembersList.remove(members[index]);
-                        } else {
-                          members[index]["status"] = true;
-                          selectedMembersList.add(members[index]);
-                        }
-                        if (selectedMembersList.isNotEmpty) {
-                          itemHasBeenSelected = true;
-                        } else {
-                          itemHasBeenSelected = false;
-                        }
-                      });
-                    },
-                    child: ClockedMemberItem(members[index]));
-              }),
-            ),
-            // itemHasBeenSelected?
-            //     Container(
-            //
-            //       padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
-            //       child: CustomElevatedButton(label: "Proceed to Clock",
-            //       function: (){
-            //         displayCustomCupertinoDialog(context: context,
-            //             title: "Proceed to Clock", msg: "100 members have been selected,"
-            //                 " do you want to clock them all now?",
-            //             actionsMap: {"No":(){Navigator.pop(context);},
-            //               "Yes":(){
-            //               Navigator.pop(context);
-            //               Navigator.push(context, MaterialPageRoute(builder: (_)=>
-            //               const ClockingOptionsPage()));
-            //               }});
-            //       },),
-            //     )
-            //     :const SizedBox.shrink()
-          ],
         ),
       ),
     );
