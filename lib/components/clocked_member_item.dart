@@ -83,7 +83,7 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                       style: const TextStyle(fontSize: 18),
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.005,
+                      height: displayHeight(context) * 0.003,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,7 +139,7 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                       ],
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.005,
+                      height: displayHeight(context) * 0.003,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,8 +147,8 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                     ),
                     SizedBox(
                       height:
-                          (widget.attendee!.attendance!.startBreak != null &&
-                                  widget.attendee!.attendance!.endBreak != null)
+                          (widget.attendee!.attendance!.startBreak == null &&
+                                  widget.attendee!.attendance!.endBreak == null)
                               ? displayHeight(context) * 0.01
                               : displayHeight(context) * 0.00,
                     ),

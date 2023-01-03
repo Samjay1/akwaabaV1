@@ -252,7 +252,7 @@ class ClockingProvider extends ChangeNotifier {
         }
         _selectedMeetingMembers.clear();
         // refresh list when there is bulk operation
-        getAttendanceList(meetingEventModel: selectedMeeting);
+        //getAttendanceList(meetingEventModel: selectedMeeting);
       }
       showNormalToast(response.message!);
       Navigator.pop(context);
