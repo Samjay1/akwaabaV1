@@ -23,7 +23,7 @@ class ConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: displayHeight(context) * 0.4,
+      height: displayHeight(context) * 0.35,
       width: displayWidth(context),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(

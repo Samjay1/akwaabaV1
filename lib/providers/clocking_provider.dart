@@ -1,4 +1,5 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
+import 'package:akwaaba/Networks/api_responses/clocking_response.dart';
 import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/clocking_api.dart';
@@ -24,10 +25,14 @@ class ClockingProvider extends ChangeNotifier {
   List<Member?> _tempMeetingMembersList = [];
 
   List<Member?> _meetingMembers = [];
+
   List<Attendee?> _clockedMembers = [];
+
   List<Member?> _selectedMeetingMembers = [];
 
-  Member? _member;
+  List<Attendee?> _selectedClockedMembers = [];
+
+  MeetingEventModel? _meetingEventModel;
 
   // Retrieve all meetings
   List<Member?> get meetingMembers => _meetingMembers;
@@ -36,7 +41,9 @@ class ClockingProvider extends ChangeNotifier {
 
   List<Member?> get selectedMeetingMembers => _selectedMeetingMembers;
 
-  Member get selectedMember => _member!;
+  List<Attendee?> get selectedClockedMembers => _selectedClockedMembers;
+
+  MeetingEventModel get selectedMeeting => _meetingEventModel!;
 
   bool get loading => _loading;
   bool get clocking => _clocking;
@@ -58,8 +65,8 @@ class ClockingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setSelectedMeeting(Member member) {
-    _member = member;
+  setSelectedMeeting(MeetingEventModel meetingEventModel) {
+    _meetingEventModel = meetingEventModel;
     notifyListeners();
   }
 
@@ -173,10 +180,13 @@ class ClockingProvider extends ChangeNotifier {
         //filterDate: getFilterDate(),
         filterDate: '2022-12-30',
       );
+      _selectedClockedMembers.clear();
       if (response.results!.isNotEmpty) {
         // _clockedMembers =
         //     response.results!.map((e) => e.additionalInfo!.memberInfo).toList();
         _clockedMembers = response.results!;
+
+        debugPrint('Clocked members: ${_clockedMembers.length}');
 
         debugPrint(
             'Clocked members name: ${_clockedMembers[0]!.additionalInfo!.memberInfo!.firstname!}');
@@ -206,92 +216,6 @@ class ClockingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // queries for attendance of a particular meeting
-  Future<void> getAttendanceListNEw({
-    required BuildContext context,
-    required bool isBreak,
-    required MeetingEventModel meetingEventModel,
-    required String? time,
-  }) async {
-    try {
-      var response = await AttendanceAPI.getAttendanceList(
-        meetingEventModel: meetingEventModel,
-        filterDate: getFilterDate(),
-      );
-      if (isBreak) {
-        if (response.results!.isNotEmpty) {
-          var clockingId = response.results![0].id!;
-          debugPrint("ClockingId: $clockingId");
-          if (response.results![0].inOrOut!) {
-            if (response.results![0].startBreak == null &&
-                response.results![0].endBreak == null) {
-              // user has not started a break
-              // so start break
-              startMeetingBreak(
-                  context: context,
-                  clockingId: clockingId,
-                  //meetingEventModel: meetingEventModel,
-                  time: null);
-            } else if (response.results![0].startBreak != null &&
-                response.results![0].endBreak == null) {
-              // user has started a break
-              // so end break
-              endMeetingBreak(
-                  context: context,
-                  clockingId: clockingId,
-                  //meetingEventModel: meetingEventModel,
-                  time: null);
-            } else if (response.results![0].startBreak != null &&
-                response.results![0].endBreak != null) {
-              // user has started and ended a break
-              // so show message
-              // ignore: use_build_context_synchronously
-              Navigator.pop(context);
-              showNormalToast('You\'ve already ended your break. Good Bye!');
-            }
-          } else {
-            showNormalToast(
-                'Hi there, you\'ve not clocked in. \nPlease clock-in before you can start your break.');
-          }
-          debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
-        }
-      } else {
-        if (response.results!.isNotEmpty) {
-          var clockingId = response.results![0].id!;
-          debugPrint("ClockingId: $clockingId");
-          if (response.results![0].inOrOut!) {
-            if (response.results![0].outTime == null) {
-              // user has not clocked out
-              // so clock user out of meeting
-              clockMemberOut(
-                  context: context,
-                  clockingId: clockingId,
-                  //meetingEventModel: meetingEventModel,
-                  time: null);
-            } else {
-              // user has already clocked out
-              // hide loading widget
-              // and display a user friendly message
-              setClocking(false);
-              showNormalToast('You\'ve already clocked out. Good Bye!');
-            }
-          } else {
-            // clockMemberIn(
-            //   context: context,
-            //   clockingId: clockingId,
-            //   //meetingEventModel: meetingEventModel,
-            //   time: null,
-            // );
-          }
-          debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
-        }
-      }
-    } catch (err) {
-      debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
-    }
-  }
-
 // clocks a member in of a meeting or event by admin
   Future<void> clockMemberIn({
     required BuildContext context,
@@ -301,18 +225,36 @@ class ClockingProvider extends ChangeNotifier {
   }) async {
     try {
       showLoadingDialog(context);
-      var response = await ClockingAPI.clockIn(
-        clockingId: clockingId,
-        time: time ?? getClockingTime(),
-      );
-      //meetingEventModel.inOrOut = response.inOrOut; // update clock status
-      debugPrint("SUCCESS ${response.message}");
-      debugPrint("ClockingId $clockingId");
-      showNormalToast(response.message!);
-      // remove from list after member is been clocked in
-      if (meetingMembers.contains(member)) {
-        _meetingMembers.remove(member);
+      var response;
+      if (_selectedMeetingMembers.isEmpty) {
+        // Perform individual clock-in
+        response = await ClockingAPI.clockIn(
+          clockingId: clockingId,
+          time: time ?? getClockingTime(),
+        );
+        debugPrint("SUCCESS ${response.message}");
+        debugPrint("ClockingId $clockingId");
+        // remove from list after member is been clocked in
+        if (_meetingMembers.contains(member)) {
+          _meetingMembers.remove(member);
+        }
+      } else {
+        // Perform bulk clock-in
+        for (Member? member in _selectedMeetingMembers) {
+          response = await ClockingAPI.clockIn(
+            clockingId: member!.clockingId!,
+            time: time ?? getClockingTime(),
+          );
+          if (_meetingMembers.contains(member)) {
+            _meetingMembers.remove(member);
+          }
+          member.selected = false;
+        }
+        _selectedMeetingMembers.clear();
+        // refresh list when there is bulk operation
+        getAttendanceList(meetingEventModel: selectedMeeting);
       }
+      showNormalToast(response.message!);
       Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);
@@ -329,13 +271,31 @@ class ClockingProvider extends ChangeNotifier {
   }) async {
     try {
       showLoadingDialog(context);
-      var response = await ClockingAPI.clockOut(
-        clockingId: clockingId,
-        time: time ?? getClockingTime(),
-      );
-      //meetingEventModel.inOrOut = response.inOrOut; // update clock status
-      debugPrint("ClockingId $clockingId");
-      debugPrint("SUCCESS ${response.message}");
+      var response;
+      if (_selectedClockedMembers.isEmpty) {
+        // Perform individual clock-out
+        response = await ClockingAPI.clockOut(
+          clockingId: clockingId,
+          time: time ?? getClockingTime(),
+        );
+        debugPrint("SUCCESS ${response.message}");
+        debugPrint("ClockingId $clockingId");
+      } else {
+        // Perform bulk clock-out
+        for (Attendee? attendee in _selectedClockedMembers) {
+          // check if member has already clocked out
+          if (attendee!.attendance!.outTime == null) {
+            response = await ClockingAPI.clockOut(
+              clockingId: attendee.attendance!.id!,
+              time: time ?? getClockingTime(),
+            );
+            attendee.attendance!.memberId!.selected = false;
+          }
+        }
+        _selectedClockedMembers.clear();
+      }
+      // refresh list when there is bulk operation
+      getAttendanceList(meetingEventModel: selectedMeeting);
       showNormalToast(response.message);
       Navigator.pop(context);
     } catch (err) {
@@ -347,28 +307,39 @@ class ClockingProvider extends ChangeNotifier {
   }
 
 // starts break time for meeting
-  Future<void> startMeetingBreak(
-      {required BuildContext context,
-      required int clockingId,
-      required String? time}) async {
+  Future<void> startMeetingBreak({
+    required BuildContext context,
+    required int clockingId,
+    required String? time,
+  }) async {
     try {
       showLoadingDialog(context);
-      var response = await ClockingAPI.startBreak(
-        clockingId: clockingId,
-        time: time ?? getClockingTime(),
-      );
-      // update fields of meeting event model
-      // meetingEventModel.inOrOut = response.inOrOut;
-      // meetingEventModel.startBreak = response.startBreak;
-      // meetingEventModel.endBreak = response.endBreak;
-      // meetingEventModel.inTime = response.inTime;
-      // meetingEventModel.outTime = response.outTime;
-      debugPrint("ClockingId $clockingId");
-      if (response.message == null) {
+      var response;
+      if (_selectedClockedMembers.isEmpty) {
+        // Perform individual start break
+        response = await ClockingAPI.startBreak(
+          clockingId: clockingId,
+          time: time ?? getClockingTime(),
+        );
+        debugPrint("SUCCESS ${response.message}");
+        debugPrint("ClockingId $clockingId");
+      } else {
+        // Perform bulk start break
+        for (Attendee? attendee in _selectedClockedMembers) {
+          response = await ClockingAPI.startBreak(
+            clockingId: attendee!.attendance!.id!,
+            time: time ?? getClockingTime(),
+          );
+        }
+        _selectedClockedMembers.clear();
+        // refresh list when there is bulk operation
+        getAttendanceList(meetingEventModel: selectedMeeting);
+      }
+
+      if (response!.message == null) {
         showErrorToast(response.nonFieldErrors![0]);
       } else {
         showNormalToast(response.message!);
-        debugPrint("SUCCESS ${response.message}");
       }
       Navigator.pop(context);
     } catch (err) {
@@ -380,27 +351,38 @@ class ClockingProvider extends ChangeNotifier {
   }
 
 // ends break time for meeting
-  Future<void> endMeetingBreak(
-      {required BuildContext context,
-      required int clockingId,
-      required String? time}) async {
+  Future<void> endMeetingBreak({
+    required BuildContext context,
+    required int clockingId,
+    required String? time,
+  }) async {
     try {
       showLoadingDialog(context);
-      var response = await ClockingAPI.endBreak(
-        clockingId: clockingId,
-        time: time ?? getClockingTime(),
-      );
-      // update fields of meeting event model
-      // meetingEventModel.inOrOut = response.inOrOut;
-      // meetingEventModel.startBreak = response.startBreak;
-      // meetingEventModel.endBreak = response.endBreak;
-      // meetingEventModel.inTime = response.inTime;
-      // meetingEventModel.outTime = response.outTime;
-      debugPrint("ClockingId $clockingId");
+      var response;
+      if (_selectedClockedMembers.isEmpty) {
+        // Perform individual start break
+        response = await ClockingAPI.endBreak(
+          clockingId: clockingId,
+          time: time ?? getClockingTime(),
+        );
+        debugPrint("SUCCESS ${response.message}");
+        debugPrint("ClockingId $clockingId");
+      } else {
+        // Perform bulk start break
+        for (Attendee? attendee in _selectedClockedMembers) {
+          response = await ClockingAPI.endBreak(
+            clockingId: attendee!.attendance!.id!,
+            time: time ?? getClockingTime(),
+          );
+        }
+        _selectedClockedMembers.clear();
+        // refresh list when there is bulk operation
+        getAttendanceList(meetingEventModel: selectedMeeting);
+      }
       if (response.message == null) {
         showErrorToast(response.nonFieldErrors![0]);
       } else {
-        showNormalToast(response.message!);
+        showNormalToast(response.message);
         debugPrint("SUCCESS ${response.message}");
       }
       Navigator.pop(context);

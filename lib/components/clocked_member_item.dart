@@ -93,44 +93,49 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                           style: const TextStyle(
                               fontSize: 16, color: primaryColor),
                         ),
-                        CustomOutlinedButton(
-                          label: "OUT",
-                          mycolor: Colors.red,
-                          radius: 5,
-                          function: () {
-                            if (widget.attendee!.attendance!.outTime != null) {
-                              showNormalToast(
-                                  '$attendeeName has already been clocked out. Thank you!');
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                  insetPadding: const EdgeInsets.all(10),
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 0,
-                                  content: ConfirmDialog(
-                                    title: 'Clock Out',
-                                    content:
-                                        'Are you sure you want to clock-out $attendeeName?',
-                                    onConfirmTap: () {
-                                      Navigator.pop(context);
-                                      Provider.of<ClockingProvider>(context,
-                                              listen: false)
-                                          .clockMemberOut(
-                                        context: context,
-                                        clockingId: clockingId!,
-                                        time: null,
-                                      );
-                                    },
-                                    onCancelTap: () => Navigator.pop(context),
-                                    confirmText: 'Yes',
-                                    cancelText: 'Cancel',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
+                        widget.attendee!.attendance!.outTime == null
+                            ? CustomOutlinedButton(
+                                label: "OUT",
+                                mycolor: Colors.red,
+                                radius: 5,
+                                function: () {
+                                  if (widget.attendee!.attendance!.outTime !=
+                                      null) {
+                                    showNormalToast(
+                                        '$attendeeName has already been clocked out. Thank you!');
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        insetPadding: const EdgeInsets.all(10),
+                                        backgroundColor: Colors.transparent,
+                                        elevation: 0,
+                                        content: ConfirmDialog(
+                                          title: 'Clock Out',
+                                          content:
+                                              'Are you sure you want to clock-out $attendeeName?',
+                                          onConfirmTap: () {
+                                            Navigator.pop(context);
+                                            Provider.of<ClockingProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .clockMemberOut(
+                                              context: context,
+                                              clockingId: clockingId!,
+                                              time: null,
+                                            );
+                                          },
+                                          onCancelTap: () =>
+                                              Navigator.pop(context),
+                                          confirmText: 'Yes',
+                                          cancelText: 'Cancel',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              )
+                            : const SizedBox(),
                       ],
                     ),
                     SizedBox(
@@ -141,7 +146,11 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                       children: [Text('IN : $inTime'), Text('OUT :  $outTime')],
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.01,
+                      height:
+                          (widget.attendee!.attendance!.startBreak != null &&
+                                  widget.attendee!.attendance!.endBreak != null)
+                              ? displayHeight(context) * 0.01
+                              : displayHeight(context) * 0.00,
                     ),
                     widget.attendee!.attendance!.meetingEventId!
                                 .hasBreakTime! &&
@@ -149,173 +158,183 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomElevatedButton(
-                                label: "Start Break",
-                                color: Colors.green,
-                                textColor: Colors.white,
-                                radius: 5,
-                                function: () {
-                                  if (widget.attendee!.attendance!.startBreak !=
-                                      null) {
-                                    showNormalToast(
-                                        '$attendeeName has already started break. Thank you!');
-                                  } else {
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                        insetPadding: const EdgeInsets.all(10),
-                                        backgroundColor: Colors.transparent,
-                                        elevation: 0,
-                                        content: ConfirmDialog(
-                                          title: 'Start Break',
-                                          content:
-                                              'Are you sure you want start break for $attendeeName?',
-                                          onConfirmTap: () {
-                                            Navigator.pop(context);
-                                            Provider.of<ClockingProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .startMeetingBreak(
-                                              context: context,
-                                              clockingId: clockingId!,
-                                              time: null,
-                                            );
-                                          },
-                                          onCancelTap: () =>
-                                              Navigator.pop(context),
-                                          confirmText: 'Yes',
-                                          cancelText: 'Cancel',
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                              CustomElevatedButton(
-                                label: "End Break",
-                                color: Colors.red,
-                                radius: 5,
-                                function: () {
-                                  if (widget.attendee!.attendance!.endBreak !=
-                                      null) {
-                                    showNormalToast(
-                                        '$attendeeName has already ended break. Thank you!');
-                                  } else if (widget
-                                          .attendee!.attendance!.startBreak ==
-                                      null) {
-                                    showNormalToast(
-                                        'You can\'t end a break that has not been started. Please start the break to continue!');
-                                  } else {
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                        insetPadding: const EdgeInsets.all(10),
-                                        backgroundColor: Colors.transparent,
-                                        elevation: 0,
-                                        content: ConfirmDialog(
-                                          title: 'End Break',
-                                          content:
-                                              'Are you sure you want end break for $attendeeName?',
-                                          onConfirmTap: () {
-                                            Navigator.pop(context);
-                                            Provider.of<ClockingProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .endMeetingBreak(
-                                              context: context,
-                                              clockingId: clockingId!,
-                                              time: null,
-                                            );
-                                          },
-                                          onCancelTap: () =>
-                                              Navigator.pop(context),
-                                          confirmText: 'Yes',
-                                          cancelText: 'Cancel',
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                  // displayTimeSelector(
-                                  //         initialDate:
-                                  //             _selectedTime ?? DateTime.now(),
-                                  //         context: context)
-                                  //     .then((value) {
-                                  //   if (value != null) {
-                                  //     setState(() {
-                                  //       _selectedTime = value;
-                                  //       print("DateTime: " +
-                                  //           _selectedTime!
-                                  //               .toIso8601String()
-                                  //               .substring(0, 19));
-                                  //     });
-                                  //   }
-                                  // }).whenComplete(
-                                  //   () => {
-                                  //     showModalBottomSheet(
-                                  //         context: context,
-                                  //         builder: (context) {
-                                  //           return FractionallySizedBox(
-                                  //               heightFactor: 0.4,
-                                  //               child: Column(
-                                  //                 children: [
-                                  //                   const SizedBox(
-                                  //                     height: 20,
-                                  //                   ),
-                                  //                   Container(
-                                  //                     padding:
-                                  //                         const EdgeInsets.symmetric(
-                                  //                             vertical: 10,
-                                  //                             horizontal: 10),
-                                  //                     decoration: BoxDecoration(
-                                  //                         color: Colors.orange,
-                                  //                         borderRadius:
-                                  //                             BorderRadius.circular(
-                                  //                                 5)),
-                                  //                     child: Text(
-                                  //                       'Time ${DateFormat.jm().format(_selectedTime!)}',
-                                  //                       style: const TextStyle(
-                                  //                           fontWeight:
-                                  //                               FontWeight.bold,
-                                  //                           fontSize: 21),
-                                  //                     ),
-                                  //                   ),
-                                  //                   const SizedBox(
-                                  //                     height: 20,
-                                  //                   ),
-                                  //                   Row(
-                                  //                     mainAxisAlignment:
-                                  //                         MainAxisAlignment
-                                  //                             .spaceEvenly,
-                                  //                     children: [
-                                  //                       CustomElevatedButton(
-                                  //                           label: "Cancel",
-                                  //                           color: Colors.red,
-                                  //                           radius: 5,
-                                  //                           function: () {
-                                  //                             Navigator.pop(context);
-                                  //                           }),
-                                  //                       CustomElevatedButton(
-                                  //                           label: "Set Time",
-                                  //                           color: Colors.green,
-                                  //                           radius: 5,
-                                  //                           function: () {
-                                  //                             ScaffoldMessenger.of(
-                                  //                                     context)
-                                  //                                 .showSnackBar(
-                                  //                                     const SnackBar(
-                                  //                                         content: Text(
-                                  //                                             'Time has been Set')));
-                                  //                             Navigator.pop(context);
-                                  //                           })
-                                  //                     ],
-                                  //                   ),
-                                  //                 ],
-                                  //               ));
-                                  //         })
-                                  //   },
-                                  // );
-                                },
-                              ),
+                              widget.attendee!.attendance!.startBreak == null
+                                  ? CustomElevatedButton(
+                                      label: "Start Break",
+                                      color: Colors.green,
+                                      textColor: Colors.white,
+                                      radius: 5,
+                                      function: () {
+                                        if (widget.attendee!.attendance!
+                                                .startBreak !=
+                                            null) {
+                                          showNormalToast(
+                                              '$attendeeName has already started break. Thank you!');
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              insetPadding:
+                                                  const EdgeInsets.all(10),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              elevation: 0,
+                                              content: ConfirmDialog(
+                                                title: 'Start Break',
+                                                content:
+                                                    'Are you sure you want start break for $attendeeName?',
+                                                onConfirmTap: () {
+                                                  Navigator.pop(context);
+                                                  Provider.of<ClockingProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .startMeetingBreak(
+                                                    context: context,
+                                                    clockingId: clockingId!,
+                                                    time: null,
+                                                  );
+                                                },
+                                                onCancelTap: () =>
+                                                    Navigator.pop(context),
+                                                confirmText: 'Yes',
+                                                cancelText: 'Cancel',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    )
+                                  : const SizedBox(),
+                              widget.attendee!.attendance!.endBreak == null
+                                  ? CustomElevatedButton(
+                                      label: "End Break",
+                                      color: Colors.red,
+                                      radius: 5,
+                                      function: () {
+                                        if (widget.attendee!.attendance!
+                                                .endBreak !=
+                                            null) {
+                                          showNormalToast(
+                                              '$attendeeName has already ended break. Thank you!');
+                                        } else if (widget.attendee!.attendance!
+                                                .startBreak ==
+                                            null) {
+                                          showNormalToast(
+                                              'You can\'t end a break that has not been started. Please start the break to continue!');
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              insetPadding:
+                                                  const EdgeInsets.all(10),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              elevation: 0,
+                                              content: ConfirmDialog(
+                                                title: 'End Break',
+                                                content:
+                                                    'Are you sure you want end break for $attendeeName?',
+                                                onConfirmTap: () {
+                                                  Navigator.pop(context);
+                                                  Provider.of<ClockingProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .endMeetingBreak(
+                                                    context: context,
+                                                    clockingId: clockingId!,
+                                                    time: null,
+                                                  );
+                                                },
+                                                onCancelTap: () =>
+                                                    Navigator.pop(context),
+                                                confirmText: 'Yes',
+                                                cancelText: 'Cancel',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        // displayTimeSelector(
+                                        //         initialDate:
+                                        //             _selectedTime ?? DateTime.now(),
+                                        //         context: context)
+                                        //     .then((value) {
+                                        //   if (value != null) {
+                                        //     setState(() {
+                                        //       _selectedTime = value;
+                                        //       print("DateTime: " +
+                                        //           _selectedTime!
+                                        //               .toIso8601String()
+                                        //               .substring(0, 19));
+                                        //     });
+                                        //   }
+                                        // }).whenComplete(
+                                        //   () => {
+                                        //     showModalBottomSheet(
+                                        //         context: context,
+                                        //         builder: (context) {
+                                        //           return FractionallySizedBox(
+                                        //               heightFactor: 0.4,
+                                        //               child: Column(
+                                        //                 children: [
+                                        //                   const SizedBox(
+                                        //                     height: 20,
+                                        //                   ),
+                                        //                   Container(
+                                        //                     padding:
+                                        //                         const EdgeInsets.symmetric(
+                                        //                             vertical: 10,
+                                        //                             horizontal: 10),
+                                        //                     decoration: BoxDecoration(
+                                        //                         color: Colors.orange,
+                                        //                         borderRadius:
+                                        //                             BorderRadius.circular(
+                                        //                                 5)),
+                                        //                     child: Text(
+                                        //                       'Time ${DateFormat.jm().format(_selectedTime!)}',
+                                        //                       style: const TextStyle(
+                                        //                           fontWeight:
+                                        //                               FontWeight.bold,
+                                        //                           fontSize: 21),
+                                        //                     ),
+                                        //                   ),
+                                        //                   const SizedBox(
+                                        //                     height: 20,
+                                        //                   ),
+                                        //                   Row(
+                                        //                     mainAxisAlignment:
+                                        //                         MainAxisAlignment
+                                        //                             .spaceEvenly,
+                                        //                     children: [
+                                        //                       CustomElevatedButton(
+                                        //                           label: "Cancel",
+                                        //                           color: Colors.red,
+                                        //                           radius: 5,
+                                        //                           function: () {
+                                        //                             Navigator.pop(context);
+                                        //                           }),
+                                        //                       CustomElevatedButton(
+                                        //                           label: "Set Time",
+                                        //                           color: Colors.green,
+                                        //                           radius: 5,
+                                        //                           function: () {
+                                        //                             ScaffoldMessenger.of(
+                                        //                                     context)
+                                        //                                 .showSnackBar(
+                                        //                                     const SnackBar(
+                                        //                                         content: Text(
+                                        //                                             'Time has been Set')));
+                                        //                             Navigator.pop(context);
+                                        //                           })
+                                        //                     ],
+                                        //                   ),
+                                        //                 ],
+                                        //               ));
+                                        //         })
+                                        //   },
+                                        // );
+                                      },
+                                    )
+                                  : const SizedBox(),
                             ],
                           )
                         : const SizedBox(),

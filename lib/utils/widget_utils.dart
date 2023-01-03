@@ -158,26 +158,31 @@ showLoadingDialog(BuildContext context, [String? message]) {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Platform.isAndroid
-                ? const CircularProgressIndicator()
-                : const CupertinoActivityIndicator(
-                    radius: 20,
+        return Scaffold(
+          backgroundColor: Colors.black45,
+          body: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Platform.isAndroid
+                    ? const CircularProgressIndicator()
+                    : const CupertinoActivityIndicator(
+                        radius: 20,
+                      ),
+                SizedBox(
+                  height: displayHeight(context) * 0.02,
+                ),
+                Text(
+                  message ?? 'Please wait a moment...',
+                  style: const TextStyle(
+                    color: whiteColor,
+                    fontWeight: FontWeight.w800,
                   ),
-            SizedBox(
-              height: displayHeight(context) * 0.02,
+                ),
+              ],
             ),
-            Text(
-              message ?? 'Please wait a moment...',
-              style: const TextStyle(
-                color: whiteColor,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ],
+          ),
         );
       });
 }
