@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:akwaaba/Networks/api_responses/clockin_response.dart';
+import 'package:akwaaba/Networks/api_responses/clocking_response.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
 import 'package:akwaaba/utils/general_utils.dart';

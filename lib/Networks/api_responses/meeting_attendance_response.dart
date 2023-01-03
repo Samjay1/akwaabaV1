@@ -1,10 +1,12 @@
+import 'package:akwaaba/models/admin/clocked_member.dart';
+import 'package:akwaaba/models/attendance/attendance.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 
 class MeetingAttendanceResponse {
   int? count;
   String? next;
-  dynamic previous;
-  List<Results>? results;
+  String? previous;
+  List<Attendance>? results;
 
   MeetingAttendanceResponse(
       {this.count, this.next, this.previous, this.results});
@@ -14,9 +16,9 @@ class MeetingAttendanceResponse {
     next = json['next'];
     previous = json['previous'];
     if (json['results'] != null) {
-      results = <Results>[];
+      results = <Attendance>[];
       json['results'].forEach((v) {
-        results!.add(Results.fromJson(v));
+        results!.add(Attendance.fromJson(v));
       });
     }
   }
@@ -29,93 +31,6 @@ class MeetingAttendanceResponse {
     if (results != null) {
       data['results'] = results!.map((v) => v.toJson()).toList();
     }
-    return data;
-  }
-}
-
-class Results {
-  int? id;
-  MeetingEventId? meetingEventId;
-  MemberId? memberId;
-  int? accountType;
-  bool? inOrOut;
-  dynamic inTime;
-  dynamic outTime;
-  dynamic startBreak;
-  dynamic endBreak;
-  int? clockedBy;
-  int? clockingMethod;
-  Validate? validate;
-  dynamic validationDate;
-  int? validatedBy;
-  String? date;
-  String? clockingMethodName;
-
-  Results(
-      {this.id,
-      this.meetingEventId,
-      this.memberId,
-      this.accountType,
-      this.inOrOut,
-      this.inTime,
-      this.outTime,
-      this.startBreak,
-      this.endBreak,
-      this.clockedBy,
-      this.clockingMethod,
-      this.validate,
-      this.validationDate,
-      this.validatedBy,
-      this.date,
-      this.clockingMethodName});
-
-  Results.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    meetingEventId = json['meetingEventId'] != null
-        ? MeetingEventId.fromJson(json['meetingEventId'])
-        : null;
-    memberId =
-        json['memberId'] != null ? MemberId.fromJson(json['memberId']) : null;
-    accountType = json['accountType'];
-    inOrOut = json['inOrOut'];
-    inTime = json['inTime'];
-    outTime = json['outTime'];
-    startBreak = json['startBreak'];
-    endBreak = json['endBreak'];
-    clockedBy = json['clockedBy'];
-    clockingMethod = json['clockingMethod'];
-    validate =
-        json['validate'] != null ? Validate.fromJson(json['validate']) : null;
-    validationDate = json['validationDate'];
-    validatedBy = json['validatedBy'];
-    date = json['date'];
-    clockingMethodName = json['clockingMethodName'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    if (meetingEventId != null) {
-      data['meetingEventId'] = meetingEventId!.toJson();
-    }
-    if (memberId != null) {
-      data['memberId'] = memberId!.toJson();
-    }
-    data['accountType'] = accountType;
-    data['inOrOut'] = inOrOut;
-    data['inTime'] = inTime;
-    data['outTime'] = outTime;
-    data['startBreak'] = startBreak;
-    data['endBreak'] = endBreak;
-    data['clockedBy'] = clockedBy;
-    data['clockingMethod'] = clockingMethod;
-    if (validate != null) {
-      data['validate'] = validate!.toJson();
-    }
-    data['validationDate'] = validationDate;
-    data['validatedBy'] = validatedBy;
-    data['date'] = date;
-    data['clockingMethodName'] = clockingMethodName;
     return data;
   }
 }
@@ -385,8 +300,8 @@ class AccountCategory {
   String? category;
   int? createdBy;
   int? updatedBy;
-  Null? updateDate;
-  Null? date;
+  String? updateDate;
+  String? date;
 
   AccountCategory(
       {this.id,
@@ -523,143 +438,6 @@ class MemberCategoryId {
     data['updatedBy'] = updatedBy;
     data['updateDate'] = updateDate;
     data['date'] = date;
-    return data;
-  }
-}
-
-class MemberId {
-  int? id;
-  int? clientId;
-  String? firstname;
-  String? middlename;
-  String? surname;
-  int? gender;
-  String? profilePicture;
-  String? phone;
-  String? email;
-  String? dateOfBirth;
-  int? religion;
-  String? nationality;
-  String? countryOfResidence;
-  String? stateProvince;
-  int? region;
-  int? district;
-  int? constituency;
-  int? electoralArea;
-  String? community;
-  String? hometown;
-  String? houseNoDigitalAddress;
-  String? digitalAddress;
-  int? level;
-  int? status;
-  int? accountType;
-  int? memberType;
-  String? date;
-  String? lastLogin;
-  String? referenceId;
-  int? branchId;
-  bool? editable;
-
-  MemberId(
-      {this.id,
-      this.clientId,
-      this.firstname,
-      this.middlename,
-      this.surname,
-      this.gender,
-      this.profilePicture,
-      this.phone,
-      this.email,
-      this.dateOfBirth,
-      this.religion,
-      this.nationality,
-      this.countryOfResidence,
-      this.stateProvince,
-      this.region,
-      this.district,
-      this.constituency,
-      this.electoralArea,
-      this.community,
-      this.hometown,
-      this.houseNoDigitalAddress,
-      this.digitalAddress,
-      this.level,
-      this.status,
-      this.accountType,
-      this.memberType,
-      this.date,
-      this.lastLogin,
-      this.referenceId,
-      this.branchId,
-      this.editable});
-
-  MemberId.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    clientId = json['clientId'];
-    firstname = json['firstname'];
-    middlename = json['middlename'];
-    surname = json['surname'];
-    gender = json['gender'];
-    profilePicture = json['profilePicture'];
-    phone = json['phone'];
-    email = json['email'];
-    dateOfBirth = json['dateOfBirth'];
-    religion = json['religion'];
-    nationality = json['nationality'];
-    countryOfResidence = json['countryOfResidence'];
-    stateProvince = json['stateProvince'];
-    region = json['region'];
-    district = json['district'];
-    constituency = json['constituency'];
-    electoralArea = json['electoralArea'];
-    community = json['community'];
-    hometown = json['hometown'];
-    houseNoDigitalAddress = json['houseNoDigitalAddress'];
-    digitalAddress = json['digitalAddress'];
-    level = json['level'];
-    status = json['status'];
-    accountType = json['accountType'];
-    memberType = json['memberType'];
-    date = json['date'];
-    lastLogin = json['last_login'];
-    referenceId = json['referenceId'];
-    branchId = json['branchId'];
-    editable = json['editable'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['clientId'] = clientId;
-    data['firstname'] = firstname;
-    data['middlename'] = middlename;
-    data['surname'] = surname;
-    data['gender'] = gender;
-    data['profilePicture'] = profilePicture;
-    data['phone'] = phone;
-    data['email'] = email;
-    data['dateOfBirth'] = dateOfBirth;
-    data['religion'] = religion;
-    data['nationality'] = nationality;
-    data['countryOfResidence'] = countryOfResidence;
-    data['stateProvince'] = stateProvince;
-    data['region'] = region;
-    data['district'] = district;
-    data['constituency'] = constituency;
-    data['electoralArea'] = electoralArea;
-    data['community'] = community;
-    data['hometown'] = hometown;
-    data['houseNoDigitalAddress'] = houseNoDigitalAddress;
-    data['digitalAddress'] = digitalAddress;
-    data['level'] = level;
-    data['status'] = status;
-    data['accountType'] = accountType;
-    data['memberType'] = memberType;
-    data['date'] = date;
-    data['last_login'] = lastLogin;
-    data['referenceId'] = referenceId;
-    data['branchId'] = branchId;
-    data['editable'] = editable;
     return data;
   }
 }

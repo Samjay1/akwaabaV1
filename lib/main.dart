@@ -2,6 +2,7 @@ import 'package:akwaaba/location/location_services.dart';
 import 'package:akwaaba/models/attendance_history_item.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/providers/client_provider.dart';
+import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/feeManager_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
@@ -31,6 +32,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => MemberProvider()),
         ChangeNotifierProvider(create: (_) => FeeProvider()),
         ChangeNotifierProvider(create: (_) => AttendanceProvider()),
+        ChangeNotifierProvider(create: (_) => ClockingProvider()),
       ],
       child: MaterialApp(
         initialRoute: 'splashScreen',

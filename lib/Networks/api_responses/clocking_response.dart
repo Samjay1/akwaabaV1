@@ -1,4 +1,4 @@
-class ClockInResponse {
+class ClockingResponse {
   int? id;
   int? meetingEventId;
   int? memberId;
@@ -15,8 +15,9 @@ class ClockInResponse {
   int? validatedBy;
   String? date;
   String? message;
+  List<dynamic>? nonFieldErrors;
 
-  ClockInResponse({
+  ClockingResponse({
     this.id,
     this.meetingEventId,
     this.memberId,
@@ -33,9 +34,10 @@ class ClockInResponse {
     this.validatedBy,
     this.date,
     this.message,
+    this.nonFieldErrors,
   });
 
-  ClockInResponse.fromJson(Map<String, dynamic> json) {
+  ClockingResponse.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     meetingEventId = json['meetingEventId'];
     memberId = json['memberId'];
@@ -52,10 +54,11 @@ class ClockInResponse {
     validatedBy = json['validatedBy'];
     date = json['date'];
     message = json['SUCCESS_RESPONSE_MESSAGE'];
+    nonFieldErrors = json['non_field_errors'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['meetingEventId'] = meetingEventId;
     data['memberId'] = memberId;
@@ -72,6 +75,7 @@ class ClockInResponse {
     data['validatedBy'] = validatedBy;
     data['date'] = date;
     data['SUCCESS_RESPONSE_MESSAGE'] = message;
+    data['non_field_errors'] = nonFieldErrors;
     return data;
   }
 }

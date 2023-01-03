@@ -11,12 +11,14 @@ class CustomElevatedButton extends StatelessWidget {
   final Color color;
   final double labelSize;
   final Color textColor;
+  final double radius;
 
   const CustomElevatedButton(
       {required this.label,
       required this.function,
       this.showProgress = false,
       this.color = primaryColor,
+      this.radius = defaultRadius,
       this.textColor = Colors.black,
       this.labelSize = 18,
       Key? key})
@@ -27,21 +29,18 @@ class CustomElevatedButton extends StatelessWidget {
     return Visibility(
       visible: showProgress,
       replacement: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(defaultRadius),
-          ),
-        ),
-        onPressed: function,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Text(
-            label,
-            style: TextStyle(fontSize: labelSize, color: textColor),
-          ),
-        ),
-      ),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: color,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(radius))),
+          onPressed: function,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              label,
+              style: TextStyle(fontSize: labelSize, color: textColor),
+            ),
+          )),
       child: const CustomProgressIndicator(),
     );
   }

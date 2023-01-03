@@ -1,10 +1,6 @@
-import 'package:akwaaba/components/custom_elevated_button.dart';
-import 'package:akwaaba/components/form_button.dart';
-import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/member_clock_time_selection_widget.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class ClockingOptionsPage extends StatefulWidget {
   const ClockingOptionsPage({Key? key}) : super(key: key);
@@ -32,7 +28,6 @@ class _ClockingOptionsPageState extends State<ClockingOptionsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    
                     // LabelWidgetContainer(label: "Meeting Type",
                     //     child: FormButton(label: "Select Meeting Type",
                     //     function: (){},)),
@@ -46,19 +41,19 @@ class _ClockingOptionsPageState extends State<ClockingOptionsPage> {
                     //     DateFormat("hh:mm").format(generalClockTime!):"Select time",
                     //         function: (){selectGroupTime();})),
 
+                    // const SizedBox(height: 24,),
 
-                   // const SizedBox(height: 24,),
-
-                    const Text("Selected Members",
-                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.w600),),
+                    const Text(
+                      "Selected Members",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    ),
 
                     Column(
                       children: List.generate(10, (index) {
                         return const MemberClockTimeSelectionWidget();
                       }),
                     )
-
-
                   ],
                 ),
               ),
@@ -66,24 +61,26 @@ class _ClockingOptionsPageState extends State<ClockingOptionsPage> {
 
             //CustomElevatedButton(label: "Submit", function: (){}),
 
-
-            ElevatedButton.icon(icon: const Icon(Icons.login),onPressed:(){}
-              , label: const Padding(
+            ElevatedButton.icon(
+              icon: const Icon(Icons.login),
+              onPressed: () {},
+              label: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
                 child: Text("Clock In"),
               ),
               style: ElevatedButton.styleFrom(
                   primary: Colors.green,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)
-                  )
-              ),),
+                      borderRadius: BorderRadius.circular(12))),
+            ),
 
-            const SizedBox(height: 12,),
+            const SizedBox(
+              height: 12,
+            ),
 
             ElevatedButton.icon(
               icon: const Icon(Icons.logout),
-              onPressed:(){},
+              onPressed: () {},
               label: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
                 child: Text("Clock Out"),
@@ -91,29 +88,27 @@ class _ClockingOptionsPageState extends State<ClockingOptionsPage> {
               style: ElevatedButton.styleFrom(
                   primary: Colors.redAccent,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)
-                  )
-              ),),
+                      borderRadius: BorderRadius.circular(12))),
+            ),
 
-            const SizedBox(height: 24,),
-
-
-
+            const SizedBox(
+              height: 24,
+            ),
           ],
         ),
       ),
-
     );
   }
 
-  void selectGroupTime(){
-    displayTimeSelector(initialDate: generalClockTime??DateTime.now(),
-        context: context).then((value) {
-          if(value!=null){
-            setState(() {
-              generalClockTime=value;
-            });
-          }
+  void selectGroupTime() {
+    displayTimeSelector(
+            initialDate: generalClockTime ?? DateTime.now(), context: context)
+        .then((value) {
+      if (value != null) {
+        setState(() {
+          generalClockTime = value;
+        });
+      }
     });
   }
 }

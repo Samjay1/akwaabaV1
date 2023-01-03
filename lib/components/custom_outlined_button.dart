@@ -6,18 +6,20 @@ class CustomOutlinedButton extends StatelessWidget {
   final VoidCallback function;
   final String label;
   final double radius;
+  final Color mycolor;
 
   const CustomOutlinedButton({
     required this.label,
     required this.function,
     this.radius = defaultRadius,
+    this.mycolor = primaryColor,
     Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(width: 1.0, color: primaryColor),
+          side:  BorderSide(width: 1.0, color: mycolor),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(radius)
             ),
@@ -25,9 +27,9 @@ class CustomOutlinedButton extends StatelessWidget {
         onPressed: function,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text(label,style: const TextStyle(fontSize: 16,
+          child: Text(label,style: TextStyle(fontSize: 16,
           fontWeight: FontWeight.w400 ,
-          color: primaryColor),),
+          color: mycolor),),
         ));
   }
 }
