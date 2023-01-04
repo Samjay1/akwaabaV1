@@ -1,7 +1,6 @@
 
 class ClientAccountInfo{
   var id;
-
   var name;
   var accountType;
   var country;
@@ -35,6 +34,7 @@ class ClientAccountInfo{
   var email;
   var accountId;
   var branchID;
+  var branchName;
 
 
   var clientToken;
@@ -75,11 +75,12 @@ class ClientAccountInfo{
       this.email,
       this.accountId,
       this.branchID,
+      this.branchName,
 
       this.clientToken,
       );
 
-  factory ClientAccountInfo.fromJson(Map<String, dynamic> json, Map<String, dynamic> userjson,var clientToken){
+  factory ClientAccountInfo.fromJson(Map<String, dynamic> json, Map<String, dynamic> userjson,var branchName, var clientToken){
     return ClientAccountInfo(
         json['id'],
         json['name'],
@@ -115,6 +116,7 @@ class ClientAccountInfo{
         userjson['email'],
         userjson['accountID'],
         userjson['branchId'],
+        branchName,
         clientToken
     );
   }

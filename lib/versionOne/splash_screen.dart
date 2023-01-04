@@ -5,6 +5,12 @@ import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/client_provider.dart';
+import '../providers/general_provider.dart';
+import '../providers/member_provider.dart';
+import '../utils/widget_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -48,6 +54,45 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPrefs().getLoginCredentials().then((value) {
       if (value.isNotEmpty) {
         //login credentials exists, open home page
+        debugPrint('LOGIN DETAILS HERE:=> $value');
+
+        SharedPrefs().getUserType().then((userType){
+          debugPrint('ACCOUNT USER TYPE HERE:=> $userType');
+
+          if(userType == 'admin'){
+            Provider.of<ClientProvider>(context, listen: false)
+                .login(context: context, phoneEmail: value[0], password: value[1])
+                .then((value) {
+              setState(() {
+                Provider.of<GeneralProvider>(context, listen: false)
+                    .setAdminStatus(isAdmin: true);
+              });
+            }).catchError((e) {
+              showErrorToast("$e");
+            });
+          }else if(userType == 'member'){
+            Provider.of<MemberProvider>(context, listen: false)
+                .login(
+              context: context,
+              phoneEmail: value[0], password: value[1],
+              checkDeviceInfo: false,
+            )
+                .then((value) {
+              setState(() {
+                Provider.of<GeneralProvider>(context, listen: false)
+                    .setAdminStatus(isAdmin: false);
+              });
+            }).catchError((e) {
+              showErrorToast("$e");
+            });
+          }else{
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (_) => const LoginPage()));
+          }
+        });
+
+
+
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => const MainPage()));
       } else {

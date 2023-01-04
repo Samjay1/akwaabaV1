@@ -192,8 +192,8 @@ class _MainPageState extends State<MainPage> {
               builder: (context, data, child) {
                 return adminDrawerView(
                     logo: data.getUser?.logo,
-                    applicantFirstname: data.getUser?.applicantFirstname,
-                    applicantSurname: data.getUser?.applicantSurname);
+                    name: data.getUser?.name,
+                    branch: data.getUser?.branchName);
               },
             )
           : Consumer<MemberProvider>(
@@ -213,7 +213,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget adminDrawerView(
-      {var logo, var applicantFirstname, var applicantSurname}) {
+      {var logo, var name, var branch}) {
     return Drawer(
       backgroundColor: Colors.grey.shade300,
       child: Column(
@@ -237,8 +237,13 @@ class _MainPageState extends State<MainPage> {
                   height: 8,
                 ),
                 Text(
-                  "${applicantFirstname ?? ""} ${applicantSurname ?? ""}",
-                  style: const TextStyle(fontSize: 20),
+                  "${name ?? ""}",
+                  style: const TextStyle(fontSize: 17),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  "(${branch ?? ""})",
+                  style: const TextStyle(fontSize: 16),
                   textAlign: TextAlign.center,
                 )
               ],
