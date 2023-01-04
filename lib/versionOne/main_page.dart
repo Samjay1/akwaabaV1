@@ -25,6 +25,7 @@ import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/post_clocking_page.dart';
+import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -228,9 +229,12 @@ class _MainPageState extends State<MainPage> {
               children: [
                 Align(
                   alignment: Alignment.center,
-                  child: CustomCachedImageWidget(
-                    url: logo ?? "",
-                    height: 100,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(70),
+                    child: CustomCachedImageWidget(
+                      url: logo ?? "",
+                      height: 110,
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -257,6 +261,95 @@ class _MainPageState extends State<MainPage> {
                     return ListView(
                       physics: const BouncingScrollPhysics(),
                       children: [
+
+                        drawerItemView(
+                          title: "Database",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                                const WebViewPage(
+                                    url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                    title: 'Database')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "View Members",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                               const WebViewPage(
+                                    url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                    title: 'View Members')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Create Meetings",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                               const WebViewPage(
+                                    url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                    title: 'Create Meetings')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Scheduled Meetings",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'Scheduled Meetings')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Assign Absent/Leave Status",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'Assign Absent/Leave Status')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "View Absent/Leave Status",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'View Absent/Leave Status')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Cash Manager",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'Cash Manager')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Account Subscription",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'Account Subscription')));
+                          },
+                        ),
+
                         drawerItemView(
                           title: "Attendance History",
                           iconData: Icons.history,
@@ -281,17 +374,17 @@ class _MainPageState extends State<MainPage> {
                                         const AttendanceReportPage()));
                           },
                         ),
-                        drawerItemView(
-                          title: "Request Device Activation",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const DeviceActivationRequestPage()));
-                          },
-                        ),
+                        // drawerItemView(
+                        //   title: "Request Device Activation",
+                        //   iconData: Icons.phone_android,
+                        //   function: () {
+                        //     Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (_) =>
+                        //                 const DeviceActivationRequestPage()));
+                        //   },
+                        // ),
                         drawerItemView(
                             title: "Log out",
                             iconData: Icons.logout_rounded,

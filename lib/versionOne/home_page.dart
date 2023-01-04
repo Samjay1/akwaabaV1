@@ -142,24 +142,24 @@ class _HomePageState extends State<HomePage> {
               ),
 
               // TODO: Uncomment it when recent clocking API is available
-              // userType.compareTo("member") == 0
-              //     ? Consumer<MemberProvider>(
-              //         builder: (context, data, child) {
-              //           return headerView(
-              //               firstName: data.memberProfile.firstname,
-              //               surName: data.memberProfile.surname,
-              //               profileImage: data.memberProfile.profilePicture);
-              //         },
-              //       )
-              //     : userType.compareTo("admin") == 0
-              //         ? Consumer<ClientProvider>(
-              //             builder: (context, data, child) {
-              //             return headerView(
-              //                 firstName: data.getUser?.firstName,
-              //                 surName: data.getUser?.surName,
-              //                 profileImage: data.getUser?.profilePicture);
-              //           })
-              //         : const Text("Unknown User type"),
+              userType.compareTo("member") == 0
+                  ? Consumer<MemberProvider>(
+                      builder: (context, data, child) {
+                        return headerView(
+                            firstName: data.memberProfile.firstname,
+                            surName: data.memberProfile.surname,
+                            profileImage: data.memberProfile.profilePicture);
+                      },
+                    )
+                  : userType.compareTo("admin") == 0
+                      ? Consumer<ClientProvider>(
+                          builder: (context, data, child) {
+                          return adminHeaderView(
+                              firstName: data.getUser?.firstName,
+                              surName: data.getUser?.surName,
+                              profileImage: data.getUser?.profilePicture);
+                        })
+                      : const Text("Unknown User type"),
 
               // const SizedBox(
               //   height: 36,
@@ -294,6 +294,45 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  Widget adminHeaderView({var firstName, var surName, var profileImage}) {
+      return Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              GestureDetector(
+                child: profileImage != null
+                    ? Align(
+                  child:  ClipRRect(
+                    borderRadius: BorderRadius.circular(70),
+                    child: CustomCachedImageWidget(
+                      url: profileImage,
+                      height: 130,
+                    ),
+                  ),
+                )
+                    : defaultProfilePic(height: 130),
+              ),
+              Text(
+                "$firstName $surName",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+
+              const SizedBox(
+                height: 24,
+              ),
+            ],
+          ),
+        ),
+      );
   }
 
   Widget headerView({var firstName, var surName, var profileImage}) {
