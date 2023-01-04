@@ -1,19 +1,16 @@
-import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_outlined_button.dart';
 import 'package:akwaaba/components/custom_progress_indicator.dart';
+import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
-import 'package:akwaaba/components/member_clock_selection_widget.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
-import 'package:akwaaba/models/attendance/attendance.dart';
+import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/attendance_provider.dart';
+import 'package:akwaaba/models/general/member_category.dart';
+import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
-import 'package:akwaaba/screens/clocking_options_page.dart';
-import 'package:akwaaba/screens/filter_members_page.dart';
-import 'package:akwaaba/screens/filter_options_for_clocking_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -36,9 +33,6 @@ class ClockingPage extends StatefulWidget {
 }
 
 class _ClockingPageState extends State<ClockingPage> {
-  final TextEditingController _controllerMinAge = TextEditingController();
-  final TextEditingController _controllerMaxAge = TextEditingController();
-
   // List<Map> members = [
   //   {"status": true},
   //   {"status": true},
@@ -51,6 +45,9 @@ class _ClockingPageState extends State<ClockingPage> {
   //   {"status": false},
   //   {"status": false},
   // ];
+
+  late ScrollController _controller;
+
   bool itemHasBeenSelected =
       false; //at least 1 member has been selected, so show options menu
   List<Map> selectedMembersList = [];
@@ -59,35 +56,49 @@ class _ClockingPageState extends State<ClockingPage> {
 
   bool clockingListState = true;
 
+  bool isFilterExpanded = false;
+
+  late ClockingProvider clockingProvider;
+
   @override
   void initState() {
+    _controller = ScrollController();
+
     Future.delayed(Duration.zero, () {
       // load attendance list for meeting
       Provider.of<ClockingProvider>(context, listen: false).getAttendanceList(
         meetingEventModel: widget.meetingEventModel,
       );
+      // loading member group for filtering
+      Provider.of<ClockingProvider>(context, listen: false)
+          .getMemberCategories();
       setState(() {});
     });
     super.initState();
   }
 
   @override
+  void dispose() {
+    clockingProvider.clearData();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var clockingProvider = context.watch<ClockingProvider>();
+    clockingProvider = context.watch<ClockingProvider>();
     var members = clockingProvider.meetingMembers;
     var clockedMembers = clockingProvider.clockedMembers;
-    var selectedMembers = clockingProvider.selectedMeetingMembers;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Clock member'),
+        title: Text(widget.meetingEventModel.name!),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Provider.of<ClockingProvider>(context, listen: false)
-            .getAttendanceList(meetingEventModel: widget.meetingEventModel),
+        onRefresh: () => clockingProvider.refreshList(),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
           child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
+            controller: _controller,
+            //physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -100,7 +111,20 @@ class _ClockingPageState extends State<ClockingPage> {
                 // Row(
                 //   children: [
                 //const Expanded(child:
-                const CupertinoSearchTextField(),
+                CupertinoSearchTextField(
+                  onChanged: (val) {
+                    setState(() {
+                      if (clockingListState) {
+                        // search attendance list by name
+                        clockingProvider.searchAttendanceList(searchText: val);
+                      } else {
+                        // search clocked members by name
+                        clockingProvider.searchClockedList(searchText: val);
+                      }
+                    });
+                  },
+                ),
+
                 //),
                 // IconButton(onPressed: (){
                 //   Navigator.push(context, MaterialPageRoute(builder: (_)
@@ -114,48 +138,21 @@ class _ClockingPageState extends State<ClockingPage> {
                   height: 12,
                 ),
 
-                const CupertinoSearchTextField(
+                CupertinoSearchTextField(
                   placeholder: "Enter ID",
+                  onChanged: (val) {
+                    setState(() {
+                      if (clockingListState) {
+                        // search attendance list by id
+                        clockingProvider.searchAttendanceListById(
+                            searchText: val);
+                      } else {
+                        // search clocked members by id
+                        clockingProvider.searchClockedListById(searchText: val);
+                      }
+                    });
+                  },
                 ),
-
-                SizedBox(
-                  height: displayHeight(context) * 0.02,
-                ),
-
-                const Text("Age Bracket"),
-                const SizedBox(
-                  height: 12,
-                ),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: LabelWidgetContainer(
-                        label: "Minimum Age",
-                        child: FormTextField(
-                          controller: _controllerMinAge,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Expanded(
-                      child: LabelWidgetContainer(
-                        label: "Maximum Age",
-                        child: FormTextField(
-                          controller: _controllerMaxAge,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-
-                SizedBox(
-                  height: displayHeight(context) * 0.008,
-                ),
-
-                CustomElevatedButton(label: "Filter", function: () {}),
 
                 SizedBox(
                   height: displayHeight(context) * 0.02,
@@ -666,56 +663,228 @@ class _ClockingPageState extends State<ClockingPage> {
 
   Widget filterOptionsListView() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        LabelWidgetContainer(
-          label: "Branch",
-          child: FormButton(
-            label: "All",
-            function: () {},
-          ),
-        ),
+        // LabelWidgetContainer(
+        //   label: "Branch",
+        //   child: FormButton(
+        //     label: "All",
+        //     function: () {},
+        //   ),
+        // ),
         LabelWidgetContainer(
           label: "Member Category",
-          child: FormButton(
-            label: "All",
-            function: () {},
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<MemberCategory>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select Member Category'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: clockingProvider.selectedMemberCategory,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: clockingProvider.memberCategories.map((MemberCategory mc) {
+                return DropdownMenuItem(
+                  value: mc,
+                  child: Text(mc.category!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  clockingProvider.selectedMemberCategory =
+                      val as MemberCategory;
+                });
+                // call method to fetch all sub groups
+                clockingProvider.getSubGroups();
+              },
+            ),
           ),
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
         ),
         LabelWidgetContainer(
           label: "Group",
-          child: FormButton(
-            label: "Select Group",
-            function: () {},
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<Group>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select Group'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: clockingProvider.selectedGroup,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: clockingProvider.groups.map((Group group) {
+                return DropdownMenuItem(
+                  value: group,
+                  child: Text(group.group!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  clockingProvider.selectedGroup = val as Group;
+                });
+              },
+            ),
           ),
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
         ),
         LabelWidgetContainer(
           label: "Sub Group",
-          child: FormButton(
-            label: "Select Sub Group",
-            function: () {},
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<SubGroup>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select SubGroup'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: clockingProvider.selectedSubGroup,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: clockingProvider.subGroups.map((SubGroup subGroup) {
+                return DropdownMenuItem(
+                  value: subGroup,
+                  child: Text(subGroup.subgroup!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  clockingProvider.selectedSubGroup = val as SubGroup;
+                });
+              },
+            ),
           ),
         ),
-        LabelWidgetContainer(
-            label: "Meeting Type",
-            child: FormButton(
-              label: "Select Meeting Type",
-              function: () {},
-            )),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
+        ),
+        // LabelWidgetContainer(
+        //     label: "Meeting Type",
+        //     child: FormButton(
+        //       label: "Select Meeting Type",
+        //       function: () {},
+        //     )),
+
+        Row(
+          children: [
+            Expanded(
+              child: LabelWidgetContainer(
+                label: "Minimum Age",
+                child: FormTextField(
+                  controller: clockingProvider.minAgeTEC,
+                  textInputType: TextInputType.number,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Expanded(
+              child: LabelWidgetContainer(
+                label: "Maximum Age",
+                child: FormTextField(
+                  controller: clockingProvider.maxAgeTEC,
+                  textInputType: TextInputType.number,
+                ),
+              ),
+            )
+          ],
+        ),
+
         LabelWidgetContainer(
             label: "Date",
             child: FormButton(
-              label: "Select Date",
-              function: () {},
+              label: clockingProvider.selectedDate == null
+                  ? 'Select Date'
+                  : clockingProvider.selectedDate!
+                      .toIso8601String()
+                      .substring(0, 10),
+              function: () {
+                displayDateSelector(
+                  initialDate: DateTime.now(),
+                  context: context,
+                ).then((value) {
+                  if (value != null) {
+                    setState(() {
+                      clockingProvider.selectedDate = value;
+                      debugPrint(
+                          "DateTime: ${clockingProvider.selectedDate!.toIso8601String().substring(0, 10)}");
+                    });
+                  }
+                });
+              },
             )),
-        LabelWidgetContainer(
-          label: "Set Mass Time",
-          child: FormButton(
-            label: generalClockTime != null
-                ? DateFormat("hh:mm").format(generalClockTime!)
-                : "Select time",
-            function: () {},
-          ),
+
+        SizedBox(
+          height: displayHeight(context) * 0.008,
         ),
+
+        CustomElevatedButton(
+            label: "Filter",
+            //showProgress: clockingProvider.loading,
+            function: () {
+              clockingProvider.validateFilterFields();
+              if (clockingProvider.loading) {
+                // scroll to bottom of the screen to show the loading progress
+                _controller.animateTo(
+                  _controller.position.maxScrollExtent,
+                  duration: const Duration(seconds: 3),
+                  curve: Curves.ease,
+                );
+              }
+            }),
+        // LabelWidgetContainer(
+        //   label: "Set Mass Time",
+        //   child: FormButton(
+        //     label: generalClockTime != null
+        //         ? DateFormat("hh:mm").format(generalClockTime!)
+        //         : "Select time",
+        //     function: () {},
+        //   ),
+        // ),
       ],
     );
   }

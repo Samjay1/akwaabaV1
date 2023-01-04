@@ -21,12 +21,27 @@ class ClockingAPI {
   static Future<ClockedMembersResponse> getClockedMembers({
     required MeetingEventModel meetingEventModel,
     required String filterDate,
+    required int memberCategoryId,
+    required int groupId,
+    required int subGroupId,
+    required int genderId,
+    required int fromAge,
+    required int toAge,
   }) async {
     ClockedMembersResponse membersResponse;
-
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=${meetingEventModel.branchId}&filter_member_category&filter_group&filter_subgroup&filter_gender&filter_from_age&filter_to_age');
+        '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=${meetingEventModel.branchId}&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
     try {
+      debugPrint("URL: ${url.toString()}");
+      debugPrint("ID: ${meetingEventModel.id}");
+      debugPrint("Filter Date: $filterDate");
+      debugPrint("Branch ID: ${meetingEventModel.branchId}");
+      debugPrint("MemberCategoryId: $memberCategoryId");
+      debugPrint("groupId: $groupId");
+      debugPrint("subGroupId: $subGroupId");
+      debugPrint("genderId: $genderId");
+      debugPrint("fromAge: $fromAge");
+      debugPrint("toAge: $toAge");
       http.Response response = await http.get(
         url,
         headers: await getAllHeaders(),

@@ -45,6 +45,32 @@ class AttendanceAPI {
     return todayMeetings;
   }
 
+  static Future<List<MeetingEventModel>> getMeetingsFromDate({
+    required String date,
+  }) async {
+    List<MeetingEventModel> meetings = [];
+    var url = Uri.parse(
+        '${getBaseUrl()}/attendance/meeting-event/schedule/date/$date?datatable_plugin');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      var decodedresponse = jsonDecode(response.body);
+      debugPrint("Meeting From Date success: $decodedresponse");
+      Iterable meetingList = decodedresponse['data'];
+      meetings = meetingList
+          .map(
+            (data) => MeetingEventModel.fromJson(data),
+          )
+          .toList();
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return meetings;
+  }
+
   static Future<List<MeetingEventModel>> getUpcomingMeetingEventList(
       BuildContext context, var memberToken) async {
     List<MeetingEventModel> upcomingMeetings = [];
@@ -166,7 +192,7 @@ class AttendanceAPI {
         body: {
           'time': time,
         },
-        headers: await getAllHeaders(),
+        headers: await getTokenHeader(),
       );
       clockInResponse = ClockingResponse.fromJson(
         await returnResponse(response),
@@ -193,7 +219,7 @@ class AttendanceAPI {
         body: {
           'time': time,
         },
-        headers: await getAllHeaders(),
+        headers: await getTokenHeader(),
       );
       clockOutResponse = ClockingResponse.fromJson(
         await returnResponse(response),
@@ -219,7 +245,7 @@ class AttendanceAPI {
         body: {
           'time': time,
         },
-        headers: await getAllHeaders(),
+        headers: await getTokenHeader(),
       );
       clockInResponse = ClockingResponse.fromJson(
         await returnResponse(response),
@@ -245,7 +271,7 @@ class AttendanceAPI {
         body: {
           'time': time,
         },
-        headers: await getAllHeaders(),
+        headers: await getTokenHeader(),
       );
       clockInResponse = ClockingResponse.fromJson(
         await returnResponse(response),

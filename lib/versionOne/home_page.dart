@@ -49,9 +49,9 @@ class _HomePageState extends State<HomePage> {
   var memberToken;
   var clientToken;
 
-  MemberProvider? memberProvider;
+  late MemberProvider memberProvider;
 
-  AttendanceProvider? attendanceProvider;
+  late AttendanceProvider attendanceProvider;
 
   @override
   void initState() {
@@ -114,6 +114,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    attendanceProvider = context.watch<AttendanceProvider>();
     // loadMeetingEventsByUserType(userType: userType);
     // Provider.of<MemberProvider>(context, listen: false).callmeetingEventList(memberToken: memberToken!, context: context);
     screenHeight = MediaQuery.of(context).size.height;
@@ -175,63 +176,72 @@ class _HomePageState extends State<HomePage> {
               ),
 
               //----------------------------------------------------------------------
-              Consumer<AttendanceProvider>(
-                builder: (context, data, child) {
-                  if (data.loading) {
-                    return const CustomProgressIndicator();
-                  }
-                  if (data.todayMeetings.isEmpty) {
-                    return const EmptyStateWidget(
-                      text: 'You currently have no \nmeetings today!',
-                    );
-                  }
-                  if (userType == 'member') {
+              RefreshIndicator(
+                onRefresh: () async =>
+                    await attendanceProvider.getUpcomingMeetingEvents(
+                  memberToken: memberToken,
+                  context: context,
+                ),
+                child: Consumer<AttendanceProvider>(
+                  builder: (context, data, child) {
+                    if (data.loading) {
+                      return const CustomProgressIndicator();
+                    }
+                    if (data.todayMeetings.isEmpty) {
+                      return const EmptyStateWidget(
+                        text: 'You currently have no \nmeetings today!',
+                      );
+                    }
+                    if (userType == 'member') {
+                      return ListView.builder(
+                          itemCount: data.todayMeetings.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            final item = data.todayMeetings[index];
+                            debugPrint('MEETING LIST ${item.memberType}');
+                            return todaysEvents(
+                              meeting: item,
+                              name: item.name,
+                              date: item.updateDate,
+                              startTime: item.startTime,
+                              closeTime: item.closeTime,
+                            );
+                          });
+                    }
                     return ListView.builder(
                         itemCount: data.todayMeetings.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           final item = data.todayMeetings[index];
                           debugPrint('MEETING LIST ${item.memberType}');
-                          return todaysEvents(
-                            meeting: item,
-                            name: item.name,
-                            date: item.updateDate,
-                            startTime: item.startTime,
-                            closeTime: item.closeTime,
+                          return InkWell(
+                            onTap: () {
+                              // set meeting as selected
+                              context
+                                  .read<ClockingProvider>()
+                                  .setSelectedMeeting(
+                                      data.todayMeetings[index]);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ClockingPage(
+                                    meetingEventModel:
+                                        data.todayMeetings[index],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: adminTodaysEvents(
+                              meeting: item,
+                              name: item.name,
+                              date: item.updateDate,
+                              startTime: item.startTime,
+                              closeTime: item.closeTime,
+                            ),
                           );
                         });
-                  }
-                  return ListView.builder(
-                      itemCount: data.todayMeetings.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final item = data.todayMeetings[index];
-                        debugPrint('MEETING LIST ${item.memberType}');
-                        return InkWell(
-                          onTap: () {
-                            // set meeting as selected
-                            context
-                                .read<ClockingProvider>()
-                                .setSelectedMeeting(data.todayMeetings[index]);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ClockingPage(
-                                  meetingEventModel: data.todayMeetings[index],
-                                ),
-                              ),
-                            );
-                          },
-                          child: adminTodaysEvents(
-                            meeting: item,
-                            name: item.name,
-                            date: item.updateDate,
-                            startTime: item.startTime,
-                            closeTime: item.closeTime,
-                          ),
-                        );
-                      });
-                },
+                  },
+                ),
               ),
               //----------------------------------------------------------------------
               const SizedBox(

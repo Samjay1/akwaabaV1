@@ -98,11 +98,12 @@ Future<void> displayCustomDialog(
       });
 }
 
-Future<DateTime?> displayDateSelector(
-    {required DateTime initialDate,
-    required BuildContext context,
-    DateTime? minimumDate,
-    DateTime? maxDate}) async {
+Future<DateTime?> displayDateSelector({
+  required DateTime initialDate,
+  required BuildContext context,
+  DateTime? minimumDate,
+  DateTime? maxDate,
+}) async {
   DateTime? selectedDate;
   await DatePicker.showDatePicker(
     context,

@@ -125,4 +125,10 @@ class MeetingEventModel {
     data['date'] = date;
     return data;
   }
+
+  bool operator ==(dynamic other) =>
+      other != null && other is MeetingEventModel && id == other.id;
+
+  @override
+  int get hashCode => super.hashCode;
 }

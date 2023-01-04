@@ -1,16 +1,18 @@
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_outlined_button.dart';
 import 'package:akwaaba/components/custom_progress_indicator.dart';
+import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
-import 'package:akwaaba/components/member_clock_selection_widget.dart';
+import 'package:akwaaba/components/postclock_clocked_member_item.dart';
+import 'package:akwaaba/components/postclock_clocking_member_item.dart';
+import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
+import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/attendance_provider.dart';
+import 'package:akwaaba/models/general/member_category.dart';
+import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
-import 'package:akwaaba/screens/clocking_options_page.dart';
-import 'package:akwaaba/screens/filter_members_page.dart';
-import 'package:akwaaba/screens/filter_options_for_clocking_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -33,9 +35,6 @@ class PostClockingPage extends StatefulWidget {
 }
 
 class _PostClockingPageState extends State<PostClockingPage> {
-  final TextEditingController _controllerMinAge = TextEditingController();
-  final TextEditingController _controllerMaxAge = TextEditingController();
-
   // List<Map> members = [
   //   {"status": true},
   //   {"status": true},
@@ -48,6 +47,9 @@ class _PostClockingPageState extends State<PostClockingPage> {
   //   {"status": false},
   //   {"status": false},
   // ];
+
+  late ScrollController _controller;
+
   bool itemHasBeenSelected =
       false; //at least 1 member has been selected, so show options menu
   List<Map> selectedMembersList = [];
@@ -56,402 +58,628 @@ class _PostClockingPageState extends State<PostClockingPage> {
 
   bool clockingListState = true;
 
+  bool isFilterExpanded = false;
+
+  late ClockingProvider clockingProvider;
+
   @override
   void initState() {
+    _controller = ScrollController();
+    // Future.delayed(Duration.zero, () {
+    //   // load attendance list for meeting
+    //   Provider.of<ClockingProvider>(context, listen: false).getAttendanceList(
+    //     meetingEventModel: widget.meetingEventModel,
+    //   );
+    //   // loading member group for filtering
+    //   Provider.of<ClockingProvider>(context, listen: false)
+    //       .getMemberCategories();
+    //   setState(() {});
+    // });
     super.initState();
   }
 
   @override
+  void dispose() {
+    clockingProvider.clearData();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var members = context.watch<ClockingProvider>().meetingMembers;
-    var clockedMembers = context.watch<ClockingProvider>().clockedMembers;
-    var selectedMembers =
-        context.watch<ClockingProvider>().selectedMeetingMembers;
+    clockingProvider = context.watch<ClockingProvider>();
+    var members = clockingProvider.meetingMembers;
+    var clockedMembers = clockingProvider.clockedMembers;
     return Scaffold(
-      body: Provider.of<ClockingProvider>(context, listen: false).loading
-          ? const CustomProgressIndicator()
-          : Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    filterButton(),
+      body: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
+        child: SingleChildScrollView(
+          controller: _controller,
+          //physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              filterButton(),
 
-                    const SizedBox(
-                      height: 24,
-                    ),
+              const SizedBox(
+                height: 24,
+              ),
 
-                    // Row(
-                    //   children: [
-                    //const Expanded(child:
-                    const CupertinoSearchTextField(),
-                    //),
-                    // IconButton(onPressed: (){
-                    //   Navigator.push(context, MaterialPageRoute(builder: (_)
-                    //   =>const FilterPageClocking()));
-                    // },
-                    //     icon: const Icon(Icons.filter_alt,color: primaryColor,))
-                    //   ],
-                    // ),
+              // Row(
+              //   children: [
+              //const Expanded(child:
+              CupertinoSearchTextField(
+                onChanged: (val) {
+                  setState(() {
+                    if (clockingListState) {
+                      // search attendance list by name
+                      clockingProvider.searchAttendanceList(searchText: val);
+                    } else {
+                      // search clocked members by name
+                      clockingProvider.searchClockedList(searchText: val);
+                    }
+                  });
+                },
+              ),
 
-                    const SizedBox(
-                      height: 12,
-                    ),
+              //),
+              // IconButton(onPressed: (){
+              //   Navigator.push(context, MaterialPageRoute(builder: (_)
+              //   =>const FilterPageClocking()));
+              // },
+              //     icon: const Icon(Icons.filter_alt,color: primaryColor,))
+              //   ],
+              // ),
 
-                    const CupertinoSearchTextField(
-                      placeholder: "Enter ID",
-                    ),
+              const SizedBox(
+                height: 12,
+              ),
 
-                    const SizedBox(
-                      height: 8,
-                    ),
+              CupertinoSearchTextField(
+                placeholder: "Enter ID",
+                onChanged: (val) {
+                  setState(() {
+                    if (clockingListState) {
+                      // search attendance list by id
+                      clockingProvider.searchAttendanceListById(
+                          searchText: val);
+                    } else {
+                      // search clocked members by id
+                      clockingProvider.searchClockedListById(searchText: val);
+                    }
+                  });
+                },
+              ),
 
-                    const Text("Age Bracket"),
-                    const SizedBox(
-                      height: 12,
-                    ),
+              SizedBox(
+                height: displayHeight(context) * 0.02,
+              ),
 
-                    Row(
-                      children: [
-                        Expanded(
-                          child: LabelWidgetContainer(
-                            label: "Minimum Age",
-                            child: FormTextField(
-                              controller: _controllerMinAge,
-                            ),
-                          ),
+              const Divider(
+                height: 2,
+                color: Colors.orange,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  //REFRESING BUTTON
+                  InkWell(
+                      onTap: () => clockingProvider.clearData(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: const Text(
+                          'Clear',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Expanded(
-                          child: LabelWidgetContainer(
-                            label: "Maximum Age",
-                            child: FormTextField(
-                              controller: _controllerMaxAge,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-
-                    const SizedBox(
-                      height: 8,
-                    ),
-
-                    CustomElevatedButton(label: "Filter", function: () {}),
-
-                    const SizedBox(
-                      height: 8,
-                    ),
-
-                    const Divider(
-                      height: 2,
-                      color: Colors.orange,
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //   children: [
-                    //     //REFRESING BUTTON
-                    //     InkWell(
-                    //         onTap: () {},
-                    //         child: Container(
-                    //           padding: const EdgeInsets.symmetric(
-                    //               vertical: 5, horizontal: 10),
-                    //           decoration: BoxDecoration(
-                    //               color: Colors.green,
-                    //               borderRadius: BorderRadius.circular(5)),
-                    //           child: const Text('Refresh',
-                    //               style: TextStyle(color: Colors.white)),
-                    //         )),
-                    //     SizedBox(
-                    //       width: displayWidth(context) * 0.02,
-                    //     ),
-                    //     //POST CLOCK DATE BUTTON
-                    //     Expanded(
-                    //       child: InkWell(
-                    //           onTap: () {},
-                    //           child: Container(
-                    //             padding: const EdgeInsets.symmetric(
-                    //                 vertical: 5, horizontal: 10),
-                    //             decoration: BoxDecoration(
-                    //                 color: Colors.blue,
-                    //                 borderRadius: BorderRadius.circular(5)),
-                    //             child: const Text(
-                    //               'Post Clock Date',
-                    //               style: TextStyle(color: Colors.white),
-                    //             ),
-                    //           )),
-                    //     ),
-                    //     SizedBox(
-                    //       width: displayWidth(context) * 0.02,
-                    //     ),
-                    //     //POST CLOCK TIME BUTTON
-                    //     Expanded(
-                    //       child: InkWell(
-                    //           onTap: () {},
-                    //           child: Container(
-                    //             padding: const EdgeInsets.symmetric(
-                    //                 vertical: 5, horizontal: 10),
-                    //             decoration: BoxDecoration(
-                    //                 color: Colors.blue,
-                    //                 borderRadius: BorderRadius.circular(5)),
-                    //             child: const Text(
-                    //               'Post Clock Time',
-                    //               style: TextStyle(color: Colors.white),
-                    //             ),
-                    //           )),
-                    //     )
-                    //   ],
-                    // ), // CustomElevatedButton(label: "Filter", function: (){}),\
-                    const SizedBox(
-                      height: 8,
-                    ),
-
-                    const Divider(
-                      height: 2,
-                      color: Colors.orange,
-                    ),
-
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    LabelWidgetContainer(
-                        label: "Clocked In/Out",
-                        child: Row(
-                          children: [
-                            const Text("Bulk Clock"),
-                            const SizedBox(
-                              width: 24,
-                            ),
-                            Expanded(
-                                child: CustomOutlinedButton(
-                                    label: "In",
-                                    mycolor: Colors.green,
-                                    radius: 5,
-                                    function: () {})),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            Expanded(
-                                child: CustomOutlinedButton(
-                                    label: "Out",
-                                    mycolor: Colors.red,
-                                    radius: 5,
-                                    function: () {})),
-                          ],
-                        )),
-
-                    const SizedBox(
-                      height: 12,
-                    ),
-
-                    LabelWidgetContainer(
-                        label: "Break Time",
-                        child: Row(
-                          children: [
-                            const Text("Bulk Break"),
-                            const SizedBox(
-                              width: 24,
-                            ),
-                            Expanded(
-                                child: CustomElevatedButton(
-                                    label: "Start",
-                                    radius: 5,
-                                    function: () {})),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            Expanded(
-                              child: CustomElevatedButton(
-                                label: "End",
-                                color: Colors.blue,
-                                radius: 5,
-                                function: () {},
-                              ),
-                            ),
-                          ],
-                        )),
-
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    const Divider(
-                      height: 2,
-                      color: Colors.orange,
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: CustomElevatedButton(
-                                label: "Clocking List",
-                                radius: 5,
-                                function: () {
-                                  setState(() {
-                                    clockingListState = true;
-                                    checkAll = false;
-                                    debugPrint(
-                                        '     clockingListState = $clockingListState');
-                                  });
-                                })),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Expanded(
-                            child: CustomElevatedButton(
-                                label: "Clocked List",
-                                color: Colors.green,
-                                radius: 5,
-                                function: () {
-                                  setState(() {
-                                    clockingListState = false;
-                                    checkAll = false;
-                                    debugPrint(
-                                        '     clockingListState = $clockingListState');
-                                  });
-                                })),
-                      ],
-                    ),
-
-                    Row(
-                      children: [
-                        Checkbox(
-                            activeColor: primaryColor,
-                            shape: const CircleBorder(),
-                            value: checkAll,
-                            onChanged: (val) {
+                      )),
+                  SizedBox(
+                    width: displayWidth(context) * 0.02,
+                  ),
+                  //POST CLOCK DATE BUTTON
+                  Expanded(
+                    child: InkWell(
+                        onTap: () {
+                          displayDateSelector(
+                            initialDate: DateTime.now(),
+                            maxDate: DateTime.now(),
+                            context: context,
+                          ).then((value) {
+                            if (value != null) {
                               setState(() {
-                                checkAll = val!;
-                                if (clockingListState) {
-                                  for (Member? member in members) {
-                                    member!.selected = checkAll;
-                                  }
-                                } else {
-                                  for (var i = 0;
-                                      i < clockedMembers.length;
-                                      i++) {
-                                    clockedMembers[i]!
-                                        .additionalInfo!
-                                        .memberInfo!
-                                        .selected = checkAll;
-                                  }
-                                  // for (Member? member in clockedMembers) {
-                                  //   member!.selected = checkAll;
-                                  // }
-                                }
+                                clockingProvider.postClockDate = value;
+                                debugPrint(
+                                  "Selected PostClock Date: ${clockingProvider.postClockDate!.toIso8601String().substring(0, 11)}",
+                                );
                               });
-                            }),
-                        const Text("Check All")
-                      ],
-                    ),
+                            }
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Text(
+                            clockingProvider.postClockDate == null
+                                ? 'Post Clock Date'
+                                : clockingProvider.postClockDate!
+                                    .toIso8601String()
+                                    .substring(0, 10),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 15),
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                    width: displayWidth(context) * 0.02,
+                  ),
+                  //POST CLOCK TIME BUTTON
+                  Expanded(
+                    child: InkWell(
+                        onTap: () {
+                          displayTimeSelector(
+                            initialDate: DateTime.now(),
+                            context: context,
+                          ).then((value) {
+                            if (value != null) {
+                              setState(() {
+                                clockingProvider.postClockTime = value;
+                                debugPrint(
+                                  "Selected PostClock Time: ${clockingProvider.postClockTime!.toIso8601String().substring(11, 19)}",
+                                );
+                              });
+                            }
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Text(
+                            clockingProvider.postClockTime == null
+                                ? 'Post Clock Time'
+                                : clockingProvider.postClockTime!
+                                    .toIso8601String()
+                                    .substring(11, 19),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 15),
+                          ),
+                        )),
+                  )
+                ],
+              ),
+              //// CustomElevatedButton(label: "Filter", function: (){}),\
 
-                    const Divider(
-                      height: 2,
-                      color: Colors.orange,
-                    ),
+              SizedBox(
+                height: displayHeight(context) * 0.02,
+              ),
 
-                    clockingListState
-                        ? Column(
-                            children: List.generate(members.length, (index) {
+              LabelWidgetContainer(
+                label: "Clocked In/Out",
+                child: Row(
+                  children: [
+                    const Text("Bulk Clock"),
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    Expanded(
+                      child: CustomOutlinedButton(
+                        label: "In",
+                        mycolor: Colors.green,
+                        radius: 5,
+                        function: () {
+                          if (clockingProvider.selectedMeetingMembers.isEmpty ||
+                              clockingProvider.postClockDate == null ||
+                              clockingProvider.postClockTime == null) {
+                            showNormalToast(
+                                'Please select date, time & members to clock-in on their behalf');
+                          } else {
+                            // perform bulk clock in
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                insetPadding: const EdgeInsets.all(10),
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                content: ConfirmDialog(
+                                  title: 'Clock In',
+                                  content:
+                                      'Are you sure you want to perform \nthis bulk operation?',
+                                  onConfirmTap: () {
+                                    Navigator.pop(context);
+                                    clockingProvider.clockMemberIn(
+                                      context: context,
+                                      member: null,
+                                      clockingId: 0,
+                                      time: clockingProvider
+                                          .getPostClockDateTime(),
+                                    );
+                                  },
+                                  onCancelTap: () => Navigator.pop(context),
+                                  confirmText: 'Yes',
+                                  cancelText: 'Cancel',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                      child: CustomOutlinedButton(
+                        label: "Out",
+                        mycolor: Colors.red,
+                        radius: 5,
+                        function: () {
+                          if (clockingProvider.selectedClockedMembers.isEmpty ||
+                              clockingProvider.postClockDate == null ||
+                              clockingProvider.postClockTime == null) {
+                            showNormalToast(
+                                'Please select date, time & members to clock-out on their behalf');
+                          } else {
+                            // perform bulk clock out
+
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                insetPadding: const EdgeInsets.all(10),
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                content: ConfirmDialog(
+                                  title: 'Clock Out',
+                                  content:
+                                      'Are you sure you want to perform \nthis bulk operation?',
+                                  onConfirmTap: () {
+                                    Navigator.pop(context);
+                                    clockingProvider.clockMemberOut(
+                                      context: context,
+                                      clockingId: 0,
+                                      time: clockingProvider
+                                          .getPostClockDateTime(),
+                                    );
+                                  },
+                                  onCancelTap: () => Navigator.pop(context),
+                                  confirmText: 'Yes',
+                                  cancelText: 'Cancel',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(
+                height: 12,
+              ),
+
+              LabelWidgetContainer(
+                  label: "Break Time",
+                  child: Row(
+                    children: [
+                      const Text("Bulk Break"),
+                      const SizedBox(
+                        width: 24,
+                      ),
+                      Expanded(
+                        child: CustomElevatedButton(
+                          label: "Start",
+                          radius: 5,
+                          function: () {
+                            if (clockingProvider
+                                    .selectedClockedMembers.isEmpty ||
+                                clockingProvider.postClockDate == null ||
+                                clockingProvider.postClockTime == null) {
+                              showNormalToast(
+                                  'Please select date, time & members to start break on their behalf');
+                            } else {
+                              // perform bulk start break
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  insetPadding: const EdgeInsets.all(10),
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  content: ConfirmDialog(
+                                    title: 'Start Break',
+                                    content:
+                                        'Are you sure you want to perform \nthis bulk operation?',
+                                    onConfirmTap: () {
+                                      Navigator.pop(context);
+                                      clockingProvider.startMeetingBreak(
+                                        context: context,
+                                        clockingId: 0,
+                                        time: clockingProvider
+                                            .getPostClockDateTime(),
+                                      );
+                                    },
+                                    onCancelTap: () => Navigator.pop(context),
+                                    confirmText: 'Yes',
+                                    cancelText: 'Cancel',
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                        child: CustomElevatedButton(
+                          label: "End",
+                          color: Colors.blue,
+                          radius: 5,
+                          function: () {
+                            if (clockingProvider
+                                    .selectedClockedMembers.isEmpty ||
+                                clockingProvider.postClockDate == null ||
+                                clockingProvider.postClockTime == null) {
+                              showNormalToast(
+                                  'Please select date, time & members to end break on their behalf');
+                            } else {
+                              // perform bulk end break
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  insetPadding: const EdgeInsets.all(10),
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  content: ConfirmDialog(
+                                    title: 'End Break',
+                                    content:
+                                        'Are you sure you want to perform \nthis bulk operation?',
+                                    onConfirmTap: () {
+                                      Navigator.pop(context);
+                                      clockingProvider.endMeetingBreak(
+                                        context: context,
+                                        clockingId: 0,
+                                        time: clockingProvider
+                                            .getPostClockDateTime(),
+                                      );
+                                    },
+                                    onCancelTap: () => Navigator.pop(context),
+                                    confirmText: 'Yes',
+                                    cancelText: 'Cancel',
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  )),
+
+              const SizedBox(
+                height: 8,
+              ),
+              const Divider(
+                height: 2,
+                color: Colors.orange,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                      child: CustomElevatedButton(
+                          label: "Clocking List",
+                          radius: 5,
+                          function: () {
+                            setState(() {
+                              clockingListState = true;
+                              checkAll = false;
+                              debugPrint(
+                                  '     clockingListState = $clockingListState');
+                            });
+                          })),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                      child: CustomElevatedButton(
+                          label: "Clocked List",
+                          color: Colors.green,
+                          textColor: Colors.white,
+                          radius: 5,
+                          function: () {
+                            setState(() {
+                              clockingListState = false;
+                              checkAll = false;
+                              debugPrint(
+                                  '     clockingListState = $clockingListState');
+                            });
+                          })),
+                ],
+              ),
+
+              Row(
+                children: [
+                  Checkbox(
+                      activeColor: primaryColor,
+                      shape: const CircleBorder(),
+                      value: checkAll,
+                      onChanged: (val) {
+                        setState(() {
+                          checkAll = val!;
+                          if (clockingListState) {
+                            for (Member? member in members) {
+                              member!.selected = checkAll;
+                              if (member.selected!) {
+                                clockingProvider.selectedMeetingMembers
+                                    .add(member);
+                              }
+                              if (!member.selected!) {
+                                clockingProvider.selectedMeetingMembers
+                                    .remove(member);
+                              }
+                            }
+                            debugPrint(
+                                "Select Members: ${clockingProvider.selectedMeetingMembers.length}");
+                          } else {
+                            for (var i = 0; i < clockedMembers.length; i++) {
+                              clockedMembers[i]!
+                                  .additionalInfo!
+                                  .memberInfo!
+                                  .selected = checkAll;
+
+                              if (clockedMembers[i]!
+                                  .additionalInfo!
+                                  .memberInfo!
+                                  .selected!) {
+                                clockingProvider.selectedClockedMembers
+                                    .add(clockedMembers[i]!);
+                              }
+                              if (!clockedMembers[i]!
+                                  .additionalInfo!
+                                  .memberInfo!
+                                  .selected!) {
+                                clockingProvider.selectedClockedMembers
+                                    .remove(clockedMembers[i]!);
+                              }
+                            }
+                          }
+                        });
+                      }),
+                  const Text("Check All")
+                ],
+              ),
+
+              const SizedBox(
+                height: 4,
+              ),
+
+              const Divider(
+                height: 2,
+                color: Colors.orange,
+              ),
+
+              const SizedBox(
+                height: 12,
+              ),
+
+              clockingProvider.loading
+                  ? const CustomProgressIndicator()
+                  : clockingListState
+                      ? Column(
+                          children: List.generate(members.length, (index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  if (members[index]!.selected!) {
+                                    //remove it
+                                    members[index]!.selected = false;
+                                    clockingProvider.selectedMeetingMembers
+                                        .remove(members[index]);
+                                  } else {
+                                    members[index]!.selected = true;
+                                    clockingProvider.selectedMeetingMembers
+                                        .add(members[index]);
+                                  }
+                                  if (clockingProvider
+                                      .selectedMeetingMembers.isNotEmpty) {
+                                    itemHasBeenSelected = true;
+                                  } else {
+                                    itemHasBeenSelected = false;
+                                  }
+                                });
+                                debugPrint(
+                                    "Select Members: ${clockingProvider.selectedMeetingMembers.length}");
+                              },
+                              child: PostClockClockingMemberItem(
+                                meetingEventModel:
+                                    clockingProvider.selectedPastMeetingEvent,
+                                member: members[index],
+                              ),
+                            );
+                          }),
+                        )
+                      : Column(
+                          children: List.generate(
+                            clockedMembers.length,
+                            (index) {
                               return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if (members[index]!.selected!) {
+                                onTap: () {
+                                  setState(
+                                    () {
+                                      if (clockedMembers[index]!
+                                          .additionalInfo!
+                                          .memberInfo!
+                                          .selected!) {
                                         //remove it
-                                        members[index]!.selected = false;
-                                        selectedMembers.remove(members[index]);
+                                        clockedMembers[index]!
+                                            .additionalInfo!
+                                            .memberInfo!
+                                            .selected = false;
+
+                                        clockingProvider.selectedClockedMembers
+                                            .remove(clockedMembers[index]!);
                                       } else {
-                                        members[index]!.selected = true;
-                                        selectedMembers.add(members[index]);
+                                        clockedMembers[index]!
+                                            .additionalInfo!
+                                            .memberInfo!
+                                            .selected = true;
+                                        clockingProvider.selectedClockedMembers
+                                            .add(clockedMembers[index]!);
                                       }
-                                      if (selectedMembers.isNotEmpty) {
+                                      if (clockingProvider
+                                          .selectedClockedMembers.isNotEmpty) {
                                         itemHasBeenSelected = true;
                                       } else {
                                         itemHasBeenSelected = false;
                                       }
-                                    });
-                                  },
-                                  child: ClockingMemberItem(
-                                      member: members[index]));
-                            }),
-                          )
-                        : Column(
-                            children: List.generate(
-                              clockedMembers.length,
-                              (index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(
-                                      () {
-                                        if (clockedMembers[index]!
-                                            .additionalInfo!
-                                            .memberInfo!
-                                            .selected!) {
-                                          //remove it
-                                          clockedMembers[index]!
-                                              .additionalInfo!
-                                              .memberInfo!
-                                              .selected = false;
-                                          selectedMembers.remove(
-                                              clockedMembers[index]!
-                                                  .additionalInfo!
-                                                  .memberInfo!);
-                                        } else {
-                                          clockedMembers[index]!
-                                              .additionalInfo!
-                                              .memberInfo!
-                                              .selected = true;
-                                          selectedMembers.add(
-                                              clockedMembers[index]!
-                                                  .additionalInfo!
-                                                  .memberInfo!);
-                                        }
-                                        if (selectedMembers.isNotEmpty) {
-                                          itemHasBeenSelected = true;
-                                        } else {
-                                          itemHasBeenSelected = false;
-                                        }
-                                      },
-                                    );
-                                  },
-                                  child: ClockedMemberItem(
-                                    attendee: clockedMembers[index]!,
-                                  ),
-                                );
-                              },
-                            ),
+                                      debugPrint(
+                                          "Select Clocked Members: ${clockingProvider.selectedClockedMembers.length}");
+                                    },
+                                  );
+                                },
+                                child: PostClockClockedMemberItem(
+                                  attendee: clockedMembers[index]!,
+                                ),
+                              );
+                            },
                           ),
-                    // itemHasBeenSelected?
-                    //     Container(
-                    //
-                    //       padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
-                    //       child: CustomElevatedButton(label: "Proceed to Clock",
-                    //       function: (){
-                    //         displayCustomCupertinoDialog(context: context,
-                    //             title: "Proceed to Clock", msg: "100 members have been selected,"
-                    //                 " do you want to clock them all now?",
-                    //             actionsMap: {"No":(){Navigator.pop(context);},
-                    //               "Yes":(){
-                    //               Navigator.pop(context);
-                    //               Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                    //               const ClockingOptionsPage()));
-                    //               }});
-                    //       },),
-                    //     )
-                    //     :const SizedBox.shrink()
-                  ],
-                ),
-              ),
-            ),
+                        ),
+              // itemHasBeenSelected?
+              //     Container(
+              //
+              //       padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
+              //       child: CustomElevatedButton(label: "Proceed to Clock",
+              //       function: (){
+              //         displayCustomCupertinoDialog(context: context,
+              //             title: "Proceed to Clock", msg: "100 members have been selected,"
+              //                 " do you want to clock them all now?",
+              //             actionsMap: {"No":(){Navigator.pop(context);},
+              //               "Yes":(){
+              //               Navigator.pop(context);
+              //               Navigator.push(context, MaterialPageRoute(builder: (_)=>
+              //               const ClockingOptionsPage()));
+              //               }});
+              //       },),
+              //     )
+              //     :const SizedBox.shrink()
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -478,56 +706,265 @@ class _PostClockingPageState extends State<PostClockingPage> {
 
   Widget filterOptionsListView() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // LabelWidgetContainer(
+        //   label: "Branch",
+        //   child: FormButton(
+        //     label: "All",
+        //     function: () {},
+        //   ),
+        // ),
         LabelWidgetContainer(
-          label: "Branch",
+          label: "Date",
           child: FormButton(
-            label: "All",
-            function: () {},
+            label: clockingProvider.selectedDate == null
+                ? 'Select Date'
+                : clockingProvider.selectedDate!
+                    .toIso8601String()
+                    .substring(0, 10),
+            function: () {
+              displayDateSelector(
+                initialDate: DateTime.now(),
+                maxDate: DateTime.now(),
+                context: context,
+              ).then((value) {
+                if (value != null) {
+                  setState(() {
+                    clockingProvider.selectedDate = value;
+                    debugPrint(
+                        "Selected DateTime: ${clockingProvider.selectedDate!.toIso8601String().substring(0, 10)}");
+                  });
+                  clockingProvider.getPastMeetingEvents();
+                }
+              });
+            },
           ),
+        ),
+        LabelWidgetContainer(
+          label: "Meeting/Event",
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<MeetingEventModel>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select Meeting'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: clockingProvider.selectedPastMeetingEvent,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: clockingProvider.pastMeetingEvents
+                  .map((MeetingEventModel mc) {
+                return DropdownMenuItem(
+                  value: mc,
+                  child: Text(mc.name!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  clockingProvider.selectedPastMeetingEvent =
+                      val as MeetingEventModel;
+                });
+                clockingProvider.getMemberCategories();
+              },
+            ),
+          ),
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
         ),
         LabelWidgetContainer(
           label: "Member Category",
-          child: FormButton(
-            label: "All",
-            function: () {},
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<MemberCategory>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select Member Category'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: clockingProvider.selectedMemberCategory,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: clockingProvider.memberCategories.map((MemberCategory mc) {
+                return DropdownMenuItem(
+                  value: mc,
+                  child: Text(mc.category!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  clockingProvider.selectedMemberCategory =
+                      val as MemberCategory;
+                });
+                // call method to fetch all sub groups
+                clockingProvider.getSubGroups();
+              },
+            ),
           ),
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
         ),
         LabelWidgetContainer(
           label: "Group",
-          child: FormButton(
-            label: "Select Group",
-            function: () {},
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<Group>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select Group'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: clockingProvider.selectedGroup,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: clockingProvider.groups.map((Group group) {
+                return DropdownMenuItem(
+                  value: group,
+                  child: Text(group.group!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  clockingProvider.selectedGroup = val as Group;
+                });
+              },
+            ),
           ),
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
         ),
         LabelWidgetContainer(
           label: "Sub Group",
-          child: FormButton(
-            label: "Select Sub Group",
-            function: () {},
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<SubGroup>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select SubGroup'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: clockingProvider.selectedSubGroup,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: clockingProvider.subGroups.map((SubGroup subGroup) {
+                return DropdownMenuItem(
+                  value: subGroup,
+                  child: Text(subGroup.subgroup!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  clockingProvider.selectedSubGroup = val as SubGroup;
+                });
+              },
+            ),
           ),
         ),
-        LabelWidgetContainer(
-            label: "Meeting Type",
-            child: FormButton(
-              label: "Select Meeting Type",
-              function: () {},
-            )),
-        LabelWidgetContainer(
-            label: "Date",
-            child: FormButton(
-              label: "Select Date",
-              function: () {},
-            )),
-        LabelWidgetContainer(
-          label: "Set Mass Time",
-          child: FormButton(
-            label: generalClockTime != null
-                ? DateFormat("hh:mm").format(generalClockTime!)
-                : "Select time",
-            function: () {},
-          ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
         ),
+        // LabelWidgetContainer(
+        //     label: "Meeting Type",
+        //     child: FormButton(
+        //       label: "Select Meeting Type",
+        //       function: () {},
+        //     )),
+
+        Row(
+          children: [
+            Expanded(
+              child: LabelWidgetContainer(
+                label: "Minimum Age",
+                child: FormTextField(
+                  controller: clockingProvider.minAgeTEC,
+                  textInputType: TextInputType.number,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Expanded(
+              child: LabelWidgetContainer(
+                label: "Maximum Age",
+                child: FormTextField(
+                  controller: clockingProvider.maxAgeTEC,
+                  textInputType: TextInputType.number,
+                ),
+              ),
+            )
+          ],
+        ),
+
+        SizedBox(
+          height: displayHeight(context) * 0.008,
+        ),
+
+        CustomElevatedButton(
+            label: "Filter",
+            function: () {
+              clockingProvider.validateFilterFields();
+              if (clockingProvider.loading) {
+                // scroll to bottom of the screen to show the loading progress
+                _controller.animateTo(
+                  _controller.position.maxScrollExtent,
+                  duration: const Duration(seconds: 3),
+                  curve: Curves.ease,
+                );
+              }
+            }),
       ],
     );
   }

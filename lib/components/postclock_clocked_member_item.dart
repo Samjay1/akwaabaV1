@@ -13,23 +13,28 @@ import 'package:provider/provider.dart';
 import 'custom_elevated_button.dart';
 import 'custom_outlined_button.dart';
 
-class ClockedMemberItem extends StatefulWidget {
+class PostClockClockedMemberItem extends StatefulWidget {
   final Attendee? attendee;
-  const ClockedMemberItem({Key? key, this.attendee}) : super(key: key);
+  const PostClockClockedMemberItem({Key? key, this.attendee}) : super(key: key);
 
   @override
-  State<ClockedMemberItem> createState() => _ClockedMemberItemState();
+  State<PostClockClockedMemberItem> createState() =>
+      _PostClockClockedMemberItemState();
 }
 
-class _ClockedMemberItemState extends State<ClockedMemberItem> {
+class _PostClockClockedMemberItemState
+    extends State<PostClockClockedMemberItem> {
   final TextEditingController startBreakcontroller = TextEditingController();
   final TextEditingController endBreakcontroller = TextEditingController();
 
   DateTime? _selectedTime;
   DateTime now = DateTime.now();
 
+  late ClockingProvider clockingProvider;
+
   @override
   Widget build(BuildContext context) {
+    clockingProvider = context.watch<ClockingProvider>();
     var inTime = DateUtil.formatStringDate(DateFormat.jm(),
         date: DateTime.parse(widget.attendee!.attendance!.inTime!));
 
@@ -103,6 +108,12 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                                       null) {
                                     showNormalToast(
                                         '$attendeeName has already been clocked out. Thank you!');
+                                  } else if (clockingProvider.postClockDate ==
+                                          null ||
+                                      clockingProvider.postClockTime == null) {
+                                    showNormalToast(
+                                      'Please select date & time to clocked out $attendeeName. Thank you!',
+                                    );
                                   } else {
                                     showDialog(
                                       context: context,
@@ -122,7 +133,8 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                                                 .clockMemberOut(
                                               context: context,
                                               clockingId: clockingId!,
-                                              time: null,
+                                              time: clockingProvider
+                                                  .getPostClockDateTime(),
                                             );
                                           },
                                           onCancelTap: () =>
@@ -170,6 +182,14 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                                             null) {
                                           showNormalToast(
                                               '$attendeeName has already started break. Thank you!');
+                                        } else if (clockingProvider
+                                                    .postClockDate ==
+                                                null ||
+                                            clockingProvider.postClockTime ==
+                                                null) {
+                                          showNormalToast(
+                                            'Please select date & time to start break for $attendeeName. Thank you!',
+                                          );
                                         } else {
                                           showDialog(
                                             context: context,
@@ -191,7 +211,8 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                                                       .startMeetingBreak(
                                                     context: context,
                                                     clockingId: clockingId!,
-                                                    time: null,
+                                                    time: clockingProvider
+                                                        .getPostClockDateTime(),
                                                   );
                                                 },
                                                 onCancelTap: () =>
@@ -221,6 +242,14 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                                             null) {
                                           showNormalToast(
                                               'You can\'t end a break that has not been started. Please start the break to continue!');
+                                        } else if (clockingProvider
+                                                    .postClockDate ==
+                                                null ||
+                                            clockingProvider.postClockTime ==
+                                                null) {
+                                          showNormalToast(
+                                            'Please select date & time to end break for $attendeeName. Thank you!',
+                                          );
                                         } else {
                                           showDialog(
                                             context: context,
@@ -242,7 +271,8 @@ class _ClockedMemberItemState extends State<ClockedMemberItem> {
                                                       .endMeetingBreak(
                                                     context: context,
                                                     clockingId: clockingId!,
-                                                    time: null,
+                                                    time: clockingProvider
+                                                        .getPostClockDateTime(),
                                                   );
                                                 },
                                                 onCancelTap: () =>
