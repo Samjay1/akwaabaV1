@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_responses/clockin_response.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
+import 'package:akwaaba/models/general/recentClockModal.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -158,6 +159,37 @@ class MemberAPI {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Network issue')));
       return [];
+    }
+  }
+
+
+  Future<Object?> getRecentClocking(
+      BuildContext context, String memberToken, memberID) async {
+    print('UserApi token-transactions $memberToken');
+    try {
+      http.Response response = await http.get(
+          Uri.parse(
+              '$baseUrl/attendance/meeting-event/attendance/lastseen-member/$memberID'),
+          headers: {
+            'Authorization': 'Token $memberToken',
+            'Content-Type': 'application/json'
+          });
+      if (response.statusCode == 200) {
+        var decodedresponse = jsonDecode(response.body);
+        print("RecentClocking success: $decodedresponse");
+        Iterable dataList = decodedresponse['results'];
+        // return dataList
+        //     .map((data) => RecentClockModal.fromJson(data))
+        //     .toList();
+        return 'hello';
+      } else {
+        print('DeviceRequestModel error ${jsonDecode(response.body)}');
+        return null;
+      }
+    } on SocketException catch (_) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Network issue')));
+      return null;
     }
   }
 }

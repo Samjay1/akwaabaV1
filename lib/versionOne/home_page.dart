@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
@@ -81,7 +82,9 @@ class _HomePageState extends State<HomePage> {
           memberToken: memberToken,
           context: context,
         );
-        setState(() {});
+
+        // MemberAPI().getRecentClocking(context,memberToken,6908);
+        // setState(() {});
       });
 
       // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -141,16 +144,16 @@ class _HomePageState extends State<HomePage> {
               //     : userType.compareTo("admin") == 0
               //         ? Consumer<ClientProvider>(
               //             builder: (context, data, child) {
-              //             return headerView(
+              //             return adminHeaderView(
               //                 firstName: data.getUser?.firstName,
               //                 surName: data.getUser?.surName,
               //                 profileImage: data.getUser?.profilePicture);
               //           })
               //         : const Text("Unknown User type"),
 
-              // const SizedBox(
-              //   height: 36,
-              // ),
+              const SizedBox(
+                height: 36,
+              ),
 
               const Text(
                 "Today's Meetings",
@@ -416,6 +419,50 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     });
+  }
+
+  Widget adminHeaderView({var firstName, var surName, var profileImage}) {
+      return Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const UpdateAccountPage(),
+                    ),
+                  );
+                },
+                child: profileImage != null
+                    ? Align(
+                  child: CustomCachedImageWidget(
+                    url: profileImage,
+                    height: 130,
+                  ),
+                )
+                    : defaultProfilePic(height: 130),
+              ),
+              Text(
+                "$firstName $surName",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+
+              const SizedBox(
+                height: 24,
+              ),
+            ],
+          ),
+        ),
+      );
   }
 
   Widget recentClockDetailsView() {
