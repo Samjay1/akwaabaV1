@@ -34,32 +34,52 @@ class UserApi {
         prefs.setString('token', clientToken);
         prefs.setString('account_type', 'client');
 
-        Provider.of<ClientProvider>(context, listen: false)
-            .setClientToken(token: clientToken);
+        // Provider.of<ClientProvider>(context, listen: false)
+        //     .setClientToken(token: clientToken);
 
         var accountId = decodedResponse['user']['accountId'];
-        print('accountId $accountId');
+        var branchId = decodedResponse['user']['branchId'];
+        print('accountId $accountId, branchId $branchId');
 
         // debugPrint('FULL CLIENT INFO $clientToken');
-        //GET FULL ACCOUNT DETAILS FROM API USING ACCOUNT-ID PARAM FROM LOGIN RESPONSE
+        //GET BRANCH NAME FROM API USING BRANCH-ID PARAM FROM LOGIN RESPONSE
         var headers = {
           'Authorization': 'Token $clientToken',
           'Content-Type': 'application/json'
         };
-        http.Response clientResponse = await http.get(
-            Uri.parse('$baseUrl/clients/account/$accountId'),
+        http.Response branchResponse = await http.get(
+            Uri.parse('$baseUrl/clients/branch/$branchId'),
             headers: headers);
-        var clientDecodedResponse = jsonDecode(clientResponse.body);
-        if (clientResponse.statusCode == 200) {
-          var clientData = clientDecodedResponse['data'];
-          debugPrint('FULL CLIENT INFO ${clientData.toString()}');
-          return ClientAccountInfo.fromJson(clientData, user, clientToken);
+        var branchNameResp = jsonDecode(branchResponse.body);
+        if (branchResponse.statusCode == 200) {
+            debugPrint('BRANCH-NAME: $branchNameResp');
+            var branchName = branchNameResp['data']['name'];
+            // debugPrint('BRANCHNAME: $branchName');
+              //HTTP REQUEST(API) FOR GETTING CLIENT ACCOUNT INFO
+              //GET FULL ACCOUNT DETAILS FROM API USING ACCOUNT-ID PARAM FROM LOGIN RESPONSE
+              http.Response clientResponse = await http.get(
+                  Uri.parse('$baseUrl/clients/account/$accountId'),
+                  headers: headers);
+
+              var clientDecodedResponse = jsonDecode(clientResponse.body);
+              if (clientResponse.statusCode == 200) {
+                var clientData = clientDecodedResponse['data'];
+                // debugPrint('FULL CLIENT INFO ${clientData.toString()}');
+                return ClientAccountInfo.fromJson(clientData, user, branchName, clientToken);
+
+                //      ERROR FOR CLIENT INFO HTTP REQUEST
+              } else {
+                debugPrint('ERROR:FULL CLIENT INFO $clientDecodedResponse');
+                return 'login_error';
+              }
+
+        //      ERROR FOR BRANCH HTTP REQUEST
         } else {
-          debugPrint('ERROR:FULL CLIENT INFO $clientDecodedResponse');
+          debugPrint('ERROR: branchName $branchNameResp');
           return 'login_error';
         }
 
-        // return ClientAccountInfo.fromJson(user, branchId, clientToken);
+        //      ERROR FOR LOGIN HTTP REQUEST
       } else {
         return 'login_error';
       }

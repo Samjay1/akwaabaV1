@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
               //     : userType.compareTo("admin") == 0
               //         ? Consumer<ClientProvider>(
               //             builder: (context, data, child) {
-              //             return headerView(
+              //             return adminHeaderView(
               //                 firstName: data.getUser?.firstName,
               //                 surName: data.getUser?.surName,
               //                 profileImage: data.getUser?.profilePicture);
@@ -301,6 +301,44 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget adminHeaderView({var firstName, var surName, var profileImage}) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            GestureDetector(
+              child: profileImage != null
+                  ? Align(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(70),
+                        child: CustomCachedImageWidget(
+                          url: profileImage,
+                          height: 130,
+                        ),
+                      ),
+                    )
+                  : defaultProfilePic(height: 130),
+            ),
+            Text(
+              "$firstName $surName",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 18,
+              ),
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+          ],
         ),
       ),
     );

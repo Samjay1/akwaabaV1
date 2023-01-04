@@ -25,6 +25,7 @@ import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/post_clocking_page.dart';
+import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,22 +44,22 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  // List<Map> bottomNavItems = [
-  //   {"title": "Home", "icon_data": CupertinoIcons.home},
-  //   {"title": "Events", "icon_data": Icons.calendar_month_outlined},
-  //   {"title": "Clocking", "icon_data": CupertinoIcons.alarm},
-  //   // {"title":"More","icon_data":Icons.menu},
-  // ];
+  List<Map> bottomNavItems = [
+    {"title": "Home", "icon_data": CupertinoIcons.home},
+    {"title": "Events", "icon_data": Icons.calendar_month_outlined},
+    {"title": "Post .Clocking", "icon_data": CupertinoIcons.alarm},
+    // {"title":"More","icon_data":Icons.menu},
+  ];
 
-  // List<Map> bottomNavItemsFiled = [
-  //   {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
-  //   {"title": "Events", "icon_data": Icons.calendar_month},
-  //   {"title": "Clocking", "icon_data": CupertinoIcons.alarm_fill},
-  //   // {"title":"More","icon_data":Icons.menu},
-  // ];
+  List<Map> bottomNavItemsFiled = [
+    {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
+    {"title": "Events", "icon_data": Icons.calendar_month},
+    {"title": "Post .Clocking", "icon_data": CupertinoIcons.alarm_fill},
+    // {"title":"More","icon_data":Icons.menu},
+  ];
 
-  List<Map> bottomNavItems = [];
-  List<Map> bottomNavItemsFiled = [];
+  // List<Map> bottomNavItems = [];
+  // List<Map> bottomNavItemsFiled = [];
 
   // List<Map> bottomNavItemsFiled = [
   //   {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
@@ -103,44 +104,44 @@ class _MainPageState extends State<MainPage> {
 
         if (userType.isNotEmpty) {
           if (userType.compareTo("member") == 0) {
-            // bottomNavItems.removeAt(2);
-            // bottomNavItemsFiled.removeAt(2);
-            // children.removeAt(2);
+            bottomNavItems.removeAt(2);
+            bottomNavItemsFiled.removeAt(2);
+            children.removeAt(2);
 
             SharedPrefs().getMemberProfile().then((value) {
               Provider.of<MemberProvider>(context, listen: false)
                   .setMemberProfileInfo(memberProfile: value!);
             });
-            bottomNavItems = [
-              {"title": "Home", "icon_data": CupertinoIcons.home},
-              {"title": "Events", "icon_data": Icons.calendar_month_outlined},
-              // {"title":"More","icon_data":Icons.menu},
-            ];
-            bottomNavItemsFiled = [
-              {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
-              {"title": "Events", "icon_data": Icons.calendar_month},
-              // {"title":"More","icon_data":Icons.menu},
-            ];
+            // bottomNavItems = [
+            //   {"title": "Home", "icon_data": CupertinoIcons.home},
+            //   {"title": "Events", "icon_data": Icons.calendar_month_outlined},
+            //   // {"title":"More","icon_data":Icons.menu},
+            // ];
+            // bottomNavItemsFiled = [
+            //   {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
+            //   {"title": "Events", "icon_data": Icons.calendar_month},
+            //   // {"title":"More","icon_data":Icons.menu},
+            // ];
           } else if (userType.compareTo("admin") == 0) {
             SharedPrefs().getAdminProfile().then((value) {
               Provider.of<ClientProvider>(context, listen: false)
                   .setAdminProfileInfo(adminProfile: value!);
             });
-            bottomNavItems = [
-              {"title": "Home", "icon_data": CupertinoIcons.home},
-              {"title": "Events", "icon_data": Icons.calendar_month_outlined},
-              {"title": "Post Clocking", "icon_data": CupertinoIcons.alarm},
-              // {"title":"More","icon_data":Icons.menu},
-            ];
-            bottomNavItemsFiled = [
-              {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
-              {"title": "Events", "icon_data": Icons.calendar_month},
-              {
-                "title": "Post Clocking",
-                "icon_data": CupertinoIcons.alarm_fill
-              },
-              // {"title":"More","icon_data":Icons.menu},
-            ];
+            // bottomNavItems = [
+            //   {"title": "Home", "icon_data": CupertinoIcons.home},
+            //   {"title": "Events", "icon_data": Icons.calendar_month_outlined},
+            //   {"title": "Post Clocking", "icon_data": CupertinoIcons.alarm},
+            //   // {"title":"More","icon_data":Icons.menu},
+            // ];
+            // bottomNavItemsFiled = [
+            //   {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
+            //   {"title": "Events", "icon_data": Icons.calendar_month},
+            //   {
+            //     "title": "Post Clocking",
+            //     "icon_data": CupertinoIcons.alarm_fill
+            //   },
+            //   // {"title":"More","icon_data":Icons.menu},
+            // ];
           }
 
           // SharedPrefs().getMemberProfile().then((value) {
@@ -192,8 +193,8 @@ class _MainPageState extends State<MainPage> {
               builder: (context, data, child) {
                 return adminDrawerView(
                     logo: data.getUser?.logo,
-                    applicantFirstname: data.getUser?.applicantFirstname,
-                    applicantSurname: data.getUser?.applicantSurname);
+                    name: data.getUser?.name,
+                    branch: data.getUser?.branchName);
               },
             )
           : Consumer<MemberProvider>(
@@ -213,7 +214,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget adminDrawerView(
-      {var logo, var applicantFirstname, var applicantSurname}) {
+      {var logo, var name, var branch}) {
     return Drawer(
       backgroundColor: Colors.grey.shade300,
       child: Column(
@@ -228,17 +229,25 @@ class _MainPageState extends State<MainPage> {
               children: [
                 Align(
                   alignment: Alignment.center,
-                  child: CustomCachedImageWidget(
-                    url: logo ?? "",
-                    height: 100,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(70),
+                    child: CustomCachedImageWidget(
+                      url: logo ?? "",
+                      height: 110,
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 8,
                 ),
                 Text(
-                  "${applicantFirstname ?? ""} ${applicantSurname ?? ""}",
-                  style: const TextStyle(fontSize: 20),
+                  "${name ?? ""}",
+                  style: const TextStyle(fontSize: 17),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  "(${branch ?? ""})",
+                  style: const TextStyle(fontSize: 16),
                   textAlign: TextAlign.center,
                 )
               ],
@@ -252,6 +261,95 @@ class _MainPageState extends State<MainPage> {
                     return ListView(
                       physics: const BouncingScrollPhysics(),
                       children: [
+
+                        drawerItemView(
+                          title: "Database",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                                const WebViewPage(
+                                    url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                    title: 'Database')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "View Members",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                               const WebViewPage(
+                                    url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                    title: 'View Members')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Create Meetings",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                               const WebViewPage(
+                                    url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                    title: 'Create Meetings')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Scheduled Meetings",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'Scheduled Meetings')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Assign Absent/Leave Status",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'Assign Absent/Leave Status')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "View Absent/Leave Status",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'View Absent/Leave Status')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Cash Manager",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'Cash Manager')));
+                          },
+                        ),
+
+                        drawerItemView(
+                          title: "Account Subscription",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                            const WebViewPage(
+                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
+                                title: 'Account Subscription')));
+                          },
+                        ),
+
                         drawerItemView(
                           title: "Attendance History",
                           iconData: Icons.history,
@@ -276,17 +374,17 @@ class _MainPageState extends State<MainPage> {
                                         const AttendanceReportPage()));
                           },
                         ),
-                        drawerItemView(
-                          title: "Request Device Activation",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const DeviceActivationRequestPage()));
-                          },
-                        ),
+                        // drawerItemView(
+                        //   title: "Request Device Activation",
+                        //   iconData: Icons.phone_android,
+                        //   function: () {
+                        //     Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (_) =>
+                        //                 const DeviceActivationRequestPage()));
+                        //   },
+                        // ),
                         drawerItemView(
                             title: "Log out",
                             iconData: Icons.logout_rounded,
