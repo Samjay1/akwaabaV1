@@ -1,22 +1,25 @@
+import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_outlined_button.dart';
 import 'package:akwaaba/components/custom_progress_indicator.dart';
-import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
+import 'package:akwaaba/models/general/branch.dart';
+import 'package:akwaaba/models/general/gender.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
+import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../components/clocked_member_item.dart';
@@ -66,12 +69,19 @@ class _ClockingPageState extends State<ClockingPage> {
 
     Future.delayed(Duration.zero, () {
       // load attendance list for meeting
-      Provider.of<ClockingProvider>(context, listen: false).getAttendanceList(
+      Provider.of<ClockingProvider>(context, listen: false).getAllAbsentees(
         meetingEventModel: widget.meetingEventModel,
       );
-      // loading member group for filtering
-      Provider.of<ClockingProvider>(context, listen: false)
-          .getMemberCategories();
+      // check if admin is main branch admin or not
+      if (Provider.of<ClientProvider>(context, listen: false)
+              .getUser
+              .branchID ==
+          AppConstants.mainAdmin) {
+        Provider.of<ClockingProvider>(context, listen: false).getBranches();
+      } else {
+        Provider.of<ClockingProvider>(context, listen: false).getGenders();
+      }
+
       setState(() {});
     });
     super.initState();
@@ -86,8 +96,9 @@ class _ClockingPageState extends State<ClockingPage> {
   @override
   Widget build(BuildContext context) {
     clockingProvider = context.watch<ClockingProvider>();
-    var members = clockingProvider.meetingMembers;
-    var clockedMembers = clockingProvider.clockedMembers;
+    clockingProvider.setCurrentContext(context);
+    var absentees = clockingProvider.absentees;
+    var attendees = clockingProvider.attendees;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.meetingEventModel.name!),
@@ -115,24 +126,15 @@ class _ClockingPageState extends State<ClockingPage> {
                   onChanged: (val) {
                     setState(() {
                       if (clockingListState) {
-                        // search attendance list by name
-                        clockingProvider.searchAttendanceList(searchText: val);
+                        // search absentees by name
+                        clockingProvider.searchAbsenteesByName(searchText: val);
                       } else {
-                        // search clocked members by name
-                        clockingProvider.searchClockedList(searchText: val);
+                        // search atendees by name
+                        clockingProvider.searchAttendeesByName(searchText: val);
                       }
                     });
                   },
                 ),
-
-                //),
-                // IconButton(onPressed: (){
-                //   Navigator.push(context, MaterialPageRoute(builder: (_)
-                //   =>const FilterPageClocking()));
-                // },
-                //     icon: const Icon(Icons.filter_alt,color: primaryColor,))
-                //   ],
-                // ),
 
                 const SizedBox(
                   height: 12,
@@ -143,12 +145,11 @@ class _ClockingPageState extends State<ClockingPage> {
                   onChanged: (val) {
                     setState(() {
                       if (clockingListState) {
-                        // search attendance list by id
-                        clockingProvider.searchAttendanceListById(
-                            searchText: val);
+                        // search absentees by id
+                        clockingProvider.searchAbsenteesById(searchText: val);
                       } else {
-                        // search clocked members by id
-                        clockingProvider.searchClockedListById(searchText: val);
+                        // search atendees by id
+                        clockingProvider.searchAttendeesById(searchText: val);
                       }
                     });
                   },
@@ -162,68 +163,13 @@ class _ClockingPageState extends State<ClockingPage> {
                   height: 2,
                   color: Colors.orange,
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //   children: [
-                //     //REFRESING BUTTON
-                //     InkWell(
-                //         onTap: () {},
-                //         child: Container(
-                //           padding: const EdgeInsets.symmetric(
-                //               vertical: 5, horizontal: 10),
-                //           decoration: BoxDecoration(
-                //               color: Colors.green,
-                //               borderRadius: BorderRadius.circular(5)),
-                //           child: const Text('Refresh',
-                //               style: TextStyle(color: Colors.white)),
-                //         )),
-                //     SizedBox(
-                //       width: displayWidth(context) * 0.02,
-                //     ),
-                //     //POST CLOCK DATE BUTTON
-                //     Expanded(
-                //       child: InkWell(
-                //           onTap: () {},
-                //           child: Container(
-                //             padding: const EdgeInsets.symmetric(
-                //                 vertical: 5, horizontal: 10),
-                //             decoration: BoxDecoration(
-                //                 color: Colors.blue,
-                //                 borderRadius: BorderRadius.circular(5)),
-                //             child: const Text(
-                //               'Post Clock Date',
-                //               style: TextStyle(color: Colors.white),
-                //             ),
-                //           )),
-                //     ),
-                //     SizedBox(
-                //       width: displayWidth(context) * 0.02,
-                //     ),
-                //     //POST CLOCK TIME BUTTON
-                //     Expanded(
-                //       child: InkWell(
-                //           onTap: () {},
-                //           child: Container(
-                //             padding: const EdgeInsets.symmetric(
-                //                 vertical: 5, horizontal: 10),
-                //             decoration: BoxDecoration(
-                //                 color: Colors.blue,
-                //                 borderRadius: BorderRadius.circular(5)),
-                //             child: const Text(
-                //               'Post Clock Time',
-                //               style: TextStyle(color: Colors.white),
-                //             ),
-                //           )),
-                //     )
-                //   ],
-                // ), // CustomElevatedButton(label: "Filter", function: (){}),\
 
                 SizedBox(
-                  height: displayHeight(context) * 0.02,
+                  height: displayHeight(context) * 0.01,
                 ),
 
                 LabelWidgetContainer(
-                  label: "Clocked In/Out",
+                  label: "",
                   child: Row(
                     children: [
                       const Text("Bulk Clock"),
@@ -236,8 +182,7 @@ class _ClockingPageState extends State<ClockingPage> {
                           mycolor: Colors.green,
                           radius: 5,
                           function: () {
-                            if (clockingProvider
-                                .selectedMeetingMembers.isEmpty) {
+                            if (clockingProvider.selectedAbsentees.isEmpty) {
                               showNormalToast(
                                   'Please select members to clock-in on their behalf');
                             } else {
@@ -256,8 +201,7 @@ class _ClockingPageState extends State<ClockingPage> {
                                       Navigator.pop(context);
                                       clockingProvider.clockMemberIn(
                                         context: context,
-                                        member: null,
-                                        clockingId: 0,
+                                        attendee: null,
                                         time: null,
                                       );
                                     },
@@ -280,13 +224,11 @@ class _ClockingPageState extends State<ClockingPage> {
                           mycolor: Colors.red,
                           radius: 5,
                           function: () {
-                            if (clockingProvider
-                                .selectedClockedMembers.isEmpty) {
+                            if (clockingProvider.selectedAttendees.isEmpty) {
                               showNormalToast(
                                   'Please select members to clock-out on their behalf');
                             } else {
                               // perform bulk clock out
-
                               showDialog(
                                 context: context,
                                 builder: (_) => AlertDialog(
@@ -301,7 +243,7 @@ class _ClockingPageState extends State<ClockingPage> {
                                       Navigator.pop(context);
                                       clockingProvider.clockMemberOut(
                                         context: context,
-                                        clockingId: 0,
+                                        attendee: null,
                                         time: null,
                                       );
                                     },
@@ -320,11 +262,11 @@ class _ClockingPageState extends State<ClockingPage> {
                 ),
 
                 const SizedBox(
-                  height: 12,
+                  height: 4,
                 ),
 
                 LabelWidgetContainer(
-                    label: "Break Time",
+                    label: "",
                     child: Row(
                       children: [
                         const Text("Bulk Break"),
@@ -335,9 +277,11 @@ class _ClockingPageState extends State<ClockingPage> {
                           child: CustomElevatedButton(
                             label: "Start",
                             radius: 5,
+                            labelSize: 15,
+                            textColor: whiteColor,
+                            color: Colors.green,
                             function: () {
-                              if (clockingProvider
-                                  .selectedClockedMembers.isEmpty) {
+                              if (clockingProvider.selectedAttendees.isEmpty) {
                                 showNormalToast(
                                     'Please select members to start break on their behalf');
                               } else {
@@ -356,7 +300,7 @@ class _ClockingPageState extends State<ClockingPage> {
                                         Navigator.pop(context);
                                         clockingProvider.startMeetingBreak(
                                           context: context,
-                                          clockingId: 0,
+                                          attendee: null,
                                           time: null,
                                         );
                                       },
@@ -376,11 +320,11 @@ class _ClockingPageState extends State<ClockingPage> {
                         Expanded(
                           child: CustomElevatedButton(
                             label: "End",
-                            color: Colors.blue,
+                            labelSize: 15,
+                            color: primaryColor,
                             radius: 5,
                             function: () {
-                              if (clockingProvider
-                                  .selectedClockedMembers.isEmpty) {
+                              if (clockingProvider.selectedAttendees.isEmpty) {
                                 showNormalToast(
                                     'Please select members to end break on their behalf');
                               } else {
@@ -399,7 +343,7 @@ class _ClockingPageState extends State<ClockingPage> {
                                         Navigator.pop(context);
                                         clockingProvider.endMeetingBreak(
                                           context: context,
-                                          clockingId: 0,
+                                          attendee: null,
                                           time: null,
                                         );
                                       },
@@ -427,15 +371,18 @@ class _ClockingPageState extends State<ClockingPage> {
                   height: 8,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
                         child: CustomElevatedButton(
                             label: "Clocking List",
+                            textColor: Colors.white,
                             radius: 5,
                             function: () {
                               setState(() {
                                 clockingListState = true;
                                 checkAll = false;
+                                clockingProvider.selectedAttendees.clear();
                                 debugPrint(
                                     '     clockingListState = $clockingListState');
                               });
@@ -444,81 +391,81 @@ class _ClockingPageState extends State<ClockingPage> {
                       width: 16,
                     ),
                     Expanded(
-                        child: CustomElevatedButton(
-                            label: "Clocked List",
-                            color: Colors.green,
-                            textColor: Colors.white,
-                            radius: 5,
-                            function: () {
-                              setState(() {
-                                clockingListState = false;
-                                checkAll = false;
-                                debugPrint(
-                                    '     clockingListState = $clockingListState');
-                              });
-                            })),
+                      child: CustomElevatedButton(
+                          label: "Clocked List",
+                          color: Colors.green,
+                          textColor: Colors.white,
+                          radius: 5,
+                          function: () {
+                            setState(() {
+                              clockingListState = false;
+                              checkAll = false;
+                              clockingProvider.selectedAbsentees.clear();
+                              debugPrint(
+                                  '     clockingListState = $clockingListState');
+                            });
+                          }),
+                    ),
                   ],
+                ),
+
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
                 ),
 
                 Row(
                   children: [
                     Checkbox(
-                        activeColor: primaryColor,
-                        shape: const CircleBorder(),
-                        value: checkAll,
-                        onChanged: (val) {
-                          setState(() {
-                            checkAll = val!;
-                            if (clockingListState) {
-                              for (Member? member in members) {
-                                member!.selected = checkAll;
-                                if (member.selected!) {
-                                  clockingProvider.selectedMeetingMembers
-                                      .add(member);
-                                }
-                                if (!member.selected!) {
-                                  clockingProvider.selectedMeetingMembers
-                                      .remove(member);
-                                }
-                              }
-                              debugPrint(
-                                  "Select Members: ${clockingProvider.selectedMeetingMembers.length}");
-                            } else {
-                              for (var i = 0; i < clockedMembers.length; i++) {
-                                clockedMembers[i]!
-                                    .additionalInfo!
-                                    .memberInfo!
-                                    .selected = checkAll;
+                      activeColor: primaryColor,
+                      shape: const CircleBorder(),
+                      value: checkAll,
+                      onChanged: (val) {
+                        setState(() {
+                          checkAll = val!;
+                        });
 
-                                if (clockedMembers[i]!
-                                    .additionalInfo!
-                                    .memberInfo!
-                                    .selected!) {
-                                  clockingProvider.selectedClockedMembers
-                                      .add(clockedMembers[i]!);
-                                }
-                                if (!clockedMembers[i]!
-                                    .additionalInfo!
-                                    .memberInfo!
-                                    .selected!) {
-                                  clockingProvider.selectedClockedMembers
-                                      .remove(clockedMembers[i]!);
-                                }
-                              }
-                              debugPrint(
-                                  "Select Clocked Members: ${clockingProvider.selectedClockedMembers.length}");
-                              // for (Member? member in clockedMembers) {
-                              //   member!.selected = checkAll;
-                              // }
+                        if (clockingListState) {
+                          for (Attendee? absentee in absentees) {
+                            absentee!.attendance!.memberId!.selected = checkAll;
+                            if (absentee.attendance!.memberId!.selected!) {
+                              clockingProvider.selectedAbsentees.add(absentee);
                             }
-                          });
-                        }),
-                    const Text("Check All")
+                            if (!absentee.attendance!.memberId!.selected!) {
+                              clockingProvider.selectedAbsentees
+                                  .remove(absentee);
+                            }
+                            debugPrint(
+                                "Absentee: ${absentee.attendance!.memberId!.selected}");
+                          }
+
+                          debugPrint(
+                              "Selected Absentees: ${clockingProvider.selectedAbsentees.length}");
+                        } else {
+                          for (Attendee? attendee in attendees) {
+                            attendee!.attendance!.memberId!.selected = checkAll;
+                            if (attendee.attendance!.memberId!.selected!) {
+                              clockingProvider.selectedAttendees.add(attendee);
+                            }
+                            if (!attendee.attendance!.memberId!.selected!) {
+                              clockingProvider.selectedAttendees
+                                  .remove(attendee);
+                            }
+
+                            debugPrint(
+                                "Attendee: ${attendee.attendance!.memberId!.selected}");
+                          }
+
+                          debugPrint(
+                              "Selected attendees: ${clockingProvider.selectedAttendees.length}");
+                        }
+                      },
+                    ),
+                    const Text("Select All")
                   ],
                 ),
 
-                const SizedBox(
-                  height: 4,
+                SizedBox(
+                  height: displayHeight(context) * 0.008,
                 ),
 
                 const Divider(
@@ -534,81 +481,86 @@ class _ClockingPageState extends State<ClockingPage> {
                     ? const CustomProgressIndicator()
                     : clockingListState
                         ? Column(
-                            children: List.generate(members.length, (index) {
+                            children: List.generate(absentees.length, (index) {
                               return GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    if (members[index]!.selected!) {
+                                    if (absentees[index]!
+                                        .attendance!
+                                        .memberId!
+                                        .selected!) {
                                       //remove it
-                                      members[index]!.selected = false;
-                                      clockingProvider.selectedMeetingMembers
-                                          .remove(members[index]);
+                                      absentees[index]!
+                                          .attendance!
+                                          .memberId!
+                                          .selected = false;
+                                      clockingProvider.selectedAbsentees
+                                          .remove(absentees[index]);
                                     } else {
-                                      members[index]!.selected = true;
-                                      clockingProvider.selectedMeetingMembers
-                                          .add(members[index]);
+                                      absentees[index]!
+                                          .attendance!
+                                          .memberId!
+                                          .selected = true;
+                                      clockingProvider.selectedAbsentees
+                                          .add(absentees[index]);
                                     }
                                     if (clockingProvider
-                                        .selectedMeetingMembers.isNotEmpty) {
+                                        .selectedAbsentees.isNotEmpty) {
                                       itemHasBeenSelected = true;
                                     } else {
                                       itemHasBeenSelected = false;
                                     }
                                   });
                                   debugPrint(
-                                      "Select Members: ${clockingProvider.selectedMeetingMembers.length}");
+                                      "Select Absentees: ${clockingProvider.selectedAbsentees.length}");
                                 },
                                 child: ClockingMemberItem(
-                                  meetingEventModel: widget.meetingEventModel,
-                                  member: members[index],
+                                  absentee: absentees[index],
                                 ),
                               );
                             }),
                           )
                         : Column(
                             children: List.generate(
-                              clockedMembers.length,
+                              attendees.length,
                               (index) {
                                 return GestureDetector(
                                   onTap: () {
                                     setState(
                                       () {
-                                        if (clockedMembers[index]!
+                                        if (attendees[index]!
                                             .additionalInfo!
                                             .memberInfo!
                                             .selected!) {
                                           //remove it
-                                          clockedMembers[index]!
+                                          attendees[index]!
                                               .additionalInfo!
                                               .memberInfo!
                                               .selected = false;
 
-                                          clockingProvider
-                                              .selectedClockedMembers
-                                              .remove(clockedMembers[index]!);
+                                          clockingProvider.selectedAttendees
+                                              .remove(attendees[index]!);
                                         } else {
-                                          clockedMembers[index]!
+                                          attendees[index]!
                                               .additionalInfo!
                                               .memberInfo!
                                               .selected = true;
-                                          clockingProvider
-                                              .selectedClockedMembers
-                                              .add(clockedMembers[index]!);
+                                          clockingProvider.selectedAttendees
+                                              .add(attendees[index]!);
                                         }
                                         if (clockingProvider
-                                            .selectedClockedMembers
-                                            .isNotEmpty) {
+                                            .selectedAttendees.isNotEmpty) {
                                           itemHasBeenSelected = true;
                                         } else {
                                           itemHasBeenSelected = false;
                                         }
                                         debugPrint(
-                                            "Select Clocked Members: ${clockingProvider.selectedClockedMembers.length}");
+                                            "Selected Attendees: ${clockingProvider.selectedAttendees.length}");
                                       },
                                     );
                                   },
                                   child: ClockedMemberItem(
-                                    attendee: clockedMembers[index]!,
+                                    attendee: attendees[index]!,
                                   ),
                                 );
                               },
@@ -665,13 +617,101 @@ class _ClockingPageState extends State<ClockingPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // LabelWidgetContainer(
-        //   label: "Branch",
-        //   child: FormButton(
-        //     label: "All",
-        //     function: () {},
-        //   ),
-        // ),
+        Consumer<ClientProvider>(
+          builder: (context, data, child) {
+            return data.getUser.branchID == AppConstants.mainAdmin
+                ? LabelWidgetContainer(
+                    label: "Branch",
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(8),
+                        border:
+                            Border.all(width: 0.0, color: Colors.grey.shade400),
+                      ),
+                      child: DropdownButtonFormField<Branch>(
+                        isExpanded: true,
+                        style: const TextStyle(
+                          color: textColorPrimary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        hint: const Text('Select Branch'),
+                        decoration:
+                            const InputDecoration(border: InputBorder.none),
+                        value: clockingProvider.selectedBranch,
+                        icon: Icon(
+                          CupertinoIcons.chevron_up_chevron_down,
+                          color: Colors.grey.shade500,
+                          size: 16,
+                        ),
+                        // Array list of items
+                        items: clockingProvider.branches.map((Branch branch) {
+                          return DropdownMenuItem(
+                            value: branch,
+                            child: Text(branch.name!),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            clockingProvider.selectedBranch = val as Branch;
+                          });
+                          clockingProvider.getGenders();
+                        },
+                      ),
+                    ),
+                  )
+                : const SizedBox();
+          },
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
+        ),
+        LabelWidgetContainer(
+          label: "Gender",
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<Gender>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select Gender'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: clockingProvider.selectedGender,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: clockingProvider.genders.map((Gender gender) {
+                return DropdownMenuItem(
+                  value: gender,
+                  child: Text(gender.name!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  clockingProvider.selectedGender = val as Gender;
+                });
+                clockingProvider.getMemberCategories();
+              },
+            ),
+          ),
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
+        ),
         LabelWidgetContainer(
           label: "Member Category",
           child: Container(
@@ -708,8 +748,8 @@ class _ClockingPageState extends State<ClockingPage> {
                   clockingProvider.selectedMemberCategory =
                       val as MemberCategory;
                 });
-                // call method to fetch all sub groups
-                clockingProvider.getSubGroups();
+                // call method to fetch all groups
+                clockingProvider.getGroups();
               },
             ),
           ),
@@ -752,6 +792,7 @@ class _ClockingPageState extends State<ClockingPage> {
                 setState(() {
                   clockingProvider.selectedGroup = val as Group;
                 });
+                clockingProvider.getSubGroups();
               },
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:akwaaba/components/meeting_event_widget.dart';
+import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/screens/all_events_filter_page.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -27,18 +28,7 @@ class _AllEventsPageState extends State<AllEventsPage> {
   DateTime? endYear; //start and end year | month for filter range
   bool showFilteredResults = false;
   final TextEditingController _controllerSearch = TextEditingController();
-  List<MeetingEventItem> events = [
-    MeetingEventItem("Tues Office Work", "16 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Wed Office Work", "17 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Thurs Office Work", "18 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Frid Office Work", "19 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Office Retreat", "20 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Tues Office Work", "16 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Wed Office Work", "17 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Thurs Office Work", "18 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Frid Office Work", "19 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Office Retreat", "20 Aug 2022", "8:00AM", "5:00PM")
-  ];
+
   int listType = 0; //0= events, 1 = meetings
   int selectedEventType = -1;
   SharedPreferences? prefs;
@@ -208,10 +198,8 @@ class _AllEventsPageState extends State<AllEventsPage> {
                             var item = data.upcomingMeetings[index];
                             debugPrint('MEETING LIST ${item.memberType}');
                             return upcomingEvents(
-                                name: item.name,
-                                date: item.updateDate,
-                                startTime: item.startTime,
-                                closeTime: item.closeTime);
+                              meetingEvent: item,
+                            );
                           })
                       : const Center(child: CircularProgressIndicator());
                 },
@@ -223,27 +211,11 @@ class _AllEventsPageState extends State<AllEventsPage> {
     );
   }
 
-  Widget upcomingEvents({name, date, startTime, closeTime}) {
-    var months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'June',
-      'July',
-      'Aug',
-      'Sept',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    DateTime formatedDate = DateTime.parse(date.toString());
-    var month = formatedDate.month;
-    var day = formatedDate.day;
-    var year = formatedDate.year;
-    return MeetingEventWidget(MeetingEventItem(
-        name, "$day, ${months[month]} $year", startTime, closeTime));
+  Widget upcomingEvents({
+    required MeetingEventModel meetingEvent,
+  }) {
+    return MeetingEventWidget(
+      meetingEventModel: meetingEvent,
+    );
   }
 }

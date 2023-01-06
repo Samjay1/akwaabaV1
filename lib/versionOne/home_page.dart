@@ -1,10 +1,13 @@
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/custom_progress_indicator.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
+import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
+import 'package:akwaaba/constants/app_color.dart';
 import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
+import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
@@ -13,6 +16,7 @@ import 'package:akwaaba/screens/excuse_input_page.dart';
 import 'package:akwaaba/screens/members_page.dart';
 import 'package:akwaaba/screens/update_account_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/dimens.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -21,8 +25,10 @@ import 'package:akwaaba/versionOne/clocking_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import '../components/label_widget_container.dart';
 import '../models/meeting_event_item.dart';
 import '../providers/client_provider.dart';
@@ -35,13 +41,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<MeetingEventItem> events = [
-    MeetingEventItem("Tues Office Work", "16 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Wed Office Work", "17 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Thurs Office Work", "18 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Frid Office Work", "19 Aug 2022", "8:00AM", "5:00PM"),
-    MeetingEventItem("Office Retreat", "20 Aug 2022", "8:00AM", "5:00PM")
-  ];
   double screenHeight = 0;
   double screenWidth = 0;
   String userType = "";
@@ -142,29 +141,31 @@ class _HomePageState extends State<HomePage> {
                 height: 24,
               ),
 
-              // TODO: Uncomment it when recent clocking API is available
-              // userType.compareTo("member") == 0
-              //     ? Consumer<MemberProvider>(
-              //         builder: (context, data, child) {
-              //           return headerView(
-              //               firstName: data.memberProfile.firstname,
-              //               surName: data.memberProfile.surname,
-              //               profileImage: data.memberProfile.profilePicture);
-              //         },
-              //       )
-              //     : userType.compareTo("admin") == 0
-              //         ? Consumer<ClientProvider>(
-              //             builder: (context, data, child) {
-              //             return adminHeaderView(
-              //                 firstName: data.getUser?.firstName,
-              //                 surName: data.getUser?.surName,
-              //                 profileImage: data.getUser?.profilePicture);
-              //           })
-              //         : const Text("Unknown User type"),
+              userType.compareTo("member") == 0
+                  ? Consumer<MemberProvider>(
+                      builder: (context, data, child) {
+                        return memberHeaderView(
+                          firstName: data.memberProfile.firstname,
+                          surName: data.memberProfile.surname,
+                          userId: data.memberProfile.id,
+                          profileImage: data.memberProfile.profilePicture,
+                        );
+                      },
+                    )
+                  : userType.compareTo("admin") == 0
+                      ? Consumer<ClientProvider>(
+                          builder: (context, data, child) {
+                          return adminHeaderView(
+                              firstName: data.getUser?.firstName,
+                              surName: data.getUser?.surName,
+                              userId: data.getUser?.id,
+                              profileImage: data.getUser?.profilePicture);
+                        })
+                      : const Text("Unknown User type"),
 
-              // const SizedBox(
-              //   height: 36,
-              // ),
+              const SizedBox(
+                height: 36,
+              ),
 
               const Text(
                 "Today's Meetings",
@@ -176,73 +177,75 @@ class _HomePageState extends State<HomePage> {
               ),
 
               //----------------------------------------------------------------------
-              RefreshIndicator(
-                onRefresh: () async =>
-                    await attendanceProvider.getUpcomingMeetingEvents(
-                  memberToken: memberToken,
-                  context: context,
-                ),
-                child: Consumer<AttendanceProvider>(
-                  builder: (context, data, child) {
-                    if (data.loading) {
-                      return const CustomProgressIndicator();
-                    }
-                    if (data.todayMeetings.isEmpty) {
-                      return const EmptyStateWidget(
-                        text: 'You currently have no \nmeetings today!',
-                      );
-                    }
-                    if (userType == 'member') {
-                      return ListView.builder(
-                          itemCount: data.todayMeetings.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final item = data.todayMeetings[index];
-                            debugPrint('MEETING LIST ${item.memberType}');
-                            return todaysEvents(
-                              meeting: item,
-                              name: item.name,
-                              date: item.updateDate,
-                              startTime: item.startTime,
-                              closeTime: item.closeTime,
-                            );
-                          });
-                    }
-                    return ListView.builder(
-                        itemCount: data.todayMeetings.length,
+              attendanceProvider.loading
+                  ? Shimmer.fromColors(
+                      baseColor: AppColor.kGreyColorShade300,
+                      highlightColor: AppColor.kGreyColorShade100,
+                      child: ListView.builder(
                         shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          final item = data.todayMeetings[index];
-                          debugPrint('MEETING LIST ${item.memberType}');
-                          return InkWell(
-                            onTap: () {
-                              // set meeting as selected
-                              context
-                                  .read<ClockingProvider>()
-                                  .setSelectedMeeting(
-                                      data.todayMeetings[index]);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ClockingPage(
-                                    meetingEventModel:
-                                        data.todayMeetings[index],
+                        itemBuilder: (_, __) => const EventShimmerItem(),
+                        itemCount: 10,
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async =>
+                          await attendanceProvider.getUpcomingMeetingEvents(
+                        memberToken: memberToken,
+                        context: context,
+                      ),
+                      child: Consumer<AttendanceProvider>(
+                        builder: (context, data, child) {
+                          if (data.loading) {
+                            return const CustomProgressIndicator();
+                          }
+                          if (data.todayMeetings.isEmpty) {
+                            return const EmptyStateWidget(
+                              text: 'You currently have no \nmeetings today!',
+                            );
+                          }
+                          if (userType == 'member') {
+                            return ListView.builder(
+                                itemCount: data.todayMeetings.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  final item = data.todayMeetings[index];
+                                  debugPrint('MEETING LIST ${item.memberType}');
+                                  return todaysEvents(
+                                    meetingEventModel: item,
+                                  );
+                                });
+                          }
+                          return ListView.builder(
+                              itemCount: data.todayMeetings.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                final item = data.todayMeetings[index];
+                                debugPrint('MEETING LIST ${item.memberType}');
+                                return InkWell(
+                                  onTap: () {
+                                    // set meeting as selected
+                                    context
+                                        .read<ClockingProvider>()
+                                        .setSelectedMeeting(
+                                            data.todayMeetings[index]);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => ClockingPage(
+                                          meetingEventModel:
+                                              data.todayMeetings[index],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: adminTodaysEvents(
+                                    meetingEvent: item,
                                   ),
-                                ),
-                              );
-                            },
-                            child: adminTodaysEvents(
-                              meeting: item,
-                              name: item.name,
-                              date: item.updateDate,
-                              startTime: item.startTime,
-                              closeTime: item.closeTime,
-                            ),
-                          );
-                        });
-                  },
-                ),
-              ),
+                                );
+                              });
+                        },
+                      ),
+                    ),
               //----------------------------------------------------------------------
               const SizedBox(
                 height: 12,
@@ -283,14 +286,13 @@ class _HomePageState extends State<HomePage> {
                             }
                             return ListView.builder(
                                 itemCount: data.upcomingMeetings.length,
+                                shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   var item = data.upcomingMeetings[index];
                                   debugPrint('MEETING LIST ${item.memberType}');
                                   return upcomingEvents(
-                                      name: item.name,
-                                      date: item.updateDate,
-                                      startTime: item.startTime,
-                                      closeTime: item.closeTime);
+                                    meetingEvent: item,
+                                  );
                                 });
                           },
                         ),
@@ -306,7 +308,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget adminHeaderView({var firstName, var surName, var profileImage}) {
+  Widget adminHeaderView(
+      {var firstName, var surName, var userId, var profileImage}) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -328,15 +331,26 @@ class _HomePageState extends State<HomePage> {
                     )
                   : defaultProfilePic(height: 130),
             ),
+            SizedBox(
+              height: displayHeight(context) * 0.015,
+            ),
             Text(
               "$firstName $surName",
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 18,
+                fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(
-              height: 24,
+            SizedBox(
+              height: displayHeight(context) * 0.01,
+            ),
+            Text(
+              "ID: $userId",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 18,
+              ),
             ),
           ],
         ),
@@ -344,7 +358,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget headerView({var firstName, var surName, var profileImage}) {
+  Widget memberHeaderView(
+      {var firstName, var surName, var userId, var profileImage}) {
     return Consumer<GeneralProvider>(builder: (context, data, child) {
       return Card(
         elevation: 4,
@@ -370,113 +385,116 @@ class _HomePageState extends State<HomePage> {
                           height: 130,
                         ),
                       )
-
-                    // FadeInImage(
-                    //   image: NetworkImage("$profileImage"),
-                    //   placeholder: const AssetImage(
-                    //       "images/illustrations/profile_pic.svg"),
-                    //   imageErrorBuilder:
-                    //       (context, error, stackTrace) {
-                    //     return SvgPicture.asset(
-                    //         'images/illustrations/profile_pic.svg',
-                    //         height:130,);
-                    //   },
-                    //   fit: BoxFit.fitWidth,
-                    // )
                     : defaultProfilePic(height: 130),
+              ),
+              SizedBox(
+                height: displayHeight(context) * 0.015,
               ),
               Text(
                 "$firstName $surName",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 18,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(
-                height: 18,
+
+              SizedBox(
+                height: displayHeight(context) * 0.01,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    "Friday Night Duties",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        "Date : 17/10/2022",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: textColorLight,
-                            fontSize: 14),
-                      ),
-                      Text(
-                        "Span : 2 Days",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: textColorLight,
-                            fontSize: 14),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 2,
-                  ),
-                  const Text(
-                    "Time : 7 am to 5pm",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: textColorLight,
-                        fontSize: 14),
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(24)),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 12),
-                      child: const Text(
-                        "Online",
-                        style: TextStyle(fontSize: 13, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Theme(
-                      data: Theme.of(context)
-                          .copyWith(dividerColor: Colors.transparent),
-                      child: ExpansionTile(
-                        backgroundColor: Colors.transparent,
-                        collapsedBackgroundColor: Colors.white,
-                        title: const Text(
-                          "Recent Clocking ",
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        children: <Widget>[recentClockDetailsView()],
-                      ),
-                    ),
-                  )
-                ],
+
+              Text(
+                "ID: $userId",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
               ),
-              const SizedBox(
-                height: 12,
-              ),
-              const SizedBox(
-                height: 24,
+              // const SizedBox(
+              //   height: 18,
+              // ),
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.stretch,
+              //   children: [
+              //     const Text(
+              //       "Friday Night Duties",
+              //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              //     ),
+              //     const SizedBox(
+              //       height: 8,
+              //     ),
+              //     Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: const [
+              //         Text(
+              //           "Date : 17/10/2022",
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.w500,
+              //               color: textColorLight,
+              //               fontSize: 14),
+              //         ),
+              //         Text(
+              //           "Span : 2 Days",
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.w500,
+              //               color: textColorLight,
+              //               fontSize: 14),
+              //         ),
+              //       ],
+              //     ),
+              //     const SizedBox(
+              //       height: 2,
+              //     ),
+              //     const Text(
+              //       "Time : 7 am to 5pm",
+              //       style: TextStyle(
+              //           fontWeight: FontWeight.w500,
+              //           color: textColorLight,
+              //           fontSize: 14),
+              //     ),
+              //     const SizedBox(
+              //       height: 25,
+              //     ),
+              //     Align(
+              //       alignment: Alignment.centerRight,
+              //       child: Container(
+              //         decoration: BoxDecoration(
+              //             color: Colors.green,
+              //             borderRadius: BorderRadius.circular(24)),
+              //         padding: const EdgeInsets.symmetric(
+              //             vertical: 4, horizontal: 12),
+              //         child: const Text(
+              //           "Online",
+              //           style: TextStyle(fontSize: 13, color: Colors.white),
+              //         ),
+              //       ),
+              //     ),
+              //     ClipRRect(
+              //       borderRadius: BorderRadius.circular(16),
+              //       child: Theme(
+              //         data: Theme.of(context)
+              //             .copyWith(dividerColor: Colors.transparent),
+              //         child: ExpansionTile(
+              //           backgroundColor: Colors.transparent,
+              //           collapsedBackgroundColor: Colors.white,
+              //           title: const Text(
+              //             "Recent Clocking ",
+              //             style: TextStyle(
+              //               fontSize: 16.0,
+              //               fontWeight: FontWeight.w500,
+              //             ),
+              //           ),
+              //           children: <Widget>[recentClockDetailsView()],
+              //         ),
+              //       ),
+              //     )
+              //   ],
+              // ),
+              // const SizedBox(
+              //   height: 12,
+              // ),
+              SizedBox(
+                height: displayHeight(context) * 0.01,
               ),
             ],
           ),
@@ -638,26 +656,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget todaysEvents({meeting, name, date, startTime, closeTime}) {
-    var months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'June',
-      'July',
-      'Aug',
-      'Sept',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    DateTime formatedDate = DateTime.parse(date.toString());
-    var month = formatedDate.month;
-    var day = formatedDate.day;
-    var year = formatedDate.year;
+  Widget todaysEvents({
+    required MeetingEventModel meetingEventModel,
+  }) {
+    var date = DateUtil.formatStringDate(
+      DateFormat.yMMMEd(),
+      date: DateTime.parse(meetingEventModel.updateDate!),
+    );
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -680,65 +686,85 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            "$name",
-                            style: const TextStyle(
-                              fontSize: 19,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
                           Row(
                             children: [
-                              const Icon(
-                                Icons.calendar_month_outlined,
-                                size: 16,
-                                color: primaryColor,
+                              Text(
+                                "${meetingEventModel.name}",
+                                style: const TextStyle(
+                                  fontSize: 19,
+                                ),
                               ),
                               Text(
-                                "$day, ${months[month]} $year",
+                                "Span: ${meetingEventModel.meetingSpan} Day(s)",
                                 style: const TextStyle(
-                                    fontSize: 13, color: textColorLight),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      CupertinoIcons.alarm,
-                                      size: 16,
-                                      color: primaryColor,
-                                    ),
-                                    Text(
-                                      "$startTime",
-                                      style: const TextStyle(
-                                          fontSize: 13, color: textColorLight),
-                                    )
-                                  ],
+                                  fontSize: 13,
                                 ),
                               ),
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      CupertinoIcons.alarm,
-                                      size: 16,
-                                      color: primaryColor,
-                                    ),
-                                    Text(
-                                      "$closeTime",
-                                      style: const TextStyle(
-                                          fontSize: 13, color: textColorLight),
-                                    )
-                                  ],
+                            ],
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.01,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.calendar_month_outlined,
+                                    size: 16,
+                                    color: primaryColor,
+                                  ),
+                                  Text(
+                                    date,
+                                    style: const TextStyle(
+                                        fontSize: 13, color: textColorLight),
+                                  )
+                                ],
+                              ),
+                              Text(
+                                meetingEventModel.isRecuring!
+                                    ? "Recurring Weekly"
+                                    : "Non-Recurring",
+                                style: const TextStyle(
+                                  fontSize: 13,
                                 ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.01,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    CupertinoIcons.alarm,
+                                    size: 16,
+                                    color: primaryColor,
+                                  ),
+                                  Text(
+                                    "${meetingEventModel.startTime}",
+                                    style: const TextStyle(
+                                        fontSize: 13, color: textColorLight),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    CupertinoIcons.alarm,
+                                    size: 16,
+                                    color: primaryColor,
+                                  ),
+                                  Text(
+                                    "${meetingEventModel.closeTime}",
+                                    style: const TextStyle(
+                                        fontSize: 13, color: textColorLight),
+                                  )
+                                ],
                               )
                             ],
                           ),
@@ -763,23 +789,25 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.red,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(23))),
-                        onPressed: () {
-                          // set meeting as selected
-                          context
-                              .read<AttendanceProvider>()
-                              .setSelectedMeeting(meeting);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ExcuseInputPage(),
-                            ),
-                          );
-                        },
-                        child: const Text("Excuse")),
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.red,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(23))),
+                      onPressed: () {
+                        // set meeting as selected
+                        context
+                            .read<AttendanceProvider>()
+                            .setSelectedMeeting(meetingEventModel);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ExcuseInputPage(),
+                          ),
+                        );
+                      },
+                      child: const Text("Excuse"),
+                    ),
+                    // clock-in or clock-out button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           primary: Colors.green,
@@ -787,11 +815,16 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(23))),
                       onPressed: () {
                         Provider.of<AttendanceProvider>(context, listen: false)
-                            .setSelectedMeeting(meeting);
+                            .setSelectedMeeting(meetingEventModel);
 
-                        if (meeting.outTime != null) {
-                          showNormalToast(
-                              'You\'ve already clocked out. \nGood Bye!');
+                        if (meetingEventModel.outTime != null) {
+                          showInfoDialog(
+                            'ok',
+                            context: context,
+                            title: 'Hey there!',
+                            content: 'You\'ve already clocked out. \nGood Bye!',
+                            onTap: () => Navigator.pop(context),
+                          );
                         } else {
                           showDialog(
                             context: context,
@@ -800,19 +833,21 @@ class _HomePageState extends State<HomePage> {
                               backgroundColor: Colors.transparent,
                               elevation: 0,
                               content: ConfirmDialog(
-                                title:
-                                    meeting.inOrOut ? 'Clock Out' : 'Clock In',
+                                title: meetingEventModel.inOrOut!
+                                    ? 'Clock Out'
+                                    : 'Clock In',
                                 content:
-                                    '${meeting.inOrOut ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
+                                    '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re within the premise of the meeting or event to continue.',
                                 onConfirmTap: () {
                                   Navigator.pop(context);
                                   Provider.of<AttendanceProvider>(context,
                                           listen: false)
                                       .getMeetingCoordinates(
-                                          context: context,
-                                          isBreak: false,
-                                          meetingEventModel: meeting,
-                                          time: null);
+                                    context: context,
+                                    isBreak: false,
+                                    meetingEventModel: meetingEventModel,
+                                    time: null,
+                                  );
                                 },
                                 onCancelTap: () => Navigator.pop(context),
                                 confirmText: 'Yes',
@@ -822,7 +857,9 @@ class _HomePageState extends State<HomePage> {
                           );
                         }
                       },
-                      child: Text(meeting.inOrOut! ? 'Clock Out' : 'Clock In'),
+                      child: Text(meetingEventModel.inOrOut!
+                          ? 'Clock Out'
+                          : 'Clock In'),
                     ),
                   ],
                 ),
@@ -837,7 +874,7 @@ class _HomePageState extends State<HomePage> {
                         onPressed: () {
                           Provider.of<AttendanceProvider>(context,
                                   listen: false)
-                              .setSelectedMeeting(meeting);
+                              .setSelectedMeeting(meetingEventModel);
                           showModalBottomSheet(
                             context: context,
                             shape: const RoundedRectangleBorder(
@@ -854,7 +891,8 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(color: Colors.white),
                         )),
                     // if user has clocked out, there is no need to show 'Start Break' button
-                    meeting.hasBreakTime && meeting.outTime == null
+                    meetingEventModel.hasBreakTime! &&
+                            meetingEventModel.outTime == null
                         ? ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               primary: Colors.blue,
@@ -865,12 +903,21 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () {
                               Provider.of<AttendanceProvider>(context,
                                       listen: false)
-                                  .setSelectedMeeting(meeting);
+                                  .setSelectedMeeting(meetingEventModel);
 
-                              if (meeting.startBreak != null &&
-                                  meeting.endBreak != null) {
-                                showNormalToast(
-                                    'You\'ve already ended your break. \nGood Bye!');
+                              if (meetingEventModel.startBreak != null &&
+                                  meetingEventModel.endBreak != null) {
+                                showInfoDialog(
+                                  'ok',
+                                  context: context,
+                                  title: 'Hey there!',
+                                  content:
+                                      'You\'ve already ended your break. \nGood Bye!',
+                                  onTap: () => Navigator.pop(context),
+                                );
+                                // showNormalToast(
+                                //   'You\'ve already ended your break. \nGood Bye!',
+                                // );
                               } else {
                                 showDialog(
                                   context: context,
@@ -879,14 +926,18 @@ class _HomePageState extends State<HomePage> {
                                     backgroundColor: Colors.transparent,
                                     elevation: 0,
                                     content: ConfirmDialog(
-                                      title: (meeting.startBreak == null &&
-                                              meeting.endBreak == null)
+                                      title: (meetingEventModel.startBreak ==
+                                                  null &&
+                                              meetingEventModel.endBreak ==
+                                                  null)
                                           ? 'Start Break'
                                           : 'End Break',
-                                      content: (meeting.startBreak == null &&
-                                              meeting.endBreak == null)
-                                          ? 'Are you sure you want to start your break? \nMake sure you\'re closer to the premise of the meeting or event to continue.'
-                                          : 'Are you sure you want to end your break? \nMake sure you\'re closer to the premise of the meeting or event to continue.',
+                                      content: (meetingEventModel.startBreak ==
+                                                  null &&
+                                              meetingEventModel.endBreak ==
+                                                  null)
+                                          ? 'Are you sure you want to start your break? \nMake sure you\'re within the premise of the meeting or event to continue.'
+                                          : 'Are you sure you want to end your break? \nMake sure you\'re within the premise of the meeting or event to continue.',
                                       //'${meeting.startBreak != null ? 'Are you sure you want to end?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
                                       onConfirmTap: () {
                                         Navigator.pop(context);
@@ -896,7 +947,7 @@ class _HomePageState extends State<HomePage> {
                                           context: context,
                                           isBreak: true,
                                           time: null,
-                                          meetingEventModel: meeting,
+                                          meetingEventModel: meetingEventModel,
                                         );
                                       },
                                       onCancelTap: () => Navigator.pop(context),
@@ -908,13 +959,14 @@ class _HomePageState extends State<HomePage> {
                               }
                             },
                             child: Text(
-                              (meeting.startBreak == null &&
-                                      meeting.endBreak == null)
+                              (meetingEventModel.startBreak == null &&
+                                      meetingEventModel.endBreak == null)
                                   ? 'Start Break'
                                   : 'End Break',
                             ),
                           )
-                        : (meeting.hasBreakTime && meeting.inTime == null)
+                        : (meetingEventModel.hasBreakTime! &&
+                                meetingEventModel.inTime == null)
                             ? const SizedBox()
                             : const SizedBox()
                   ],
@@ -927,26 +979,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget adminTodaysEvents({meeting, name, date, startTime, closeTime}) {
-    var months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'June',
-      'July',
-      'Aug',
-      'Sept',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    DateTime formatedDate = DateTime.parse(date.toString());
-    var month = formatedDate.month;
-    var day = formatedDate.day;
-    var year = formatedDate.year;
+  Widget adminTodaysEvents({
+    required MeetingEventModel meetingEvent,
+  }) {
+    var date = DateUtil.formatStringDate(
+      DateFormat.yMMMEd(),
+      date: DateTime.parse(meetingEvent.updateDate!),
+    );
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -962,33 +1001,58 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            "$name",
-                            style: const TextStyle(
-                              fontSize: 19,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Icon(
-                                Icons.calendar_month_outlined,
-                                size: 16,
-                                color: primaryColor,
+                              Text(
+                                "${meetingEvent.name}",
+                                style: const TextStyle(
+                                  fontSize: 19,
+                                ),
                               ),
                               Text(
-                                "$day, ${months[month]} $year",
+                                "Span: ${meetingEvent.meetingSpan} Day(s)",
                                 style: const TextStyle(
-                                    fontSize: 13, color: textColorLight),
-                              )
+                                  fontSize: 13,
+                                ),
+                              ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 8,
+                          SizedBox(
+                            height: displayHeight(context) * 0.01,
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.calendar_month_outlined,
+                                    size: 16,
+                                    color: primaryColor,
+                                  ),
+                                  Text(
+                                    date,
+                                    style: const TextStyle(
+                                        fontSize: 13, color: textColorLight),
+                                  )
+                                ],
+                              ),
+                              Text(
+                                meetingEvent.isRecuring!
+                                    ? "Recurring Weekly "
+                                    : "Non-Recurring",
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.01,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 child: Row(
@@ -999,27 +1063,26 @@ class _HomePageState extends State<HomePage> {
                                       color: primaryColor,
                                     ),
                                     Text(
-                                      "$startTime",
+                                      "${meetingEvent.startTime}",
                                       style: const TextStyle(
                                           fontSize: 13, color: textColorLight),
                                     )
                                   ],
                                 ),
                               ),
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      CupertinoIcons.alarm,
-                                      size: 16,
-                                      color: primaryColor,
-                                    ),
-                                    Text("$closeTime",
-                                        style: const TextStyle(
-                                            fontSize: 13,
-                                            color: textColorLight))
-                                  ],
-                                ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    CupertinoIcons.alarm,
+                                    size: 16,
+                                    color: primaryColor,
+                                  ),
+                                  Text(
+                                    "${meetingEvent.closeTime}",
+                                    style: const TextStyle(
+                                        fontSize: 13, color: textColorLight),
+                                  )
+                                ],
                               )
                             ],
                           ),
@@ -1036,39 +1099,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget upcomingEvents({name, date, startTime, closeTime}) {
-    var months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'June',
-      'July',
-      'Aug',
-      'Sept',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    DateTime formatedDate = DateTime.parse(date.toString());
-    var month = formatedDate.month;
-    var day = formatedDate.day;
-    var year = formatedDate.year;
-    return MeetingEventWidget(MeetingEventItem(
-        name, "$day, ${months[month]} $year", startTime, closeTime));
-
-    // return Consumer<MemberProvider>(
-    //   builder: (context, data, child){
-    //     return data.meetingEventList.length!= 0 ?  ListView.builder(
-    //         itemCount: data.meetingEventList.length,
-    //         itemBuilder: (context, index){
-    //           var item = data?.meetingEventList[index];
-    //           return Text('hello');
-    //         }
-    //     ): const Center(child: CircularProgressIndicator());
-    //   },
-    // );
+  Widget upcomingEvents({
+    required MeetingEventModel meetingEvent,
+  }) {
+    return MeetingEventWidget(
+      meetingEventModel: meetingEvent,
+    );
   }
 }

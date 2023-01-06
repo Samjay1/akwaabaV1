@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 class Member extends Equatable {
   int? id;
-  int? clockingId = 0;
   int? clientId;
   String? firstname;
   String? middlename;
@@ -43,7 +42,6 @@ class Member extends Equatable {
 
   Member({
     this.id,
-    this.clockingId,
     this.clientId,
     this.firstname,
     this.middlename,

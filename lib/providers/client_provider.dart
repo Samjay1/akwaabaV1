@@ -38,7 +38,11 @@ class ClientProvider extends ChangeNotifier {
       } else {
         _user = value;
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const MainPage()));
+          context,
+          MaterialPageRoute(
+            builder: (_) => const MainPage(),
+          ),
+        );
       }
     });
     notifyListeners();

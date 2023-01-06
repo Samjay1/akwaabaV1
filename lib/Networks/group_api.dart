@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
+import 'package:akwaaba/models/general/branch.dart';
+import 'package:akwaaba/models/general/gender.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
@@ -9,6 +11,84 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class GroupAPI {
+  /// BRANCHES
+
+  // get list of branches
+  static Future<List<Branch>> getBranches() async {
+    List<Branch> branches = [];
+
+    var url = Uri.parse('${getBaseUrl()}/clients/branch');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Branch Res: ${await returnResponse(response)}");
+      var res = await returnResponse(response);
+      if (res['data'] != null) {
+        branches = <Branch>[];
+        res['data'].forEach((v) {
+          branches.add(Branch.fromJson(v));
+        });
+      }
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return branches;
+  }
+
+  /// GENDER
+
+  // get a gender
+  static Future<Gender> getGender({
+    required int genderId,
+  }) async {
+    Gender gender;
+
+    var url = Uri.parse('${getBaseUrl()}/generic/gender/$genderId');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Single Gender Res: ${await returnResponse(response)}");
+      var res = await returnResponse(response);
+      gender = Gender.fromJson(
+        res['data'],
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return gender;
+  }
+
+  // get list of genders
+  static Future<List<Gender>> getGenders() async {
+    List<Gender> genders = [];
+
+    var url = Uri.parse('${getBaseUrl()}/generic/gender');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Gender Res: ${await returnResponse(response)}");
+      var res = await returnResponse(response);
+      if (res['data'] != null) {
+        genders = <Gender>[];
+        res['data'].forEach((v) {
+          genders.add(Gender.fromJson(v));
+        });
+      }
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return genders;
+  }
+
   /// GROUP API
 
   // create group

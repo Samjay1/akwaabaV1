@@ -301,7 +301,7 @@ class AttendanceAPI {
           'enteredBy': "0",
           'excuse': excuse,
         },
-        headers: await getAllHeaders(),
+        headers: await getTokenHeader(),
       );
       debugPrint("Submit Excuse Response: ${jsonDecode(response.body)}");
       excuseModel = ExcuseModel.fromJson(await returnResponse(response));

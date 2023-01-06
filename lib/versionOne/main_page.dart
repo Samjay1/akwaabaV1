@@ -1,25 +1,14 @@
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
-import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
-import 'package:akwaaba/screens/connect_users_page.dart';
-import 'package:akwaaba/screens/alerts_page.dart';
-import 'package:akwaaba/screens/assign_leaders_menus_page.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/versionOne/attendance_history_page.dart';
-import 'package:akwaaba/versionOne/clocking_page.dart';
-import 'package:akwaaba/screens/contact_leaders_page.dart';
 import 'package:akwaaba/versionOne/device_activation_request_page.dart';
-import 'package:akwaaba/screens/info_center_page.dart';
-import 'package:akwaaba/screens/more_menus_page.dart';
 import 'package:akwaaba/versionOne/home_page.dart';
 import 'package:akwaaba/versionOne/login_page.dart';
 import 'package:akwaaba/screens/all_events_page.dart';
 import 'package:akwaaba/screens/akwaaba_modules.dart';
-import 'package:akwaaba/screens/post_master_menus_page.dart';
-import 'package:akwaaba/screens/my_connections_page.dart';
-import 'package:akwaaba/screens/register_connecting_users_page.dart';
-import 'package:akwaaba/screens/view_users_page.dart';
 import 'package:akwaaba/screens/web_admin_setup_page.dart';
 import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -30,11 +19,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../components/custom_cached_image_widget.dart';
-import '../models/client_account_info.dart';
 import '../utils/shared_prefs.dart';
 import '../versionOne/attendance_report_page.dart';
 import '../screens/members_page.dart';
-import '../screens/my_account_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -192,17 +179,21 @@ class _MainPageState extends State<MainPage> {
           ? Consumer<ClientProvider>(
               builder: (context, data, child) {
                 return adminDrawerView(
-                    logo: data.getUser?.logo,
-                    name: data.getUser?.name,
-                    branch: data.getUser?.branchName);
+                  logo: data.getUser?.logo,
+                  name: data.getUser?.name,
+                  branch: data.getUser?.branchName,
+                  id: data.getUser?.id,
+                );
               },
             )
           : Consumer<MemberProvider>(
               builder: (context, data, child) {
                 return memberDrawerView(
-                    logo: data.memberProfile?.profilePicture,
-                    applicantFirstname: data.memberProfile?.firstname,
-                    applicantSurname: data.memberProfile?.surname);
+                  logo: data.memberProfile?.profilePicture,
+                  applicantFirstname: data.memberProfile?.firstname,
+                  applicantSurname: data.memberProfile?.surname,
+                  applicantId: data.memberProfile?.id,
+                );
               },
             ),
       // drawerView(logo:logo, applicantFirstname:applicantFirstname, applicantSurname:applicantSurname),
@@ -213,8 +204,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget adminDrawerView(
-      {var logo, var name, var branch}) {
+  Widget adminDrawerView({var logo, var name, var id, var branch}) {
     return Drawer(
       backgroundColor: Colors.grey.shade300,
       child: Column(
@@ -223,7 +213,7 @@ class _MainPageState extends State<MainPage> {
             height: 40,
           ),
           SizedBox(
-            height: 180,
+            height: 200,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -242,14 +232,24 @@ class _MainPageState extends State<MainPage> {
                 ),
                 Text(
                   "${name ?? ""}",
-                  style: const TextStyle(fontSize: 17),
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 Text(
                   "(${branch ?? ""})",
                   style: const TextStyle(fontSize: 16),
                   textAlign: TextAlign.center,
-                )
+                ),
+                Text(
+                  "ID: $id",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
               ],
             ),
           ),
@@ -261,15 +261,17 @@ class _MainPageState extends State<MainPage> {
                     return ListView(
                       physics: const BouncingScrollPhysics(),
                       children: [
-
                         drawerItemView(
                           title: "Database",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                                const WebViewPage(
-                                    url: 'https://fees.akwaabasoftware.com/api/dashboard/',
-                                    title: 'Database')));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const WebViewPage(
+                                        url:
+                                            'https://fees.akwaabasoftware.com/api/dashboard/',
+                                        title: 'Database')));
                           },
                         ),
 
@@ -277,10 +279,13 @@ class _MainPageState extends State<MainPage> {
                           title: "View Members",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                               const WebViewPage(
-                                    url: 'https://fees.akwaabasoftware.com/api/dashboard/',
-                                    title: 'View Members')));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const WebViewPage(
+                                        url:
+                                            'https://fees.akwaabasoftware.com/api/dashboard/',
+                                        title: 'View Members')));
                           },
                         ),
 
@@ -288,10 +293,13 @@ class _MainPageState extends State<MainPage> {
                           title: "Create Meetings",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                               const WebViewPage(
-                                    url: 'https://fees.akwaabasoftware.com/api/dashboard/',
-                                    title: 'Create Meetings')));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const WebViewPage(
+                                        url:
+                                            'https://fees.akwaabasoftware.com/api/dashboard/',
+                                        title: 'Create Meetings')));
                           },
                         ),
 
@@ -299,10 +307,13 @@ class _MainPageState extends State<MainPage> {
                           title: "Scheduled Meetings",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                            const WebViewPage(
-                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
-                                title: 'Scheduled Meetings')));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const WebViewPage(
+                                        url:
+                                            'https://fees.akwaabasoftware.com/api/dashboard/',
+                                        title: 'Scheduled Meetings')));
                           },
                         ),
 
@@ -310,10 +321,13 @@ class _MainPageState extends State<MainPage> {
                           title: "Assign Absent/Leave Status",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                            const WebViewPage(
-                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
-                                title: 'Assign Absent/Leave Status')));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const WebViewPage(
+                                        url:
+                                            'https://fees.akwaabasoftware.com/api/dashboard/',
+                                        title: 'Assign Absent/Leave Status')));
                           },
                         ),
 
@@ -321,10 +335,13 @@ class _MainPageState extends State<MainPage> {
                           title: "View Absent/Leave Status",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                            const WebViewPage(
-                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
-                                title: 'View Absent/Leave Status')));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const WebViewPage(
+                                        url:
+                                            'https://fees.akwaabasoftware.com/api/dashboard/',
+                                        title: 'View Absent/Leave Status')));
                           },
                         ),
 
@@ -332,10 +349,13 @@ class _MainPageState extends State<MainPage> {
                           title: "Cash Manager",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                            const WebViewPage(
-                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
-                                title: 'Cash Manager')));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const WebViewPage(
+                                        url:
+                                            'https://fees.akwaabasoftware.com/api/dashboard/',
+                                        title: 'Cash Manager')));
                           },
                         ),
 
@@ -343,10 +363,13 @@ class _MainPageState extends State<MainPage> {
                           title: "Account Subscription",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                            const WebViewPage(
-                                url: 'https://fees.akwaabasoftware.com/api/dashboard/',
-                                title: 'Account Subscription')));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const WebViewPage(
+                                        url:
+                                            'https://fees.akwaabasoftware.com/api/dashboard/',
+                                        title: 'Account Subscription')));
                           },
                         ),
 
@@ -429,7 +452,10 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget memberDrawerView(
-      {var logo, var applicantFirstname, var applicantSurname}) {
+      {var logo,
+      var applicantFirstname,
+      var applicantId,
+      var applicantSurname}) {
     return Drawer(
       backgroundColor: Colors.grey.shade300,
       child: Column(
@@ -454,9 +480,22 @@ class _MainPageState extends State<MainPage> {
                 ),
                 Text(
                   "${applicantFirstname ?? ""} ${applicantSurname ?? ""}",
-                  style: const TextStyle(fontSize: 20),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
                   textAlign: TextAlign.center,
-                )
+                ),
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
+                ),
+                Text(
+                  "ID: $applicantId",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
               ],
             ),
           ),

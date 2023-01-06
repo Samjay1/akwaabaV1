@@ -145,9 +145,16 @@ class AttendanceProvider extends ChangeNotifier {
       );
       debugPrint('You\'re within the radius of the premise');
     } else {
+      Navigator.of(context).pop();
       debugPrint('You\'re not within the radius of the premise');
-      showNormalToast(
-          'You\'re not within the radius of the premise to clock. \nGet closer to clock-in');
+      showInfoDialog(
+        'ok',
+        context: context,
+        title: 'Hey there!',
+        content:
+            'Sorry, it looks like you\'re not within the specified location radius. Please get closer and try again.',
+        onTap: () => Navigator.pop(context),
+      );
     }
     debugPrint('Calculated Radius: ${totalDistance.toString()}');
     debugPrint('Premise Radius: ${response.results![0].radius!}');

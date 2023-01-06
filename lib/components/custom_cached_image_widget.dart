@@ -31,6 +31,15 @@ class _CustomCachedImageWidgetState extends State<CustomCachedImageWidget> {
       height: widget.height,
       fit: widget.fitType == 1 ? BoxFit.cover : BoxFit.contain,
       imageUrl: widget.url,
+      imageBuilder: (context, imageProvider) => Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            image: imageProvider,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
       progressIndicatorBuilder: (context, url, downloadProgress) =>
           widget.showProgressLoading
               ? CircularProgressIndicator(value: downloadProgress.progress)

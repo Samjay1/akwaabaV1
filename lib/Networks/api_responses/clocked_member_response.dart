@@ -1,5 +1,6 @@
 import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/models/attendance/attendance.dart';
+import 'package:equatable/equatable.dart';
 
 class ClockedMembersResponse {
   int? count;
@@ -38,6 +39,7 @@ class Attendee {
   Attendance? attendance;
   String? lastSeen;
   String? status;
+  bool? selected = false;
 
   Attendee({this.additionalInfo, this.attendance, this.lastSeen, this.status});
 
@@ -64,6 +66,14 @@ class Attendee {
     data['status'] = status;
     return data;
   }
+
+  // @override
+  // List<Object?> get props {
+  //   return [
+  //     attendance,
+  //     status,
+  //   ];
+  // }
 }
 
 class AdditionalInfo {

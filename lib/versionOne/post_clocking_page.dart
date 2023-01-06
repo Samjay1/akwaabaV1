@@ -1,29 +1,30 @@
+import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_outlined_button.dart';
 import 'package:akwaaba/components/custom_progress_indicator.dart';
-import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/postclock_clocked_member_item.dart';
 import 'package:akwaaba/components/postclock_clocking_member_item.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
-import 'package:akwaaba/models/admin/clocked_member.dart';
+import 'package:akwaaba/models/general/branch.dart';
+import 'package:akwaaba/models/general/gender.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
+import 'package:akwaaba/providers/post_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../components/clocked_member_item.dart';
-import '../components/clocking_member_item.dart';
 import '../components/form_textfield.dart';
+import '../providers/client_provider.dart';
 
 class PostClockingPage extends StatefulWidget {
   const PostClockingPage({
@@ -35,19 +36,6 @@ class PostClockingPage extends StatefulWidget {
 }
 
 class _PostClockingPageState extends State<PostClockingPage> {
-  // List<Map> members = [
-  //   {"status": true},
-  //   {"status": true},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  // ];
-
   late ScrollController _controller;
 
   bool itemHasBeenSelected =
@@ -60,7 +48,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
 
   bool isFilterExpanded = false;
 
-  late ClockingProvider clockingProvider;
+  late PostClockingProvider postClockingProvider;
 
   @override
   void initState() {
@@ -80,15 +68,15 @@ class _PostClockingPageState extends State<PostClockingPage> {
 
   @override
   void dispose() {
-    clockingProvider.clearData();
+    postClockingProvider.clearData();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    clockingProvider = context.watch<ClockingProvider>();
-    var members = clockingProvider.meetingMembers;
-    var clockedMembers = clockingProvider.clockedMembers;
+    postClockingProvider = context.watch<PostClockingProvider>();
+    var absentees = postClockingProvider.absentees;
+    var attendees = postClockingProvider.attendees;
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
@@ -111,11 +99,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 onChanged: (val) {
                   setState(() {
                     if (clockingListState) {
-                      // search attendance list by name
-                      clockingProvider.searchAttendanceList(searchText: val);
+                      // search absentees by name
+                      postClockingProvider.searchAbsenteesByName(
+                          searchText: val);
                     } else {
-                      // search clocked members by name
-                      clockingProvider.searchClockedList(searchText: val);
+                      // search atendees by name
+                      postClockingProvider.searchAttendeesByName(
+                          searchText: val);
                     }
                   });
                 },
@@ -139,12 +129,11 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 onChanged: (val) {
                   setState(() {
                     if (clockingListState) {
-                      // search attendance list by id
-                      clockingProvider.searchAttendanceListById(
-                          searchText: val);
+                      // search absentees by id
+                      postClockingProvider.searchAbsenteesById(searchText: val);
                     } else {
-                      // search clocked members by id
-                      clockingProvider.searchClockedListById(searchText: val);
+                      // search atendees by id
+                      postClockingProvider.searchAttendeesById(searchText: val);
                     }
                   });
                 },
@@ -163,12 +152,12 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 children: [
                   //REFRESING BUTTON
                   InkWell(
-                      onTap: () => clockingProvider.clearData(),
+                      onTap: () => postClockingProvider.clearData(),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 10),
                         decoration: BoxDecoration(
-                            color: Colors.green,
+                            color: Colors.grey,
                             borderRadius: BorderRadius.circular(5)),
                         child: const Text(
                           'Clear',
@@ -190,9 +179,9 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           ).then((value) {
                             if (value != null) {
                               setState(() {
-                                clockingProvider.postClockDate = value;
+                                postClockingProvider.postClockDate = value;
                                 debugPrint(
-                                  "Selected PostClock Date: ${clockingProvider.postClockDate!.toIso8601String().substring(0, 11)}",
+                                  "Selected PostClock Date: ${postClockingProvider.postClockDate!.toIso8601String().substring(0, 11)}",
                                 );
                               });
                             }
@@ -202,12 +191,12 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 10),
                           decoration: BoxDecoration(
-                              color: Colors.blue,
+                              color: Colors.green,
                               borderRadius: BorderRadius.circular(5)),
                           child: Text(
-                            clockingProvider.postClockDate == null
+                            postClockingProvider.postClockDate == null
                                 ? 'Post Clock Date'
-                                : clockingProvider.postClockDate!
+                                : postClockingProvider.postClockDate!
                                     .toIso8601String()
                                     .substring(0, 10),
                             textAlign: TextAlign.center,
@@ -229,9 +218,9 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           ).then((value) {
                             if (value != null) {
                               setState(() {
-                                clockingProvider.postClockTime = value;
+                                postClockingProvider.postClockTime = value;
                                 debugPrint(
-                                  "Selected PostClock Time: ${clockingProvider.postClockTime!.toIso8601String().substring(11, 19)}",
+                                  "Selected PostClock Time: ${postClockingProvider.postClockTime!.toIso8601String().substring(11, 19)}",
                                 );
                               });
                             }
@@ -241,12 +230,12 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 10),
                           decoration: BoxDecoration(
-                              color: Colors.blue,
+                              color: primaryColor,
                               borderRadius: BorderRadius.circular(5)),
                           child: Text(
-                            clockingProvider.postClockTime == null
+                            postClockingProvider.postClockTime == null
                                 ? 'Post Clock Time'
-                                : clockingProvider.postClockTime!
+                                : postClockingProvider.postClockTime!
                                     .toIso8601String()
                                     .substring(11, 19),
                             textAlign: TextAlign.center,
@@ -264,7 +253,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
               ),
 
               LabelWidgetContainer(
-                label: "Clocked In/Out",
+                label: "",
                 child: Row(
                   children: [
                     const Text("Bulk Clock"),
@@ -277,9 +266,9 @@ class _PostClockingPageState extends State<PostClockingPage> {
                         mycolor: Colors.green,
                         radius: 5,
                         function: () {
-                          if (clockingProvider.selectedMeetingMembers.isEmpty ||
-                              clockingProvider.postClockDate == null ||
-                              clockingProvider.postClockTime == null) {
+                          if (postClockingProvider.selectedAbsentees.isEmpty ||
+                              postClockingProvider.postClockDate == null ||
+                              postClockingProvider.postClockTime == null) {
                             showNormalToast(
                                 'Please select date, time & members to clock-in on their behalf');
                           } else {
@@ -296,11 +285,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                       'Are you sure you want to perform \nthis bulk operation?',
                                   onConfirmTap: () {
                                     Navigator.pop(context);
-                                    clockingProvider.clockMemberIn(
+                                    postClockingProvider.clockMemberIn(
                                       context: context,
-                                      member: null,
-                                      clockingId: 0,
-                                      time: clockingProvider
+                                      attendee: null,
+                                      time: postClockingProvider
                                           .getPostClockDateTime(),
                                     );
                                   },
@@ -323,9 +311,9 @@ class _PostClockingPageState extends State<PostClockingPage> {
                         mycolor: Colors.red,
                         radius: 5,
                         function: () {
-                          if (clockingProvider.selectedClockedMembers.isEmpty ||
-                              clockingProvider.postClockDate == null ||
-                              clockingProvider.postClockTime == null) {
+                          if (postClockingProvider.selectedAttendees.isEmpty ||
+                              postClockingProvider.postClockDate == null ||
+                              postClockingProvider.postClockTime == null) {
                             showNormalToast(
                                 'Please select date, time & members to clock-out on their behalf');
                           } else {
@@ -343,10 +331,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                       'Are you sure you want to perform \nthis bulk operation?',
                                   onConfirmTap: () {
                                     Navigator.pop(context);
-                                    clockingProvider.clockMemberOut(
+                                    postClockingProvider.clockMemberOut(
                                       context: context,
-                                      clockingId: 0,
-                                      time: clockingProvider
+                                      attendee: null,
+                                      time: postClockingProvider
                                           .getPostClockDateTime(),
                                     );
                                   },
@@ -365,11 +353,11 @@ class _PostClockingPageState extends State<PostClockingPage> {
               ),
 
               const SizedBox(
-                height: 12,
+                height: 4,
               ),
 
               LabelWidgetContainer(
-                  label: "Break Time",
+                  label: "",
                   child: Row(
                     children: [
                       const Text("Bulk Break"),
@@ -379,12 +367,15 @@ class _PostClockingPageState extends State<PostClockingPage> {
                       Expanded(
                         child: CustomElevatedButton(
                           label: "Start",
+                          textColor: whiteColor,
+                          color: Colors.green,
+                          labelSize: 15,
                           radius: 5,
                           function: () {
-                            if (clockingProvider
-                                    .selectedClockedMembers.isEmpty ||
-                                clockingProvider.postClockDate == null ||
-                                clockingProvider.postClockTime == null) {
+                            if (postClockingProvider
+                                    .selectedAttendees.isEmpty ||
+                                postClockingProvider.postClockDate == null ||
+                                postClockingProvider.postClockTime == null) {
                               showNormalToast(
                                   'Please select date, time & members to start break on their behalf');
                             } else {
@@ -401,10 +392,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                         'Are you sure you want to perform \nthis bulk operation?',
                                     onConfirmTap: () {
                                       Navigator.pop(context);
-                                      clockingProvider.startMeetingBreak(
+                                      postClockingProvider.startMeetingBreak(
                                         context: context,
-                                        clockingId: 0,
-                                        time: clockingProvider
+                                        attendee: null,
+                                        time: postClockingProvider
                                             .getPostClockDateTime(),
                                       );
                                     },
@@ -424,13 +415,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                       Expanded(
                         child: CustomElevatedButton(
                           label: "End",
-                          color: Colors.blue,
+                          color: primaryColor,
+                          labelSize: 15,
                           radius: 5,
                           function: () {
-                            if (clockingProvider
-                                    .selectedClockedMembers.isEmpty ||
-                                clockingProvider.postClockDate == null ||
-                                clockingProvider.postClockTime == null) {
+                            if (postClockingProvider
+                                    .selectedAttendees.isEmpty ||
+                                postClockingProvider.postClockDate == null ||
+                                postClockingProvider.postClockTime == null) {
                               showNormalToast(
                                   'Please select date, time & members to end break on their behalf');
                             } else {
@@ -447,10 +439,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                         'Are you sure you want to perform \nthis bulk operation?',
                                     onConfirmTap: () {
                                       Navigator.pop(context);
-                                      clockingProvider.endMeetingBreak(
+                                      postClockingProvider.endMeetingBreak(
                                         context: context,
-                                        clockingId: 0,
-                                        time: clockingProvider
+                                        attendee: null,
+                                        time: postClockingProvider
                                             .getPostClockDateTime(),
                                       );
                                     },
@@ -478,6 +470,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 height: 8,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                       child: CustomElevatedButton(
@@ -511,6 +504,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 ],
               ),
 
+              SizedBox(
+                height: displayHeight(context) * 0.01,
+              ),
+
               Row(
                 children: [
                   Checkbox(
@@ -521,50 +518,44 @@ class _PostClockingPageState extends State<PostClockingPage> {
                         setState(() {
                           checkAll = val!;
                           if (clockingListState) {
-                            for (Member? member in members) {
-                              member!.selected = checkAll;
-                              if (member.selected!) {
-                                clockingProvider.selectedMeetingMembers
-                                    .add(member);
+                            for (Attendee? absentee in absentees) {
+                              absentee!.attendance!.memberId!.selected =
+                                  checkAll;
+                              if (absentee.attendance!.memberId!.selected!) {
+                                postClockingProvider.selectedAbsentees
+                                    .add(absentee);
                               }
-                              if (!member.selected!) {
-                                clockingProvider.selectedMeetingMembers
-                                    .remove(member);
+                              if (!absentee.attendance!.memberId!.selected!) {
+                                postClockingProvider.selectedAbsentees
+                                    .remove(absentee);
                               }
                             }
                             debugPrint(
-                                "Select Members: ${clockingProvider.selectedMeetingMembers.length}");
+                                "Select Absentees: ${postClockingProvider.selectedAbsentees.length}");
                           } else {
-                            for (var i = 0; i < clockedMembers.length; i++) {
-                              clockedMembers[i]!
-                                  .additionalInfo!
-                                  .memberInfo!
-                                  .selected = checkAll;
-
-                              if (clockedMembers[i]!
-                                  .additionalInfo!
-                                  .memberInfo!
-                                  .selected!) {
-                                clockingProvider.selectedClockedMembers
-                                    .add(clockedMembers[i]!);
+                            for (Attendee? attendee in attendees) {
+                              attendee!.attendance!.memberId!.selected =
+                                  checkAll;
+                              if (attendee.attendance!.memberId!.selected!) {
+                                postClockingProvider.selectedAttendees
+                                    .add(attendee);
                               }
-                              if (!clockedMembers[i]!
-                                  .additionalInfo!
-                                  .memberInfo!
-                                  .selected!) {
-                                clockingProvider.selectedClockedMembers
-                                    .remove(clockedMembers[i]!);
+                              if (!attendee.attendance!.memberId!.selected!) {
+                                postClockingProvider.selectedAttendees
+                                    .remove(attendee);
                               }
                             }
+                            debugPrint(
+                                "Select attendees: ${postClockingProvider.selectedAttendees.length}");
                           }
                         });
                       }),
-                  const Text("Check All")
+                  const Text("Select All")
                 ],
               ),
 
-              const SizedBox(
-                height: 4,
+              SizedBox(
+                height: displayHeight(context) * 0.008,
               ),
 
               const Divider(
@@ -576,83 +567,92 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 height: 12,
               ),
 
-              clockingProvider.loading
+              postClockingProvider.loading
                   ? const CustomProgressIndicator()
                   : clockingListState
                       ? Column(
-                          children: List.generate(members.length, (index) {
+                          children: List.generate(absentees.length, (index) {
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  if (members[index]!.selected!) {
+                                  if (absentees[index]!
+                                      .attendance!
+                                      .memberId!
+                                      .selected!) {
                                     //remove it
-                                    members[index]!.selected = false;
-                                    clockingProvider.selectedMeetingMembers
-                                        .remove(members[index]);
+                                    absentees[index]!
+                                        .attendance!
+                                        .memberId!
+                                        .selected = false;
+                                    postClockingProvider.selectedAbsentees
+                                        .remove(absentees[index]);
                                   } else {
-                                    members[index]!.selected = true;
-                                    clockingProvider.selectedMeetingMembers
-                                        .add(members[index]);
+                                    absentees[index]!
+                                        .attendance!
+                                        .memberId!
+                                        .selected = true;
+                                    postClockingProvider.selectedAbsentees
+                                        .add(absentees[index]);
                                   }
-                                  if (clockingProvider
-                                      .selectedMeetingMembers.isNotEmpty) {
+                                  if (postClockingProvider
+                                      .selectedAbsentees.isNotEmpty) {
                                     itemHasBeenSelected = true;
                                   } else {
                                     itemHasBeenSelected = false;
                                   }
                                 });
                                 debugPrint(
-                                    "Select Members: ${clockingProvider.selectedMeetingMembers.length}");
+                                    "Select Abseentees: ${postClockingProvider.selectedAbsentees.length}");
                               },
                               child: PostClockClockingMemberItem(
-                                meetingEventModel:
-                                    clockingProvider.selectedPastMeetingEvent,
-                                member: members[index],
+                                meetingEventModel: postClockingProvider
+                                    .selectedPastMeetingEvent,
+                                attendee: absentees[index],
                               ),
                             );
                           }),
                         )
                       : Column(
                           children: List.generate(
-                            clockedMembers.length,
+                            attendees.length,
                             (index) {
                               return GestureDetector(
                                 onTap: () {
                                   setState(
                                     () {
-                                      if (clockedMembers[index]!
+                                      if (attendees[index]!
                                           .additionalInfo!
                                           .memberInfo!
                                           .selected!) {
                                         //remove it
-                                        clockedMembers[index]!
+                                        attendees[index]!
                                             .additionalInfo!
                                             .memberInfo!
                                             .selected = false;
 
-                                        clockingProvider.selectedClockedMembers
-                                            .remove(clockedMembers[index]!);
+                                        postClockingProvider.selectedAttendees
+                                            .remove(attendees[index]!);
                                       } else {
-                                        clockedMembers[index]!
+                                        attendees[index]!
                                             .additionalInfo!
                                             .memberInfo!
                                             .selected = true;
-                                        clockingProvider.selectedClockedMembers
-                                            .add(clockedMembers[index]!);
+                                        postClockingProvider.selectedAttendees
+                                            .add(attendees[index]!);
                                       }
-                                      if (clockingProvider
-                                          .selectedClockedMembers.isNotEmpty) {
+                                      if (postClockingProvider
+                                          .selectedAttendees.isNotEmpty) {
                                         itemHasBeenSelected = true;
                                       } else {
                                         itemHasBeenSelected = false;
                                       }
                                       debugPrint(
-                                          "Select Clocked Members: ${clockingProvider.selectedClockedMembers.length}");
+                                          "Select Attendees: ${postClockingProvider.selectedAttendees.length}");
                                     },
                                   );
                                 },
                                 child: PostClockClockedMemberItem(
-                                  attendee: clockedMembers[index]!,
+                                  attendee: attendees[index]!,
                                 ),
                               );
                             },
@@ -715,12 +715,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
         //     function: () {},
         //   ),
         // ),
+
         LabelWidgetContainer(
           label: "Date",
           child: FormButton(
-            label: clockingProvider.selectedDate == null
+            label: postClockingProvider.selectedDate == null
                 ? 'Select Date'
-                : clockingProvider.selectedDate!
+                : postClockingProvider.selectedDate!
                     .toIso8601String()
                     .substring(0, 10),
             function: () {
@@ -731,15 +732,73 @@ class _PostClockingPageState extends State<PostClockingPage> {
               ).then((value) {
                 if (value != null) {
                   setState(() {
-                    clockingProvider.selectedDate = value;
+                    postClockingProvider.selectedDate = value;
                     debugPrint(
-                        "Selected DateTime: ${clockingProvider.selectedDate!.toIso8601String().substring(0, 10)}");
+                        "Selected DateTime: ${postClockingProvider.selectedDate!.toIso8601String().substring(0, 10)}");
                   });
-                  clockingProvider.getPastMeetingEvents();
+                  // if admin is main branch admin
+                  if (context.read<ClientProvider>().getUser.branchID == 1) {
+                    postClockingProvider.getBranches();
+                  }
+                  // admin is just a branch admin
+                  postClockingProvider.getPastMeetingEvents();
                 }
               });
             },
           ),
+        ),
+        Consumer<ClientProvider>(
+          builder: (context, data, child) {
+            return data.getUser.branchID == AppConstants.mainAdmin
+                ? LabelWidgetContainer(
+                    label: "Branch",
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(8),
+                        border:
+                            Border.all(width: 0.0, color: Colors.grey.shade400),
+                      ),
+                      child: DropdownButtonFormField<Branch>(
+                        isExpanded: true,
+                        style: const TextStyle(
+                          color: textColorPrimary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        hint: const Text('Select Branch'),
+                        decoration:
+                            const InputDecoration(border: InputBorder.none),
+                        value: postClockingProvider.selectedBranch,
+                        icon: Icon(
+                          CupertinoIcons.chevron_up_chevron_down,
+                          color: Colors.grey.shade500,
+                          size: 16,
+                        ),
+                        // Array list of items
+                        items:
+                            postClockingProvider.branches.map((Branch branch) {
+                          return DropdownMenuItem(
+                            value: branch,
+                            child: Text(branch.name!),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            postClockingProvider.selectedBranch = val as Branch;
+                          });
+                          postClockingProvider.getPastMeetingEvents();
+                        },
+                      ),
+                    ),
+                  )
+                : const SizedBox();
+          },
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
         ),
         LabelWidgetContainer(
           label: "Meeting/Event",
@@ -759,14 +818,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
               ),
               hint: const Text('Select Meeting'),
               decoration: const InputDecoration(border: InputBorder.none),
-              value: clockingProvider.selectedPastMeetingEvent,
+              value: postClockingProvider.selectedPastMeetingEvent,
               icon: Icon(
                 CupertinoIcons.chevron_up_chevron_down,
                 color: Colors.grey.shade500,
                 size: 16,
               ),
               // Array list of items
-              items: clockingProvider.pastMeetingEvents
+              items: postClockingProvider.pastMeetingEvents
                   .map((MeetingEventModel mc) {
                 return DropdownMenuItem(
                   value: mc,
@@ -775,10 +834,53 @@ class _PostClockingPageState extends State<PostClockingPage> {
               }).toList(),
               onChanged: (val) {
                 setState(() {
-                  clockingProvider.selectedPastMeetingEvent =
+                  postClockingProvider.selectedPastMeetingEvent =
                       val as MeetingEventModel;
                 });
-                clockingProvider.getMemberCategories();
+                postClockingProvider.getGenders();
+              },
+            ),
+          ),
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
+        ),
+        LabelWidgetContainer(
+          label: "Gender",
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<Gender>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select Gender'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: postClockingProvider.selectedGender,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: postClockingProvider.genders.map((Gender gender) {
+                return DropdownMenuItem(
+                  value: gender,
+                  child: Text(gender.name!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  postClockingProvider.selectedGender = val as Gender;
+                });
+                postClockingProvider.getMemberCategories();
               },
             ),
           ),
@@ -804,14 +906,15 @@ class _PostClockingPageState extends State<PostClockingPage> {
               ),
               hint: const Text('Select Member Category'),
               decoration: const InputDecoration(border: InputBorder.none),
-              value: clockingProvider.selectedMemberCategory,
+              value: postClockingProvider.selectedMemberCategory,
               icon: Icon(
                 CupertinoIcons.chevron_up_chevron_down,
                 color: Colors.grey.shade500,
                 size: 16,
               ),
               // Array list of items
-              items: clockingProvider.memberCategories.map((MemberCategory mc) {
+              items: postClockingProvider.memberCategories
+                  .map((MemberCategory mc) {
                 return DropdownMenuItem(
                   value: mc,
                   child: Text(mc.category!),
@@ -819,11 +922,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
               }).toList(),
               onChanged: (val) {
                 setState(() {
-                  clockingProvider.selectedMemberCategory =
+                  postClockingProvider.selectedMemberCategory =
                       val as MemberCategory;
                 });
-                // call method to fetch all sub groups
-                clockingProvider.getSubGroups();
+                postClockingProvider.getMemberCategories();
               },
             ),
           ),
@@ -849,14 +951,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
               ),
               hint: const Text('Select Group'),
               decoration: const InputDecoration(border: InputBorder.none),
-              value: clockingProvider.selectedGroup,
+              value: postClockingProvider.selectedGroup,
               icon: Icon(
                 CupertinoIcons.chevron_up_chevron_down,
                 color: Colors.grey.shade500,
                 size: 16,
               ),
               // Array list of items
-              items: clockingProvider.groups.map((Group group) {
+              items: postClockingProvider.groups.map((Group group) {
                 return DropdownMenuItem(
                   value: group,
                   child: Text(group.group!),
@@ -864,7 +966,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
               }).toList(),
               onChanged: (val) {
                 setState(() {
-                  clockingProvider.selectedGroup = val as Group;
+                  postClockingProvider.selectedGroup = val as Group;
                 });
               },
             ),
@@ -891,14 +993,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
               ),
               hint: const Text('Select SubGroup'),
               decoration: const InputDecoration(border: InputBorder.none),
-              value: clockingProvider.selectedSubGroup,
+              value: postClockingProvider.selectedSubGroup,
               icon: Icon(
                 CupertinoIcons.chevron_up_chevron_down,
                 color: Colors.grey.shade500,
                 size: 16,
               ),
               // Array list of items
-              items: clockingProvider.subGroups.map((SubGroup subGroup) {
+              items: postClockingProvider.subGroups.map((SubGroup subGroup) {
                 return DropdownMenuItem(
                   value: subGroup,
                   child: Text(subGroup.subgroup!),
@@ -906,7 +1008,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
               }).toList(),
               onChanged: (val) {
                 setState(() {
-                  clockingProvider.selectedSubGroup = val as SubGroup;
+                  postClockingProvider.selectedSubGroup = val as SubGroup;
                 });
               },
             ),
@@ -928,7 +1030,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
               child: LabelWidgetContainer(
                 label: "Minimum Age",
                 child: FormTextField(
-                  controller: clockingProvider.minAgeTEC,
+                  controller: postClockingProvider.minAgeTEC,
                   textInputType: TextInputType.number,
                 ),
               ),
@@ -940,7 +1042,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
               child: LabelWidgetContainer(
                 label: "Maximum Age",
                 child: FormTextField(
-                  controller: clockingProvider.maxAgeTEC,
+                  controller: postClockingProvider.maxAgeTEC,
                   textInputType: TextInputType.number,
                 ),
               ),
@@ -955,8 +1057,8 @@ class _PostClockingPageState extends State<PostClockingPage> {
         CustomElevatedButton(
             label: "Filter",
             function: () {
-              clockingProvider.validateFilterFields();
-              if (clockingProvider.loading) {
+              postClockingProvider.validateFilterFields();
+              if (postClockingProvider.loading) {
                 // scroll to bottom of the screen to show the loading progress
                 _controller.animateTo(
                   _controller.position.maxScrollExtent,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:akwaaba/dialogs_modals/info_dialog.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -186,6 +187,29 @@ showLoadingDialog(BuildContext context, [String? message]) {
           ),
         );
       });
+}
+
+showInfoDialog(
+  String? cancelText, {
+  required BuildContext context,
+  required String title,
+  required String content,
+  required Function() onTap,
+}) {
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      insetPadding: const EdgeInsets.all(10),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: InfoDialog(
+        title: title,
+        content: content,
+        onCancelTap: onTap,
+        cancelText: cancelText ?? 'ok',
+      ),
+    ),
+  );
 }
 
 void showNormalSnackBar(BuildContext context, String message) {
