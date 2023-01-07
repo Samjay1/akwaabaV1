@@ -8,6 +8,9 @@ const primaryColor = Color(0xFFeb8200);
 const primaryColorLight = Color(0xFFE8A148);
 const primaryColorDark = Color(0xFFc25e00);
 
+const greyColorShade300 = Color(0xFFE0E0E0);
+const greyColorShade100 = Color(0xFFf5f5f5);
+
 const textColorPrimary = Color(0xFF000000);
 const textColorDark = Color(0xFF000000);
 const textColorLight = Color(0xFF3F3E3E);

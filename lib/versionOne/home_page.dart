@@ -3,7 +3,8 @@ import 'package:akwaaba/components/custom_progress_indicator.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
-import 'package:akwaaba/constants/app_color.dart';
+import 'package:akwaaba/components/profile_shimmer_item.dart';
+import 'package:akwaaba/components/text_shimmer_item.dart';
 import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
@@ -80,11 +81,16 @@ class _HomePageState extends State<HomePage> {
       // print('HOMEPAGE member id ${memberProfile.id}');
 
       Future.delayed(Duration.zero, () {
-        Provider.of<AttendanceProvider>(context, listen: false)
-            .getUpcomingMeetingEvents(
-          memberToken: memberToken,
-          context: context,
-        );
+        if (Provider.of<AttendanceProvider>(context, listen: false)
+            .upcomingMeetings
+            .isEmpty) {
+          Provider.of<AttendanceProvider>(context, listen: false)
+              .getUpcomingMeetingEvents(
+            memberToken: memberToken,
+            context: context,
+          );
+        }
+
         setState(() {});
       });
 
@@ -100,11 +106,15 @@ class _HomePageState extends State<HomePage> {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('token');
       Future.delayed(Duration.zero, () {
-        Provider.of<AttendanceProvider>(context, listen: false)
-            .getUpcomingMeetingEvents(
-          memberToken: memberToken,
-          context: context,
-        );
+        if (Provider.of<AttendanceProvider>(context, listen: false)
+            .upcomingMeetings
+            .isEmpty) {
+          Provider.of<AttendanceProvider>(context, listen: false)
+              .getUpcomingMeetingEvents(
+            memberToken: memberToken,
+            context: context,
+          );
+        }
         setState(() {});
       });
     }
@@ -141,36 +151,49 @@ class _HomePageState extends State<HomePage> {
                 height: 24,
               ),
 
-              userType.compareTo("member") == 0
-                  ? Consumer<MemberProvider>(
-                      builder: (context, data, child) {
-                        return memberHeaderView(
-                          firstName: data.memberProfile.firstname,
-                          surName: data.memberProfile.surname,
-                          userId: data.memberProfile.id,
-                          profileImage: data.memberProfile.profilePicture,
-                        );
-                      },
+              attendanceProvider.loading
+                  ? Shimmer.fromColors(
+                      baseColor: greyColorShade300,
+                      highlightColor: greyColorShade100,
+                      child: const ProfileShimmerItem(),
                     )
-                  : userType.compareTo("admin") == 0
-                      ? Consumer<ClientProvider>(
+                  : userType.compareTo("member") == 0
+                      ? Consumer<MemberProvider>(
                           builder: (context, data, child) {
-                          return adminHeaderView(
-                              firstName: data.getUser?.firstName,
-                              surName: data.getUser?.surName,
-                              userId: data.getUser?.id,
-                              profileImage: data.getUser?.profilePicture);
-                        })
-                      : const Text("Unknown User type"),
+                            return memberHeaderView(
+                              firstName: data.memberProfile.firstname,
+                              surName: data.memberProfile.surname,
+                              userId: data.memberProfile.id,
+                              profileImage: data.memberProfile.profilePicture,
+                            );
+                          },
+                        )
+                      : userType.compareTo("admin") == 0
+                          ? Consumer<ClientProvider>(
+                              builder: (context, data, child) {
+                              return adminHeaderView(
+                                  firstName: data.getUser?.firstName,
+                                  surName: data.getUser?.surName,
+                                  userId: data.getUser?.id,
+                                  profileImage: data.getUser?.profilePicture);
+                            })
+                          : const Text("Unknown User type"),
 
               const SizedBox(
                 height: 36,
               ),
 
-              const Text(
-                "Today's Meetings",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              ),
+              attendanceProvider.loading
+                  ? Shimmer.fromColors(
+                      baseColor: greyColorShade300,
+                      highlightColor: greyColorShade100,
+                      child: const TextShimmerItem(),
+                    )
+                  : const Text(
+                      "Today's Meetings",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    ),
 
               const SizedBox(
                 height: 12,
@@ -179,8 +202,8 @@ class _HomePageState extends State<HomePage> {
               //----------------------------------------------------------------------
               attendanceProvider.loading
                   ? Shimmer.fromColors(
-                      baseColor: AppColor.kGreyColorShade300,
-                      highlightColor: AppColor.kGreyColorShade100,
+                      baseColor: greyColorShade300,
+                      highlightColor: greyColorShade100,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemBuilder: (_, __) => const EventShimmerItem(),
@@ -195,9 +218,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Consumer<AttendanceProvider>(
                         builder: (context, data, child) {
-                          if (data.loading) {
-                            return const CustomProgressIndicator();
-                          }
                           if (data.todayMeetings.isEmpty) {
                             return const EmptyStateWidget(
                               text: 'You currently have no \nmeetings today!',
@@ -275,9 +295,6 @@ class _HomePageState extends State<HomePage> {
                         width: MediaQuery.of(context).size.width,
                         child: Consumer<AttendanceProvider>(
                           builder: (context, data, child) {
-                            if (data.loading) {
-                              return const CustomProgressIndicator();
-                            }
                             if (data.upcomingMeetings.isEmpty) {
                               return const EmptyStateWidget(
                                 text:
@@ -687,6 +704,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 "${meetingEventModel.name}",
@@ -915,9 +933,15 @@ class _HomePageState extends State<HomePage> {
                                       'You\'ve already ended your break. \nGood Bye!',
                                   onTap: () => Navigator.pop(context),
                                 );
-                                // showNormalToast(
-                                //   'You\'ve already ended your break. \nGood Bye!',
-                                // );
+                              } else if (meetingEventModel.inTime == null) {
+                                showInfoDialog(
+                                  'ok',
+                                  context: context,
+                                  title: 'Hey there!',
+                                  content:
+                                      'You\'ve to clock-in before starting your break. \nThank you!',
+                                  onTap: () => Navigator.pop(context),
+                                );
                               } else {
                                 showDialog(
                                   context: context,

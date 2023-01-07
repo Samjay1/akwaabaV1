@@ -77,20 +77,26 @@ class AttendanceProvider extends ChangeNotifier {
     required var memberToken,
     required BuildContext context,
   }) async {
-    _meetingEventList = await AttendanceAPI.getTodayMeetingEventList(
-      context,
-      memberToken,
-    );
-    if (_meetingEventList.isNotEmpty) {
-      for (var meeting in _meetingEventList) {
-        await checkClockedMeetings(
-          meetingEventModel: meeting,
-          branchId: meeting.branchId!,
-        );
+    try {
+      _meetingEventList = await AttendanceAPI.getTodayMeetingEventList(
+        context,
+        memberToken,
+      );
+      if (_meetingEventList.isNotEmpty) {
+        for (var meeting in _meetingEventList) {
+          await checkClockedMeetings(
+            meetingEventModel: meeting,
+            branchId: meeting.branchId!,
+          );
+        }
+      } else {
+        setLoading(false);
       }
-    } else {
-      setLoading(false);
+    } catch (err) {
+      debugPrint('Error TM ${err.toString()}');
+      showErrorToast(err.toString());
     }
+
     notifyListeners();
   }
 
@@ -99,16 +105,23 @@ class AttendanceProvider extends ChangeNotifier {
     required BuildContext context,
   }) async {
     setLoading(true);
-    _upcomingMeetingEventList = await AttendanceAPI.getUpcomingMeetingEventList(
-      context,
-      memberToken,
-    );
-    getCurrentUserLocation();
-    // getAttendanceList();
-    getTodayMeetingEvents(
-      memberToken: memberToken,
-      context: context,
-    );
+    try {
+      _upcomingMeetingEventList =
+          await AttendanceAPI.getUpcomingMeetingEventList(
+        context,
+        memberToken,
+      );
+      getCurrentUserLocation();
+      // getAttendanceList();
+      getTodayMeetingEvents(
+        memberToken: memberToken,
+        context: context,
+      );
+    } catch (err) {
+      debugPrint('Error UM ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+
     notifyListeners();
   }
 
@@ -393,11 +406,6 @@ class AttendanceProvider extends ChangeNotifier {
         meetingEventModel.endBreak = response.results![0].endBreak;
         meetingEventModel.inTime = response.results![0].inTime;
         meetingEventModel.outTime = response.results![0].outTime;
-        debugPrint('Has break: ${meetingEventModel.hasBreakTime}');
-        debugPrint('Meeting name: ${meetingEventModel.name}');
-        debugPrint('inOrOut: ${meetingEventModel.inOrOut}');
-        debugPrint('Start break time: ${meetingEventModel.startBreak}');
-        debugPrint('End break time: ${meetingEventModel.endBreak}');
       }
       setLoading(false);
     } catch (err) {
@@ -442,8 +450,10 @@ class AttendanceProvider extends ChangeNotifier {
       );
       setSubmitting(false);
       Navigator.of(context).pop();
-      showNormalToast(response.message ??
-          'Hi there, you\'ve already submitted an excuse for this meeting');
+      showNormalToast(
+        response.message ??
+            'Hi there, you\'ve already submitted an excuse for this meeting',
+      );
       excuseTEC.clear();
     } catch (err) {
       setSubmitting(false);

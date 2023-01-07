@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:akwaaba/models/admin/admin_profile.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +33,10 @@ class UserApi {
         debugPrint(decodedResponse['user'].toString());
         //SET THE USER TOKEN TO PREFS
         var user = decodedResponse['user'];
+        // save admin profile
+        SharedPrefs().saveAdminInfo(
+          adminProfile: AdminProfile.fromJson(decodedResponse['user']),
+        );
         prefs.setString('token', clientToken);
         prefs.setString('account_type', 'client');
 
@@ -52,28 +58,30 @@ class UserApi {
             headers: headers);
         var branchNameResp = jsonDecode(branchResponse.body);
         if (branchResponse.statusCode == 200) {
-            debugPrint('BRANCH-NAME: $branchNameResp');
-            var branchName = branchNameResp['data']['name'];
-            // debugPrint('BRANCHNAME: $branchName');
-              //HTTP REQUEST(API) FOR GETTING CLIENT ACCOUNT INFO
-              //GET FULL ACCOUNT DETAILS FROM API USING ACCOUNT-ID PARAM FROM LOGIN RESPONSE
-              http.Response clientResponse = await http.get(
-                  Uri.parse('$baseUrl/clients/account/$accountId'),
-                  headers: headers);
+          debugPrint('BRANCH-NAME: $branchNameResp');
+          var branchName = branchNameResp['data']['name'];
+          // debugPrint('BRANCHNAME: $branchName');
+          //HTTP REQUEST(API) FOR GETTING CLIENT ACCOUNT INFO
+          //GET FULL ACCOUNT DETAILS FROM API USING ACCOUNT-ID PARAM FROM LOGIN RESPONSE
+          http.Response clientResponse = await http.get(
+            Uri.parse('$baseUrl/clients/account/$accountId'),
+            headers: headers,
+          );
 
-              var clientDecodedResponse = jsonDecode(clientResponse.body);
-              if (clientResponse.statusCode == 200) {
-                var clientData = clientDecodedResponse['data'];
-                // debugPrint('FULL CLIENT INFO ${clientData.toString()}');
-                return ClientAccountInfo.fromJson(clientData, user, branchName, clientToken);
+          var clientDecodedResponse = jsonDecode(clientResponse.body);
+          if (clientResponse.statusCode == 200) {
+            var clientData = clientDecodedResponse['data'];
+            // debugPrint('FULL CLIENT INFO ${clientData.toString()}');
+            return ClientAccountInfo.fromJson(
+                clientData, user, branchName, clientToken);
 
-                //      ERROR FOR CLIENT INFO HTTP REQUEST
-              } else {
-                debugPrint('ERROR:FULL CLIENT INFO $clientDecodedResponse');
-                return 'login_error';
-              }
+            //      ERROR FOR CLIENT INFO HTTP REQUEST
+          } else {
+            debugPrint('ERROR:FULL CLIENT INFO $clientDecodedResponse');
+            return 'login_error';
+          }
 
-        //      ERROR FOR BRANCH HTTP REQUEST
+          //      ERROR FOR BRANCH HTTP REQUEST
         } else {
           debugPrint('ERROR: branchName $branchNameResp');
           return 'login_error';

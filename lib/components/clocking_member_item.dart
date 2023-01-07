@@ -26,24 +26,20 @@ class ClockingMemberItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       child: Card(
-        color: absentee!.attendance!.memberId!.selected!
-            ? Colors.orange.shade100
-            : Colors.white,
+        color: absentee!.selected! ? Colors.orange.shade100 : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        elevation: absentee!.attendance!.memberId!.selected! ? 3 : 0,
+        elevation: absentee!.selected! ? 3 : 0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Icon(
-                absentee!.attendance!.memberId!.selected!
+                absentee!.selected!
                     ? CupertinoIcons.check_mark_circled_solid
                     : CupertinoIcons.checkmark_alt_circle,
-                color: absentee!.attendance!.memberId!.selected!
-                    ? primaryColor
-                    : Colors.grey,
+                color: absentee!.selected! ? primaryColor : Colors.grey,
               ),
               const SizedBox(
                 width: 8,

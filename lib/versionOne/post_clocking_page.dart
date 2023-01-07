@@ -53,6 +53,8 @@ class _PostClockingPageState extends State<PostClockingPage> {
   @override
   void initState() {
     _controller = ScrollController();
+    Provider.of<PostClockingProvider>(context, listen: false)
+        .setCurrentContext(context);
     // Future.delayed(Duration.zero, () {
     //   // load attendance list for meeting
     //   Provider.of<ClockingProvider>(context, listen: false).getAttendanceList(
@@ -75,6 +77,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
   @override
   Widget build(BuildContext context) {
     postClockingProvider = context.watch<PostClockingProvider>();
+
     var absentees = postClockingProvider.absentees;
     var attendees = postClockingProvider.attendees;
     return Scaffold(
@@ -269,8 +272,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           if (postClockingProvider.selectedAbsentees.isEmpty ||
                               postClockingProvider.postClockDate == null ||
                               postClockingProvider.postClockTime == null) {
-                            showNormalToast(
-                                'Please select date, time & members to clock-in on their behalf');
+                            showInfoDialog(
+                              'ok',
+                              context: context,
+                              title: 'Sorry!',
+                              content:
+                                  'Please select date, time & members to clock-in on their behalf',
+                              onTap: () => Navigator.pop(context),
+                            );
                           } else {
                             // perform bulk clock in
                             showDialog(
@@ -314,8 +323,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           if (postClockingProvider.selectedAttendees.isEmpty ||
                               postClockingProvider.postClockDate == null ||
                               postClockingProvider.postClockTime == null) {
-                            showNormalToast(
-                                'Please select date, time & members to clock-out on their behalf');
+                            showInfoDialog(
+                              'ok',
+                              context: context,
+                              title: 'Sorry!',
+                              content:
+                                  'Please select date, time & members to clock-out on their behalf',
+                              onTap: () => Navigator.pop(context),
+                            );
                           } else {
                             // perform bulk clock out
 
@@ -376,8 +391,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                     .selectedAttendees.isEmpty ||
                                 postClockingProvider.postClockDate == null ||
                                 postClockingProvider.postClockTime == null) {
-                              showNormalToast(
-                                  'Please select date, time & members to start break on their behalf');
+                              showInfoDialog(
+                                'ok',
+                                context: context,
+                                title: 'Sorry!',
+                                content:
+                                    'Please select date, time & members to start break on their behalf',
+                                onTap: () => Navigator.pop(context),
+                              );
                             } else {
                               // perform bulk start break
                               showDialog(
@@ -423,8 +444,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                     .selectedAttendees.isEmpty ||
                                 postClockingProvider.postClockDate == null ||
                                 postClockingProvider.postClockTime == null) {
-                              showNormalToast(
-                                  'Please select date, time & members to end break on their behalf');
+                              showInfoDialog(
+                                'ok',
+                                context: context,
+                                title: 'Sorry!',
+                                content:
+                                    'Please select date, time & members to end break on their behalf',
+                                onTap: () => Navigator.pop(context),
+                              );
                             } else {
                               // perform bulk end break
                               showDialog(
@@ -519,13 +546,12 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           checkAll = val!;
                           if (clockingListState) {
                             for (Attendee? absentee in absentees) {
-                              absentee!.attendance!.memberId!.selected =
-                                  checkAll;
-                              if (absentee.attendance!.memberId!.selected!) {
+                              absentee!.selected = checkAll;
+                              if (absentee.selected!) {
                                 postClockingProvider.selectedAbsentees
                                     .add(absentee);
                               }
-                              if (!absentee.attendance!.memberId!.selected!) {
+                              if (!absentee.selected!) {
                                 postClockingProvider.selectedAbsentees
                                     .remove(absentee);
                               }
@@ -534,13 +560,12 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 "Select Absentees: ${postClockingProvider.selectedAbsentees.length}");
                           } else {
                             for (Attendee? attendee in attendees) {
-                              attendee!.attendance!.memberId!.selected =
-                                  checkAll;
-                              if (attendee.attendance!.memberId!.selected!) {
+                              attendee!.selected = checkAll;
+                              if (attendee.selected!) {
                                 postClockingProvider.selectedAttendees
                                     .add(attendee);
                               }
-                              if (!attendee.attendance!.memberId!.selected!) {
+                              if (!attendee.selected!) {
                                 postClockingProvider.selectedAttendees
                                     .remove(attendee);
                               }
@@ -575,22 +600,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  if (absentees[index]!
-                                      .attendance!
-                                      .memberId!
-                                      .selected!) {
+                                  if (absentees[index]!.selected!) {
                                     //remove it
-                                    absentees[index]!
-                                        .attendance!
-                                        .memberId!
-                                        .selected = false;
+                                    absentees[index]!.selected = false;
                                     postClockingProvider.selectedAbsentees
                                         .remove(absentees[index]);
                                   } else {
-                                    absentees[index]!
-                                        .attendance!
-                                        .memberId!
-                                        .selected = true;
+                                    absentees[index]!.selected = true;
                                     postClockingProvider.selectedAbsentees
                                         .add(absentees[index]);
                                   }
@@ -605,8 +621,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                     "Select Abseentees: ${postClockingProvider.selectedAbsentees.length}");
                               },
                               child: PostClockClockingMemberItem(
-                                meetingEventModel: postClockingProvider
-                                    .selectedPastMeetingEvent,
                                 attendee: absentees[index],
                               ),
                             );
@@ -620,23 +634,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 onTap: () {
                                   setState(
                                     () {
-                                      if (attendees[index]!
-                                          .additionalInfo!
-                                          .memberInfo!
-                                          .selected!) {
+                                      if (attendees[index]!.selected!) {
                                         //remove it
-                                        attendees[index]!
-                                            .additionalInfo!
-                                            .memberInfo!
-                                            .selected = false;
+                                        attendees[index]!.selected = false;
 
                                         postClockingProvider.selectedAttendees
                                             .remove(attendees[index]!);
                                       } else {
-                                        attendees[index]!
-                                            .additionalInfo!
-                                            .memberInfo!
-                                            .selected = true;
+                                        attendees[index]!.selected = true;
                                         postClockingProvider.selectedAttendees
                                             .add(attendees[index]!);
                                       }
@@ -658,24 +663,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             },
                           ),
                         ),
-              // itemHasBeenSelected?
-              //     Container(
-              //
-              //       padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
-              //       child: CustomElevatedButton(label: "Proceed to Clock",
-              //       function: (){
-              //         displayCustomCupertinoDialog(context: context,
-              //             title: "Proceed to Clock", msg: "100 members have been selected,"
-              //                 " do you want to clock them all now?",
-              //             actionsMap: {"No":(){Navigator.pop(context);},
-              //               "Yes":(){
-              //               Navigator.pop(context);
-              //               Navigator.push(context, MaterialPageRoute(builder: (_)=>
-              //               const ClockingOptionsPage()));
-              //               }});
-              //       },),
-              //     )
-              //     :const SizedBox.shrink()
             ],
           ),
         ),

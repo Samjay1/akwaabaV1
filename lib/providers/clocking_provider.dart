@@ -242,24 +242,22 @@ class ClockingProvider extends ChangeNotifier {
       //_clockedMembers.clear();
       //_tempClockedMembers.clear();
       if (response.results!.isNotEmpty) {
-        // remove current admin from list of attendees
-        // _absentees = response.results!
-        //     .where((attendee) =>
-        //         attendee.attendance!.meetingEventId!.clientId!.id !=
-        //         Provider.of<ClientProvider>(_context!, listen: false)
-        //             .getUser!
-        //             .id)
-        //     .toList();
-        _absentees = response.results!;
+        // filter list for only members excluding
+        // admin if he is also a member
+        _absentees = response.results!
+            .where((absentee) => (absentee.attendance!.memberId!.email !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .email ||
+                absentee.attendance!.memberId!.phone !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .phone))
+            .toList();
 
         _tempAbsentees = _absentees;
 
         debugPrint('Absentees: ${_absentees.length}');
-
-        debugPrint(
-            'Absentee name: ${_absentees[0]!.additionalInfo!.memberInfo!.firstname!}');
-        debugPrint(
-            'Absentee surname: ${_absentees[0]!.additionalInfo!.memberInfo!.surname!}');
       }
 
       getAllAtendees(
@@ -269,7 +267,7 @@ class ClockingProvider extends ChangeNotifier {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      debugPrint('Error CK: ${err.toString()}');
+      debugPrint('Error Absentees: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -299,30 +297,27 @@ class ClockingProvider extends ChangeNotifier {
       selectedAttendees.clear();
 
       if (response.results!.isNotEmpty) {
-        // remove current admin from list of attendees
-        // _attendees = response.results!
-        //     .where((attendee) =>
-        //         attendee.attendance!.meetingEventId!.clientId!.id !=
-        //         Provider.of<ClientProvider>(_context!, listen: false)
-        //             .getUser!
-        //             .id)
-        //     .toList();
-
-        _attendees = response.results!;
+        // filter list for only members excluding
+        // admin if he is also a member
+        _attendees = response.results!
+            .where((attendee) => (attendee.attendance!.memberId!.email !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .email ||
+                attendee.attendance!.memberId!.phone !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .phone))
+            .toList();
 
         _tempAttendees = _attendees;
 
         debugPrint('Atendees: ${_attendees.length}');
-
-        debugPrint(
-            'Atendee name: ${_attendees[0]!.additionalInfo!.memberInfo!.firstname!}');
-        debugPrint(
-            'Atendee surname: ${_attendees[0]!.additionalInfo!.memberInfo!.surname!}');
       }
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      debugPrint('Error CK: ${err.toString()}');
+      debugPrint('Error Attendees: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -374,7 +369,7 @@ class ClockingProvider extends ChangeNotifier {
         }
         _selectedAbsentees.clear();
         // refresh list when there is bulk operation
-        //getAttendanceList(meetingEventModel: selectedPastMeetingEvent ?? selectedCurrentMeeting);
+        getAllAbsentees(meetingEventModel: selectedCurrentMeeting);
       }
       showNormalToast(response.message!);
       Navigator.pop(context);

@@ -41,14 +41,14 @@ class PostClockClockedMemberItem extends StatelessWidget {
 
     var startBreakTime = 'N/A';
     if (attendee!.attendance!.startBreak != null) {
-      outTime = DateUtil.formatStringDate(DateFormat.jm(),
+      startBreakTime = DateUtil.formatStringDate(DateFormat.jm(),
               date: DateTime.parse(attendee!.attendance!.startBreak!))
           .toLowerCase();
     }
 
     var endBreakTime = 'N/A';
     if (attendee!.attendance!.endBreak != null) {
-      outTime = DateUtil.formatStringDate(DateFormat.jm(),
+      endBreakTime = DateUtil.formatStringDate(DateFormat.jm(),
               date: DateTime.parse(attendee!.attendance!.endBreak!))
           .toLowerCase();
     }
@@ -56,29 +56,23 @@ class PostClockClockedMemberItem extends StatelessWidget {
     var attendeeName =
         "${attendee!.additionalInfo!.memberInfo!.firstname!} ${attendee!.additionalInfo!.memberInfo!.surname!}";
 
-    var clockingId = attendee!.attendance!.id;
-
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       child: Card(
-        color: attendee!.additionalInfo!.memberInfo!.selected!
-            ? Colors.orange.shade100
-            : Colors.white,
+        color: attendee!.selected! ? Colors.orange.shade100 : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        elevation: attendee!.additionalInfo!.memberInfo!.selected! ? 3 : 0,
+        elevation: attendee!.selected! ? 3 : 0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Icon(
-                attendee!.additionalInfo!.memberInfo!.selected!
+                attendee!.selected!
                     ? CupertinoIcons.check_mark_circled_solid
                     : CupertinoIcons.checkmark_alt_circle,
-                color: attendee!.additionalInfo!.memberInfo!.selected!
-                    ? primaryColor
-                    : Colors.grey,
+                color: attendee!.selected! ? primaryColor : Colors.grey,
               ),
               const SizedBox(
                 width: 8,
@@ -127,15 +121,26 @@ class PostClockClockedMemberItem extends StatelessWidget {
                                 radius: 5,
                                 function: () {
                                   if (attendee!.attendance!.outTime != null) {
-                                    showNormalToast(
-                                        '$attendeeName has already been clocked out. Thank you!');
+                                    showInfoDialog(
+                                      'ok',
+                                      context: context,
+                                      title: 'Sorry!',
+                                      content:
+                                          '$attendeeName has already been clocked out. \nThank you!',
+                                      onTap: () => Navigator.pop(context),
+                                    );
                                   } else if (postClockingProvider
                                               .postClockDate ==
                                           null ||
                                       postClockingProvider.postClockTime ==
                                           null) {
-                                    showNormalToast(
-                                      'Please select date & time to clocked out $attendeeName. Thank you!',
+                                    showInfoDialog(
+                                      'ok',
+                                      context: context,
+                                      title: 'Sorry!',
+                                      content:
+                                          'Please select date & time to clocked out $attendeeName. \nThank you!',
+                                      onTap: () => Navigator.pop(context),
                                     );
                                   } else {
                                     showDialog(
@@ -193,6 +198,8 @@ class PostClockClockedMemberItem extends StatelessWidget {
                             children: [
                               attendee!.attendance!.startBreak == null
                                   ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         CustomElevatedButton(
                                           label: "Start Break",
@@ -204,16 +211,29 @@ class PostClockClockedMemberItem extends StatelessWidget {
                                             if (attendee!
                                                     .attendance!.startBreak !=
                                                 null) {
-                                              showNormalToast(
-                                                  '$attendeeName has already started break. Thank you!');
+                                              showInfoDialog(
+                                                'ok',
+                                                context: context,
+                                                title: 'Sorry!',
+                                                content:
+                                                    '$attendeeName has already started break. \nThank you!',
+                                                onTap: () =>
+                                                    Navigator.pop(context),
+                                              );
                                             } else if (postClockingProvider
                                                         .postClockDate ==
                                                     null ||
                                                 postClockingProvider
                                                         .postClockTime ==
                                                     null) {
-                                              showNormalToast(
-                                                'Please select date & time to start break for $attendeeName. Thank you!',
+                                              showInfoDialog(
+                                                'ok',
+                                                context: context,
+                                                title: 'Sorry!',
+                                                content:
+                                                    'Please select date & time to start break for $attendeeName. \nThank you!',
+                                                onTap: () =>
+                                                    Navigator.pop(context),
                                               );
                                             } else {
                                               showDialog(
@@ -269,6 +289,8 @@ class PostClockClockedMemberItem extends StatelessWidget {
                               ),
                               attendee!.attendance!.endBreak == null
                                   ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
                                         CustomElevatedButton(
                                           label: "End Break",
@@ -279,21 +301,41 @@ class PostClockClockedMemberItem extends StatelessWidget {
                                             if (attendee!
                                                     .attendance!.endBreak !=
                                                 null) {
-                                              showNormalToast(
-                                                  '$attendeeName has already ended break. Thank you!');
+                                              showInfoDialog(
+                                                'ok',
+                                                context: context,
+                                                title: 'Sorry!!',
+                                                content:
+                                                    '$attendeeName\'s break has already been ended. Thank you!',
+                                                onTap: () =>
+                                                    Navigator.pop(context),
+                                              );
                                             } else if (attendee!
                                                     .attendance!.startBreak ==
                                                 null) {
-                                              showNormalToast(
-                                                  'You can\'t end a break that has not been started. Please start the break to continue!');
+                                              showInfoDialog(
+                                                'ok',
+                                                context: context,
+                                                title: 'Sorry!',
+                                                content:
+                                                    'You can\'t end a break that has not been started. Please start the break to continue!',
+                                                onTap: () =>
+                                                    Navigator.pop(context),
+                                              );
                                             } else if (postClockingProvider
                                                         .postClockDate ==
                                                     null ||
                                                 postClockingProvider
                                                         .postClockTime ==
                                                     null) {
-                                              showNormalToast(
-                                                'Please select date & time to end break for $attendeeName. Thank you!',
+                                              showInfoDialog(
+                                                'ok',
+                                                context: context,
+                                                title: 'Sorry!',
+                                                content:
+                                                    'Please select date & time to end break for $attendeeName. Thank you!',
+                                                onTap: () =>
+                                                    Navigator.pop(context),
                                               );
                                             } else {
                                               showDialog(

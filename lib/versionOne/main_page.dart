@@ -112,7 +112,9 @@ class _MainPageState extends State<MainPage> {
           } else if (userType.compareTo("admin") == 0) {
             SharedPrefs().getAdminProfile().then((value) {
               Provider.of<ClientProvider>(context, listen: false)
-                  .setAdminProfileInfo(adminProfile: value!);
+                  .setAdminProfileInfo(
+                adminProfile: value!,
+              );
             });
             // bottomNavItems = [
             //   {"title": "Home", "icon_data": CupertinoIcons.home},

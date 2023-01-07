@@ -16,10 +16,11 @@ import 'package:provider/provider.dart';
 import 'custom_outlined_button.dart';
 
 class PostClockClockingMemberItem extends StatelessWidget {
-  final MeetingEventModel? meetingEventModel;
   final Attendee? attendee;
-  PostClockClockingMemberItem({Key? key, this.attendee, this.meetingEventModel})
-      : super(key: key);
+  PostClockClockingMemberItem({
+    Key? key,
+    this.attendee,
+  }) : super(key: key);
 
   late PostClockingProvider postClockingProvider;
 
@@ -31,24 +32,20 @@ class PostClockClockingMemberItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       child: Card(
-        color: attendee!.attendance!.memberId!.selected!
-            ? Colors.orange.shade100
-            : Colors.white,
+        color: attendee!.selected! ? Colors.orange.shade100 : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        elevation: attendee!.attendance!.memberId!.selected! ? 3 : 0,
+        elevation: attendee!.selected! ? 3 : 0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               Icon(
-                attendee!.attendance!.memberId!.selected!
+                attendee!.selected!
                     ? CupertinoIcons.check_mark_circled_solid
                     : CupertinoIcons.checkmark_alt_circle,
-                color: attendee!.attendance!.memberId!.selected!
-                    ? primaryColor
-                    : Colors.grey,
+                color: attendee!.selected! ? primaryColor : Colors.grey,
               ),
               const SizedBox(
                 width: 8,

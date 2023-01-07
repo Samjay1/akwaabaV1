@@ -9,47 +9,57 @@ class CurrentEventPreviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12,horizontal: 8),
-      
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12)
-      ),
+          color: Colors.white, borderRadius: BorderRadius.circular(12)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Align(
               alignment: Alignment.topLeft,
-              child: IconButton(onPressed: (){
-                Navigator.pop(context);
-              }, icon:Icon( Icons.clear,
-              color: Colors.red,))),
-          MeetingEventWidget(MeetingEventItem("Tues Office Work", "16 Aug 2022", "8:00AM", "5:00PM"),),
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: Colors.red,
+                  ))),
+          //MeetingEventWidget(MeetingEventItem("Tues Office Work", "16 Aug 2022", "8:00AM", "5:00PM"),),
 
           Container(
-            padding: EdgeInsets.only(left: 8,top: 24),
-            child:  Column(
+            padding: EdgeInsets.only(left: 8, top: 24),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text("Clocked In Time",
-                      style: TextStyle(color: textColorLight,fontSize: 14),),
-                    SizedBox(width: 12,),
-                    Text("0.00 AM",textAlign: TextAlign.end,),
-
+                    Text(
+                      "Clocked In Time",
+                      style: TextStyle(color: textColorLight, fontSize: 14),
+                    ),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    Text(
+                      "0.00 AM",
+                      textAlign: TextAlign.end,
+                    ),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text("Clocked Out Time",
-                      style: TextStyle(color: textColorLight,fontSize: 14),),
-                    SizedBox(width: 12,),
+                    Text(
+                      "Clocked Out Time",
+                      style: TextStyle(color: textColorLight, fontSize: 14),
+                    ),
+                    SizedBox(
+                      width: 12,
+                    ),
                     Text("0.00 PM"),
-
                   ],
                 )
               ],

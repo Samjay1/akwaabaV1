@@ -308,12 +308,14 @@ class _LoginPageState extends State<LoginPage> {
             child: TextButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const WebViewPage(
-                              url:
-                                  'https://password-reset.akwaabasoftware.com/client-user/forgot-password',
-                              title: 'Forgot Password ')));
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const WebViewPage(
+                          url:
+                              'https://password-reset.akwaabasoftware.com/client-user/forgot-password',
+                          title: 'Forgot Password '),
+                    ),
+                  );
 
                   // Navigator.push(context, MaterialPageRoute(builder: (_)=>
                   // const ForgotPasswordPage()));

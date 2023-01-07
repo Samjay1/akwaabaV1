@@ -4,6 +4,7 @@ import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/api_responses/clocking_response.dart';
 import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart';
+
 import 'package:akwaaba/models/attendance/excuse_model.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:flutter/foundation.dart';
@@ -25,6 +26,7 @@ class ClockingAPI {
     required int toAge,
   }) async {
     ClockedMembersResponse membersResponse;
+
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/meeting-event/attendance/absentees?meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
     try {

@@ -67,6 +67,9 @@ class _ClockingPageState extends State<ClockingPage> {
   void initState() {
     _controller = ScrollController();
 
+    Provider.of<ClockingProvider>(context, listen: false)
+        .setCurrentContext(context);
+
     Future.delayed(Duration.zero, () {
       // load attendance list for meeting
       Provider.of<ClockingProvider>(context, listen: false).getAllAbsentees(
@@ -96,7 +99,7 @@ class _ClockingPageState extends State<ClockingPage> {
   @override
   Widget build(BuildContext context) {
     clockingProvider = context.watch<ClockingProvider>();
-    clockingProvider.setCurrentContext(context);
+
     var absentees = clockingProvider.absentees;
     var attendees = clockingProvider.attendees;
     return Scaffold(
@@ -183,8 +186,14 @@ class _ClockingPageState extends State<ClockingPage> {
                           radius: 5,
                           function: () {
                             if (clockingProvider.selectedAbsentees.isEmpty) {
-                              showNormalToast(
-                                  'Please select members to clock-in on their behalf');
+                              showInfoDialog(
+                                'ok',
+                                context: context,
+                                title: 'Sorry!',
+                                content:
+                                    'Please select members to clock-in on their behalf',
+                                onTap: () => Navigator.pop(context),
+                              );
                             } else {
                               // perform bulk clock in
                               showDialog(
@@ -225,8 +234,14 @@ class _ClockingPageState extends State<ClockingPage> {
                           radius: 5,
                           function: () {
                             if (clockingProvider.selectedAttendees.isEmpty) {
-                              showNormalToast(
-                                  'Please select members to clock-out on their behalf');
+                              showInfoDialog(
+                                'ok',
+                                context: context,
+                                title: 'Sorry!',
+                                content:
+                                    'Please select members to clock-out on their behalf',
+                                onTap: () => Navigator.pop(context),
+                              );
                             } else {
                               // perform bulk clock out
                               showDialog(
@@ -282,8 +297,14 @@ class _ClockingPageState extends State<ClockingPage> {
                             color: Colors.green,
                             function: () {
                               if (clockingProvider.selectedAttendees.isEmpty) {
-                                showNormalToast(
-                                    'Please select members to start break on their behalf');
+                                showInfoDialog(
+                                  'ok',
+                                  context: context,
+                                  title: 'Sorry!',
+                                  content:
+                                      'Please select members to start break on their behalf',
+                                  onTap: () => Navigator.pop(context),
+                                );
                               } else {
                                 // perform bulk start break
                                 showDialog(
@@ -325,8 +346,14 @@ class _ClockingPageState extends State<ClockingPage> {
                             radius: 5,
                             function: () {
                               if (clockingProvider.selectedAttendees.isEmpty) {
-                                showNormalToast(
-                                    'Please select members to end break on their behalf');
+                                showInfoDialog(
+                                  'ok',
+                                  context: context,
+                                  title: 'Sorry!',
+                                  content:
+                                      'Please select members to end break on their behalf',
+                                  onTap: () => Navigator.pop(context),
+                                );
                               } else {
                                 // perform bulk end break
                                 showDialog(
@@ -426,11 +453,11 @@ class _ClockingPageState extends State<ClockingPage> {
 
                         if (clockingListState) {
                           for (Attendee? absentee in absentees) {
-                            absentee!.attendance!.memberId!.selected = checkAll;
-                            if (absentee.attendance!.memberId!.selected!) {
+                            absentee!.selected = checkAll;
+                            if (absentee.selected!) {
                               clockingProvider.selectedAbsentees.add(absentee);
                             }
-                            if (!absentee.attendance!.memberId!.selected!) {
+                            if (!absentee.selected!) {
                               clockingProvider.selectedAbsentees
                                   .remove(absentee);
                             }
@@ -442,17 +469,16 @@ class _ClockingPageState extends State<ClockingPage> {
                               "Selected Absentees: ${clockingProvider.selectedAbsentees.length}");
                         } else {
                           for (Attendee? attendee in attendees) {
-                            attendee!.attendance!.memberId!.selected = checkAll;
-                            if (attendee.attendance!.memberId!.selected!) {
+                            attendee!.selected = checkAll;
+                            if (attendee.selected!) {
                               clockingProvider.selectedAttendees.add(attendee);
+                              debugPrint(
+                                  "Attendee: ${attendee.attendance!.memberId!.selected}");
                             }
-                            if (!attendee.attendance!.memberId!.selected!) {
+                            if (!attendee.selected!) {
                               clockingProvider.selectedAttendees
                                   .remove(attendee);
                             }
-
-                            debugPrint(
-                                "Attendee: ${attendee.attendance!.memberId!.selected}");
                           }
 
                           debugPrint(
@@ -485,22 +511,13 @@ class _ClockingPageState extends State<ClockingPage> {
                               return GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    if (absentees[index]!
-                                        .attendance!
-                                        .memberId!
-                                        .selected!) {
+                                    if (absentees[index]!.selected!) {
                                       //remove it
-                                      absentees[index]!
-                                          .attendance!
-                                          .memberId!
-                                          .selected = false;
+                                      absentees[index]!.selected = false;
                                       clockingProvider.selectedAbsentees
                                           .remove(absentees[index]);
                                     } else {
-                                      absentees[index]!
-                                          .attendance!
-                                          .memberId!
-                                          .selected = true;
+                                      absentees[index]!.selected = true;
                                       clockingProvider.selectedAbsentees
                                           .add(absentees[index]);
                                     }
@@ -528,23 +545,14 @@ class _ClockingPageState extends State<ClockingPage> {
                                   onTap: () {
                                     setState(
                                       () {
-                                        if (attendees[index]!
-                                            .additionalInfo!
-                                            .memberInfo!
-                                            .selected!) {
+                                        if (attendees[index]!.selected!) {
                                           //remove it
-                                          attendees[index]!
-                                              .additionalInfo!
-                                              .memberInfo!
-                                              .selected = false;
+                                          attendees[index]!.selected = false;
 
                                           clockingProvider.selectedAttendees
                                               .remove(attendees[index]!);
                                         } else {
-                                          attendees[index]!
-                                              .additionalInfo!
-                                              .memberInfo!
-                                              .selected = true;
+                                          attendees[index]!.selected = true;
                                           clockingProvider.selectedAttendees
                                               .add(attendees[index]!);
                                         }
@@ -566,24 +574,6 @@ class _ClockingPageState extends State<ClockingPage> {
                               },
                             ),
                           ),
-                // itemHasBeenSelected?
-                //     Container(
-                //
-                //       padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
-                //       child: CustomElevatedButton(label: "Proceed to Clock",
-                //       function: (){
-                //         displayCustomCupertinoDialog(context: context,
-                //             title: "Proceed to Clock", msg: "100 members have been selected,"
-                //                 " do you want to clock them all now?",
-                //             actionsMap: {"No":(){Navigator.pop(context);},
-                //               "Yes":(){
-                //               Navigator.pop(context);
-                //               Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                //               const ClockingOptionsPage()));
-                //               }});
-                //       },),
-                //     )
-                //     :const SizedBox.shrink()
               ],
             ),
           ),
