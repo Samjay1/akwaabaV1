@@ -191,10 +191,9 @@ class _MainPageState extends State<MainPage> {
           : Consumer<MemberProvider>(
               builder: (context, data, child) {
                 return memberDrawerView(
-                  logo: data.memberProfile?.profilePicture,
-                  applicantFirstname: data.memberProfile?.firstname,
-                  applicantSurname: data.memberProfile?.surname,
-                  applicantId: data.memberProfile?.id,
+                  logo: data.clientAccountInfo?.logo,
+                  name: data.clientAccountInfo?.name,
+                  branch: data.branch?.name,
                 );
               },
             ),
@@ -215,7 +214,7 @@ class _MainPageState extends State<MainPage> {
             height: 40,
           ),
           SizedBox(
-            height: 200,
+            height: 180,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -240,17 +239,13 @@ class _MainPageState extends State<MainPage> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                const SizedBox(
+                  height: 2,
+                ),
                 Text(
                   "(${branch ?? ""})",
                   style: const TextStyle(fontSize: 16),
                   textAlign: TextAlign.center,
-                ),
-                Text(
-                  "ID: $id",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
                 ),
               ],
             ),
@@ -267,6 +262,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Database",
                           iconData: Icons.phone_android,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -281,6 +277,7 @@ class _MainPageState extends State<MainPage> {
                           title: "View Members",
                           iconData: Icons.phone_android,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -295,6 +292,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Create Meetings",
                           iconData: Icons.phone_android,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -309,6 +307,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Scheduled Meetings",
                           iconData: Icons.phone_android,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -323,6 +322,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Assign Absent/Leave Status",
                           iconData: Icons.phone_android,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -337,6 +337,7 @@ class _MainPageState extends State<MainPage> {
                           title: "View Absent/Leave Status",
                           iconData: Icons.phone_android,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -351,6 +352,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Cash Manager",
                           iconData: Icons.phone_android,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -365,6 +367,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Account Subscription",
                           iconData: Icons.phone_android,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -392,6 +395,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Attendance Report",
                           iconData: Icons.bar_chart,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -424,16 +428,9 @@ class _MainPageState extends State<MainPage> {
                                     title: 'Logout',
                                     content:
                                         'Do you really want to logout? \n\nWe appreciate your time and can\'t wait to have you back!',
-                                    onConfirmTap: () {
-                                      SharedPrefs().clear();
-                                      Navigator.pop(
-                                          context); //close the drawers
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => const LoginPage(),
-                                        ),
-                                      );
+                                    onConfirmTap: () async {
+                                      Navigator.pop(context); //close the popup
+                                      SharedPrefs().logout(context);
                                     },
                                     onCancelTap: () => Navigator.pop(context),
                                     confirmText: 'Confirm',
@@ -453,11 +450,11 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget memberDrawerView(
-      {var logo,
-      var applicantFirstname,
-      var applicantId,
-      var applicantSurname}) {
+  Widget memberDrawerView({
+    var logo,
+    var name,
+    var branch,
+  }) {
     return Drawer(
       backgroundColor: Colors.grey.shade300,
       child: Column(
@@ -481,7 +478,7 @@ class _MainPageState extends State<MainPage> {
                   height: 8,
                 ),
                 Text(
-                  "${applicantFirstname ?? ""} ${applicantSurname ?? ""}",
+                  "${name ?? ""}",
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
@@ -492,7 +489,7 @@ class _MainPageState extends State<MainPage> {
                   height: displayHeight(context) * 0.01,
                 ),
                 Text(
-                  "ID: $applicantId",
+                  "($branch)",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 18,
@@ -569,15 +566,8 @@ class _MainPageState extends State<MainPage> {
                                     content:
                                         'Do you really want to logout? \n\nWe appreciate your time and can\'t wait to have you back!',
                                     onConfirmTap: () {
-                                      SharedPrefs().clear();
-                                      Navigator.pop(
-                                          context); //close the drawers
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => const LoginPage(),
-                                        ),
-                                      );
+                                      Navigator.pop(context); //close the popup
+                                      SharedPrefs().logout(context);
                                     },
                                     onCancelTap: () => Navigator.pop(context),
                                     confirmText: 'Confirm',

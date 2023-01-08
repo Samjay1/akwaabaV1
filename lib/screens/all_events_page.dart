@@ -1,3 +1,5 @@
+import 'package:akwaaba/components/empty_state_widget.dart';
+import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../components/custom_elevated_button.dart';
 import '../components/form_button.dart';
@@ -67,8 +70,8 @@ class _AllEventsPageState extends State<AllEventsPage> {
     print('HOMEPAGE TOKEN ${memberToken}');
     // print('HOMEPAGE member id ${memberProfile.id}');
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<AttendanceProvider>(context, listen: false)
-          .getUpcomingMeetingEvents(memberToken: memberToken, context: context);
+      // Provider.of<AttendanceProvider>(context, listen: false)
+      //     .getUpcomingMeetingEvents(memberToken: memberToken, context: context);
     });
   }
 
@@ -186,25 +189,40 @@ class _AllEventsPageState extends State<AllEventsPage> {
             //   return  MeetingEventWidget(events[index]);
             // }),),
 
-            Container(
-              height: MediaQuery.of(context).size.height * 0.3,
-              width: MediaQuery.of(context).size.width,
-              child: Consumer<AttendanceProvider>(
-                builder: (context, data, child) {
-                  return data.upcomingMeetings != null
-                      ? ListView.builder(
-                          itemCount: data.upcomingMeetings.length,
-                          itemBuilder: (context, index) {
-                            var item = data.upcomingMeetings[index];
-                            debugPrint('MEETING LIST ${item.memberType}');
-                            return upcomingEvents(
-                              meetingEvent: item,
-                            );
-                          })
-                      : const Center(child: CircularProgressIndicator());
-                },
-              ),
-            )
+            context.watch<AttendanceProvider>().loading
+                ? Shimmer.fromColors(
+                    baseColor: greyColorShade300,
+                    highlightColor: greyColorShade100,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemBuilder: (_, __) => const EventShimmerItem(),
+                      itemCount: 10,
+                    ),
+                  )
+                : SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    width: MediaQuery.of(context).size.width,
+                    child: Consumer<AttendanceProvider>(
+                      builder: (context, data, child) {
+                        if (data.upcomingMeetings.isEmpty) {
+                          return const EmptyStateWidget(
+                            text:
+                                'You currently have no upcoming \nmeetings at the moment!',
+                          );
+                        }
+                        return ListView.builder(
+                            itemCount: data.upcomingMeetings.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              var item = data.upcomingMeetings[index];
+                              debugPrint('MEETING LIST ${item.memberType}');
+                              return upcomingEvents(
+                                meetingEvent: item,
+                              );
+                            });
+                      },
+                    ),
+                  )
           ],
         ),
       ),

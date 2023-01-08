@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/dialogs_modals/info_dialog.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -133,9 +134,10 @@ Future<DateTime?> displayTimeSelector(
     DateTime? minimumDate,
     DateTime? maxDate}) async {
   DateTime? selectedDate;
-  await DatePicker.showTimePicker(
+  await DatePicker.showTime12hPicker(
     context,
     showTitleActions: true,
+
     // minTime:minimumDate,
     //
     // maxTime: maxDate,
@@ -159,7 +161,7 @@ showLoadingDialog(BuildContext context, [String? message]) {
   return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (dialogContext) {
         return Scaffold(
           backgroundColor: Colors.black45,
           body: Center(

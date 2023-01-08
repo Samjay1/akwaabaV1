@@ -34,9 +34,9 @@ class UserApi {
         //SET THE USER TOKEN TO PREFS
         var user = decodedResponse['user'];
         // save admin profile
-        SharedPrefs().saveAdminInfo(
-          adminProfile: AdminProfile.fromJson(decodedResponse['user']),
-        );
+        // SharedPrefs().saveAdminInfo(
+        //   adminProfile: AdminProfile.fromJson(decodedResponse['user']),
+        // );
         prefs.setString('token', clientToken);
         prefs.setString('account_type', 'client');
 

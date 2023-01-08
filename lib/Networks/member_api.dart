@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/clocking_response.dart';
+import 'package:akwaaba/models/client_account_info.dart';
+import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
 import 'package:akwaaba/utils/general_utils.dart';
@@ -38,6 +41,7 @@ class MemberAPI {
         var memberToken = decodedResponse['token'];
         prefs.setString('token', memberToken);
         debugPrint('MEMBER TOKEN---------- --------------------- $memberToken');
+
         return response.body;
       } else {
         debugPrint("error>>>. ${response.body}");
@@ -46,9 +50,86 @@ class MemberAPI {
       }
     } on SocketException catch (_) {
       showErrorToast("Network Error");
-
       return '';
     }
+  }
+
+  // Get client info of member
+  Future<ClientAccountInfo> getClientAccountInfo({
+    required int clientId,
+  }) async {
+    ClientAccountInfo accountInfo;
+    var url = Uri.parse('$baseUrl/clients/account/$clientId');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Client Info Res: ${jsonDecode(response.body)}");
+      var res = jsonDecode(response.body);
+      accountInfo = ClientAccountInfo.fromMap(
+        res['data'],
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return accountInfo;
+  }
+
+  // get a  branch
+  Future<Branch> getBranch({
+    required int branchId,
+  }) async {
+    Branch branch;
+
+    var url = Uri.parse('$baseUrl/clients/branch/$branchId');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Branch Res: ${jsonDecode(response.body)}");
+      var res = jsonDecode(response.body);
+      branch = Branch.fromJson(
+        res['data'],
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return branch;
+  }
+
+  // get a  branch
+  Future<String> getIdentityNumber({
+    required int memberId,
+  }) async {
+    String identity;
+
+    var url = Uri.parse(
+        '$baseUrl/members/member-identity?filter_memberIds=$memberId');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Identity Res: ${jsonDecode(response.body)}");
+      identity = jsonDecode(response.body)['results'][0]['identity'];
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return identity;
+  }
+
+  static Future<Map<String, String>> getAllHeaders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? memberToken = prefs.getString('token');
+    return {
+      'Authorization': 'Token $memberToken',
+      'Content-Type': 'application/json'
+    };
   }
 
   Future login(

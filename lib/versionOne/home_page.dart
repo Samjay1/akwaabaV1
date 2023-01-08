@@ -81,16 +81,11 @@ class _HomePageState extends State<HomePage> {
       // print('HOMEPAGE member id ${memberProfile.id}');
 
       Future.delayed(Duration.zero, () {
-        if (Provider.of<AttendanceProvider>(context, listen: false)
-            .upcomingMeetings
-            .isEmpty) {
-          Provider.of<AttendanceProvider>(context, listen: false)
-              .getUpcomingMeetingEvents(
-            memberToken: memberToken,
-            context: context,
-          );
-        }
-
+        Provider.of<AttendanceProvider>(context, listen: false)
+            .getUpcomingMeetingEvents(
+          memberToken: memberToken,
+          context: context,
+        );
         setState(() {});
       });
 
@@ -106,15 +101,11 @@ class _HomePageState extends State<HomePage> {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('token');
       Future.delayed(Duration.zero, () {
-        if (Provider.of<AttendanceProvider>(context, listen: false)
-            .upcomingMeetings
-            .isEmpty) {
-          Provider.of<AttendanceProvider>(context, listen: false)
-              .getUpcomingMeetingEvents(
-            memberToken: memberToken,
-            context: context,
-          );
-        }
+        Provider.of<AttendanceProvider>(context, listen: false)
+            .getUpcomingMeetingEvents(
+          memberToken: memberToken,
+          context: context,
+        );
         setState(() {});
       });
     }
@@ -163,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                             return memberHeaderView(
                               firstName: data.memberProfile.firstname,
                               surName: data.memberProfile.surname,
-                              userId: data.memberProfile.id,
+                              userId: data.identityNumber,
                               profileImage: data.memberProfile.profilePicture,
                             );
                           },
@@ -172,10 +163,11 @@ class _HomePageState extends State<HomePage> {
                           ? Consumer<ClientProvider>(
                               builder: (context, data, child) {
                               return adminHeaderView(
-                                  firstName: data.getUser?.firstName,
-                                  surName: data.getUser?.surName,
-                                  userId: data.getUser?.id,
-                                  profileImage: data.getUser?.profilePicture);
+                                firstName: data.getUser?.firstName,
+                                surName: data.getUser?.surName,
+                                userId: data.getUser?.email,
+                                profileImage: data.getUser?.profilePicture,
+                              );
                             })
                           : const Text("Unknown User type"),
 
@@ -259,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   },
                                   child: adminTodaysEvents(
-                                    meetingEvent: item,
+                                    meetingEventModel: item,
                                   ),
                                 );
                               });
@@ -360,10 +352,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(
-              height: displayHeight(context) * 0.01,
+              height: displayHeight(context) * 0.008,
             ),
             Text(
-              "ID: $userId",
+              userId,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 18,
@@ -706,11 +698,14 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "${meetingEventModel.name}",
-                                style: const TextStyle(
-                                  fontSize: 19,
+                              Expanded(
+                                child: Text(
+                                  meetingEventModel.name!,
+                                  style: const TextStyle(fontSize: 19),
                                 ),
+                              ),
+                              SizedBox(
+                                width: displayWidth(context) * 0.02,
                               ),
                               Text(
                                 "Span: ${meetingEventModel.meetingSpan} Day(s)",
@@ -764,7 +759,8 @@ class _HomePageState extends State<HomePage> {
                                     color: primaryColor,
                                   ),
                                   Text(
-                                    "${meetingEventModel.startTime}",
+                                    DateUtil.formate12hourTime(
+                                        myTime: meetingEventModel.startTime!),
                                     style: const TextStyle(
                                         fontSize: 13, color: textColorLight),
                                   )
@@ -778,7 +774,9 @@ class _HomePageState extends State<HomePage> {
                                     color: primaryColor,
                                   ),
                                   Text(
-                                    "${meetingEventModel.closeTime}",
+                                    DateUtil.formate12hourTime(
+                                      myTime: meetingEventModel.closeTime!,
+                                    ),
                                     style: const TextStyle(
                                         fontSize: 13, color: textColorLight),
                                   )
@@ -855,7 +853,7 @@ class _HomePageState extends State<HomePage> {
                                     ? 'Clock Out'
                                     : 'Clock In',
                                 content:
-                                    '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re within the premise of the meeting or event to continue.',
+                                    '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you are within the meeting premises to continue.',
                                 onConfirmTap: () {
                                   Navigator.pop(context);
                                   Provider.of<AttendanceProvider>(context,
@@ -960,8 +958,8 @@ class _HomePageState extends State<HomePage> {
                                                   null &&
                                               meetingEventModel.endBreak ==
                                                   null)
-                                          ? 'Are you sure you want to start your break? \nMake sure you\'re within the premise of the meeting or event to continue.'
-                                          : 'Are you sure you want to end your break? \nMake sure you\'re within the premise of the meeting or event to continue.',
+                                          ? 'Are you sure you want to start your break? \nMake sure you are within the meeting premises to continue.'
+                                          : 'Are you sure you want to end your break? \nMake sure you are within the meeting premises to continue.',
                                       //'${meeting.startBreak != null ? 'Are you sure you want to end?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
                                       onConfirmTap: () {
                                         Navigator.pop(context);
@@ -1004,11 +1002,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget adminTodaysEvents({
-    required MeetingEventModel meetingEvent,
+    required MeetingEventModel meetingEventModel,
   }) {
     var date = DateUtil.formatStringDate(
       DateFormat.yMMMEd(),
-      date: DateTime.parse(meetingEvent.updateDate!),
+      date: DateTime.parse(meetingEventModel.updateDate!),
     );
     return Card(
       elevation: 4,
@@ -1028,14 +1026,17 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "${meetingEvent.name}",
-                                style: const TextStyle(
-                                  fontSize: 19,
+                              Expanded(
+                                child: Text(
+                                  meetingEventModel.name!,
+                                  style: const TextStyle(fontSize: 19),
                                 ),
                               ),
+                              SizedBox(
+                                width: displayWidth(context) * 0.02,
+                              ),
                               Text(
-                                "Span: ${meetingEvent.meetingSpan} Day(s)",
+                                "Span: ${meetingEventModel.meetingSpan} Day(s)",
                                 style: const TextStyle(
                                   fontSize: 13,
                                 ),
@@ -1063,7 +1064,7 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                               Text(
-                                meetingEvent.isRecuring!
+                                meetingEventModel.isRecuring!
                                     ? "Recurring Weekly "
                                     : "Non-Recurring",
                                 style: const TextStyle(
@@ -1087,7 +1088,8 @@ class _HomePageState extends State<HomePage> {
                                       color: primaryColor,
                                     ),
                                     Text(
-                                      "${meetingEvent.startTime}",
+                                      DateUtil.formate12hourTime(
+                                          myTime: meetingEventModel.startTime!),
                                       style: const TextStyle(
                                           fontSize: 13, color: textColorLight),
                                     )
@@ -1102,7 +1104,8 @@ class _HomePageState extends State<HomePage> {
                                     color: primaryColor,
                                   ),
                                   Text(
-                                    "${meetingEvent.closeTime}",
+                                    DateUtil.formate12hourTime(
+                                        myTime: meetingEventModel.closeTime!),
                                     style: const TextStyle(
                                         fontSize: 13, color: textColorLight),
                                   )

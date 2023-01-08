@@ -30,6 +30,7 @@ class CustomElevatedButton extends StatelessWidget {
       visible: showProgress,
       replacement: ElevatedButton(
           style: ElevatedButton.styleFrom(
+              elevation: 0.5,
               backgroundColor: color,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(radius))),

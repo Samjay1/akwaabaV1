@@ -74,7 +74,7 @@ class ClockingMemberItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'ID: ${absentee!.attendance!.memberId!.id!.toString()}',
+                          'ID: ${absentee!.additionalInfo!.id!.toString()}',
                           style: const TextStyle(fontSize: 15),
                         ),
                       ],

@@ -30,23 +30,23 @@ class ExcuseInputPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.only(right: 100),
                 child: Text(
-                  "Excuse Request for Event/ Meeting Name",
-                  style: TextStyle(fontSize: 22),
+                  "Send Excuse Request",
+                  style: TextStyle(fontSize: 20),
                 ),
               ),
               const SizedBox(
-                height: 36,
+                height: 16,
               ),
               FormTextField(
                 controller: attendanceProvider.excuseTEC,
                 maxLength: 256,
                 showMaxLength: true,
-                minLines: 5,
-                maxLines: 10,
+                minLines: 8,
+                maxLines: 15,
                 label: "What's your excuse?",
               ),
               const SizedBox(
-                height: 36,
+                height: 26,
               ),
               CustomElevatedButton(
                 label: "Submit",

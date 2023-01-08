@@ -107,7 +107,7 @@ class ClockedMemberItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'ID: ${attendee!.attendance!.memberId!.id!.toString()}',
+                          'ID: ${attendee!.additionalInfo!.id!.toString()}',
                           style: const TextStyle(
                               fontSize: 16, color: primaryColor),
                         ),
@@ -247,90 +247,82 @@ class ClockedMemberItem extends StatelessWidget {
                               SizedBox(
                                 width: displayWidth(context) * 0.02,
                               ),
-                              attendee!.attendance!.endBreak == null
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        CustomElevatedButton(
-                                          label: "End Break",
-                                          labelSize: 14,
-                                          color: primaryColor,
-                                          radius: 5,
-                                          function: () {
-                                            if (attendee!
-                                                    .attendance!.endBreak !=
-                                                null) {
-                                              showInfoDialog(
-                                                'ok',
-                                                context: context,
-                                                title: 'Sorry!',
-                                                content:
-                                                    '$attendeeName\'s break has already been ended. \nThank you!',
-                                                onTap: () =>
-                                                    Navigator.pop(context),
-                                              );
-                                            } else if (attendee!
-                                                    .attendance!.startBreak ==
-                                                null) {
-                                              showInfoDialog(
-                                                'ok',
-                                                context: context,
-                                                title: 'Sorry!',
-                                                content:
-                                                    'You can\'t end a break that has not been started. Please start the break to continue!',
-                                                onTap: () =>
-                                                    Navigator.pop(context),
-                                              );
-                                            } else {
-                                              showDialog(
-                                                context: context,
-                                                builder: (_) => AlertDialog(
-                                                  insetPadding:
-                                                      const EdgeInsets.all(10),
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  elevation: 0,
-                                                  content: ConfirmDialog(
-                                                    title: 'End Break',
-                                                    content:
-                                                        'Are you sure you want end break for $attendeeName?',
-                                                    onConfirmTap: () {
-                                                      Navigator.pop(context);
-                                                      Provider.of<ClockingProvider>(
-                                                              context,
-                                                              listen: false)
-                                                          .endMeetingBreak(
-                                                        context: context,
-                                                        attendee: attendee!,
-                                                        time: null,
-                                                      );
-                                                    },
-                                                    onCancelTap: () =>
-                                                        Navigator.pop(context),
-                                                    confirmText: 'Yes',
-                                                    cancelText: 'Cancel',
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                        SizedBox(
-                                          height:
-                                              displayHeight(context) * 0.006,
-                                        ),
-                                        Text(
-                                          'EB: $endBreakTime',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            color: blackColor,
-                                            fontWeight: FontWeight.w500,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  CustomElevatedButton(
+                                    label: "End Break",
+                                    labelSize: 14,
+                                    color: primaryColor,
+                                    radius: 5,
+                                    function: () {
+                                      if (attendee!.attendance!.endBreak !=
+                                          null) {
+                                        showInfoDialog(
+                                          'ok',
+                                          context: context,
+                                          title: 'Sorry!',
+                                          content:
+                                              '$attendeeName\'s break has already been ended. \nThank you!',
+                                          onTap: () => Navigator.pop(context),
+                                        );
+                                      } else if (attendee!
+                                              .attendance!.startBreak ==
+                                          null) {
+                                        showInfoDialog(
+                                          'ok',
+                                          context: context,
+                                          title: 'Sorry!',
+                                          content:
+                                              'You can\'t end a break that has not been started. Please start the break to continue!',
+                                          onTap: () => Navigator.pop(context),
+                                        );
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            insetPadding:
+                                                const EdgeInsets.all(10),
+                                            backgroundColor: Colors.transparent,
+                                            elevation: 0,
+                                            content: ConfirmDialog(
+                                              title: 'End Break',
+                                              content:
+                                                  'Are you sure you want end break for $attendeeName?',
+                                              onConfirmTap: () {
+                                                Navigator.pop(context);
+                                                Provider.of<ClockingProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .endMeetingBreak(
+                                                  context: context,
+                                                  attendee: attendee!,
+                                                  time: null,
+                                                );
+                                              },
+                                              onCancelTap: () =>
+                                                  Navigator.pop(context),
+                                              confirmText: 'Yes',
+                                              cancelText: 'Cancel',
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox(),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.006,
+                                  ),
+                                  Text(
+                                    'EB: $endBreakTime',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: blackColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           )
                         : const SizedBox(),
@@ -345,8 +337,8 @@ class ClockedMemberItem extends StatelessWidget {
                             ? CustomElevatedButton(
                                 label: "Cancel Clocking",
                                 labelSize: 14,
-                                color: Colors.grey,
-                                textColor: whiteColor,
+                                color: fillColor,
+                                textColor: Colors.red,
                                 radius: 5,
                                 function: () {
                                   showDialog(
@@ -358,7 +350,7 @@ class ClockedMemberItem extends StatelessWidget {
                                       content: ConfirmDialog(
                                         title: 'Cancel Clocking',
                                         content:
-                                            'Are you sure you want cancel clocking for $attendeeName?',
+                                            'Are you sure you want to cancel clocking for $attendeeName?',
                                         onConfirmTap: () {
                                           Navigator.pop(context);
                                           Provider.of<ClockingProvider>(context,

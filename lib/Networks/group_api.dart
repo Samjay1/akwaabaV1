@@ -38,6 +38,30 @@ class GroupAPI {
     return branches;
   }
 
+  // get a  branch
+  static Future<Branch> getBranch({
+    required int branchId,
+  }) async {
+    Branch branch;
+
+    var url = Uri.parse('${getBaseUrl()}/clients/branch/$branchId');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Branch Res: ${await returnResponse(response)}");
+      var res = await returnResponse(response);
+      branch = Branch.fromJson(
+        res['data'],
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return branch;
+  }
+
   /// GENDER
 
   // get a gender

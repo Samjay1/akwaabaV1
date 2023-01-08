@@ -238,7 +238,8 @@ class ClockingProvider extends ChangeNotifier {
         fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
         toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
       );
-      selectedAbsentees.clear();
+      _selectedAbsentees.clear();
+      _absentees.clear();
       //_clockedMembers.clear();
       //_tempClockedMembers.clear();
       if (response.results!.isNotEmpty) {
@@ -256,9 +257,9 @@ class ClockingProvider extends ChangeNotifier {
             .toList();
 
         _tempAbsentees = _absentees;
-
-        debugPrint('Absentees: ${_absentees.length}');
       }
+
+      debugPrint('Absentees: ${_absentees.length}');
 
       getAllAtendees(
         meetingEventModel: meetingEventModel,
@@ -294,7 +295,8 @@ class ClockingProvider extends ChangeNotifier {
         fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
         toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
       );
-      selectedAttendees.clear();
+      _selectedAttendees.clear();
+      _attendees.clear();
 
       if (response.results!.isNotEmpty) {
         // filter list for only members excluding
@@ -311,9 +313,8 @@ class ClockingProvider extends ChangeNotifier {
             .toList();
 
         _tempAttendees = _attendees;
-
-        debugPrint('Atendees: ${_attendees.length}');
       }
+      debugPrint('Atendees: ${_attendees.length}');
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -368,9 +369,9 @@ class ClockingProvider extends ChangeNotifier {
           attendee.attendance!.memberId!.selected = false;
         }
         _selectedAbsentees.clear();
-        // refresh list when there is bulk operation
-        getAllAbsentees(meetingEventModel: selectedCurrentMeeting);
       }
+      // refresh list when there is bulk operation
+      getAllAbsentees(meetingEventModel: selectedCurrentMeeting);
       showNormalToast(response.message!);
       Navigator.pop(context);
     } catch (err) {
@@ -451,9 +452,9 @@ class ClockingProvider extends ChangeNotifier {
           );
         }
         _selectedAttendees.clear();
-        // refresh list when there is bulk operation
-        getAllAbsentees(meetingEventModel: selectedCurrentMeeting);
       }
+      // refresh list when there is bulk operation
+      getAllAbsentees(meetingEventModel: selectedCurrentMeeting);
 
       if (response!.message == null) {
         showErrorToast(response.nonFieldErrors![0]);
@@ -495,11 +496,11 @@ class ClockingProvider extends ChangeNotifier {
           );
         }
         _selectedAttendees.clear();
-        // refresh list when there is bulk operation
-        getAllAbsentees(
-          meetingEventModel: selectedCurrentMeeting,
-        );
       }
+      // refresh list when there is bulk operation
+      getAllAbsentees(
+        meetingEventModel: selectedCurrentMeeting,
+      );
       if (response.message == null) {
         showErrorToast(response.nonFieldErrors![0]);
       } else {
@@ -541,11 +542,11 @@ class ClockingProvider extends ChangeNotifier {
           );
         }
         _selectedAttendees.clear();
-        // refresh list when there is bulk operation
-        getAllAbsentees(
-          meetingEventModel: selectedCurrentMeeting,
-        );
       }
+      // refresh list when there is bulk operation
+      getAllAbsentees(
+        meetingEventModel: selectedCurrentMeeting,
+      );
       if (response.message == null) {
         showErrorToast(response.nonFieldErrors![0]);
       } else {

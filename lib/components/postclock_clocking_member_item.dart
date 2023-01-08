@@ -80,7 +80,7 @@ class PostClockClockingMemberItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'ID: ${attendee!.attendance!.memberId!.id!.toString()}',
+                          'ID: ${attendee!.additionalInfo!.id!.toString()}',
                           style: const TextStyle(fontSize: 15),
                         ),
                       ],

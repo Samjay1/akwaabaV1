@@ -2,6 +2,10 @@ import 'dart:convert';
 
 import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
+import 'package:akwaaba/providers/attendance_provider.dart';
+import 'package:akwaaba/versionOne/login_page.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefs {
@@ -106,5 +110,16 @@ class SharedPrefs {
   Future<bool> clear() async {
     var sd = await sharedPreferences;
     return sd.clear();
+  }
+
+  void logout(BuildContext context) {
+    clear();
+    //close the drawers
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginPage(),
+      ),
+    );
   }
 }

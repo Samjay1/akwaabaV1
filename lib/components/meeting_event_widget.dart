@@ -37,9 +37,14 @@ class MeetingEventWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    meetingEventModel!.name!,
-                    style: const TextStyle(fontSize: 19),
+                  Expanded(
+                    child: Text(
+                      meetingEventModel!.name!,
+                      style: const TextStyle(fontSize: 19),
+                    ),
+                  ),
+                  SizedBox(
+                    width: displayWidth(context) * 0.02,
                   ),
                   Text(
                     "Span: ${meetingEventModel!.meetingSpan} Day(s)",
@@ -101,7 +106,9 @@ class MeetingEventWidget extends StatelessWidget {
                         width: 3,
                       ),
                       Text(
-                        meetingEventModel!.startTime!,
+                        DateUtil.formate12hourTime(
+                          myTime: meetingEventModel!.startTime!,
+                        ),
                         style: const TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 14,
@@ -123,7 +130,9 @@ class MeetingEventWidget extends StatelessWidget {
                         width: 3,
                       ),
                       Text(
-                        meetingEventModel!.closeTime!,
+                        DateUtil.formate12hourTime(
+                          myTime: meetingEventModel!.closeTime!,
+                        ),
                         style: const TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 14,

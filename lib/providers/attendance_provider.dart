@@ -20,7 +20,7 @@ class AttendanceProvider extends ChangeNotifier {
 
   List<int> meetingEventIds = [];
 
-  List<MeetingEventModel> _meetingEventList = [];
+  List<MeetingEventModel> _todayMeetingEventList = [];
   List<MeetingEventModel> _upcomingMeetingEventList = [];
 
   MeetingEventModel? _meetingEventModel;
@@ -30,7 +30,7 @@ class AttendanceProvider extends ChangeNotifier {
   Position? _currentUserLocation;
 
   // Retrieve all meetings
-  List<MeetingEventModel> get todayMeetings => _meetingEventList;
+  List<MeetingEventModel> get todayMeetings => _todayMeetingEventList;
   List<MeetingEventModel> get upcomingMeetings => _upcomingMeetingEventList;
 
   MeetingEventModel get selectedMeeting => _meetingEventModel!;
@@ -77,13 +77,14 @@ class AttendanceProvider extends ChangeNotifier {
     required var memberToken,
     required BuildContext context,
   }) async {
+    _todayMeetingEventList.clear();
     try {
-      _meetingEventList = await AttendanceAPI.getTodayMeetingEventList(
+      _todayMeetingEventList = await AttendanceAPI.getTodayMeetingEventList(
         context,
         memberToken,
       );
-      if (_meetingEventList.isNotEmpty) {
-        for (var meeting in _meetingEventList) {
+      if (_todayMeetingEventList.isNotEmpty) {
+        for (var meeting in _todayMeetingEventList) {
           await checkClockedMeetings(
             meetingEventModel: meeting,
             branchId: meeting.branchId!,
@@ -104,6 +105,7 @@ class AttendanceProvider extends ChangeNotifier {
     required var memberToken,
     required BuildContext context,
   }) async {
+    _upcomingMeetingEventList.clear();
     setLoading(true);
     try {
       _upcomingMeetingEventList =
@@ -450,10 +452,8 @@ class AttendanceProvider extends ChangeNotifier {
       );
       setSubmitting(false);
       Navigator.of(context).pop();
-      showNormalToast(
-        response.message ??
-            'Hi there, you\'ve already submitted an excuse for this meeting',
-      );
+      showErrorToast(
+          'You\'ve already submitted an excuse for this meeting. Thank you');
       excuseTEC.clear();
     } catch (err) {
       setSubmitting(false);
@@ -461,5 +461,10 @@ class AttendanceProvider extends ChangeNotifier {
       showErrorToast(err.toString());
     }
     notifyListeners();
+  }
+
+  void clearData() {
+    _upcomingMeetingEventList.clear();
+    _todayMeetingEventList.clear();
   }
 }
