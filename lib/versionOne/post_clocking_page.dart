@@ -161,59 +161,62 @@ class _PostClockingPageState extends State<PostClockingPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     //REFRESING BUTTON
-                    InkWell(
-                        onTap: () => postClockingProvider.clearData(),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(5)),
-                          child: const Text(
-                            'Clear',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white, fontSize: 15),
-                          ),
-                        )),
-                    SizedBox(
-                      width: displayWidth(context) * 0.02,
-                    ),
-                    //POST CLOCK DATE BUTTON
                     Expanded(
                       child: InkWell(
-                          onTap: () {
-                            displayDateSelector(
-                              initialDate: DateTime.now(),
-                              maxDate: DateTime.now(),
-                              context: context,
-                            ).then((value) {
-                              if (value != null) {
-                                setState(() {
-                                  postClockingProvider.postClockDate = value;
-                                  debugPrint(
-                                    "Selected PostClock Date: ${postClockingProvider.postClockDate!.toIso8601String().substring(0, 11)}",
-                                  );
-                                });
-                              }
-                            });
-                          },
+                          onTap: () => postClockingProvider.clearData(),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 10),
                             decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: Colors.grey,
                                 borderRadius: BorderRadius.circular(5)),
-                            child: Text(
-                              postClockingProvider.postClockDate == null
-                                  ? 'Post Clock Date'
-                                  : DateFormat.yMMMEd().format(
-                                      postClockingProvider.postClockDate!),
+                            child: const Text(
+                              'Clear',
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 15),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15),
                             ),
                           )),
                     ),
+                    SizedBox(
+                      width: displayWidth(context) * 0.02,
+                    ),
+                    //POST CLOCK DATE BUTTON
+                    // Expanded(
+                    //   child: InkWell(
+                    //       onTap: () {
+                    //         displayDateSelector(
+                    //           initialDate: DateTime.now(),
+                    //           maxDate: DateTime.now(),
+                    //           context: context,
+                    //         ).then((value) {
+                    //           if (value != null) {
+                    //             setState(() {
+                    //               postClockingProvider.postClockDate = value;
+                    //               debugPrint(
+                    //                 "Selected PostClock Date: ${postClockingProvider.postClockDate!.toIso8601String().substring(0, 11)}",
+                    //               );
+                    //             });
+                    //           }
+                    //         });
+                    //       },
+                    //       child: Container(
+                    //         padding: const EdgeInsets.symmetric(
+                    //             vertical: 10, horizontal: 10),
+                    //         decoration: BoxDecoration(
+                    //             color: Colors.green,
+                    //             borderRadius: BorderRadius.circular(5)),
+                    //         child: Text(
+                    //           postClockingProvider.postClockDate == null
+                    //               ? 'Post Clock Date'
+                    //               : DateFormat.yMMMEd().format(
+                    //                   postClockingProvider.postClockDate!),
+                    //           textAlign: TextAlign.center,
+                    //           style: const TextStyle(
+                    //               color: Colors.white, fontSize: 15),
+                    //         ),
+                    //       )),
+                    // ),
                     SizedBox(
                       width: displayWidth(context) * 0.02,
                     ),
@@ -276,14 +279,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           function: () {
                             if (postClockingProvider
                                     .selectedAbsentees.isEmpty ||
-                                postClockingProvider.postClockDate == null ||
+                                postClockingProvider.selectedDate == null ||
                                 postClockingProvider.postClockTime == null) {
                               showInfoDialog(
                                 'ok',
                                 context: context,
                                 title: 'Sorry!',
                                 content:
-                                    'Please select date, time & members to clock-in on their behalf',
+                                    'Please select the time & members to clock-in on their behalf. Thank you!',
                                 onTap: () => Navigator.pop(context),
                               );
                             } else {
@@ -328,14 +331,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           function: () {
                             if (postClockingProvider
                                     .selectedAttendees.isEmpty ||
-                                postClockingProvider.postClockDate == null ||
+                                postClockingProvider.selectedDate == null ||
                                 postClockingProvider.postClockTime == null) {
                               showInfoDialog(
                                 'ok',
                                 context: context,
                                 title: 'Sorry!',
                                 content:
-                                    'Please select date, time & members to clock-out on their behalf',
+                                    'Please select the time & members to clock-out on their behalf. Thank you!',
                                 onTap: () => Navigator.pop(context),
                               );
                             } else {
@@ -399,7 +402,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 function: () {
                                   if (postClockingProvider
                                           .selectedAttendees.isEmpty ||
-                                      postClockingProvider.postClockDate ==
+                                      postClockingProvider.selectedDate ==
                                           null ||
                                       postClockingProvider.postClockTime ==
                                           null) {
@@ -408,7 +411,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                       context: context,
                                       title: 'Sorry!',
                                       content:
-                                          'Please select date, time & members to start break on their behalf',
+                                          'Please select the time & members to start break on their behalf. Thank you!',
                                       onTap: () => Navigator.pop(context),
                                     );
                                   } else {
@@ -456,7 +459,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 function: () {
                                   if (postClockingProvider
                                           .selectedAttendees.isEmpty ||
-                                      postClockingProvider.postClockDate ==
+                                      postClockingProvider.selectedDate ==
                                           null ||
                                       postClockingProvider.postClockTime ==
                                           null) {
@@ -465,7 +468,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                       context: context,
                                       title: 'Sorry!',
                                       content:
-                                          'Please select date, time & members to end break on their behalf',
+                                          'Please select the time & members to end break on their behalf. Thank you!',
                                       onTap: () => Navigator.pop(context),
                                     );
                                   } else {
@@ -871,54 +874,12 @@ class _PostClockingPageState extends State<PostClockingPage> {
                   postClockingProvider.selectedPastMeetingEvent =
                       val as MeetingEventModel;
                 });
-                postClockingProvider.getGenders();
-              },
-            ),
-          ),
-        ),
-        SizedBox(
-          height: displayHeight(context) * 0.02,
-        ),
-        LabelWidgetContainer(
-          label: "Gender",
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 0.0, color: Colors.grey.shade400),
-            ),
-            child: DropdownButtonFormField<Gender>(
-              isExpanded: true,
-              style: const TextStyle(
-                color: textColorPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-              ),
-              hint: const Text('Select Gender'),
-              decoration: const InputDecoration(border: InputBorder.none),
-              value: postClockingProvider.selectedGender,
-              icon: Icon(
-                CupertinoIcons.chevron_up_chevron_down,
-                color: Colors.grey.shade500,
-                size: 16,
-              ),
-              // Array list of items
-              items: postClockingProvider.genders.map((Gender gender) {
-                return DropdownMenuItem(
-                  value: gender,
-                  child: Text(gender.name!),
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  postClockingProvider.selectedGender = val as Gender;
-                });
                 postClockingProvider.getMemberCategories();
               },
             ),
           ),
         ),
+
         SizedBox(
           height: displayHeight(context) * 0.02,
         ),
@@ -1051,12 +1012,48 @@ class _PostClockingPageState extends State<PostClockingPage> {
         SizedBox(
           height: displayHeight(context) * 0.02,
         ),
-        // LabelWidgetContainer(
-        //     label: "Meeting Type",
-        //     child: FormButton(
-        //       label: "Select Meeting Type",
-        //       function: () {},
-        //     )),
+        LabelWidgetContainer(
+          label: "Gender",
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<Gender>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select Gender'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: postClockingProvider.selectedGender,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: postClockingProvider.genders.map((Gender gender) {
+                return DropdownMenuItem(
+                  value: gender,
+                  child: Text(gender.name!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  postClockingProvider.selectedGender = val as Gender;
+                });
+              },
+            ),
+          ),
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
+        ),
 
         Row(
           children: [
@@ -1091,7 +1088,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
         CustomElevatedButton(
             label: "Filter",
             function: () {
-              postClockingProvider.validateFilterFields();
+              postClockingProvider.validateFilterFields(context);
               if (postClockingProvider.loading) {
                 // scroll to bottom of the screen to show the loading progress
                 _controller.animateTo(

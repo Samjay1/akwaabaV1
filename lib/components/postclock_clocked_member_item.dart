@@ -130,7 +130,7 @@ class PostClockClockedMemberItem extends StatelessWidget {
                                       onTap: () => Navigator.pop(context),
                                     );
                                   } else if (postClockingProvider
-                                              .postClockDate ==
+                                              .selectedDate ==
                                           null ||
                                       postClockingProvider.postClockTime ==
                                           null) {
@@ -139,7 +139,7 @@ class PostClockClockedMemberItem extends StatelessWidget {
                                       context: context,
                                       title: 'Sorry!',
                                       content:
-                                          'Please select date & time to clocked out $attendeeName. \nThank you!',
+                                          'Please select the time to clock out $attendeeName. \nThank you!',
                                       onTap: () => Navigator.pop(context),
                                     );
                                   } else {
@@ -155,10 +155,7 @@ class PostClockClockedMemberItem extends StatelessWidget {
                                               'Are you sure you want to clock-out $attendeeName?',
                                           onConfirmTap: () {
                                             Navigator.pop(context);
-                                            Provider.of<ClockingProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .clockMemberOut(
+                                            postClockingProvider.clockMemberOut(
                                               context: context,
                                               attendee: attendee,
                                               time: postClockingProvider
@@ -196,183 +193,168 @@ class PostClockClockedMemberItem extends StatelessWidget {
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomElevatedButton(
-                                    label: "Start Break",
-                                    color: Colors.green,
-                                    labelSize: 14,
-                                    textColor: Colors.white,
-                                    radius: 5,
-                                    function: () {
-                                      if (attendee!.attendance!.startBreak !=
+                              CustomElevatedButton(
+                                label: "Start Break",
+                                color: Colors.green,
+                                labelSize: 14,
+                                textColor: Colors.white,
+                                radius: 5,
+                                function: () {
+                                  if (attendee!.attendance!.startBreak !=
+                                      null) {
+                                    showInfoDialog(
+                                      'ok',
+                                      context: context,
+                                      title: 'Sorry!',
+                                      content:
+                                          '$attendeeName has already started break. \nThank you!',
+                                      onTap: () => Navigator.pop(context),
+                                    );
+                                  } else if (postClockingProvider
+                                              .selectedDate ==
+                                          null ||
+                                      postClockingProvider.postClockTime ==
                                           null) {
-                                        showInfoDialog(
-                                          'ok',
-                                          context: context,
-                                          title: 'Sorry!',
+                                    showInfoDialog(
+                                      'ok',
+                                      context: context,
+                                      title: 'Sorry!',
+                                      content:
+                                          'Please select the time to start break for $attendeeName. \nThank you!',
+                                      onTap: () => Navigator.pop(context),
+                                    );
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        insetPadding: const EdgeInsets.all(10),
+                                        backgroundColor: Colors.transparent,
+                                        elevation: 0,
+                                        content: ConfirmDialog(
+                                          title: 'Start Break',
                                           content:
-                                              '$attendeeName has already started break. \nThank you!',
-                                          onTap: () => Navigator.pop(context),
-                                        );
-                                      } else if (postClockingProvider
-                                                  .postClockDate ==
-                                              null ||
-                                          postClockingProvider.postClockTime ==
-                                              null) {
-                                        showInfoDialog(
-                                          'ok',
-                                          context: context,
-                                          title: 'Sorry!',
-                                          content:
-                                              'Please select date & time to start break for $attendeeName. \nThank you!',
-                                          onTap: () => Navigator.pop(context),
-                                        );
-                                      } else {
-                                        showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                            insetPadding:
-                                                const EdgeInsets.all(10),
-                                            backgroundColor: Colors.transparent,
-                                            elevation: 0,
-                                            content: ConfirmDialog(
-                                              title: 'Start Break',
-                                              content:
-                                                  'Are you sure you want start break for $attendeeName?',
-                                              onConfirmTap: () {
-                                                Navigator.pop(context);
-                                                Provider.of<ClockingProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .startMeetingBreak(
-                                                  context: context,
-                                                  attendee: attendee,
-                                                  time: postClockingProvider
-                                                      .getPostClockDateTime(),
-                                                );
-                                              },
-                                              onCancelTap: () =>
-                                                  Navigator.pop(context),
-                                              confirmText: 'Yes',
-                                              cancelText: 'Cancel',
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: displayHeight(context) * 0.006,
-                                  ),
-                                  Text(
-                                    'SB: $startBreakTime',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: blackColor,
-                                    ),
-                                  ),
-                                ],
+                                              'Are you sure you want start break for $attendeeName?',
+                                          onConfirmTap: () {
+                                            Navigator.pop(context);
+                                            postClockingProvider
+                                                .startMeetingBreak(
+                                              context: context,
+                                              attendee: attendee,
+                                              time: postClockingProvider
+                                                  .getPostClockDateTime(),
+                                            );
+                                          },
+                                          onCancelTap: () =>
+                                              Navigator.pop(context),
+                                          confirmText: 'Yes',
+                                          cancelText: 'Cancel',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                               SizedBox(
                                 width: displayWidth(context) * 0.02,
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  CustomElevatedButton(
-                                    label: "End Break",
-                                    labelSize: 14,
-                                    color: Colors.red,
-                                    radius: 5,
-                                    function: () {
-                                      if (attendee!.attendance!.endBreak !=
+                              CustomElevatedButton(
+                                label: "End Break",
+                                labelSize: 14,
+                                color: Colors.red,
+                                radius: 5,
+                                function: () {
+                                  if (attendee!.attendance!.endBreak != null) {
+                                    showInfoDialog(
+                                      'ok',
+                                      context: context,
+                                      title: 'Sorry!',
+                                      content:
+                                          '$attendeeName\'s break has already been ended. Thank you!',
+                                      onTap: () => Navigator.pop(context),
+                                    );
+                                  } else if (attendee!.attendance!.startBreak ==
+                                      null) {
+                                    showInfoDialog(
+                                      'ok',
+                                      context: context,
+                                      title: 'Sorry!',
+                                      content:
+                                          'You can\'t end a break that has not been started. Please start the break to continue.',
+                                      onTap: () => Navigator.pop(context),
+                                    );
+                                  } else if (postClockingProvider
+                                              .selectedDate ==
+                                          null ||
+                                      postClockingProvider.postClockTime ==
                                           null) {
-                                        showInfoDialog(
-                                          'ok',
-                                          context: context,
-                                          title: 'Sorry!!',
+                                    showInfoDialog(
+                                      'ok',
+                                      context: context,
+                                      title: 'Sorry!',
+                                      content:
+                                          'Please select the time to end break for $attendeeName. Thank you!',
+                                      onTap: () => Navigator.pop(context),
+                                    );
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        insetPadding: const EdgeInsets.all(10),
+                                        backgroundColor: Colors.transparent,
+                                        elevation: 0,
+                                        content: ConfirmDialog(
+                                          title: 'End Break',
                                           content:
-                                              '$attendeeName\'s break has already been ended. Thank you!',
-                                          onTap: () => Navigator.pop(context),
-                                        );
-                                      } else if (attendee!
-                                              .attendance!.startBreak ==
-                                          null) {
-                                        showInfoDialog(
-                                          'ok',
-                                          context: context,
-                                          title: 'Sorry!',
-                                          content:
-                                              'You can\'t end a break that has not been started. Please start the break to continue!',
-                                          onTap: () => Navigator.pop(context),
-                                        );
-                                      } else if (postClockingProvider
-                                                  .postClockDate ==
-                                              null ||
-                                          postClockingProvider.postClockTime ==
-                                              null) {
-                                        showInfoDialog(
-                                          'ok',
-                                          context: context,
-                                          title: 'Sorry!',
-                                          content:
-                                              'Please select date & time to end break for $attendeeName. Thank you!',
-                                          onTap: () => Navigator.pop(context),
-                                        );
-                                      } else {
-                                        showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                            insetPadding:
-                                                const EdgeInsets.all(10),
-                                            backgroundColor: Colors.transparent,
-                                            elevation: 0,
-                                            content: ConfirmDialog(
-                                              title: 'End Break',
-                                              content:
-                                                  'Are you sure you want end break for $attendeeName?',
-                                              onConfirmTap: () {
-                                                Navigator.pop(context);
-                                                Provider.of<PostClockingProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .endMeetingBreak(
-                                                  context: context,
-                                                  attendee: attendee,
-                                                  time: postClockingProvider
-                                                      .getPostClockDateTime(),
-                                                );
-                                              },
-                                              onCancelTap: () =>
-                                                  Navigator.pop(context),
-                                              confirmText: 'Yes',
-                                              cancelText: 'Cancel',
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: displayHeight(context) * 0.006,
-                                  ),
-                                  Text(
-                                    'EB: $endBreakTime',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: blackColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
+                                              'Are you sure you want end break for $attendeeName?',
+                                          onConfirmTap: () {
+                                            Navigator.pop(context);
+                                            postClockingProvider
+                                                .endMeetingBreak(
+                                              context: context,
+                                              attendee: attendee,
+                                              time: postClockingProvider
+                                                  .getPostClockDateTime(),
+                                            );
+                                          },
+                                          onCancelTap: () =>
+                                              Navigator.pop(context),
+                                          confirmText: 'Yes',
+                                          cancelText: 'Cancel',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                             ],
                           )
                         : const SizedBox(),
                     SizedBox(
-                      height: displayHeight(context) * 0.003,
+                      height: displayHeight(context) * 0.005,
+                    ),
+                    attendee!.attendance!.meetingEventId!.hasBreakTime!
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'SB: $startBreakTime',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: blackColor,
+                                ),
+                              ),
+                              Text(
+                                'EB: $endBreakTime',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: blackColor,
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
+                    SizedBox(
+                      height: displayHeight(context) * 0.005,
                     ),
                     Consumer<ClientProvider>(
                       builder: (context, data, child) {

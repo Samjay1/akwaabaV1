@@ -81,11 +81,20 @@ class _HomePageState extends State<HomePage> {
       // print('HOMEPAGE member id ${memberProfile.id}');
 
       Future.delayed(Duration.zero, () {
-        Provider.of<AttendanceProvider>(context, listen: false)
-            .getUpcomingMeetingEvents(
-          memberToken: memberToken,
-          context: context,
-        );
+        if (Provider.of<AttendanceProvider>(context, listen: false)
+                .upcomingMeetings
+                .isEmpty ||
+            Provider.of<AttendanceProvider>(context, listen: false)
+                .todayMeetings
+                .isEmpty) {
+          Provider.of<AttendanceProvider>(context, listen: false)
+              .getUpcomingMeetingEvents(
+            memberToken: memberToken,
+            context: context,
+          );
+          debugPrint('Loading fresh data:...');
+        }
+
         setState(() {});
       });
 
@@ -101,11 +110,19 @@ class _HomePageState extends State<HomePage> {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('token');
       Future.delayed(Duration.zero, () {
-        Provider.of<AttendanceProvider>(context, listen: false)
-            .getUpcomingMeetingEvents(
-          memberToken: memberToken,
-          context: context,
-        );
+        if (Provider.of<AttendanceProvider>(context, listen: false)
+                .upcomingMeetings
+                .isEmpty ||
+            Provider.of<AttendanceProvider>(context, listen: false)
+                .todayMeetings
+                .isEmpty) {
+          Provider.of<AttendanceProvider>(context, listen: false)
+              .getUpcomingMeetingEvents(
+            memberToken: memberToken,
+            context: context,
+          );
+        }
+        debugPrint('Loading fresh data:...');
         setState(() {});
       });
     }
@@ -115,8 +132,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     attendanceProvider = context.watch<AttendanceProvider>();
-    // loadMeetingEventsByUserType(userType: userType);
-    // Provider.of<MemberProvider>(context, listen: false).callmeetingEventList(memberToken: memberToken!, context: context);
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     ClientAccountInfo? userInfo =
@@ -182,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                       child: const TextShimmerItem(),
                     )
                   : const Text(
-                      "Today's Meetings",
+                      "Current Meeting",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
@@ -192,6 +207,7 @@ class _HomePageState extends State<HomePage> {
               ),
 
               //----------------------------------------------------------------------
+
               attendanceProvider.loading
                   ? Shimmer.fromColors(
                       baseColor: greyColorShade300,
@@ -212,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                         builder: (context, data, child) {
                           if (data.todayMeetings.isEmpty) {
                             return const EmptyStateWidget(
-                              text: 'You currently have no \nmeetings today!',
+                              text: 'You currently have no \nmeetings now.',
                             );
                           }
                           if (userType == 'member') {
@@ -221,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   final item = data.todayMeetings[index];
-                                  debugPrint('MEETING LIST ${item.memberType}');
+
                                   return todaysEvents(
                                     meetingEventModel: item,
                                   );
@@ -232,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 final item = data.todayMeetings[index];
-                                debugPrint('MEETING LIST ${item.memberType}');
+
                                 return InkWell(
                                   onTap: () {
                                     // set meeting as selected
@@ -298,7 +314,7 @@ class _HomePageState extends State<HomePage> {
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   var item = data.upcomingMeetings[index];
-                                  debugPrint('MEETING LIST ${item.memberType}');
+
                                   return upcomingEvents(
                                     meetingEvent: item,
                                   );

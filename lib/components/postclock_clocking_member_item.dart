@@ -93,10 +93,15 @@ class PostClockClockingMemberItem extends StatelessWidget {
                 mycolor: Colors.green,
                 radius: 5,
                 function: () {
-                  if (postClockingProvider.postClockDate == null ||
+                  if (postClockingProvider.selectedDate == null ||
                       postClockingProvider.postClockTime == null) {
-                    showNormalToast(
-                      'Please select date & time to clock-in $attendeeName. \nThank you!',
+                    showInfoDialog(
+                      'ok',
+                      context: context,
+                      title: 'Sorry!',
+                      content:
+                          'Please select the time to clock-in $attendeeName. \nThank you!',
+                      onTap: () => Navigator.pop(context),
                     );
                   } else {
                     showDialog(
@@ -111,9 +116,7 @@ class PostClockClockingMemberItem extends StatelessWidget {
                               'Are you sure you want to clock-in $attendeeName?',
                           onConfirmTap: () {
                             Navigator.pop(context);
-                            Provider.of<ClockingProvider>(context,
-                                    listen: false)
-                                .clockMemberIn(
+                            postClockingProvider.clockMemberIn(
                               context: context,
                               attendee: attendee,
                               time: postClockingProvider.getPostClockDateTime(),

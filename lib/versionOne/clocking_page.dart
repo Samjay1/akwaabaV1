@@ -683,7 +683,7 @@ class _ClockingPageState extends State<ClockingPage> {
                           setState(() {
                             clockingProvider.selectedBranch = val as Branch;
                           });
-                          clockingProvider.getGenders();
+                          clockingProvider.getMemberCategories();
                         },
                       ),
                     ),
@@ -691,49 +691,7 @@ class _ClockingPageState extends State<ClockingPage> {
                 : const SizedBox();
           },
         ),
-        SizedBox(
-          height: displayHeight(context) * 0.02,
-        ),
-        LabelWidgetContainer(
-          label: "Gender",
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 0.0, color: Colors.grey.shade400),
-            ),
-            child: DropdownButtonFormField<Gender>(
-              isExpanded: true,
-              style: const TextStyle(
-                color: textColorPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-              ),
-              hint: const Text('Select Gender'),
-              decoration: const InputDecoration(border: InputBorder.none),
-              value: clockingProvider.selectedGender,
-              icon: Icon(
-                CupertinoIcons.chevron_up_chevron_down,
-                color: Colors.grey.shade500,
-                size: 16,
-              ),
-              // Array list of items
-              items: clockingProvider.genders.map((Gender gender) {
-                return DropdownMenuItem(
-                  value: gender,
-                  child: Text(gender.name!),
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  clockingProvider.selectedGender = val as Gender;
-                });
-                clockingProvider.getMemberCategories();
-              },
-            ),
-          ),
-        ),
+
         SizedBox(
           height: displayHeight(context) * 0.02,
         ),
@@ -773,8 +731,9 @@ class _ClockingPageState extends State<ClockingPage> {
                   clockingProvider.selectedMemberCategory =
                       val as MemberCategory;
                 });
-                // call method to fetch all groups
-                clockingProvider.getGroups();
+                clockingProvider.getGroups(); // call method to fetch all groups
+                clockingProvider
+                    .getGenders(); // call method to fetch all genders
               },
             ),
           ),
@@ -859,6 +818,48 @@ class _ClockingPageState extends State<ClockingPage> {
               onChanged: (val) {
                 setState(() {
                   clockingProvider.selectedSubGroup = val as SubGroup;
+                });
+              },
+            ),
+          ),
+        ),
+        SizedBox(
+          height: displayHeight(context) * 0.02,
+        ),
+        LabelWidgetContainer(
+          label: "Gender",
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            ),
+            child: DropdownButtonFormField<Gender>(
+              isExpanded: true,
+              style: const TextStyle(
+                color: textColorPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+              hint: const Text('Select Gender'),
+              decoration: const InputDecoration(border: InputBorder.none),
+              value: clockingProvider.selectedGender,
+              icon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+              // Array list of items
+              items: clockingProvider.genders.map((Gender gender) {
+                return DropdownMenuItem(
+                  value: gender,
+                  child: Text(gender.name!),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  clockingProvider.selectedGender = val as Gender;
                 });
               },
             ),
