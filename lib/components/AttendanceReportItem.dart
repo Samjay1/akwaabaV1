@@ -4,6 +4,8 @@ import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../versionOne/attendance_report_preview.dart';
+
 class AttendanceReportItem extends StatefulWidget {
   final Map member;
   final bool isLate;
@@ -72,11 +74,16 @@ class _AttendanceReportItemState extends State<AttendanceReportItem> {
 
                               const SizedBox(height: 4,),
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Icon(Icons.calendar_month_outlined,color: textColorLight,
-                                    size: 16,),
-                                  Text("12 Aug 2022",
-                                    style: TextStyle(color: textColorLight,fontSize: 14),),
+                                 Row(
+                                   children: const [
+                                     Icon(Icons.calendar_month_outlined,color: textColorLight,
+                                       size: 16,),
+                                     Text("12 Aug 2022",
+                                       style: TextStyle(color: textColorLight,fontSize: 14),),
+                                   ],
+                                 ),
                                   Container(
                                     margin: EdgeInsets.only(left: 10),
                                     decoration: BoxDecoration(
@@ -89,16 +96,22 @@ class _AttendanceReportItemState extends State<AttendanceReportItem> {
                                     ),),
                                   ),
                                 ],
-                              )
-
-
+                              ),
+                              const SizedBox(height: 4,),
+                              const Text("last seen: 10 Aug 2022 / 7:40am",
+                                style: TextStyle(color: textColorLight,fontSize: 14),),
                             ],
                           ),
                         ),
 
 
                         const SizedBox(width: 8,),
-                        const Icon(Icons.chevron_right,size: 20,color: primaryColor,)
+                        IconButton(
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                              const AttendanceReportDetailsPage()));
+                            },
+                            icon: Icon(Icons.chevron_right,size: 20,color: primaryColor,))
                       ],
                     ),
 

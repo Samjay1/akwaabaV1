@@ -6,6 +6,8 @@ import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/screens/forgot_password_page.dart';
+import 'package:akwaaba/screens/member_registration_page_organization.dart';
+import 'package:akwaaba/versionOne/RegistrationCode.dart';
 import 'package:akwaaba/versionOne/main_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -15,6 +17,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../dialogs_modals/confirm_dialog.dart';
 import '../providers/client_provider.dart';
 import 'member_registration_page_individual.dart';
 
@@ -253,13 +256,38 @@ class _LoginPageState extends State<LoginPage> {
                       style: const TextStyle(color: primaryColor, fontSize: 17),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  const MemberRegistrationPageIndividual(),
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              insetPadding: const EdgeInsets.all(10),
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              content: ConfirmDialog(
+                                title: 'Registration Form',
+                                content:
+                                'Create a Member account or an Organisation account!',
+                                onConfirmTap: (){
+                                  Navigator.pop(context); //close the popup
+                                  Navigator.push(context,MaterialPageRoute( builder: (_) => RegistrationCode(regType: 'member'),));
+                                },
+                                onCancelTap: (){
+                                Navigator.pop(context); //close the popup
+                                Navigator.push(context,MaterialPageRoute( builder: (_) => RegistrationCode(regType: 'organiser'),
+                              ),
+                              );
+                            },
+                                confirmText: 'Member',
+                                cancelText: 'Organisation',
+                              ),
                             ),
                           );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (_) =>
+                          //         const MemberRegistrationPageIndividual(),
+                          //   ),
+                          // );
                           // createAccountButtonTap();
                         })
                 ]),

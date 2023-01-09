@@ -68,6 +68,12 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
 
+
+              
+              filterButton(),
+
+              const SizedBox(height: 12,),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -91,26 +97,30 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12,),
-              
-              filterButton(),
+
+
 
               const SizedBox(height: 12,),
 
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Checkbox(
-                      activeColor: primaryColor,
-                      shape: const CircleBorder(),
-                      value: checkAll, onChanged: (val){
-                    setState(() {
-                      checkAll=val!;
-                      for (Map map in members){
-                        map["status"]=checkAll;
-                      }
-                    });
-                  }),
-                  const Text("Check All"),
+                  Row(
+                    children: [
+                      Checkbox(
+                          activeColor: primaryColor,
+                          shape: const CircleBorder(),
+                          value: checkAll, onChanged: (val){
+                        setState(() {
+                          checkAll=val!;
+                          for (Map map in members){
+                            map["status"]=checkAll;
+                          }
+                        });
+                      }),
+                      const Text("Check All"),
+                    ],
+                  ),
                   const SizedBox(width: 25,),
                   InkWell(
                     onTap: (){
@@ -148,10 +158,6 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                           }
                         });
                       },
-                      onLongPress: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                            const AttendanceReportDetailsPage()));
-                      },
                       child: AttendanceReportItem(members[index],true));
                 }),
 
@@ -184,7 +190,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
               child: CupertinoButton(
                 color: attendanceStatusIndex==0?primaryColor:Colors.transparent,
                   padding: EdgeInsets.zero,
-                  child: Text("Attendees",style: TextStyle(
+                  child: const Text("Attendees",style: TextStyle(
                     color: textColorPrimary
                   ),),
                   onPressed: (){
@@ -198,7 +204,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
               child: CupertinoButton(
                   color: attendanceStatusIndex==1?primaryColor:Colors.transparent,
                   padding: EdgeInsets.zero,
-                  child: Text("Abseentees",style: TextStyle(color: textColorPrimary),),
+                  child: const Text("Absentees",style: TextStyle(color: textColorPrimary),),
                   onPressed: (){
                     setState(() {
                       attendanceStatusIndex=1;

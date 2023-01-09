@@ -180,11 +180,8 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
                     ],
                   ),
                       onPressed: (){
-
-
                         nextButtonTapped(pageId: pageViewController.page);
                       })
-
                 ],
               ),
             ),
@@ -489,7 +486,22 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
         const SizedBox(height: 26,),
 
         CustomElevatedButton(label: "Submit",
-            function: (){})
+            function: (){
+          debugPrint('firstname ${_controllerFirstName.text}, '
+              'lastname ${_controllerSurname.text},'
+              'middlename ${_controllerMiddleName.text},'
+              'whatsapp ${_controllerWhatsappContact.text}'
+              'phone ${_controllerPhone.text},'
+              'email ${_controllerEmail.text}'
+              'IDnumber ${_controllerIDNumber.text}'
+              'password ${_controllerPassword.text}'
+              'cpassword ${_controllerConfirmPassword.text}'
+              'selectedGender ${selectedGender}'
+              'selectedDepartment ${selectedDepartment}'
+              'dateJoined ${dateJoined}'
+              'birthDate ${birthDate}'
+              'disabilityOption ${disabilityOption}');
+            })
 
 
       ],
