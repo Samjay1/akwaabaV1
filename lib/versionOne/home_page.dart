@@ -806,18 +806,124 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       )),
-                      CircleAvatar(
-                        radius: 13,
-                        backgroundColor: Colors.grey.shade200,
-                        child: const Icon(
-                          Icons.chevron_right,
-                          size: 24,
-                          color: Colors.orange,
-                        ),
-                      )
+                      // CircleAvatar(
+                      //   radius: 13,
+                      //   backgroundColor: Colors.grey.shade200,
+                      //   child: const Icon(
+                      //     Icons.chevron_right,
+                      //     size: 24,
+                      //     color: Colors.orange,
+                      //   ),
+                      // )
                     ],
                   ),
                 ),
+                // SizedBox(
+                //   height: displayHeight(context) * 0.005,
+                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          CupertinoIcons.alarm,
+                          size: 16,
+                          color: primaryColor,
+                        ),
+                        Text(
+                          meetingEventModel.inTime == null
+                              ? 'CI: N/A'
+                              : 'CI: ${DateUtil.formatStringDate(
+                                  DateFormat.jm(),
+                                  date:
+                                      DateTime.parse(meetingEventModel.inTime),
+                                ).toLowerCase()}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: textColorLight,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Icon(
+                          CupertinoIcons.alarm,
+                          size: 16,
+                          color: primaryColor,
+                        ),
+                        Text(
+                          meetingEventModel.outTime == null
+                              ? 'CO: N/A'
+                              : 'CO: ${DateUtil.formatStringDate(
+                                  DateFormat.jm(),
+                                  date:
+                                      DateTime.parse(meetingEventModel.outTime),
+                                ).toLowerCase()}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: blackColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
+                ),
+                meetingEventModel.hasBreakTime!
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                CupertinoIcons.alarm,
+                                size: 16,
+                                color: primaryColor,
+                              ),
+                              Text(
+                                meetingEventModel.startBreak == null
+                                    ? 'SB: N/A'
+                                    : 'SB: ${DateUtil.formatStringDate(
+                                        DateFormat.jm(),
+                                        date: DateTime.parse(
+                                            meetingEventModel.startBreak),
+                                      ).toLowerCase()}',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: textColorLight,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Icon(
+                                CupertinoIcons.alarm,
+                                size: 16,
+                                color: primaryColor,
+                              ),
+                              Text(
+                                meetingEventModel.startBreak == null
+                                    ? 'EB: N/A'
+                                    : 'EB: ${DateUtil.formatStringDate(
+                                        DateFormat.jm(),
+                                        date: DateTime.parse(
+                                            meetingEventModel.endBreak),
+                                      ).toLowerCase()}',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: blackColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : const SizedBox(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

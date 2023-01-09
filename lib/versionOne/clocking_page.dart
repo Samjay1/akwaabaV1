@@ -732,8 +732,6 @@ class _ClockingPageState extends State<ClockingPage> {
                       val as MemberCategory;
                 });
                 clockingProvider.getGroups(); // call method to fetch all groups
-                clockingProvider
-                    .getGenders(); // call method to fetch all genders
               },
             ),
           ),

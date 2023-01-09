@@ -135,7 +135,7 @@ class ClockingProvider extends ChangeNotifier {
       if (_memberCategories.isNotEmpty) {
         selectedMemberCategory = _memberCategories[0];
       }
-      // getGroups();
+      getGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -152,7 +152,7 @@ class ClockingProvider extends ChangeNotifier {
       if (_branches.isNotEmpty) {
         selectedBranch = _branches[0];
       }
-      // getGenders();
+      getGenders();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Branch: ${err.toString()}');
@@ -184,7 +184,7 @@ class ClockingProvider extends ChangeNotifier {
       );
       debugPrint('Groups: ${_groups.length}');
       // selectedGroup = _groups[0];
-      // getSubGroups();
+      getSubGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');

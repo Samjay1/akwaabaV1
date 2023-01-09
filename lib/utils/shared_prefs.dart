@@ -113,6 +113,7 @@ class SharedPrefs {
   }
 
   void logout(BuildContext context) {
+    Provider.of<AttendanceProvider>(context, listen: false).clearData();
     clear();
     //close the drawers
     Navigator.pushReplacement(

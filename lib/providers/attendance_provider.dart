@@ -351,14 +351,19 @@ class AttendanceProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
-      // update fields of meeting event model
-      meetingEventModel.inOrOut = response.inOrOut;
-      meetingEventModel.startBreak = response.startBreak;
-      meetingEventModel.endBreak = response.endBreak;
-      meetingEventModel.inTime = response.inTime;
-      meetingEventModel.outTime = response.outTime;
+
+      if (response.message == null) {
+        showErrorToast(response.nonFieldErrors![0]);
+      } else {
+        // update fields of meeting event model
+        meetingEventModel.inOrOut = response.inOrOut;
+        meetingEventModel.startBreak = response.startBreak;
+        meetingEventModel.endBreak = response.endBreak;
+        meetingEventModel.inTime = response.inTime;
+        meetingEventModel.outTime = response.outTime;
+        showNormalToast('Enjoy Break Time!');
+      }
       debugPrint("SUCCESS ${response.message}");
-      showNormalToast('Enjoy Break Time!');
       Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);
@@ -379,14 +384,18 @@ class AttendanceProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
-      // update fields of meeting event model
-      meetingEventModel.inOrOut = response.inOrOut;
-      meetingEventModel.startBreak = response.startBreak;
-      meetingEventModel.endBreak = response.endBreak;
-      meetingEventModel.inTime = response.inTime;
-      meetingEventModel.outTime = response.outTime;
-      debugPrint("SUCCESS ${response.message}");
-      showNormalToast('Welcome Back!');
+      //showNormalToast('Welcome Back!');
+      if (response.message == null) {
+        showErrorToast(response.nonFieldErrors![0]);
+      } else {
+        // update fields of meeting event model
+        meetingEventModel.inOrOut = response.inOrOut;
+        meetingEventModel.startBreak = response.startBreak;
+        meetingEventModel.endBreak = response.endBreak;
+        meetingEventModel.inTime = response.inTime;
+        meetingEventModel.outTime = response.outTime;
+        showNormalToast('Welcome Back!');
+      }
       Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);

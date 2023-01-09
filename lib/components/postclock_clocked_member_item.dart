@@ -330,7 +330,7 @@ class PostClockClockedMemberItem extends StatelessWidget {
                           )
                         : const SizedBox(),
                     SizedBox(
-                      height: displayHeight(context) * 0.005,
+                      height: displayHeight(context) * 0.002,
                     ),
                     attendee!.attendance!.meetingEventId!.hasBreakTime!
                         ? Row(

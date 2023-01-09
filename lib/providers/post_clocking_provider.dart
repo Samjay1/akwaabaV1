@@ -121,7 +121,7 @@ class PostClockingProvider extends ChangeNotifier {
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
-      getGroups();
+      getSubGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -138,6 +138,7 @@ class PostClockingProvider extends ChangeNotifier {
       if (_branches.isNotEmpty) {
         selectedBranch = _branches[0];
       }
+      getGroups();
       // getGenders();
     } catch (err) {
       setLoading(false);
@@ -172,7 +173,7 @@ class PostClockingProvider extends ChangeNotifier {
       );
       debugPrint('Groups: ${_groups.length}');
       // selectedGroup = _groups[0];
-      getSubGroups();
+
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');
@@ -197,7 +198,7 @@ class PostClockingProvider extends ChangeNotifier {
               : selectedBranch!.id!,
           memberCategoryId: selectedMemberCategory!.id!,
         );
-        getGenders();
+
         debugPrint('Sub Groups: ${_subGroups.length}');
       } catch (err) {
         setLoading(false);
@@ -217,7 +218,8 @@ class PostClockingProvider extends ChangeNotifier {
       if (_pastMeetingEvents.isNotEmpty) {
         selectedPastMeetingEvent = _pastMeetingEvents[0];
       }
-      // getGenders();
+      getGenders();
+      getGroups();
     } catch (err) {
       debugPrint('Error PMs: ${err.toString()}');
       showErrorToast(err.toString());
