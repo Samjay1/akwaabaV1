@@ -48,7 +48,7 @@ class SharedPrefs {
     if (sd.getString("member_info") != null) {
       try {
         return MemberProfile.fromJson(
-            json.decode(sd.getString("member_info")!), '');
+            json.decode(sd.getString("member_info")!));
       } catch (e) {
         return null;
       }

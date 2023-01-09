@@ -5,6 +5,7 @@ import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/components/profile_shimmer_item.dart';
 import 'package:akwaaba/components/text_shimmer_item.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
@@ -167,10 +168,11 @@ class _HomePageState extends State<HomePage> {
                       ? Consumer<MemberProvider>(
                           builder: (context, data, child) {
                             return memberHeaderView(
-                              firstName: data.memberProfile.firstname,
-                              surName: data.memberProfile.surname,
+                              firstName: data.memberProfile.user.firstname,
+                              surName: data.memberProfile.user.surname,
                               userId: data.identityNumber,
-                              profileImage: data.memberProfile.profilePicture,
+                              profileImage:
+                                  data.memberProfile.user.profilePicture,
                             );
                           },
                         )
@@ -237,7 +239,6 @@ class _HomePageState extends State<HomePage> {
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   final item = data.todayMeetings[index];
-
                                   return todaysEvents(
                                     meetingEventModel: item,
                                   );
@@ -820,31 +821,16 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(23))),
-                      onPressed: () {
-                        // set meeting as selected
-                        context
-                            .read<AttendanceProvider>()
-                            .setSelectedMeeting(meetingEventModel);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ExcuseInputPage(),
-                          ),
-                        );
-                      },
-                      child: const Text("Excuse"),
-                    ),
                     // clock-in or clock-out button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          primary: Colors.green,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(23))),
+                        primary: Colors.green,
+                        elevation: 0.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(AppDimen.borderRadius16),
+                        ),
+                      ),
                       onPressed: () {
                         Provider.of<AttendanceProvider>(context, listen: false)
                             .setSelectedMeeting(meetingEventModel);
@@ -893,43 +879,16 @@ class _HomePageState extends State<HomePage> {
                           ? 'Clock Out'
                           : 'Clock In'),
                     ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.grey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(23))),
-                        onPressed: () {
-                          Provider.of<AttendanceProvider>(context,
-                                  listen: false)
-                              .setSelectedMeeting(meetingEventModel);
-                          showModalBottomSheet(
-                            context: context,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16.0),
-                                topRight: Radius.circular(16.0),
-                              ),
-                            ),
-                            builder: (context) => const AgendaDialog(),
-                          );
-                        },
-                        child: const Text(
-                          "Agenda",
-                          style: TextStyle(color: Colors.white),
-                        )),
+
                     // if user has clocked out, there is no need to show 'Start Break' button
-                    meetingEventModel.hasBreakTime! &&
-                            meetingEventModel.outTime == null
+                    meetingEventModel.hasBreakTime!
                         ? ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.blue,
+                              primary: primaryColor,
+                              elevation: 0.0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(23),
+                                borderRadius: BorderRadius.circular(
+                                    AppDimen.borderRadius16),
                               ),
                             ),
                             onPressed: () {
@@ -1007,6 +966,61 @@ class _HomePageState extends State<HomePage> {
                                 meetingEventModel.inTime == null)
                             ? const SizedBox()
                             : const SizedBox()
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.grey,
+                            elevation: 0.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  AppDimen.borderRadius16),
+                            ),
+                          ),
+                          onPressed: () {
+                            Provider.of<AttendanceProvider>(context,
+                                    listen: false)
+                                .setSelectedMeeting(meetingEventModel);
+                            showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(16.0),
+                                  topRight: Radius.circular(16.0),
+                                ),
+                              ),
+                              builder: (context) => const AgendaDialog(),
+                            );
+                          },
+                          child: const Text(
+                            "Agenda",
+                            style: TextStyle(color: Colors.white),
+                          )),
+                    ),
+                    // ElevatedButton(
+                    //   style: ElevatedButton.styleFrom(
+                    //       primary: Colors.red,
+                    //     elevation: 0.0,
+                    //       shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(23))),
+                    //   onPressed: () {
+                    //     // set meeting as selected
+                    //     context
+                    //         .read<AttendanceProvider>()
+                    //         .setSelectedMeeting(meetingEventModel);
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (_) => ExcuseInputPage(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: const Text("Excuse"),
+                    // ),
                   ],
                 ),
               ],

@@ -362,10 +362,10 @@ class PostClockingProvider extends ChangeNotifier {
         debugPrint("ClockingTime $time");
         debugPrint("SUCCESS ${response.message}");
         debugPrint("ClockingId ${attendee.attendance!.id!}");
-        // remove from list after member is been clocked in
-        if (_absentees.contains(attendee)) {
-          _absentees.remove(attendee);
-        }
+        // // remove from list after member is been clocked in
+        // if (_absentees.contains(attendee)) {
+        //   _absentees.remove(attendee);
+        // }
       } else {
         // Perform bulk clock-in
         for (Attendee? attendee in _selectedAbsentees) {
@@ -379,14 +379,13 @@ class PostClockingProvider extends ChangeNotifier {
           attendee.attendance!.memberId!.selected = false;
         }
         _selectedAbsentees.clear();
-        // refresh list when there is bulk operation
-        getAllAbsentees(
-          meetingEventModel: selectedPastMeetingEvent!,
-        );
       }
-      Navigator.of(context).pop();
-
+      // refresh list when there is bulk operation
+      getAllAbsentees(
+        meetingEventModel: selectedPastMeetingEvent!,
+      );
       showNormalToast(response.message);
+      Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error Clocking In: ${err.toString()}');

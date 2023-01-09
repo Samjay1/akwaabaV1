@@ -47,6 +47,11 @@ class UserApi {
         var branchId = decodedResponse['user']['branchId'];
         print('accountId $accountId, branchId $branchId');
 
+        //save admin profile
+        if (decodedResponse['user'] != null) {
+          SharedPrefs().saveAdminInfo(adminProfile: AdminProfile.fromJson(decodedResponse['user']));
+        }
+
         // debugPrint('FULL CLIENT INFO $clientToken');
         //GET BRANCH NAME FROM API USING BRANCH-ID PARAM FROM LOGIN RESPONSE
         var headers = {
@@ -60,14 +65,10 @@ class UserApi {
         if (branchResponse.statusCode == 200) {
           debugPrint('BRANCH-NAME: $branchNameResp');
           var branchName = branchNameResp['data']['name'];
-          // debugPrint('BRANCHNAME: $branchName');
-          //HTTP REQUEST(API) FOR GETTING CLIENT ACCOUNT INFO
-          //GET FULL ACCOUNT DETAILS FROM API USING ACCOUNT-ID PARAM FROM LOGIN RESPONSE
           http.Response clientResponse = await http.get(
             Uri.parse('$baseUrl/clients/account/$accountId'),
             headers: headers,
           );
-
           var clientDecodedResponse = jsonDecode(clientResponse.body);
           if (clientResponse.statusCode == 200) {
             var clientData = clientDecodedResponse['data'];

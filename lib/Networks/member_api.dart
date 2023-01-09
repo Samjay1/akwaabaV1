@@ -8,6 +8,7 @@ import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -132,43 +133,71 @@ class MemberAPI {
     };
   }
 
-  Future login(
+  Future<MemberProfile> login(
       {required BuildContext context,
       required String phoneEmail,
       required String password,
       required bool checkDeviceInfo}) async {
+    MemberProfile? memberProfile;
     try {
-      prefs = await SharedPreferences.getInstance();
       var data = {
         'phone_email': phoneEmail,
         'password': password,
         "checkDeviceInfo": checkDeviceInfo
       };
 
-      debugPrint("Data $data");
+      debugPrint("Data: $data");
 
       http.Response response = await http.post(
-          Uri.parse('$baseUrl/members/login'),
-          body: json.encode(data),
-          headers: {'Content-Type': 'application/json'});
-      var decodedResponse = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        var memberToken = decodedResponse['token'];
-        var memberInfo = decodedResponse['user'];
-        prefs.setString('token', memberToken);
-        debugPrint('MEMBER TOKEN---------- --------------------- $memberToken');
-
-        debugPrint('MEMBER INFO---------- --------------------- $memberInfo');
-        return MemberProfile.fromJson(memberInfo, memberToken);
-      } else {
-        debugPrint("error>>>. ${response.body}");
-        showErrorToast("Login Error");
-        return '';
-      }
+        Uri.parse('$baseUrl/members/login'),
+        body: json.encode(data),
+        headers: {'Content-Type': 'application/json'},
+      );
+      var decodedResponse = await returnResponse(response);
+      memberProfile = MemberProfile.fromJson(
+        decodedResponse,
+      );
+      //debugPrint("non_field_errors: ${memberProfile.nonFieldErrors}");
     } on SocketException catch (_) {
-      showErrorToast("Network Error");
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return memberProfile;
+  }
 
-      return '';
+  // return response from api
+  static dynamic returnResponse(http.Response response) async {
+    if (kDebugMode) {
+      debugPrint(response.statusCode.toString());
+    }
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        // print(response.body);
+        var responseJson = jsonDecode(response.body);
+        debugPrint(responseJson.toString());
+        return responseJson;
+      case 400:
+        debugPrint('Bad Request');
+        // decode response
+        var responseJson = jsonDecode(response.body);
+        debugPrint(responseJson.toString());
+        return responseJson;
+      //throw BadRequestException(responseJson['message']);
+      case 401:
+      case 403:
+        debugPrint('UnauthorisedException');
+        // decode response
+        var responseJson = jsonDecode(response.body);
+        debugPrint(responseJson.toString());
+        return responseJson;
+      //throw UnauthorisedException(responseJson['message']);
+      case 500:
+      default:
+        // decode response
+        var responseJson = jsonDecode(response.body);
+        debugPrint(responseJson.toString());
+        return responseJson;
     }
   }
 

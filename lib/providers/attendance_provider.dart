@@ -299,6 +299,10 @@ class AttendanceProvider extends ChangeNotifier {
         time: time ?? getClockingTime(),
       );
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
+      meetingEventModel.startBreak = response.startBreak;
+      meetingEventModel.endBreak = response.endBreak;
+      meetingEventModel.inTime = response.inTime;
+      meetingEventModel.outTime = response.outTime;
       debugPrint("SUCCESS ${response.message}");
       showNormalToast('You\'re Welcome');
       Navigator.pop(context);
@@ -321,6 +325,10 @@ class AttendanceProvider extends ChangeNotifier {
         time: time ?? getClockingTime(),
       );
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
+      meetingEventModel.startBreak = response.startBreak;
+      meetingEventModel.endBreak = response.endBreak;
+      meetingEventModel.inTime = response.inTime;
+      meetingEventModel.outTime = response.outTime;
       debugPrint("SUCCESS ${response.message}");
       showNormalToast('Good Bye!');
       Navigator.pop(context);

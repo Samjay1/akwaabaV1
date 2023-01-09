@@ -41,9 +41,8 @@ class _DeviceActivationRequestPageState
     //GETS MEMBER PROFILE INFO
     MemberProfile memberProfile =
         Provider.of<MemberProvider>(context, listen: false).memberProfile;
-    var memberId = memberProfile.id; // GETS THE MEMBER ID
-    debugPrint(
-        'MEMBER memberToken ____ ${memberProfile.memberToken.toString()}');
+    var memberId = memberProfile.user!.id; // GETS THE MEMBER ID
+    debugPrint('MEMBER memberToken ____ ${memberProfile.token.toString()}');
 
     //GETS DEVICE INFO
     var deviceInfo =

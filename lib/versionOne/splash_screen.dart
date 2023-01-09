@@ -56,45 +56,32 @@ class _SplashScreenState extends State<SplashScreen> {
         //login credentials exists, open home page
         debugPrint('LOGIN DETAILS HERE:=> $value');
 
-        SharedPrefs().getUserType().then((userType){
+        SharedPrefs().getUserType().then((userType) {
           debugPrint('ACCOUNT USER TYPE HERE:=> $userType');
 
-          if(userType == 'admin'){
-            Provider.of<ClientProvider>(context, listen: false)
-                .login(context: context, phoneEmail: value[0], password: value[1])
-                .then((value) {
-              setState(() {
-                Provider.of<GeneralProvider>(context, listen: false)
-                    .setAdminStatus(isAdmin: true);
-              });
-            }).catchError((e) {
-              showErrorToast("$e");
-            });
-          }else if(userType == 'member'){
-            Provider.of<MemberProvider>(context, listen: false)
-                .login(
+          if (userType == 'admin') {
+            Provider.of<ClientProvider>(context, listen: false).login(
               context: context,
-              phoneEmail: value[0], password: value[1],
-              checkDeviceInfo: false,
-            )
-                .then((value) {
-              setState(() {
-                Provider.of<GeneralProvider>(context, listen: false)
-                    .setAdminStatus(isAdmin: false);
-              });
-            }).catchError((e) {
-              showErrorToast("$e");
-            });
-          }else{
+              phoneEmail: value[0],
+              password: value[1],
+              isAdmin: true,
+            );
+          } else if (userType == 'member') {
+            Provider.of<MemberProvider>(context, listen: false).login(
+              context: context,
+              phoneEmail: value[0],
+              password: value[1],
+              isAdmin: false,
+            );
+          } else {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (_) => const LoginPage()));
+              context,
+              MaterialPageRoute(
+                builder: (_) => const LoginPage(),
+              ),
+            );
           }
         });
-
-
-
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const MainPage()));
       } else {
         //no login credentials, open login page
         Navigator.pushReplacement(

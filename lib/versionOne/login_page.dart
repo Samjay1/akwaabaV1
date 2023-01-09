@@ -1,16 +1,10 @@
-import 'dart:convert';
-import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/components/bottom_border_textfield.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
-import 'package:akwaaba/models/members/member_profile.dart';
-import 'package:akwaaba/providers/general_provider.dart';
+import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/screens/forgot_password_page.dart';
-import 'package:akwaaba/versionOne/main_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
-import 'package:akwaaba/utils/shared_prefs.dart';
-import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,6 +36,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   late BuildContext context;
 
+  MemberProvider? _memberProvider;
+  ClientProvider? _clientProvider;
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +46,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    _memberProvider = context.watch<MemberProvider>();
+    _clientProvider = context.watch<ClientProvider>();
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     this.context = context;
@@ -230,9 +229,15 @@ class _LoginPageState extends State<LoginPage> {
             return CustomElevatedButton(
               label: "Login",
               function: () {
-                login(isAdmin: false);
+                _memberProvider!.validateInputFields(
+                  context: context,
+                  isAdmin: false,
+                  phoneEmail: _controllerEmail.text.trim(),
+                  password: _controllerPassword.text.trim(),
+                );
+                //login(isAdmin: false);
               },
-              showProgress: data.showLoginProgressIndicator,
+              showProgress: data.loading,
             );
           },
         ),
@@ -335,9 +340,14 @@ class _LoginPageState extends State<LoginPage> {
             return CustomElevatedButton(
               label: "Login",
               function: () {
-                login(isAdmin: true);
+                _clientProvider!.validateInputFields(
+                  context: context,
+                  isAdmin: true,
+                  phoneEmail: _controllerAdminEmail.text.trim(),
+                  password: _controllerAdminPassword.text.trim(),
+                );
               },
-              showProgress: data.showLoginProgressIndicator,
+              showProgress: data.loading,
             );
           },
         )
@@ -349,113 +359,6 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       showPassword = !showPassword;
     });
-  }
-
-  login({required bool isAdmin}) {
-    FocusManager.instance.primaryFocus?.unfocus(); //hide keyboard
-
-    //check inputs
-    if (isAdmin) {
-      if (_controllerAdminEmail.text.trim().isEmpty) {
-        showErrorSnackBar(context, "Please input your email address");
-        return;
-      }
-      if (_controllerAdminPassword.text.trim().isEmpty) {
-        showErrorSnackBar(context, "Please input your password");
-        return;
-      }
-
-      email = _controllerAdminEmail.text.trim();
-      password = _controllerAdminPassword.text.trim();
-    } else {
-      if (_controllerEmail.text.trim().isEmpty) {
-        showErrorSnackBar(context, "Please input your email address");
-        return;
-      }
-      if (_controllerPassword.text.trim().isEmpty) {
-        showErrorSnackBar(context, "Please input your password");
-        return;
-      }
-
-      email = _controllerEmail.text.trim();
-      password = _controllerPassword.text.trim();
-
-      //save password and email in shared prefs
-    }
-
-    if (isAdmin) {
-      Provider.of<ClientProvider>(context, listen: false)
-          .login(context: context, phoneEmail: email, password: password)
-          .then((value) {
-        setState(() {
-          Provider.of<GeneralProvider>(context, listen: false)
-              .setAdminStatus(isAdmin: true);
-        });
-      }).catchError((e) {
-        showErrorToast("$e");
-      });
-
-      SharedPrefs().setUserType(userType: "admin");
-      SharedPrefs()
-          .saveLoginCredentials(emailOrPhone: email, password: password);
-    } else {
-      Provider.of<MemberProvider>(context, listen: false)
-          .login(
-        context: context,
-        phoneEmail: email,
-        password: password,
-        checkDeviceInfo: false,
-      )
-          .then((value) {
-        setState(() {
-          Provider.of<GeneralProvider>(context, listen: false)
-              .setAdminStatus(isAdmin: false);
-        });
-      }).catchError((e) {
-        showErrorToast("$e");
-      });
-
-      SharedPrefs().setUserType(userType: "member");
-      SharedPrefs()
-          .saveLoginCredentials(emailOrPhone: email, password: password);
-      //
-
-      // MemberAPI().userLogin(phoneEmail: email, password: password,
-      //     checkDeviceInfo: false).
-      // then((value) {
-      //   setState(() {
-      //     showProgressIndicator=false;
-      //   });
-      //   if(value.isNotEmpty){
-      //     try{
-      //       Map decodedResponse = json.decode(value);
-      //       var token = decodedResponse["token"];
-      //       MemberProfile memberProfile = MemberProfile.fromJson(decodedResponse["user"]);
-      //
-      //       Provider.of<MemberProvider>(context,listen: false).setToken(token: token);
-      //       Provider.of<MemberProvider>(context,listen: false).setMemberProfileInfo(memberProfile: memberProfile);
-      //
-      //       SharedPrefs().setUserType(userType: "member");
-      //       SharedPrefs().saveLoginCredentials(emailOrPhone: email, password: password);
-      //       SharedPrefs().saveMemberInfo(memberProfile: memberProfile);
-      //
-      //       Navigator.push(context, MaterialPageRoute(builder: (_)=>const MainPage()));
-      //     }catch(e){
-      //       debugPrint("Login error caught ~ $e");
-      //
-      //     }
-      //   }else{
-      //     //if the response is empty, a toast would be shown from function making
-      //     // the api call
-      //   }
-      // }).catchError((e){
-      //   showErrorToast("$e");
-      //     setState(() {
-      //       showProgressIndicator=false;
-      //     });
-      // });
-
-    }
   }
 
   createAccountButtonTap() {
