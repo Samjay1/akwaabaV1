@@ -1,5 +1,5 @@
 class Constituency {
-  String? id;
+  int? id;
   String? location;
 
   Constituency(

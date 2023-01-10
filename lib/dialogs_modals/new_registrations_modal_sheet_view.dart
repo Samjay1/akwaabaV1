@@ -23,8 +23,8 @@ class _NewRegistrationModalSheetViewState extends State<NewRegistrationModalShee
             child: GestureDetector(
               onTap: (){
                 Navigator.pop(context);//close the dialog
-                Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                const MemberRegistrationPageIndividual()));
+                // Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                // const MemberRegistrationPageIndividual()));
               },
               child: Card(
                 elevation: 8,
@@ -54,8 +54,8 @@ class _NewRegistrationModalSheetViewState extends State<NewRegistrationModalShee
             child: GestureDetector(
               onTap: (){
                 Navigator.pop(context);//close the dialog
-                Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                const MemberRegistrationPageOrganization()));
+                // Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                // const MemberRegistrationPageOrganization()));
               },
               child: Card(
                 elevation: 8,

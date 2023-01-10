@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
@@ -12,8 +13,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+import '../models/general/abstractModel.dart';
+import '../models/general/constiteuncy.dart';
+import '../models/general/country.dart';
+import '../models/general/country.dart';
+import '../models/general/district.dart';
+import '../models/general/electoralArea.dart';
+import '../models/general/region.dart';
+
 class MemberRegistrationPageIndividual extends StatefulWidget {
-  const MemberRegistrationPageIndividual({Key? key}) : super(key: key);
+  final clientID;
+  const MemberRegistrationPageIndividual({required this.clientID, Key? key}) : super(key: key);
 
   @override
   State<MemberRegistrationPageIndividual> createState() => _MemberRegistrationPageIndividualState();
@@ -48,10 +58,100 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
   var selectedCategory;
 
 
+  //LOCATION - COUNTRY
+  var selectedCountry;
+  var selectedCountryID;
+   late List<Country>? countryList = [];
+   void _getCountryList ()async{
+     countryList = (await MemberAPI().getCountry());
+     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+   }
+
+  //LOCATION - REGION
+  var selectedRegion;
+  var selectedRegionID;
+  late List<Region>? regionList = [];
+  void _getRegionList ()async{
+    regionList = (await MemberAPI().getRegion());
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+
+  //LOCATION - DISTRICT
+  var selectedDistrict;
+  var selectedDistrictID;
+  late List<District>? districtList = [];
+  void _getDistrictList ({var regionID})async{
+    districtList = (await MemberAPI().getDistrict(regionID: regionID));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+  //LOCATION - CONSTITUENCY
+  var selectedConstituency;
+  var selectedConstituencyID;
+  late List<Constituency>? constituencyList = [];
+  void _getConstituencyList ({var regionID, var districtID})async{
+    constituencyList = (await MemberAPI().getConstituency(regionID: regionID,districtID:districtID));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+  //LOCATION - COMMUNITY
+  var selectedCommunity;
+  var selectedCommunityID;
+  late List<ElectoralArea>? communityList = [];
+  void _getCommunityList ({var regionID, var districtID})async{
+    communityList = (await MemberAPI().getElectoralArea(regionID: regionID, districtID:districtID));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+
+  //STATUS - MARITAL STATUS
+  var selectedMarital;
+  var selectedMaritalID;
+  late List<AbstractModel>? maritalList = [];
+  void _getMaritalList ()async{
+    maritalList = (await MemberAPI().getMaritalStatus());
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+  //STATUS - EDUCATION STATUS
+  var selectedEducation;
+  var selectedEducationID;
+  late List<AbstractModel>? educationList = [];
+  void _getEducationList ()async{
+    educationList = (await MemberAPI().getEducation());
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+  //STATUS - OCCUPATION STATUS
+  var selectedOccupation;
+  var selectedOccupationID;
+  late List<AbstractModel>? occupationList = [];
+  void _getOccupationList ()async{
+    occupationList = (await MemberAPI().getOccupation());
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+
+  //STATUS - PROFESSION STATUS
+  var selectedProfession;
+  var selectedProfessionID;
+  late List<AbstractModel>? professionList = [];
+  void _getProfessionList ()async{
+    professionList = (await MemberAPI().getProfession());
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+
   @override
   void initState() {
     super.initState();
-
+    _getCountryList();
+    _getRegionList();
+    _getMaritalList();
+    _getEducationList();
+    _getOccupationList();
+    _getProfessionList();
 
     pageViewController.addListener(() {
       if (pageViewController.page?.round() != currentIndex) {
@@ -113,6 +213,7 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('maritalList ${maritalList}');
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: currentIndex==0?true:false,
@@ -141,6 +242,7 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
                   bioDataView(),
                   groupingView(),
                   locationView(),
+
                   statusView(),
                   passwordsView(),
                 ],
@@ -328,8 +430,11 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
           setCompulsory: true,
           label: "Country",
           child: FormButton(
-            label: "Select Country",
-            function: (){},
+            label: selectedCountry??"Select Country",
+            function: (){
+              var newCountryList = countryList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
+              selectCountry(newCountryList);
+            },
           )
       ),
 
@@ -346,8 +451,11 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
             //setCompulsory: true,
             label: "Region",
             child: FormButton(
-              label: "Select Region",
-              function: (){},
+              label: selectedRegion??"Select Region",
+              function: (){
+                var newRegionList = regionList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
+                selectRegion(newRegionList);
+              },
             )
         ),
 
@@ -355,8 +463,11 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
            // setCompulsory: true,
             label: "District",
             child: FormButton(
-              label: "Select District",
-              function: (){},
+              label: selectedDistrict??"Select District",
+              function: (){
+                var newDistrictList = districtList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
+                selectDistrict(newDistrictList);
+              },
             )
         ),
 
@@ -364,8 +475,11 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
             //setCompulsory: true,
             label: "Constituency",
             child: FormButton(
-              label: "Select Constituency",
-              function: (){},
+              label: selectedConstituency??"Select Constituency",
+              function: (){
+                var newConstituencyList = constituencyList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
+                selectConstituency(newConstituencyList);
+              },
             )
         ),
 
@@ -373,8 +487,11 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
 
             label: "Community",
             child: FormButton(
-              label: "Select Community",
-              function: (){},
+              label: selectedCommunity??"Select Community",
+              function: (){
+                var newCommunityList = communityList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
+                selectCommunity(newCommunityList);
+              },
             )
         ),
 
@@ -382,6 +499,7 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
       ],
     );
   }
+
 
   Widget statusView(){
     return ListView(
@@ -415,29 +533,42 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
 
         LabelWidgetContainer(label: "Marital Status",
             child:FormButton(
-              label: "Select Status",
-              function: (){},
+              label: selectedMarital??"Select Status",
+              function: (){
+                var newMaritalList = maritalList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
+                debugPrint('newMaritalList $newMaritalList');
+                selectMarital(newMaritalList);
+              },
             )
         ),
 
         LabelWidgetContainer(label: "Education",
             child:FormButton(
-              label: "Select Education",
-              function: (){},
+              label: selectedEducation??"Select Education",
+              function: (){
+                var newEducationList = educationList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
+                selectEducation(newEducationList);
+              },
             )
         ),
 
         LabelWidgetContainer(label: "Occupation",
             child:FormButton(
-              label: "Select Occupation",
-              function: (){},
+              label: selectedOccupation??"Select Occupation",
+              function: (){
+                var newOccupationList = occupationList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
+                selectOccupation(newOccupationList);
+              },
             )
         ),
 
         LabelWidgetContainer(label: "Profession",
             child:FormButton(
-              label: "Select Profession",
-              function: (){},
+              label: selectedProfession??"Select Profession",
+              function: (){
+                var newProfessionList = professionList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
+                selectProfession(newProfessionList);
+              },
             )
         ),
 
@@ -447,8 +578,8 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
         FormButton(label: "Upload  ID",
         function: (){},)
         ),
-        
-        
+
+
         LabelWidgetContainer(label: "ID Number", child:
         FormTextField(
           controller: _controllerIDNumber,
@@ -552,6 +683,121 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
       if(value!=null){
         setState(() {
           birthDate=value;
+        });
+      }
+    });
+  }
+
+
+//  LOCATION
+  selectCountry(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedCountry = value['name'];
+          selectedCountryID =  value['id'];
+          debugPrint('selectedCountryID $selectedCountryID, $selectedCountry');
+        });
+      }
+    });
+  }
+
+  selectRegion(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedRegion = value['name'];
+          selectedRegionID =  value['id'];
+          debugPrint('selectedRegion $selectedRegion, $selectedRegionID');
+          _getDistrictList(regionID:selectedRegionID);
+        });
+      }
+    });
+  }
+
+  selectDistrict(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedDistrict = value['name'];
+          selectedDistrictID =  value['id'];
+          debugPrint('selectedRegion $selectedDistrict, $selectedDistrictID');
+          _getConstituencyList(regionID:selectedRegionID, districtID:selectedDistrictID );
+          _getCommunityList(regionID:selectedRegionID, districtID:selectedDistrictID );
+        });
+      }
+    });
+  }
+
+  selectConstituency(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedConstituency = value['name'];
+          selectedConstituencyID =  value['id'];
+          debugPrint('Constituency $selectedConstituency, $selectedConstituencyID');
+        });
+      }
+    });
+  }
+
+  selectCommunity(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedCommunity = value['name'];
+          selectedCommunityID =  value['id'];
+          debugPrint('selectedCommunity $selectedCommunity, $selectedCommunityID');
+        });
+      }
+    });
+  }
+
+
+//  STATUSES
+  selectMarital(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          // selectedMarital = value['name'];
+          // selectedMaritalID =  value['id'];
+          // debugPrint('selectedMaritalID $selectedMaritalID, $selectedMarital');
+        });
+      }
+    });
+  }
+
+  selectEducation(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedEducation = value['name'];
+          selectedEducationID =  value['id'];
+          debugPrint('selectedEducationID $selectedEducationID, $selectedEducation');
+        });
+      }
+    });
+  }
+
+  selectOccupation(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedOccupation = value['name'];
+          selectedOccupationID =  value['id'];
+          debugPrint('selectedOccupationID $selectedOccupationID, $selectedOccupation');
+        });
+      }
+    });
+  }
+
+  selectProfession(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedProfession = value['name'];
+          selectedProfessionID =  value['id'];
+          debugPrint('selectedProfessionID $selectedProfessionID, $selectedProfession');
         });
       }
     });

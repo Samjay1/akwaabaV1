@@ -1,5 +1,5 @@
 class Region {
-  String? id;
+  int? id;
   String? location;
 
   Region(

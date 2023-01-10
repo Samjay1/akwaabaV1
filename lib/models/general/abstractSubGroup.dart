@@ -1,5 +1,5 @@
 class AbstractSubGroup {
-  String? id;
+  int? id;
   String? subgroup;
 
   AbstractSubGroup(

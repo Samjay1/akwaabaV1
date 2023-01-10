@@ -1,5 +1,5 @@
 class Country {
-  String? id;
+  int? id;
   String? name;
   String? short;
   String? code;

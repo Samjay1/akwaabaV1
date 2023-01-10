@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/member_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -30,9 +31,33 @@ class RegistrationCode extends StatelessWidget {
                 return;
               }
               if(regType == 'member'){
-                Navigator.push(context,MaterialPageRoute( builder: (_) => const MemberRegistrationPageIndividual(),));
+                var regCode = _controller.text.trim();
+                MemberAPI.searchRegCode(regCode: regCode).
+                then((value){
+                  if(value !=null){
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(content: Text('Registration Code has been accepted')));
+                    debugPrint('clientID = $value');
+                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageIndividual(clientID: value,),));
+                  }else{
+                    showErrorSnackBar(context, "Please a valid Registration Code");
+                  }
+                });
+
               }else{
-                Navigator.push(context,MaterialPageRoute( builder: (_) => const MemberRegistrationPageOrganization(),));
+                var regCode = _controller.text.trim();
+                MemberAPI.searchRegCode(regCode: regCode).
+                then((value){
+                  if(value !=null){
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(content: Text('Registration Code has been accepted')));
+                    debugPrint('clientID = $value');
+                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageOrganization(clientID: value,),));
+                  }else{
+                    showErrorSnackBar(context, "Please a valid Registration Code");
+                  }
+                });
+
               }
             },
                 child: const Text('Proceed'))

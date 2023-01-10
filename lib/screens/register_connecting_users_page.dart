@@ -58,7 +58,7 @@ class _RegisterConnectingUsersPageState extends State<RegisterConnectingUsersPag
             ),
 
             CustomElevatedButton(label: "Proceed Registration", function: (){
-              Navigator.push(context, MaterialPageRoute(builder: (_)=>MemberRegistrationPageIndividual()));
+              // Navigator.push(context, MaterialPageRoute(builder: (_)=>MemberRegistrationPageIndividual()));
             })
           ],
         ),

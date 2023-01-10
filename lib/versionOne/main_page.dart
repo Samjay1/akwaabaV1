@@ -644,12 +644,12 @@ class _MainPageState extends State<MainPage> {
     switch (index) {
       case 0:
         //register member
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const MemberRegistrationPageIndividual(),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => const MemberRegistrationPageIndividual(),
+        //   ),
+        // );
         break;
       case 1:
         //verify member

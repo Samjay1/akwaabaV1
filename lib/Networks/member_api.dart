@@ -468,7 +468,7 @@ class MemberAPI {
   }
 
 //  LOCATION REQUESTS
-  static Future<List<Country>?> getCountry()async{
+   Future<List<Country>?> getCountry()async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -495,7 +495,7 @@ class MemberAPI {
     }
   }
 
-  static Future<List<Region>?> getRegion()async{
+   Future<List<Region>?> getRegion()async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -522,7 +522,7 @@ class MemberAPI {
     }
   }
 
-  static Future<List<District>?> getDistrict({required var regionID})async{
+   Future<List<District>?> getDistrict({required var regionID})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -549,7 +549,7 @@ class MemberAPI {
     }
   }
 
-  static Future<List<Constituency>?> getConstituency({required var regionID, var districtID})async{
+   Future<List<Constituency>?> getConstituency({required var regionID, var districtID})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -561,7 +561,7 @@ class MemberAPI {
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
         print("Constituency success: $decodedresponse");
-        Iterable dataList = decodedresponse;
+        Iterable dataList = decodedresponse['results'];
         return dataList
             .map((data) => Constituency.fromJson(data))
             .toList();
@@ -576,7 +576,7 @@ class MemberAPI {
     }
   }
 
-  static Future<List<ElectoralArea>?> getElectoralArea({required var regionID, var districtID})async{
+   Future<List<ElectoralArea>?> getElectoralArea({required var regionID, var districtID})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -606,7 +606,7 @@ class MemberAPI {
 
 //  BRANCH REQUEST
 
-  static Future<List<Branch>?> getBranches({required var token})async{
+   Future<List<Branch>?> getBranches({required var token})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -636,7 +636,7 @@ class MemberAPI {
 
 //  GROUP AND SUB GROUPS REQUEST
 
-  static Future<List<AbstractGroup>?> getGroup({required var token, var branchID})async{
+   Future<List<AbstractGroup>?> getGroup({required var token, var branchID})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -664,7 +664,7 @@ class MemberAPI {
     }
   }
 
-  static Future<List<AbstractSubGroup>?> getSubGroup({required var token, var branchID})async{
+   Future<List<AbstractSubGroup>?> getSubGroup({required var token, var branchID})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -694,7 +694,7 @@ class MemberAPI {
 
 // OCCUPATION, PROFESSION, MARITAL STATUS
 
-  static Future<List<AbstractModel>?> getOccupation()async{
+   Future<List<AbstractModel>?> getOccupation()async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -721,7 +721,7 @@ class MemberAPI {
     }
   }
 
-  static Future<List<AbstractModel>?> getProfession()async{
+   Future<List<AbstractModel>?> getProfession()async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -748,7 +748,7 @@ class MemberAPI {
     }
   }
 
-  static Future<List<AbstractModel>?> getMaritalStatus()async{
+   Future<List<AbstractModel>?> getMaritalStatus()async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -775,7 +775,7 @@ class MemberAPI {
     }
   }
 
-  static Future<List<AbstractModel>?> getEducation()async{
+   Future<List<AbstractModel>?> getEducation()async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -805,7 +805,7 @@ class MemberAPI {
 
 //  ORGANISATION TYPE AND MEMBER TYPE
 
-  static Future<List<MemberType>?> getMemberType({required var token})async{
+   Future<List<MemberType>?> getMemberType({required var token})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -833,7 +833,7 @@ class MemberAPI {
     }
   }
 
-  static Future<List<MemberType>?> getOrganisationType({required var token})async{
+   Future<List<MemberType>?> getOrganisationType({required var token})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -863,7 +863,7 @@ class MemberAPI {
 
 
   // REGISTRATION CODE
-  static Future<String?> searchRegCode({required var regCode})async{
+  static Future<int?> searchRegCode({required var regCode})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -881,9 +881,10 @@ class MemberAPI {
         print('searchRegCode error ${jsonDecode(response.body)}');
         return null;
       }
-    } on SocketException catch (_) {
+    } on SocketException catch (e) {
       // ScaffoldMessenger.of(context)
       //     .showSnackBar(SnackBar(content: Text('Network issue')));
+      print('searchRegCode error, $regCode, $e');
       return null;
     }
   }
