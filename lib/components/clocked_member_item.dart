@@ -1,5 +1,6 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
+import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/providers/client_provider.dart';
@@ -88,7 +89,7 @@ class ClockedMemberItem extends StatelessWidget {
               ),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
                       height: displayHeight(context) * 0.01,
@@ -111,7 +112,8 @@ class ClockedMemberItem extends StatelessWidget {
                           style: const TextStyle(
                               fontSize: 16, color: primaryColor),
                         ),
-                        attendee!.attendance!.outTime == null
+                        attendee!.attendance!.outTime == null &&
+                                attendee!.attendance!.inTime != null
                             ? CustomOutlinedButton(
                                 label: "OUT",
                                 mycolor: Colors.red,
@@ -136,7 +138,7 @@ class ClockedMemberItem extends StatelessWidget {
                                         content: ConfirmDialog(
                                           title: 'Clock Out',
                                           content:
-                                              'Are you sure you want to clock-out $attendeeName?',
+                                              'Are you sure you want to clock-out on behalf of $attendeeName?',
                                           onConfirmTap: () {
                                             Navigator.pop(context);
                                             Provider.of<ClockingProvider>(
@@ -162,15 +164,21 @@ class ClockedMemberItem extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.003,
+                      height: displayHeight(context) * 0.008,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [Text('IN : $inTime'), Text('OUT :  $outTime')],
                     ),
-                    SizedBox(height: displayHeight(context) * 0.005),
-                    attendee!.attendance!.meetingEventId!.hasBreakTime! &&
-                            attendee!.attendance!.outTime == null
+                    SizedBox(
+                      height: (attendee!.attendance!.startBreak == null &&
+                              attendee!.attendance!.endBreak == null)
+                          ? displayHeight(context) * 0.006
+                          : displayHeight(context) * 0.00,
+                    ),
+                    (attendee!.attendance!.meetingEventId!.hasBreakTime!) &&
+                            (attendee!.attendance!.inTime != null &&
+                                attendee!.attendance!.outTime == null)
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -201,7 +209,7 @@ class ClockedMemberItem extends StatelessWidget {
                                         content: ConfirmDialog(
                                           title: 'Start Break',
                                           content:
-                                              'Are you sure you want start break for $attendeeName?',
+                                              'Are you sure you want start break on behalf of $attendeeName?',
                                           onConfirmTap: () {
                                             Navigator.pop(context);
                                             Provider.of<ClockingProvider>(
@@ -261,7 +269,7 @@ class ClockedMemberItem extends StatelessWidget {
                                         content: ConfirmDialog(
                                           title: 'End Break',
                                           content:
-                                              'Are you sure you want end break for $attendeeName?',
+                                              'Are you sure you want end break on behalf of $attendeeName?',
                                           onConfirmTap: () {
                                             Navigator.pop(context);
                                             Provider.of<ClockingProvider>(
@@ -287,7 +295,7 @@ class ClockedMemberItem extends StatelessWidget {
                           )
                         : const SizedBox(),
                     SizedBox(
-                      height: displayHeight(context) * 0.002,
+                      height: displayHeight(context) * 0.005,
                     ),
                     attendee!.attendance!.meetingEventId!.hasBreakTime!
                         ? Row(
@@ -313,49 +321,66 @@ class ClockedMemberItem extends StatelessWidget {
                     SizedBox(
                       height: displayHeight(context) * 0.005,
                     ),
-                    Consumer<ClientProvider>(
-                      builder: (context, data, child) {
-                        return (data.getUser.branchID ==
-                                    AppConstants.mainAdmin &&
-                                outTime == AppConstants.notApplicable)
-                            ? CustomElevatedButton(
-                                label: "Cancel Clocking",
-                                labelSize: 14,
-                                color: fillColor,
-                                textColor: Colors.red,
-                                radius: 5,
-                                function: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                      insetPadding: const EdgeInsets.all(10),
-                                      backgroundColor: Colors.transparent,
-                                      elevation: 0,
-                                      content: ConfirmDialog(
-                                        title: 'Cancel Clocking',
-                                        content:
-                                            'Are you sure you want to cancel clocking for $attendeeName?',
-                                        onConfirmTap: () {
-                                          Navigator.pop(context);
-                                          Provider.of<ClockingProvider>(context,
-                                                  listen: false)
-                                              .cancelClocking(
-                                            context: context,
-                                            attendee: attendee!,
-                                            time: null,
-                                          );
-                                        },
-                                        onCancelTap: () =>
-                                            Navigator.pop(context),
-                                        confirmText: 'Yes',
-                                        cancelText: 'Cancel',
-                                      ),
-                                    ),
-                                  );
-                                },
-                              )
-                            : const SizedBox();
-                      },
+                    (attendee!.attendance!.inTime == null)
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: const [
+                              TagWidget(color: Colors.red, text: 'Cancelled'),
+                            ],
+                          )
+                        : const SizedBox(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Consumer<ClientProvider>(
+                            builder: (context, data, child) {
+                              debugPrint("BID: ${data.getUser.branchID}");
+                              return (data.getUser.branchID ==
+                                          AppConstants.mainAdmin &&
+                                      (attendee!.attendance!.inTime != null))
+                                  ? CustomElevatedButton(
+                                      label: "Cancel Clocking",
+                                      labelSize: 14,
+                                      color: fillColor,
+                                      textColor: Colors.red,
+                                      radius: 5,
+                                      function: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            insetPadding:
+                                                const EdgeInsets.all(10),
+                                            backgroundColor: Colors.transparent,
+                                            elevation: 0,
+                                            content: ConfirmDialog(
+                                              title: 'Cancel Clocking',
+                                              content:
+                                                  'Are you sure you want to cancel clocking on behalf of $attendeeName?',
+                                              onConfirmTap: () {
+                                                Navigator.pop(context);
+                                                Provider.of<ClockingProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .cancelClocking(
+                                                  context: context,
+                                                  attendee: attendee!,
+                                                  time: null,
+                                                );
+                                              },
+                                              onCancelTap: () =>
+                                                  Navigator.pop(context),
+                                              confirmText: 'Yes',
+                                              cancelText: 'Cancel',
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : const SizedBox();
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: displayHeight(context) * 0.007,

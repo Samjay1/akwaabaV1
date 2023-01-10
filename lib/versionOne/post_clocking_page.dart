@@ -9,6 +9,7 @@ import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/postclock_clocked_member_item.dart';
 import 'package:akwaaba/components/postclock_clocking_member_item.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/gender.dart';
@@ -148,78 +149,42 @@ class _PostClockingPageState extends State<PostClockingPage> {
                     });
                   },
                 ),
-
                 SizedBox(
                   height: displayHeight(context) * 0.02,
                 ),
-
                 const Divider(
                   height: 2,
-                  color: Colors.orange,
+                  color: primaryColor,
+                ),
+                SizedBox(
+                  height: displayHeight(context) * 0.02,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     //REFRESING BUTTON
-                    Expanded(
-                      child: InkWell(
-                          onTap: () => postClockingProvider.clearData(),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(5)),
-                            child: const Text(
-                              'Clear',
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
-                            ),
-                          )),
-                    ),
-                    SizedBox(
-                      width: displayWidth(context) * 0.02,
-                    ),
-                    //POST CLOCK DATE BUTTON
                     // Expanded(
                     //   child: InkWell(
-                    //       onTap: () {
-                    //         displayDateSelector(
-                    //           initialDate: DateTime.now(),
-                    //           maxDate: DateTime.now(),
-                    //           context: context,
-                    //         ).then((value) {
-                    //           if (value != null) {
-                    //             setState(() {
-                    //               postClockingProvider.postClockDate = value;
-                    //               debugPrint(
-                    //                 "Selected PostClock Date: ${postClockingProvider.postClockDate!.toIso8601String().substring(0, 11)}",
-                    //               );
-                    //             });
-                    //           }
-                    //         });
-                    //       },
+                    //       onTap: () => postClockingProvider.clearData(),
                     //       child: Container(
                     //         padding: const EdgeInsets.symmetric(
                     //             vertical: 10, horizontal: 10),
                     //         decoration: BoxDecoration(
-                    //             color: Colors.green,
-                    //             borderRadius: BorderRadius.circular(5)),
-                    //         child: Text(
-                    //           postClockingProvider.postClockDate == null
-                    //               ? 'Post Clock Date'
-                    //               : DateFormat.yMMMEd().format(
-                    //                   postClockingProvider.postClockDate!),
+                    //           color: fillColor,
+                    //           borderRadius: BorderRadius.circular(
+                    //             AppDimen.borderRadius8,
+                    //           ),
+                    //         ),
+                    //         child: const Text(
+                    //           'Clear',
                     //           textAlign: TextAlign.center,
-                    //           style: const TextStyle(
-                    //               color: Colors.white, fontSize: 15),
+                    //           style: TextStyle(color: Colors.red, fontSize: 15),
                     //         ),
                     //       )),
                     // ),
-                    SizedBox(
-                      width: displayWidth(context) * 0.02,
-                    ),
+                    // SizedBox(
+                    //   width: displayWidth(context) * 0.02,
+                    // ),
                     //POST CLOCK TIME BUTTON
                     Expanded(
                       child: InkWell(
@@ -246,7 +211,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 borderRadius: BorderRadius.circular(5)),
                             child: Text(
                               postClockingProvider.postClockTime == null
-                                  ? 'Post Clock Time'
+                                  ? 'Select Post Clock Time'
                                   : DateFormat.jm().format(
                                       postClockingProvider.postClockTime!),
                               textAlign: TextAlign.center,
@@ -260,7 +225,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 //// CustomElevatedButton(label: "Filter", function: (){}),\
 
                 SizedBox(
-                  height: displayHeight(context) * 0.02,
+                  height: displayHeight(context) * 0.00,
                 ),
 
                 LabelWidgetContainer(
@@ -508,48 +473,94 @@ class _PostClockingPageState extends State<PostClockingPage> {
                         ))
                     : const SizedBox(),
 
-                const SizedBox(
-                  height: 8,
+                SizedBox(
+                  height: displayHeight(context) * 0.02,
                 ),
                 const Divider(
                   height: 2,
-                  color: Colors.orange,
+                  color: primaryColor,
                 ),
-                const SizedBox(
-                  height: 8,
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                        child: CustomElevatedButton(
-                            label: "Clocking List",
-                            radius: 5,
-                            function: () {
-                              setState(() {
-                                clockingListState = true;
-                                checkAll = false;
-                                debugPrint(
-                                    '     clockingListState = $clockingListState');
-                              });
-                            })),
-                    const SizedBox(
-                      width: 16,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            clockingListState = true;
+                            checkAll = false;
+                            postClockingProvider.selectedAttendees.clear();
+                            debugPrint(
+                                'clockingListState = $clockingListState');
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(12.0),
+                          decoration: BoxDecoration(
+                              color: clockingListState
+                                  ? primaryColor
+                                  : Colors.transparent,
+                              border:
+                                  Border.all(color: primaryColor, width: 1.2),
+                              borderRadius: BorderRadius.circular(
+                                  AppDimen.borderRadius8)),
+                          child: Center(
+                            child: Text(
+                              'Clocking List',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                                color: clockingListState
+                                    ? whiteColor
+                                    : primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: displayWidth(context) * 0.03,
                     ),
                     Expanded(
-                        child: CustomElevatedButton(
-                            label: "Clocked List",
-                            color: Colors.green,
-                            textColor: Colors.white,
-                            radius: 5,
-                            function: () {
-                              setState(() {
-                                clockingListState = false;
-                                checkAll = false;
-                                debugPrint(
-                                    '     clockingListState = $clockingListState');
-                              });
-                            })),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            clockingListState = false;
+                            checkAll = false;
+                            postClockingProvider.selectedAbsentees.clear();
+                            debugPrint(
+                                'clockingListState = $clockingListState');
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(12.0),
+                          decoration: BoxDecoration(
+                              color: !clockingListState
+                                  ? primaryColor
+                                  : Colors.transparent,
+                              border:
+                                  Border.all(color: primaryColor, width: 1.2),
+                              borderRadius: BorderRadius.circular(
+                                  AppDimen.borderRadius8)),
+                          child: Center(
+                            child: Text(
+                              'Clocked List',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                                color: !clockingListState
+                                    ? whiteColor
+                                    : primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
 
@@ -1085,19 +1096,47 @@ class _PostClockingPageState extends State<PostClockingPage> {
           height: displayHeight(context) * 0.008,
         ),
 
-        CustomElevatedButton(
-            label: "Filter",
-            function: () {
-              postClockingProvider.validateFilterFields(context);
-              if (postClockingProvider.loading) {
-                // scroll to bottom of the screen to show the loading progress
-                _controller.animateTo(
-                  _controller.position.maxScrollExtent,
-                  duration: const Duration(seconds: 3),
-                  curve: Curves.ease,
-                );
-              }
-            }),
+        Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                  onTap: () => postClockingProvider.clearData(),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: fillColor,
+                      borderRadius:
+                          BorderRadius.circular(AppDimen.borderRadius8),
+                    ),
+                    child: const Text(
+                      'Clear',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red, fontSize: 15),
+                    ),
+                  )),
+            ),
+            SizedBox(
+              width: displayWidth(context) * 0.04,
+            ),
+            Expanded(
+              child: CustomElevatedButton(
+                  label: "Filter",
+                  radius: AppDimen.borderRadius8,
+                  function: () {
+                    postClockingProvider.validateFilterFields(context);
+                    if (postClockingProvider.loading) {
+                      // scroll to bottom of the screen to show the loading progress
+                      _controller.animateTo(
+                        _controller.position.maxScrollExtent,
+                        duration: const Duration(seconds: 3),
+                        curve: Curves.ease,
+                      );
+                    }
+                  }),
+            ),
+          ],
+        ),
       ],
     );
   }

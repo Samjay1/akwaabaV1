@@ -415,7 +415,6 @@ class AttendanceProvider extends ChangeNotifier {
               .substring(0, 10)
               .trim();
       var response = await AttendanceAPI.getAttendanceList(
-        //meetingEventIds: [meetingEventModel.id!],
         meetingEventModel: meetingEventModel,
         filterDate: currentDate,
       );
@@ -429,7 +428,7 @@ class AttendanceProvider extends ChangeNotifier {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      debugPrint('Error ${err.toString()}');
+      debugPrint('Error CCM: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();

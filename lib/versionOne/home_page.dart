@@ -95,18 +95,8 @@ class _HomePageState extends State<HomePage> {
           );
           debugPrint('Loading fresh data:...');
         }
-
         setState(() {});
       });
-
-      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //   Provider.of<AttendanceProvider>(context, listen: false)
-      //       .getUpcomingMeetingEvents(
-      //     memberToken: memberToken,
-      //     context: context,
-      //   );
-      //   setState(() {});
-      // });
     } else {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('token');

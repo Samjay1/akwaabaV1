@@ -96,7 +96,7 @@ class ClockingMemberItem extends StatelessWidget {
                       content: ConfirmDialog(
                         title: 'Clock In',
                         content:
-                            'Are you sure you want to clock-in $attendeeName?',
+                            'Are you sure you want to clock-in on behalf of $attendeeName?',
                         onConfirmTap: () {
                           Navigator.pop(context);
                           Provider.of<ClockingProvider>(context, listen: false)
