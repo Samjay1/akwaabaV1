@@ -305,7 +305,6 @@ class _HomePageState extends State<HomePage> {
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   var item = data.upcomingMeetings[index];
-
                                   return upcomingEvents(
                                     meetingEvent: item,
                                   );
@@ -677,7 +676,7 @@ class _HomePageState extends State<HomePage> {
   }) {
     var date = DateUtil.formatStringDate(
       DateFormat.yMMMEd(),
-      date: DateTime.parse(meetingEventModel.updateDate!),
+      date: DateTime.now(),
     );
 
     return Card(
@@ -897,7 +896,7 @@ class _HomePageState extends State<HomePage> {
                                 color: primaryColor,
                               ),
                               Text(
-                                meetingEventModel.startBreak == null
+                                meetingEventModel.endBreak == null
                                     ? 'EB: N/A'
                                     : 'EB: ${DateUtil.formatStringDate(
                                         DateFormat.jm(),
@@ -1132,7 +1131,7 @@ class _HomePageState extends State<HomePage> {
   }) {
     var date = DateUtil.formatStringDate(
       DateFormat.yMMMEd(),
-      date: DateTime.parse(meetingEventModel.updateDate!),
+      date: DateTime.now(),
     );
     return Card(
       elevation: 4,

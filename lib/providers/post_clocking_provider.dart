@@ -585,13 +585,13 @@ class PostClockingProvider extends ChangeNotifier {
   }
 
   void validateFilterFields(context) {
-    if (selectedPastMeetingEvent != null ||
-        selectedMemberCategory != null ||
+    if (selectedDate != null ||
+        selectedPastMeetingEvent != null ||
         selectedBranch != null ||
+        selectedMemberCategory != null ||
         selectedGender != null ||
         selectedGroup != null ||
         selectedSubGroup != null ||
-        selectedDate != null ||
         minAgeTEC.text.isNotEmpty ||
         maxAgeTEC.text.isNotEmpty) {
       getAllAbsentees(

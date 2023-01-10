@@ -199,29 +199,25 @@ class _AllEventsPageState extends State<AllEventsPage> {
                       itemCount: 10,
                     ),
                   )
-                : SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    width: MediaQuery.of(context).size.width,
-                    child: Consumer<AttendanceProvider>(
-                      builder: (context, data, child) {
-                        if (data.upcomingMeetings.isEmpty) {
-                          return const EmptyStateWidget(
-                            text:
-                                'You currently have no upcoming \nmeetings at the moment!',
-                          );
-                        }
-                        return ListView.builder(
-                            itemCount: data.upcomingMeetings.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              var item = data.upcomingMeetings[index];
-                              debugPrint('MEETING LIST ${item.memberType}');
-                              return upcomingEvents(
-                                meetingEvent: item,
-                              );
-                            });
-                      },
-                    ),
+                : Consumer<AttendanceProvider>(
+                    builder: (context, data, child) {
+                      if (data.upcomingMeetings.isEmpty) {
+                        return const EmptyStateWidget(
+                          text:
+                              'You currently have no upcoming \nmeetings at the moment!',
+                        );
+                      }
+                      return ListView.builder(
+                          itemCount: data.upcomingMeetings.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            var item = data.upcomingMeetings[index];
+                            debugPrint('MEETING LIST ${item.memberType}');
+                            return upcomingEvents(
+                              meetingEvent: item,
+                            );
+                          });
+                    },
                   )
           ],
         ),

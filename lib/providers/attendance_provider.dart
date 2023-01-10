@@ -144,6 +144,19 @@ class AttendanceProvider extends ChangeNotifier {
     debugPrint("Latitude: ${response.results![0].latitude}");
     debugPrint("Longitude: ${response.results![0].longitude}");
 
+    if (response.results == null) {
+      Navigator.of(context).pop();
+      debugPrint('You\'re not within the radius of the premise');
+      showInfoDialog(
+        'ok',
+        context: context,
+        title: 'Hey there!',
+        content:
+            'Sorry, we were unable to get your meeting location. Please contact your admin and try again.',
+        onTap: () => Navigator.pop(context),
+      );
+      return;
+    }
     double totalDistance = calculateDistance(
       currentUserLocation.latitude,
       currentUserLocation.longitude,
@@ -405,6 +418,7 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+// checks if member has clcoked in for a meeting
   Future<void> checkClockedMeetings({
     required MeetingEventModel meetingEventModel,
     required int branchId,
