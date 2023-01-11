@@ -19,6 +19,8 @@ const whiteColor = Colors.white;
 const blackColor = Colors.black;
 
 const fillColor = Color(0xFFEBECEE);
+const tealColor = Colors.teal;
+const greenColor = Colors.green;
 
 class AppTheme {
   static final ThemeData defaultTheme = _buildMyTheme();

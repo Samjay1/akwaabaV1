@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/custom_progress_indicator.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
@@ -96,6 +97,14 @@ class _HomePageState extends State<HomePage> {
           debugPrint('Loading fresh data:...');
         }
         setState(() {});
+        Provider.of<AttendanceProvider>(context, listen: false)
+            .getUpcomingMeetingEvents(
+          memberToken: memberToken,
+          context: context,
+        );
+
+        // MemberAPI().getRecentClocking(context,memberToken,6908);
+        // setState(() {});
       });
     } else {
       prefs = await SharedPreferences.getInstance();
@@ -123,13 +132,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     attendanceProvider = context.watch<AttendanceProvider>();
-    screenHeight = MediaQuery.of(context).size.height;
-    screenWidth = MediaQuery.of(context).size.width;
-    ClientAccountInfo? userInfo =
-        Provider.of<ClientProvider>(context, listen: false).getUser;
-    var profileImage = userInfo?.profilePicture;
-    var firstName = userInfo?.firstName;
-    var surName = userInfo?.surName;
 
     var subscriptionFee = 0;
     var subscriptionDuration = 0;
@@ -177,6 +179,29 @@ class _HomePageState extends State<HomePage> {
                               );
                             })
                           : const Text("Unknown User type"),
+              // TODO: Uncomment it when recent clocking API is available
+              // userType.compareTo("member") == 0
+              //     ? Consumer<MemberProvider>(
+              //         builder: (context, data, child) {
+              //           return headerView(
+              //               firstName: data.memberProfile.firstname,
+              //               surName: data.memberProfile.surname,
+              //               profileImage: data.memberProfile.profilePicture);
+              //         },
+              //       )
+              //     : userType.compareTo("admin") == 0
+              //         ? Consumer<ClientProvider>(
+              //             builder: (context, data, child) {
+              //             return adminHeaderView(
+              //                 firstName: data.getUser?.firstName,
+              //                 surName: data.getUser?.surName,
+              //                 profileImage: data.getUser?.profilePicture);
+              //           })
+              //         : const Text("Unknown User type"),
+
+              const SizedBox(
+                height: 36,
+              ),
 
               const SizedBox(
                 height: 36,
@@ -517,6 +542,50 @@ class _HomePageState extends State<HomePage> {
       );
     });
   }
+
+  // Widget adminHeaderView({var firstName, var surName, var profileImage}) {
+  //     return Card(
+  //       elevation: 4,
+  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+  //       child: Container(
+  //         padding: const EdgeInsets.all(16),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.stretch,
+  //           children: [
+  //             GestureDetector(
+  //               onTap: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                     builder: (_) => const UpdateAccountPage(),
+  //                   ),
+  //                 );
+  //               },
+  //               child: profileImage != null
+  //                   ? Align(
+  //                 child: CustomCachedImageWidget(
+  //                   url: profileImage,
+  //                   height: 130,
+  //                 ),
+  //               )
+  //                   : defaultProfilePic(height: 130),
+  //             ),
+  //             Text(
+  //               "$firstName $surName",
+  //               textAlign: TextAlign.center,
+  //               style: const TextStyle(
+  //                 fontSize: 18,
+  //               ),
+  //             ),
+  //
+  //             const SizedBox(
+  //               height: 24,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     );
+  // }
 
   Widget recentClockDetailsView() {
     return Column(

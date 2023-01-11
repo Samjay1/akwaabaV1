@@ -49,7 +49,8 @@ class UserApi {
 
         //save admin profile
         if (decodedResponse['user'] != null) {
-          SharedPrefs().saveAdminInfo(adminProfile: AdminProfile.fromJson(decodedResponse['user']));
+          SharedPrefs().saveAdminInfo(
+              adminProfile: AdminProfile.fromJson(decodedResponse['user']));
         }
 
         // debugPrint('FULL CLIENT INFO $clientToken');
@@ -73,8 +74,7 @@ class UserApi {
           if (clientResponse.statusCode == 200) {
             var clientData = clientDecodedResponse['data'];
             // debugPrint('FULL CLIENT INFO ${clientData.toString()}');
-            return ClientAccountInfo.fromJson(
-                clientData, user, branchName, clientToken);
+            return ClientAccountInfo.fromJson(clientData);
 
             //      ERROR FOR CLIENT INFO HTTP REQUEST
           } else {

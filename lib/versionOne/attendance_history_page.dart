@@ -36,6 +36,15 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   DateTime? startDate;
   DateTime? endDate;//start and end year | month for filter range
 
+  String? selectedStatus;
+  selectStatus(dataList){
+    displayCustomDropDown(options: dataList, context: context,
+        listItemsIsMap: false).then((value) {
+      setState(() {
+        selectedStatus=value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +117,15 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
 
           LabelWidgetContainer(label: "Meeting/Attendance Name",
               child: FormButton(label: "Select Meeting/Attendance Name",function: (){},)),
+
+          LabelWidgetContainer(label: "Select Status",
+              child: FormButton(
+                label: selectedStatus!=null?'$selectedStatus':"Select Status",
+                function: (){
+                  selectStatus(['Active', 'Inactive']);
+                },
+              )
+          ),
 
           LabelWidgetContainer(label: "Name",
               child: FormButton(label: "Select Name",function: (){},)),

@@ -1,9 +1,13 @@
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
+import 'package:akwaaba/dialogs_modals/contact_admin_dialog.dart';
+import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/versionOne/attendance_history_page.dart';
 import 'package:akwaaba/versionOne/device_activation_request_page.dart';
@@ -20,6 +24,7 @@ import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../components/custom_cached_image_widget.dart';
 import '../utils/shared_prefs.dart';
 import '../versionOne/attendance_report_page.dart';
@@ -193,8 +198,7 @@ class _MainPageState extends State<MainPage> {
           : Consumer<MemberProvider>(
               builder: (context, data, child) {
                 return memberDrawerView(
-                  logo: data.clientAccountInfo?.logo,
-                  name: data.clientAccountInfo?.name,
+                  clientAccountInfo: data.clientAccountInfo,
                   branch: data.branch?.name,
                 );
               },
@@ -455,10 +459,14 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget memberDrawerView({
-    var logo,
-    var name,
-    var branch,
+    required ClientAccountInfo clientAccountInfo,
+    required String branch,
   }) {
+    var phone = clientAccountInfo.countryInfo == null
+        ? formattedPhone('+233', clientAccountInfo.applicantPhone!)
+        : formattedPhone(clientAccountInfo.countryInfo![0].code!,
+            clientAccountInfo.applicantPhone!);
+    debugPrint("Phone: $phone");
     return Drawer(
       backgroundColor: Colors.grey.shade300,
       child: Column(
@@ -474,7 +482,7 @@ class _MainPageState extends State<MainPage> {
                 Align(
                   alignment: Alignment.center,
                   child: CustomCachedImageWidget(
-                    url: logo ?? "",
+                    url: clientAccountInfo.logo ?? "",
                     height: 100,
                   ),
                 ),
@@ -482,7 +490,7 @@ class _MainPageState extends State<MainPage> {
                   height: 8,
                 ),
                 Text(
-                  "${name ?? ""}",
+                  clientAccountInfo.name ?? "",
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
@@ -629,16 +637,27 @@ class _MainPageState extends State<MainPage> {
                             Navigator.pop(context);
                             //TODO: show popup with call and whatsapp buttons
                             showModalBottomSheet(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(
+                                        AppRadius.borderRadius16),
+                                    topRight: Radius.circular(
+                                        AppRadius.borderRadius16),
+                                  ),
+                                ),
                                 context: context,
                                 builder: (context) {
-                                  return Container(
-                                    decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(
-                                          AppRadius.borderRadius16),
-                                      topRight: Radius.circular(
-                                          AppRadius.borderRadius16),
-                                    )),
+                                  return ContactAdminDialog(
+                                    title: 'Are you experiencing issues?',
+                                    subtitle:
+                                        'You can reach out to your admin on',
+                                    firstText: 'Call',
+                                    secondText: 'Whatsapp',
+                                    onCallTap: () => makePhoneCall(phone),
+                                    onWhatsappTap: () async => openwhatsapp(
+                                        context,
+                                        phone,
+                                        'Hello ${clientAccountInfo.name}, \n\nI\'m experiencing an issue and I need an assistance.'),
                                   );
                                 });
                           },
