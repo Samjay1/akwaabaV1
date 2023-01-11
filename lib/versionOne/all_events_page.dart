@@ -33,7 +33,7 @@ class _AllEventsPageState extends State<AllEventsPage> {
   final TextEditingController _controllerSearch = TextEditingController();
 
   int listType = 0; //0= events, 1 = meetings
-  int selectedEventType = -1;
+  int selectedEventType = 0;
   SharedPreferences? prefs;
   var memberToken;
 
@@ -100,34 +100,37 @@ class _AllEventsPageState extends State<AllEventsPage> {
             ),
 
             Container(
+              padding: EdgeInsets.only(right: 12.0),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(width: 0.0, color: Colors.grey.shade400)),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 0.0, color: Colors.grey.shade400),
+              ),
               child: Row(
-                children: List.generate(2, (index) {
-                  return Expanded(
-                    child: Row(
-                      children: [
-                        Row(
-                          children: [
-                            Radio(
-                                activeColor: primaryColor,
-                                value: index,
-                                groupValue: selectedEventType,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    selectedEventType = index;
-                                  });
-                                }),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(index == 0 ? "Events" : "Meetings"),
-                          ],
-                        ),
-                      ],
-                    ),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(3, (index) {
+                  return Row(
+                    children: [
+                      Radio(
+                          activeColor: primaryColor,
+                          value: index,
+                          groupValue: selectedEventType,
+                          onChanged: (int? value) {
+                            setState(() {
+                              selectedEventType = index;
+                            });
+                          }),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        index == 0
+                            ? 'All'
+                            : index == 1
+                                ? "Events"
+                                : "Meetings",
+                      ),
+                    ],
                   );
                 }),
               ),

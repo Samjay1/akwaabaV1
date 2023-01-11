@@ -7,7 +7,7 @@ import 'package:akwaaba/versionOne/attendance_history_page.dart';
 import 'package:akwaaba/versionOne/device_activation_request_page.dart';
 import 'package:akwaaba/versionOne/home_page.dart';
 import 'package:akwaaba/versionOne/login_page.dart';
-import 'package:akwaaba/screens/all_events_page.dart';
+import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/screens/akwaaba_modules.dart';
 import 'package:akwaaba/screens/web_admin_setup_page.dart';
 import 'package:akwaaba/versionOne/member_registration_page_individual.dart';

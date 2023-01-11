@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                       child: const TextShimmerItem(),
                     )
                   : const Text(
-                      "Current Meeting",
+                      "Today's Meetings",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
@@ -266,56 +266,56 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
               //----------------------------------------------------------------------
-              const SizedBox(
-                height: 12,
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(defaultRadius),
-                child: Theme(
-                  data: Theme.of(context)
-                      .copyWith(dividerColor: Colors.transparent),
-                  child: ExpansionTile(
-                    tilePadding: EdgeInsets.zero,
-                    backgroundColor: backgroundColor,
-                    collapsedBackgroundColor: backgroundColor,
-                    initiallyExpanded: true,
-                    title: const Text(
-                      "Upcoming",
-                      style: TextStyle(
-                        color: textColorPrimary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,
-                        fontFamily: "Lato",
-                      ),
-                    ),
-                    children: <Widget>[
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        width: MediaQuery.of(context).size.width,
-                        child: Consumer<AttendanceProvider>(
-                          builder: (context, data, child) {
-                            if (data.upcomingMeetings.isEmpty) {
-                              return const EmptyStateWidget(
-                                text:
-                                    'You currently have no upcoming \nmeetings at the moment!',
-                              );
-                            }
-                            return ListView.builder(
-                                itemCount: data.upcomingMeetings.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  var item = data.upcomingMeetings[index];
-                                  return upcomingEvents(
-                                    meetingEvent: item,
-                                  );
-                                });
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+              // const SizedBox(
+              //   height: 12,
+              // ),
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(defaultRadius),
+              //   child: Theme(
+              //     data: Theme.of(context)
+              //         .copyWith(dividerColor: Colors.transparent),
+              //     child: ExpansionTile(
+              //       tilePadding: EdgeInsets.zero,
+              //       backgroundColor: backgroundColor,
+              //       collapsedBackgroundColor: backgroundColor,
+              //       initiallyExpanded: true,
+              //       title: const Text(
+              //         "Upcoming",
+              //         style: TextStyle(
+              //           color: textColorPrimary,
+              //           fontWeight: FontWeight.w600,
+              //           fontSize: 19,
+              //           fontFamily: "Lato",
+              //         ),
+              //       ),
+              //       children: <Widget>[
+              //         SizedBox(
+              //           height: MediaQuery.of(context).size.height * 0.3,
+              //           width: MediaQuery.of(context).size.width,
+              //           child: Consumer<AttendanceProvider>(
+              //             builder: (context, data, child) {
+              //               if (data.upcomingMeetings.isEmpty) {
+              //                 return const EmptyStateWidget(
+              //                   text:
+              //                       'You currently have no upcoming \nmeetings at the moment!',
+              //                 );
+              //               }
+              //               return ListView.builder(
+              //                   itemCount: data.upcomingMeetings.length,
+              //                   shrinkWrap: true,
+              //                   itemBuilder: (context, index) {
+              //                     var item = data.upcomingMeetings[index];
+              //                     return upcomingEvents(
+              //                       meetingEvent: item,
+              //                     );
+              //                   });
+              //             },
+              //           ),
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
