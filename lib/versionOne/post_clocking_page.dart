@@ -506,7 +506,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                               border:
                                   Border.all(color: primaryColor, width: 1.2),
                               borderRadius: BorderRadius.circular(
-                                  AppDimen.borderRadius8)),
+                                  AppRadius.borderRadius8)),
                           child: Center(
                             child: Text(
                               'Clocking List',
@@ -545,7 +545,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                               border:
                                   Border.all(color: primaryColor, width: 1.2),
                               borderRadius: BorderRadius.circular(
-                                  AppDimen.borderRadius8)),
+                                  AppRadius.borderRadius8)),
                           child: Center(
                             child: Text(
                               'Clocked List',
@@ -1107,7 +1107,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                     decoration: BoxDecoration(
                       color: fillColor,
                       borderRadius:
-                          BorderRadius.circular(AppDimen.borderRadius8),
+                          BorderRadius.circular(AppRadius.borderRadius8),
                     ),
                     child: const Text(
                       'Clear',
@@ -1122,7 +1122,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
             Expanded(
               child: CustomElevatedButton(
                   label: "Filter",
-                  radius: AppDimen.borderRadius8,
+                  radius: AppRadius.borderRadius8,
                   function: () {
                     postClockingProvider.validateFilterFields(context);
                     if (postClockingProvider.loading) {

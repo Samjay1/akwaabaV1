@@ -12,7 +12,7 @@ class TagWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 7.0),
       decoration: BoxDecoration(
         color: color!.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(AppDimen.borderRadius8),
+        borderRadius: BorderRadius.circular(AppRadius.borderRadius8),
       ),
       child: Text(
         text!,

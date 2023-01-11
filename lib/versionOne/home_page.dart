@@ -923,7 +923,7 @@ class _HomePageState extends State<HomePage> {
                         elevation: 0.0,
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                              BorderRadius.circular(AppDimen.borderRadius16),
+                              BorderRadius.circular(AppRadius.borderRadius16),
                         ),
                       ),
                       onPressed: () {
@@ -983,7 +983,7 @@ class _HomePageState extends State<HomePage> {
                               elevation: 0.0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
-                                    AppDimen.borderRadius16),
+                                    AppRadius.borderRadius16),
                               ),
                             ),
                             onPressed: () {
@@ -1073,7 +1073,7 @@ class _HomePageState extends State<HomePage> {
                             elevation: 0.0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
-                                  AppDimen.borderRadius16),
+                                  AppRadius.borderRadius16),
                             ),
                           ),
                           onPressed: () {

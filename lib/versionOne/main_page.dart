@@ -1,3 +1,5 @@
+import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
@@ -369,12 +371,14 @@ class _MainPageState extends State<MainPage> {
                           function: () {
                             Navigator.pop(context);
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const WebViewPage(
-                                        url:
-                                            'https://fees.akwaabasoftware.com/api/dashboard/',
-                                        title: 'Account Subscription')));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url:
+                                        'https://fees.akwaabasoftware.com/api/dashboard/',
+                                    title: 'Account Subscription'),
+                              ),
+                            );
                           },
                         ),
 
@@ -506,27 +510,35 @@ class _MainPageState extends State<MainPage> {
                     return ListView(
                       physics: const BouncingScrollPhysics(),
                       children: [
-                        // drawerItemView(title: "My Account", iconData: Icons.person_outline,
-                        //     function: (){
-                        //       Navigator.pop(context);//close the drawer
-                        //       Navigator.push(context, MaterialPageRoute(builder: (_)=>const
-                        //       MyAccountPage()));
-                        //     },index: 8),
-
                         drawerItemView(
-                          title: "Attendance History",
-                          iconData: Icons.history,
+                          title: "View Members",
+                          iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context); //close the drawer
+                            Navigator.pop(context);
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const AttendanceHistoryPage()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: '', title: 'View Members'),
+                              ),
+                            );
                           },
-                          index: 8,
                         ),
-
+                        drawerItemView(
+                          title: "Update Profile",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.akwaabaProfileUrl,
+                                    title: 'Update Profile'),
+                              ),
+                            );
+                          },
+                        ),
                         drawerItemView(
                           title: "Attendance Report",
                           iconData: Icons.bar_chart,
@@ -538,19 +550,99 @@ class _MainPageState extends State<MainPage> {
                                         const AttendanceReportPage()));
                           },
                         ),
-
+                        drawerItemView(
+                          title: "Attendance History",
+                          iconData: Icons.history,
+                          function: () {
+                            Navigator.pop(context); //close the drawer
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AttendanceHistoryPage(),
+                              ),
+                            );
+                          },
+                          index: 8,
+                        ),
                         drawerItemView(
                           title: "Request Device Activation",
                           iconData: Icons.phone_android,
                           function: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const DeviceActivationRequestPage()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    const DeviceActivationRequestPage(),
+                              ),
+                            );
                           },
                         ),
-
+                        drawerItemView(
+                          title: "Akwaaba Messenger",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.akwaabaMessengerUrl,
+                                    title: 'Akwaaba Messenger'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Make Payment",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.akwaabaPaymentUrl,
+                                    title: 'Make Payment'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Student Account",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.akwaabaEduUrl,
+                                    title: 'Student Account'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Contact Admin",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            //TODO: show popup with call and whatsapp buttons
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                    decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(
+                                          AppRadius.borderRadius16),
+                                      topRight: Radius.circular(
+                                          AppRadius.borderRadius16),
+                                    )),
+                                  );
+                                });
+                          },
+                        ),
                         drawerItemView(
                             title: "Log out",
                             iconData: Icons.logout_rounded,
@@ -620,7 +712,7 @@ class _MainPageState extends State<MainPage> {
       required VoidCallback function,
       int? index}) {
     //index is not relevant, you can ignore it
-    return GestureDetector(
+    return InkWell(
       onTap: function,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

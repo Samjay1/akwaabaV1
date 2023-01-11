@@ -431,7 +431,7 @@ class _ClockingPageState extends State<ClockingPage> {
                               border:
                                   Border.all(color: primaryColor, width: 1.2),
                               borderRadius: BorderRadius.circular(
-                                  AppDimen.borderRadius8)),
+                                  AppRadius.borderRadius8)),
                           child: Center(
                             child: Text(
                               'Clocking List',
@@ -470,7 +470,7 @@ class _ClockingPageState extends State<ClockingPage> {
                               border:
                                   Border.all(color: primaryColor, width: 1.2),
                               borderRadius: BorderRadius.circular(
-                                  AppDimen.borderRadius8)),
+                                  AppRadius.borderRadius8)),
                           child: Center(
                             child: Text(
                               'Clocked List',
@@ -957,7 +957,7 @@ class _ClockingPageState extends State<ClockingPage> {
                     decoration: BoxDecoration(
                       color: fillColor,
                       borderRadius:
-                          BorderRadius.circular(AppDimen.borderRadius8),
+                          BorderRadius.circular(AppRadius.borderRadius8),
                     ),
                     child: const Text(
                       'Clear',
@@ -972,7 +972,7 @@ class _ClockingPageState extends State<ClockingPage> {
             Expanded(
               child: CustomElevatedButton(
                   label: "Filter",
-                  radius: AppDimen.borderRadius8,
+                  radius: AppRadius.borderRadius8,
                   function: () {
                     clockingProvider.validateFilterFields();
                     if (clockingProvider.loading) {
