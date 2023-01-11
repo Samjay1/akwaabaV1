@@ -172,10 +172,10 @@ class _HomePageState extends State<HomePage> {
                           ? Consumer<ClientProvider>(
                               builder: (context, data, child) {
                               return adminHeaderView(
-                                firstName: data.getUser?.firstName,
-                                surName: data.getUser?.surName,
-                                userId: data.getUser?.email,
-                                profileImage: data.getUser?.profilePicture,
+                                firstName: data.getUser?.applicantFirstname,
+                                surName: data.getUser?.applicantSurname,
+                                userId: data.getUser?.applicantEmail,
+                                profileImage: data.adminProfile?.profilePicture,
                               );
                             })
                           : const Text("Unknown User type"),

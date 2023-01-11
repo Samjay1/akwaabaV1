@@ -50,7 +50,8 @@ class UserApi {
         //save admin profile
         if (decodedResponse['user'] != null) {
           SharedPrefs().saveAdminInfo(
-              adminProfile: AdminProfile.fromJson(decodedResponse['user']));
+            adminProfile: AdminProfile.fromJson(decodedResponse['user']),
+          );
         }
 
         // debugPrint('FULL CLIENT INFO $clientToken');

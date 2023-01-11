@@ -18,6 +18,7 @@ class ClientAccountInfo {
   String? subscriptionDate;
   String? subscriptionFee;
   String? logo;
+  String? profilePicture;
   int? status;
   int? archive;
   AccountCategory? accountCategory;

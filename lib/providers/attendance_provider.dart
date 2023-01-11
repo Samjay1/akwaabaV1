@@ -83,6 +83,7 @@ class AttendanceProvider extends ChangeNotifier {
         context,
         memberToken,
       );
+      debugPrint("TODAY Meeting: ${_todayMeetingEventList.length}");
       if (_todayMeetingEventList.isNotEmpty) {
         for (var meeting in _todayMeetingEventList) {
           await checkClockedMeetings(

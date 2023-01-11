@@ -2,6 +2,7 @@ import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/client_model.dart';
+import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -17,11 +18,13 @@ class ClientProvider extends ChangeNotifier {
   String? _token;
   bool _showLoginProgressIndicator = false;
   AdminProfile? _adminProfile;
+  Branch? _branch;
   bool _loading = false;
 
   bool get loading => _loading;
   get adminProfile => _adminProfile;
   get getUser => _user;
+  get branch => _branch;
   get showLoginProgressIndicator => _showLoginProgressIndicator;
   get clientToken => _token;
 
@@ -81,7 +84,24 @@ class ClientProvider extends ChangeNotifier {
       SharedPrefs().setUserType(userType: "admin");
       SharedPrefs()
           .saveLoginCredentials(emailOrPhone: phoneEmail, password: password);
+      getAdminBranch(context: context);
+    } catch (err) {
+      setLoading(false);
+      debugPrint('Error: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
 
+  // get branch of the admin
+  Future<void> getAdminBranch({required BuildContext context}) async {
+    try {
+      var profile = await SharedPrefs().getAdminProfile();
+      _branch = await MemberAPI().getBranch(
+        branchId: profile!.branchId,
+        //adminProfile.branchId!,
+      );
+      debugPrint('Branch: ${_branch!.name}');
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
         context,
@@ -91,7 +111,7 @@ class ClientProvider extends ChangeNotifier {
       );
     } catch (err) {
       setLoading(false);
-      debugPrint('Error: ${err.toString()}');
+      debugPrint('Error Group: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
