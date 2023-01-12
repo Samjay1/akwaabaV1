@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import '../components/custom_cached_image_widget.dart';
 import '../models/general/abstractGroup.dart';
 import '../models/general/abstractModel.dart';
 import '../models/general/abstractSubGroup.dart';
@@ -25,7 +26,9 @@ import '../models/general/region.dart';
 
 class MemberRegistrationPageIndividual extends StatefulWidget {
   final clientID;
-  const MemberRegistrationPageIndividual({required this.clientID, Key? key}) : super(key: key);
+  final clientName;
+  final clientLogo;
+  const MemberRegistrationPageIndividual({required this.clientID,this.clientName,this.clientLogo, Key? key}) : super(key: key);
 
   @override
   State<MemberRegistrationPageIndividual> createState() =>
@@ -268,6 +271,36 @@ class _MemberRegistrationPageIndividualState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Container(
+              child:Column(
+                children: [
+                  Container(
+                    child: widget.clientLogo != null
+                        ? Align(
+                      child: CustomCachedImageWidget(
+                        url: widget.clientLogo,
+                        height: 100,
+                      ),
+                    )
+                        : defaultProfilePic(height: 100),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "${widget.clientName}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 13,
+                  ),
+                ],
+              )
+            ),
             Text(
               currentIndex == 0
                   ? "Bio Data"

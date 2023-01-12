@@ -862,7 +862,7 @@ class MemberAPI {
 
   // REGISTRATION CODE
 
-  static Future<String?> searchRegCode({required var regCode}) async {
+  static Future<dynamic?> searchRegCode({required var regCode}) async {
 
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
@@ -873,7 +873,14 @@ class MemberAPI {
         var decodedresponse = jsonDecode(response.body);
         print("searchRegCode success: $decodedresponse");
         var clientID = decodedresponse['data']['clientId'];
-        return clientID;
+        var clientLogo = decodedresponse['data']['clientInfo']['logo'];
+        var clientName = decodedresponse['data']['clientInfo']['name'];
+        var clientInfo = {
+          'clientID':clientID,
+          'clientLogo':clientLogo,
+          'clientName':clientName
+        };
+        return clientInfo;
       } else {
         print('searchRegCode error ${jsonDecode(response.body)}');
         return null;

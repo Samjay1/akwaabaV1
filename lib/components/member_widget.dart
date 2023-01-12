@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../screens/my_account_page.dart';
+import '../versionOne/my_account_page.dart';
 import '../utils/widget_utils.dart';
 import '../versionOne/member_account_page.dart';
 

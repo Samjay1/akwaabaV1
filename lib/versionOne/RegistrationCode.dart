@@ -35,10 +35,14 @@ class RegistrationCode extends StatelessWidget {
                 MemberAPI.searchRegCode(regCode: regCode).
                 then((value){
                   if(value !=null){
+                      var clientID = value['clientID'];
+                      var clientLogo  = value['clientLogo'];
+                      var clientName = value['clientName'];
+
                     ScaffoldMessenger.of(context)
                         .showSnackBar(const SnackBar(content: Text('Registration Code has been accepted')));
-                    debugPrint('clientID = $value');
-                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageIndividual(clientID: value,),));
+                    debugPrint('clientID = $clientID, clientLogo = $clientLogo , clientName = $clientName');
+                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageIndividual(clientID: clientID,clientLogo:clientLogo,clientName:clientName),));
                   }else{
                     showErrorSnackBar(context, "Please a valid Registration Code");
                   }
