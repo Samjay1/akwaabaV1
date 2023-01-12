@@ -222,6 +222,15 @@ class PostClockingProvider extends ChangeNotifier {
       );
       if (_pastMeetingEvents.isNotEmpty) {
         selectedPastMeetingEvent = _pastMeetingEvents[0];
+      } else {
+        showInfoDialog(
+          'ok',
+          context: _context!,
+          title: 'Sorry!',
+          content:
+              'No meetings/events were held on this date. \nPlease try again with another date',
+          onTap: () => Navigator.pop(_context!),
+        );
       }
       getGenders();
       getGroups();

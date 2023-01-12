@@ -1,7 +1,7 @@
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/attendance_provider.dart';
+import 'package:akwaaba/providers/event_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +16,7 @@ class ExcuseInputPage extends StatelessWidget {
   final TextEditingController _controllerExcuse = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    var attendanceProvider = context.watch<AttendanceProvider>();
+    var eventProvider = context.watch<EventProvider>();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Attendance Excuse"),
@@ -38,7 +38,7 @@ class ExcuseInputPage extends StatelessWidget {
                 height: 16,
               ),
               FormTextField(
-                controller: attendanceProvider.excuseTEC,
+                controller: eventProvider.excuseTEC,
                 maxLength: 256,
                 showMaxLength: true,
                 minLines: 8,
@@ -50,8 +50,8 @@ class ExcuseInputPage extends StatelessWidget {
               ),
               CustomElevatedButton(
                 label: "Submit",
-                showProgress: attendanceProvider.submitting,
-                function: () async => attendanceProvider.validateExcuseField(
+                showProgress: eventProvider.submitting,
+                function: () async => eventProvider.validateExcuseField(
                   context: context,
                 ),
               )

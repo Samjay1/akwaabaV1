@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
-class AttendanceProvider extends ChangeNotifier {
+class EventProvider extends ChangeNotifier {
   String? _memberToken;
   bool _loading = false;
   bool _clocking = false;

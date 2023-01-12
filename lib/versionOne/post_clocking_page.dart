@@ -785,7 +785,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                         "Selected DateTime: ${postClockingProvider.selectedDate!.toIso8601String().substring(0, 10)}");
                   });
                   // if admin is main branch admin
-                  if (context.read<ClientProvider>().getUser.branchID == 1) {
+                  if (context.read<ClientProvider>().branch.id == 1) {
                     postClockingProvider.getBranches();
                   }
                   // admin is just a branch admin
@@ -797,7 +797,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
         ),
         Consumer<ClientProvider>(
           builder: (context, data, child) {
-            return data.getUser.branchID == AppConstants.mainAdmin
+            return data.branch.id == AppConstants.mainAdmin
                 ? LabelWidgetContainer(
                     label: "Branch",
                     child: Container(
@@ -864,7 +864,9 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
               ),
-              hint: const Text('Select Meeting'),
+              hint: const Text(
+                'Select Meeting',
+              ),
               decoration: const InputDecoration(border: InputBorder.none),
               value: postClockingProvider.selectedPastMeetingEvent,
               icon: Icon(

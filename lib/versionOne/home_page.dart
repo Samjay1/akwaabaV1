@@ -11,7 +11,7 @@ import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/attendance_provider.dart';
+import 'package:akwaaba/providers/event_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
 
   late MemberProvider memberProvider;
 
-  late AttendanceProvider attendanceProvider;
+  late EventProvider eventProvider;
 
   @override
   void initState() {
@@ -83,13 +83,13 @@ class _HomePageState extends State<HomePage> {
       // print('HOMEPAGE member id ${memberProfile.id}');
 
       Future.delayed(Duration.zero, () {
-        if (Provider.of<AttendanceProvider>(context, listen: false)
+        if (Provider.of<EventProvider>(context, listen: false)
                 .upcomingMeetings
                 .isEmpty ||
-            Provider.of<AttendanceProvider>(context, listen: false)
+            Provider.of<EventProvider>(context, listen: false)
                 .todayMeetings
                 .isEmpty) {
-          Provider.of<AttendanceProvider>(context, listen: false)
+          Provider.of<EventProvider>(context, listen: false)
               .getUpcomingMeetingEvents(
             memberToken: memberToken,
             context: context,
@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
           debugPrint('Loading fresh data:...');
         }
         setState(() {});
-        Provider.of<AttendanceProvider>(context, listen: false)
+        Provider.of<EventProvider>(context, listen: false)
             .getUpcomingMeetingEvents(
           memberToken: memberToken,
           context: context,
@@ -110,13 +110,13 @@ class _HomePageState extends State<HomePage> {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('token');
       Future.delayed(Duration.zero, () {
-        if (Provider.of<AttendanceProvider>(context, listen: false)
+        if (Provider.of<EventProvider>(context, listen: false)
                 .upcomingMeetings
                 .isEmpty ||
-            Provider.of<AttendanceProvider>(context, listen: false)
+            Provider.of<EventProvider>(context, listen: false)
                 .todayMeetings
                 .isEmpty) {
-          Provider.of<AttendanceProvider>(context, listen: false)
+          Provider.of<EventProvider>(context, listen: false)
               .getUpcomingMeetingEvents(
             memberToken: memberToken,
             context: context,
@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    attendanceProvider = context.watch<AttendanceProvider>();
+    eventProvider = context.watch<EventProvider>();
 
     var subscriptionFee = 0;
     var subscriptionDuration = 0;
@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                 height: 24,
               ),
 
-              attendanceProvider.loading
+              eventProvider.loading
                   ? Shimmer.fromColors(
                       baseColor: greyColorShade300,
                       highlightColor: greyColorShade100,
@@ -207,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                 height: 36,
               ),
 
-              attendanceProvider.loading
+              eventProvider.loading
                   ? Shimmer.fromColors(
                       baseColor: greyColorShade300,
                       highlightColor: greyColorShade100,
@@ -225,7 +225,7 @@ class _HomePageState extends State<HomePage> {
 
               //----------------------------------------------------------------------
 
-              attendanceProvider.loading
+              eventProvider.loading
                   ? Shimmer.fromColors(
                       baseColor: greyColorShade300,
                       highlightColor: greyColorShade100,
@@ -237,11 +237,11 @@ class _HomePageState extends State<HomePage> {
                     )
                   : RefreshIndicator(
                       onRefresh: () async =>
-                          await attendanceProvider.getUpcomingMeetingEvents(
+                          await eventProvider.getUpcomingMeetingEvents(
                         memberToken: memberToken,
                         context: context,
                       ),
-                      child: Consumer<AttendanceProvider>(
+                      child: Consumer<EventProvider>(
                         builder: (context, data, child) {
                           if (data.todayMeetings.isEmpty) {
                             return const EmptyStateWidget(
@@ -996,7 +996,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onPressed: () {
-                        Provider.of<AttendanceProvider>(context, listen: false)
+                        Provider.of<EventProvider>(context, listen: false)
                             .setSelectedMeeting(meetingEventModel);
 
                         if (meetingEventModel.outTime != null) {
@@ -1022,7 +1022,7 @@ class _HomePageState extends State<HomePage> {
                                     '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you are within the meeting premises to continue.',
                                 onConfirmTap: () {
                                   Navigator.pop(context);
-                                  Provider.of<AttendanceProvider>(context,
+                                  Provider.of<EventProvider>(context,
                                           listen: false)
                                       .getMeetingCoordinates(
                                     context: context,
@@ -1056,8 +1056,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             onPressed: () {
-                              Provider.of<AttendanceProvider>(context,
-                                      listen: false)
+                              Provider.of<EventProvider>(context, listen: false)
                                   .setSelectedMeeting(meetingEventModel);
 
                               if (meetingEventModel.startBreak != null &&
@@ -1102,7 +1101,7 @@ class _HomePageState extends State<HomePage> {
                                       //'${meeting.startBreak != null ? 'Are you sure you want to end?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
                                       onConfirmTap: () {
                                         Navigator.pop(context);
-                                        Provider.of<AttendanceProvider>(context,
+                                        Provider.of<EventProvider>(context,
                                                 listen: false)
                                             .getMeetingCoordinates(
                                           context: context,
@@ -1146,8 +1145,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           onPressed: () {
-                            Provider.of<AttendanceProvider>(context,
-                                    listen: false)
+                            Provider.of<EventProvider>(context, listen: false)
                                 .setSelectedMeeting(meetingEventModel);
                             showModalBottomSheet(
                               context: context,
