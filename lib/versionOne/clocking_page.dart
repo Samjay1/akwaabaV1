@@ -6,6 +6,7 @@ import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
+import 'package:akwaaba/components/pagination_loader.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
@@ -23,6 +24,7 @@ import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -67,9 +69,17 @@ class _ClockingPageState extends State<ClockingPage> {
 
   late ClockingProvider clockingProvider;
 
+  bool isShowTopView = true;
+
+  //late ScrollController _absenteeScrollController;
+
   @override
   void initState() {
     _controller = ScrollController();
+
+    // _absenteeScrollController = ScrollController()
+    //   ..addListener(
+    //       Provider.of<ClockingProvider>(context, listen: false).loadMore);
 
     Provider.of<ClockingProvider>(context, listen: false)
         .setCurrentContext(context);
@@ -80,9 +90,7 @@ class _ClockingPageState extends State<ClockingPage> {
         meetingEventModel: widget.meetingEventModel,
       );
       // check if admin is main branch admin or not
-      if (Provider.of<ClientProvider>(context, listen: false)
-              .getUser
-              .branchID ==
+      if (Provider.of<ClientProvider>(context, listen: false).branch.id ==
           AppConstants.mainAdmin) {
         Provider.of<ClockingProvider>(context, listen: false).getBranches();
       } else {
@@ -92,6 +100,30 @@ class _ClockingPageState extends State<ClockingPage> {
       setState(() {});
     });
     super.initState();
+  }
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification.depth == 0) {
+      if (notification is UserScrollNotification) {
+        final UserScrollNotification userScroll = notification;
+        switch (userScroll.direction) {
+          case ScrollDirection.forward:
+            setState(() {
+              isShowTopView = true;
+            });
+
+            break;
+          case ScrollDirection.reverse:
+            setState(() {
+              isShowTopView = false;
+            });
+            break;
+          case ScrollDirection.idle:
+            break;
+        }
+      }
+    }
+    return false;
   }
 
   @override
@@ -112,452 +144,459 @@ class _ClockingPageState extends State<ClockingPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () => clockingProvider.refreshList(),
-        child: Container(
+        child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
-          child: SingleChildScrollView(
-            controller: _controller,
-            //physics: const BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                filterButton(),
-
-                const SizedBox(
-                  height: 24,
-                ),
-
-                // Row(
-                //   children: [
-                //const Expanded(child:
-                CupertinoSearchTextField(
-                  onChanged: (val) {
-                    setState(() {
-                      if (clockingListState) {
-                        // search absentees by name
-                        clockingProvider.searchAbsenteesByName(searchText: val);
-                      } else {
-                        // search atendees by name
-                        clockingProvider.searchAttendeesByName(searchText: val);
-                      }
-                    });
-                  },
-                ),
-
-                const SizedBox(
-                  height: 12,
-                ),
-
-                CupertinoSearchTextField(
-                  placeholder: "Enter ID",
-                  onChanged: (val) {
-                    setState(() {
-                      if (clockingListState) {
-                        // search absentees by id
-                        clockingProvider.searchAbsenteesById(searchText: val);
-                      } else {
-                        // search atendees by id
-                        clockingProvider.searchAttendeesById(searchText: val);
-                      }
-                    });
-                  },
-                ),
-
-                SizedBox(
-                  height: displayHeight(context) * 0.02,
-                ),
-
-                const Divider(
-                  height: 2,
-                  color: Colors.orange,
-                ),
-
-                SizedBox(
-                  height: displayHeight(context) * 0.01,
-                ),
-
-                LabelWidgetContainer(
-                  label: "",
-                  child: Row(
-                    children: [
-                      const Text("Bulk Clock"),
-                      const SizedBox(
-                        width: 24,
-                      ),
-                      Expanded(
-                        child: CustomOutlinedButton(
-                          label: "In",
-                          mycolor: Colors.green,
-                          radius: 5,
-                          function: () {
-                            if (clockingProvider.selectedAbsentees.isEmpty) {
-                              showInfoDialog(
-                                'ok',
-                                context: context,
-                                title: 'Sorry!',
-                                content:
-                                    'Please select members to clock-in on their behalf',
-                                onTap: () => Navigator.pop(context),
-                              );
-                            } else {
-                              // perform bulk clock in
-                              showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                  insetPadding: const EdgeInsets.all(10),
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 0,
-                                  content: ConfirmDialog(
-                                    title: 'Clock In',
-                                    content:
-                                        'Are you sure you want to perform \nthis bulk operation?',
-                                    onConfirmTap: () {
-                                      Navigator.pop(context);
-                                      clockingProvider.clockMemberIn(
-                                        context: context,
-                                        attendee: null,
-                                        time: null,
-                                      );
-                                    },
-                                    onCancelTap: () => Navigator.pop(context),
-                                    confirmText: 'Yes',
-                                    cancelText: 'Cancel',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                        child: CustomOutlinedButton(
-                          label: "Out",
-                          mycolor: Colors.red,
-                          radius: 5,
-                          function: () {
-                            if (clockingProvider.selectedAttendees.isEmpty) {
-                              showInfoDialog(
-                                'ok',
-                                context: context,
-                                title: 'Sorry!',
-                                content:
-                                    'Please select members to clock-out on their behalf',
-                                onTap: () => Navigator.pop(context),
-                              );
-                            } else {
-                              // perform bulk clock out
-                              showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                  insetPadding: const EdgeInsets.all(10),
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 0,
-                                  content: ConfirmDialog(
-                                    title: 'Clock Out',
-                                    content:
-                                        'Are you sure you want to perform \nthis bulk operation?',
-                                    onConfirmTap: () {
-                                      Navigator.pop(context);
-                                      clockingProvider.clockMemberOut(
-                                        context: context,
-                                        attendee: null,
-                                        time: null,
-                                      );
-                                    },
-                                    onCancelTap: () => Navigator.pop(context),
-                                    confirmText: 'Yes',
-                                    cancelText: 'Cancel',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 4,
-                ),
-
-                widget.meetingEventModel.hasBreakTime!
-                    ? LabelWidgetContainer(
-                        label: "",
-                        child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              isShowTopView
+                  ? SizedBox(
+                      height: displayHeight(context) * 0.40,
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
                           children: [
-                            const Text("Bulk Break"),
+                            filterButton(),
                             const SizedBox(
-                              width: 24,
+                              height: 12,
                             ),
-                            Expanded(
-                              child: CustomElevatedButton(
-                                label: "Start",
-                                radius: 5,
-                                labelSize: 15,
-                                textColor: whiteColor,
-                                color: Colors.green,
-                                function: () {
-                                  if (clockingProvider
-                                      .selectedAttendees.isEmpty) {
-                                    showInfoDialog(
-                                      'ok',
-                                      context: context,
-                                      title: 'Sorry!',
-                                      content:
-                                          'Please select members to start break on their behalf',
-                                      onTap: () => Navigator.pop(context),
-                                    );
+                            CupertinoSearchTextField(
+                              onChanged: (val) {
+                                setState(() {
+                                  if (clockingListState) {
+                                    // search absentees by name
+                                    clockingProvider.searchAbsenteesByName(
+                                        searchText: val);
                                   } else {
-                                    // perform bulk start break
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                        insetPadding: const EdgeInsets.all(10),
-                                        backgroundColor: Colors.transparent,
-                                        elevation: 0,
-                                        content: ConfirmDialog(
-                                          title: 'Start Break',
-                                          content:
-                                              'Are you sure you want to perform \nthis bulk operation?',
-                                          onConfirmTap: () {
-                                            Navigator.pop(context);
-                                            clockingProvider.startMeetingBreak(
-                                              context: context,
-                                              attendee: null,
-                                              time: null,
-                                            );
-                                          },
-                                          onCancelTap: () =>
-                                              Navigator.pop(context),
-                                          confirmText: 'Yes',
-                                          cancelText: 'Cancel',
-                                        ),
-                                      ),
-                                    );
+                                    // search atendees by name
+                                    clockingProvider.searchAttendeesByName(
+                                        searchText: val);
                                   }
-                                },
-                              ),
+                                });
+                              },
                             ),
                             const SizedBox(
-                              width: 16,
+                              height: 12,
                             ),
-                            Expanded(
-                              child: CustomElevatedButton(
-                                label: "End",
-                                labelSize: 15,
-                                color: primaryColor,
-                                radius: 5,
-                                function: () {
-                                  if (clockingProvider
-                                      .selectedAttendees.isEmpty) {
-                                    showInfoDialog(
-                                      'ok',
-                                      context: context,
-                                      title: 'Sorry!',
-                                      content:
-                                          'Please select members to end break on their behalf',
-                                      onTap: () => Navigator.pop(context),
-                                    );
+                            CupertinoSearchTextField(
+                              placeholder: "Enter ID",
+                              onChanged: (val) {
+                                setState(() {
+                                  if (clockingListState) {
+                                    // search absentees by id
+                                    clockingProvider.searchAbsenteesById(
+                                        searchText: val);
                                   } else {
-                                    // perform bulk end break
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                        insetPadding: const EdgeInsets.all(10),
-                                        backgroundColor: Colors.transparent,
-                                        elevation: 0,
-                                        content: ConfirmDialog(
-                                          title: 'End Break',
-                                          content:
-                                              'Are you sure you want to perform \nthis bulk operation?',
-                                          onConfirmTap: () {
-                                            Navigator.pop(context);
-                                            clockingProvider.endMeetingBreak(
-                                              context: context,
-                                              attendee: null,
-                                              time: null,
-                                            );
-                                          },
-                                          onCancelTap: () =>
-                                              Navigator.pop(context),
-                                          confirmText: 'Yes',
-                                          cancelText: 'Cancel',
-                                        ),
-                                      ),
-                                    );
+                                    // search atendees by id
+                                    clockingProvider.searchAttendeesById(
+                                        searchText: val);
                                   }
-                                },
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            const Divider(
+                              height: 2,
+                              color: Colors.orange,
+                            ),
+                            LabelWidgetContainer(
+                              label: "",
+                              child: Row(
+                                children: [
+                                  const Text("Bulk Clock"),
+                                  const SizedBox(
+                                    width: 24,
+                                  ),
+                                  Expanded(
+                                    child: CustomOutlinedButton(
+                                      label: "In",
+                                      mycolor: Colors.green,
+                                      radius: 5,
+                                      function: () {
+                                        if (clockingProvider
+                                            .selectedAbsentees.isEmpty) {
+                                          showInfoDialog(
+                                            'ok',
+                                            context: context,
+                                            title: 'Sorry!',
+                                            content:
+                                                'Please select members to clock-in on their behalf',
+                                            onTap: () => Navigator.pop(context),
+                                          );
+                                        } else {
+                                          // perform bulk clock in
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              insetPadding:
+                                                  const EdgeInsets.all(10),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              elevation: 0,
+                                              content: ConfirmDialog(
+                                                title: 'Clock In',
+                                                content:
+                                                    'Are you sure you want to perform \nthis bulk operation?',
+                                                onConfirmTap: () {
+                                                  Navigator.pop(context);
+                                                  clockingProvider
+                                                      .clockMemberIn(
+                                                    context: context,
+                                                    attendee: null,
+                                                    time: null,
+                                                  );
+                                                },
+                                                onCancelTap: () =>
+                                                    Navigator.pop(context),
+                                                confirmText: 'Yes',
+                                                cancelText: 'Cancel',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 16,
+                                  ),
+                                  Expanded(
+                                    child: CustomOutlinedButton(
+                                      label: "Out",
+                                      mycolor: Colors.red,
+                                      radius: 5,
+                                      function: () {
+                                        if (clockingProvider
+                                            .selectedAttendees.isEmpty) {
+                                          showInfoDialog(
+                                            'ok',
+                                            context: context,
+                                            title: 'Sorry!',
+                                            content:
+                                                'Please select members to clock-out on their behalf',
+                                            onTap: () => Navigator.pop(context),
+                                          );
+                                        } else {
+                                          // perform bulk clock out
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              insetPadding:
+                                                  const EdgeInsets.all(10),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              elevation: 0,
+                                              content: ConfirmDialog(
+                                                title: 'Clock Out',
+                                                content:
+                                                    'Are you sure you want to perform \nthis bulk operation?',
+                                                onConfirmTap: () {
+                                                  Navigator.pop(context);
+                                                  clockingProvider
+                                                      .clockMemberOut(
+                                                    context: context,
+                                                    attendee: null,
+                                                    time: null,
+                                                  );
+                                                },
+                                                onCancelTap: () =>
+                                                    Navigator.pop(context),
+                                                confirmText: 'Yes',
+                                                cancelText: 'Cancel',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
+                            ),
+                            widget.meetingEventModel.hasBreakTime!
+                                ? LabelWidgetContainer(
+                                    label: "",
+                                    child: Row(
+                                      children: [
+                                        const Text("Bulk Break"),
+                                        const SizedBox(
+                                          width: 24,
+                                        ),
+                                        Expanded(
+                                          child: CustomElevatedButton(
+                                            label: "Start",
+                                            radius: 5,
+                                            labelSize: 15,
+                                            textColor: whiteColor,
+                                            color: Colors.green,
+                                            function: () {
+                                              if (clockingProvider
+                                                  .selectedAttendees.isEmpty) {
+                                                showInfoDialog(
+                                                  'ok',
+                                                  context: context,
+                                                  title: 'Sorry!',
+                                                  content:
+                                                      'Please select members to start break on their behalf',
+                                                  onTap: () =>
+                                                      Navigator.pop(context),
+                                                );
+                                              } else {
+                                                // perform bulk start break
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                    insetPadding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    elevation: 0,
+                                                    content: ConfirmDialog(
+                                                      title: 'Start Break',
+                                                      content:
+                                                          'Are you sure you want to perform \nthis bulk operation?',
+                                                      onConfirmTap: () {
+                                                        Navigator.pop(context);
+                                                        clockingProvider
+                                                            .startMeetingBreak(
+                                                          context: context,
+                                                          attendee: null,
+                                                          time: null,
+                                                        );
+                                                      },
+                                                      onCancelTap: () =>
+                                                          Navigator.pop(
+                                                              context),
+                                                      confirmText: 'Yes',
+                                                      cancelText: 'Cancel',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 16,
+                                        ),
+                                        Expanded(
+                                          child: CustomElevatedButton(
+                                            label: "End",
+                                            labelSize: 15,
+                                            color: primaryColor,
+                                            radius: 5,
+                                            function: () {
+                                              if (clockingProvider
+                                                  .selectedAttendees.isEmpty) {
+                                                showInfoDialog(
+                                                  'ok',
+                                                  context: context,
+                                                  title: 'Sorry!',
+                                                  content:
+                                                      'Please select members to end break on their behalf',
+                                                  onTap: () =>
+                                                      Navigator.pop(context),
+                                                );
+                                              } else {
+                                                // perform bulk end break
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                    insetPadding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    elevation: 0,
+                                                    content: ConfirmDialog(
+                                                      title: 'End Break',
+                                                      content:
+                                                          'Are you sure you want to perform \nthis bulk operation?',
+                                                      onConfirmTap: () {
+                                                        Navigator.pop(context);
+                                                        clockingProvider
+                                                            .endMeetingBreak(
+                                                          context: context,
+                                                          attendee: null,
+                                                          time: null,
+                                                        );
+                                                      },
+                                                      onCancelTap: () =>
+                                                          Navigator.pop(
+                                                              context),
+                                                      confirmText: 'Yes',
+                                                      cancelText: 'Cancel',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            const Divider(
+                              height: 2,
+                              color: primaryColor,
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
                             ),
                           ],
                         ),
-                      )
-                    : const SizedBox(),
-
-                SizedBox(
-                  height: displayHeight(context) * 0.02,
-                ),
-                const Divider(
-                  height: 2,
-                  color: primaryColor,
-                ),
-                SizedBox(
-                  height: displayHeight(context) * 0.01,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            clockingListState = true;
-                            checkAll = false;
-                            clockingProvider.selectedAttendees.clear();
-                            debugPrint(
-                                '     clockingListState = $clockingListState');
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                              color: clockingListState
-                                  ? primaryColor
-                                  : Colors.transparent,
-                              border:
-                                  Border.all(color: primaryColor, width: 1.2),
-                              borderRadius: BorderRadius.circular(
-                                  AppRadius.borderRadius8)),
-                          child: Center(
-                            child: Text(
-                              'Clocking List',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w600,
-                                color: clockingListState
-                                    ? whiteColor
-                                    : primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: displayWidth(context) * 0.03,
-                    ),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            clockingListState = false;
-                            checkAll = false;
-                            clockingProvider.selectedAbsentees.clear();
-                            debugPrint(
-                                'clockingListState = $clockingListState');
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                              color: !clockingListState
-                                  ? primaryColor
-                                  : Colors.transparent,
-                              border:
-                                  Border.all(color: primaryColor, width: 1.2),
-                              borderRadius: BorderRadius.circular(
-                                  AppRadius.borderRadius8)),
-                          child: Center(
-                            child: Text(
-                              'Clocked List',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w600,
-                                color: !clockingListState
-                                    ? whiteColor
-                                    : primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(
-                  height: displayHeight(context) * 0.01,
-                ),
-
-                Row(
-                  children: [
-                    Checkbox(
-                      activeColor: primaryColor,
-                      shape: const CircleBorder(),
-                      value: checkAll,
-                      onChanged: (val) {
+                    )
+                  : const SizedBox(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
                         setState(() {
-                          checkAll = val!;
+                          clockingListState = true;
+                          checkAll = false;
+                          clockingProvider.selectedAttendees.clear();
+                          debugPrint(
+                              '     clockingListState = $clockingListState');
                         });
-
-                        if (clockingListState) {
-                          for (Attendee? absentee in absentees) {
-                            absentee!.selected = checkAll;
-                            if (absentee.selected!) {
-                              clockingProvider.selectedAbsentees.add(absentee);
-                            }
-                            if (!absentee.selected!) {
-                              clockingProvider.selectedAbsentees
-                                  .remove(absentee);
-                            }
-                            debugPrint(
-                                "Absentee: ${absentee.attendance!.memberId!.selected}");
-                          }
-
-                          debugPrint(
-                              "Selected Absentees: ${clockingProvider.selectedAbsentees.length}");
-                        } else {
-                          for (Attendee? attendee in attendees) {
-                            attendee!.selected = checkAll;
-                            if (attendee.selected!) {
-                              clockingProvider.selectedAttendees.add(attendee);
-                              debugPrint(
-                                  "Attendee: ${attendee.attendance!.memberId!.selected}");
-                            }
-                            if (!attendee.selected!) {
-                              clockingProvider.selectedAttendees
-                                  .remove(attendee);
-                            }
-                          }
-
-                          debugPrint(
-                              "Selected attendees: ${clockingProvider.selectedAttendees.length}");
-                        }
                       },
+                      child: Container(
+                        padding: const EdgeInsets.all(12.0),
+                        decoration: BoxDecoration(
+                            color: clockingListState
+                                ? primaryColor
+                                : Colors.transparent,
+                            border: Border.all(color: primaryColor, width: 1.2),
+                            borderRadius:
+                                BorderRadius.circular(AppRadius.borderRadius8)),
+                        child: Center(
+                          child: Text(
+                            'Clocking List',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  clockingListState ? whiteColor : primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    const Text("Select All")
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    width: displayWidth(context) * 0.03,
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          clockingListState = false;
+                          checkAll = false;
+                          clockingProvider.selectedAbsentees.clear();
+                          debugPrint('clockingListState = $clockingListState');
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(12.0),
+                        decoration: BoxDecoration(
+                            color: !clockingListState
+                                ? primaryColor
+                                : Colors.transparent,
+                            border: Border.all(color: primaryColor, width: 1.2),
+                            borderRadius:
+                                BorderRadius.circular(AppRadius.borderRadius8)),
+                        child: Center(
+                          child: Text(
+                            'Clocked List',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600,
+                              color: !clockingListState
+                                  ? whiteColor
+                                  : primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: displayHeight(context) * 0.01,
+              ),
+              Row(
+                children: [
+                  Checkbox(
+                    activeColor: primaryColor,
+                    shape: const CircleBorder(),
+                    value: checkAll,
+                    onChanged: (val) {
+                      setState(() {
+                        checkAll = val!;
+                      });
 
-                SizedBox(
-                  height: displayHeight(context) * 0.008,
-                ),
+                      if (clockingListState) {
+                        for (Attendee? absentee in absentees) {
+                          absentee!.selected = checkAll;
+                          if (absentee.selected!) {
+                            clockingProvider.selectedAbsentees.add(absentee);
+                          }
+                          if (!absentee.selected!) {
+                            clockingProvider.selectedAbsentees.remove(absentee);
+                          }
+                          debugPrint(
+                              "Absentee: ${absentee.attendance!.memberId!.selected}");
+                        }
 
-                const Divider(
-                  height: 2,
-                  color: Colors.orange,
-                ),
+                        debugPrint(
+                            "Selected Absentees: ${clockingProvider.selectedAbsentees.length}");
+                      } else {
+                        for (Attendee? attendee in attendees) {
+                          attendee!.selected = checkAll;
+                          if (attendee.selected!) {
+                            clockingProvider.selectedAttendees.add(attendee);
+                            debugPrint(
+                                "Attendee: ${attendee.attendance!.memberId!.selected}");
+                          }
+                          if (!attendee.selected!) {
+                            clockingProvider.selectedAttendees.remove(attendee);
+                          }
+                        }
 
-                const SizedBox(
-                  height: 12,
-                ),
-
-                clockingProvider.loading
-                    ? Shimmer.fromColors(
+                        debugPrint(
+                            "Selected attendees: ${clockingProvider.selectedAttendees.length}");
+                      }
+                    },
+                  ),
+                  const Text("Select All")
+                ],
+              ),
+              SizedBox(
+                height: displayHeight(context) * 0.008,
+              ),
+              const Divider(
+                height: 2,
+                color: Colors.orange,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              clockingProvider.loading
+                  ? Expanded(
+                      child: Shimmer.fromColors(
                         baseColor: greyColorShade300,
                         highlightColor: greyColorShade100,
                         child: ListView.builder(
@@ -565,95 +604,151 @@ class _ClockingPageState extends State<ClockingPage> {
                           itemBuilder: (_, __) => const EventShimmerItem(),
                           itemCount: 6,
                         ),
-                      )
-                    : clockingListState
-                        ? Column(
-                            children: absentees.isEmpty
-                                ? [
-                                    const EmptyStateWidget(
-                                      text: 'No absentees found!',
-                                    )
-                                  ]
-                                : List.generate(absentees.length, (index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (absentees[index]!.selected!) {
-                                            //remove it
-                                            absentees[index]!.selected = false;
-                                            clockingProvider.selectedAbsentees
-                                                .remove(absentees[index]);
-                                          } else {
-                                            absentees[index]!.selected = true;
-                                            clockingProvider.selectedAbsentees
-                                                .add(absentees[index]);
-                                          }
-                                          if (clockingProvider
-                                              .selectedAbsentees.isNotEmpty) {
-                                            itemHasBeenSelected = true;
-                                          } else {
-                                            itemHasBeenSelected = false;
-                                          }
-                                        });
-                                        debugPrint(
-                                            "Select Absentees: ${clockingProvider.selectedAbsentees.length}");
-                                      },
-                                      child: ClockingMemberItem(
-                                        absentee: absentees[index],
+                      ),
+                    )
+                  : clockingListState
+                      ? Expanded(
+                          child: absentees.isEmpty
+                              ? const EmptyStateWidget(
+                                  text: 'No absentees found!',
+                                )
+                              : Column(
+                                  children: [
+                                    NotificationListener<ScrollNotification>(
+                                      onNotification: _handleScrollNotification,
+                                      child: Expanded(
+                                        child: ListView.builder(
+                                            controller: clockingProvider
+                                                .absenteesScrollController,
+                                            itemCount: absentees.length,
+                                            shrinkWrap: true,
+                                            itemBuilder: (context, index) {
+                                              if (absentees.isEmpty) {
+                                                return const EmptyStateWidget(
+                                                  text: 'No absentees found!',
+                                                );
+                                              }
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (absentees[index]!
+                                                        .selected!) {
+                                                      //remove it
+                                                      absentees[index]!
+                                                          .selected = false;
+                                                      clockingProvider
+                                                          .selectedAbsentees
+                                                          .remove(
+                                                              absentees[index]);
+                                                    } else {
+                                                      absentees[index]!
+                                                          .selected = true;
+                                                      clockingProvider
+                                                          .selectedAbsentees
+                                                          .add(
+                                                              absentees[index]);
+                                                    }
+                                                    if (clockingProvider
+                                                        .selectedAbsentees
+                                                        .isNotEmpty) {
+                                                      itemHasBeenSelected =
+                                                          true;
+                                                    } else {
+                                                      itemHasBeenSelected =
+                                                          false;
+                                                    }
+                                                  });
+                                                  debugPrint(
+                                                      "Select Absentees: ${clockingProvider.selectedAbsentees.length}");
+                                                },
+                                                child: ClockingMemberItem(
+                                                  absentee: absentees[index],
+                                                ),
+                                              );
+                                            }),
                                       ),
-                                    );
-                                  }),
-                          )
-                        : Column(
-                            children: attendees.isEmpty
-                                ? [
-                                    const EmptyStateWidget(
-                                      text: 'No attendees found!',
-                                    )
-                                  ]
-                                : List.generate(
-                                    attendees.length,
-                                    (index) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          setState(
-                                            () {
-                                              if (attendees[index]!.selected!) {
-                                                //remove it
-                                                attendees[index]!.selected =
-                                                    false;
+                                    ),
+                                    if (clockingProvider.loadingMore)
+                                      const PaginationLoader(
+                                        loadingText: 'Loading. please wait...',
+                                      )
+                                  ],
+                                ),
+                        )
+                      : Expanded(
+                          child: attendees.isEmpty
+                              ? const EmptyStateWidget(
+                                  text: 'No attendees found!',
+                                )
+                              : Column(
+                                  children: [
+                                    Expanded(
+                                      child: NotificationListener<
+                                          ScrollNotification>(
+                                        onNotification:
+                                            _handleScrollNotification,
+                                        child: ListView.builder(
+                                            controller: clockingProvider
+                                                .attendeesScrollController,
+                                            shrinkWrap: true,
+                                            itemCount: attendees.length,
+                                            itemBuilder: (context, index) {
+                                              if (attendees.isEmpty) {
+                                                return const EmptyStateWidget(
+                                                  text: 'No attendees found!',
+                                                );
+                                              }
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  setState(
+                                                    () {
+                                                      if (attendees[index]!
+                                                          .selected!) {
+                                                        //remove it
+                                                        attendees[index]!
+                                                            .selected = false;
 
-                                                clockingProvider
-                                                    .selectedAttendees
-                                                    .remove(attendees[index]!);
-                                              } else {
-                                                attendees[index]!.selected =
-                                                    true;
-                                                clockingProvider
-                                                    .selectedAttendees
-                                                    .add(attendees[index]!);
-                                              }
-                                              if (clockingProvider
-                                                  .selectedAttendees
-                                                  .isNotEmpty) {
-                                                itemHasBeenSelected = true;
-                                              } else {
-                                                itemHasBeenSelected = false;
-                                              }
-                                              debugPrint(
-                                                  "Selected Attendees: ${clockingProvider.selectedAttendees.length}");
-                                            },
-                                          );
-                                        },
-                                        child: ClockedMemberItem(
-                                          attendee: attendees[index]!,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                          ),
-              ],
-            ),
+                                                        clockingProvider
+                                                            .selectedAttendees
+                                                            .remove(attendees[
+                                                                index]!);
+                                                      } else {
+                                                        attendees[index]!
+                                                            .selected = true;
+                                                        clockingProvider
+                                                            .selectedAttendees
+                                                            .add(attendees[
+                                                                index]!);
+                                                      }
+                                                      if (clockingProvider
+                                                          .selectedAttendees
+                                                          .isNotEmpty) {
+                                                        itemHasBeenSelected =
+                                                            true;
+                                                      } else {
+                                                        itemHasBeenSelected =
+                                                            false;
+                                                      }
+                                                      debugPrint(
+                                                          "Selected Attendees: ${clockingProvider.selectedAttendees.length}");
+                                                    },
+                                                  );
+                                                },
+                                                child: ClockedMemberItem(
+                                                  attendee: attendees[index]!,
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                    if (clockingProvider.loadingMore)
+                                      const PaginationLoader(
+                                        loadingText: 'Loading. please wait...',
+                                      )
+                                  ],
+                                ),
+                        )
+            ],
           ),
         ),
       ),
@@ -682,321 +777,307 @@ class _ClockingPageState extends State<ClockingPage> {
   }
 
   Widget filterOptionsListView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Consumer<ClientProvider>(
-          builder: (context, data, child) {
-            return data.getUser.branchID == AppConstants.mainAdmin
-                ? LabelWidgetContainer(
-                    label: "Branch",
+    return Padding(
+      padding: const EdgeInsets.all(AppPadding.p12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Consumer<ClientProvider>(
+            builder: (context, data, child) {
+              return data.branch.id == AppConstants.mainAdmin
+                  ? LabelWidgetContainer(
+                      label: "Branch",
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              width: 0.0, color: Colors.grey.shade400),
+                        ),
+                        child: DropdownButtonFormField<Branch>(
+                          isExpanded: true,
+                          style: const TextStyle(
+                            color: textColorPrimary,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hint: const Text('Select Branch'),
+                          decoration:
+                              const InputDecoration(border: InputBorder.none),
+                          value: clockingProvider.selectedBranch,
+                          icon: Icon(
+                            CupertinoIcons.chevron_up_chevron_down,
+                            color: Colors.grey.shade500,
+                            size: 16,
+                          ),
+                          // Array list of items
+                          items: clockingProvider.branches.map((Branch branch) {
+                            return DropdownMenuItem(
+                              value: branch,
+                              child: Text(branch.name!),
+                            );
+                          }).toList(),
+                          onChanged: (val) {
+                            setState(() {
+                              clockingProvider.selectedBranch = val as Branch;
+                            });
+                            clockingProvider.getMemberCategories();
+                          },
+                        ),
+                      ),
+                    )
+                  : const SizedBox();
+            },
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.02,
+          ),
+          LabelWidgetContainer(
+            label: "Member Category",
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 0.0, color: Colors.grey.shade400),
+              ),
+              child: DropdownButtonFormField<MemberCategory>(
+                isExpanded: true,
+                style: const TextStyle(
+                  color: textColorPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+                hint: const Text('Select Member Category'),
+                decoration: const InputDecoration(border: InputBorder.none),
+                value: clockingProvider.selectedMemberCategory,
+                icon: Icon(
+                  CupertinoIcons.chevron_up_chevron_down,
+                  color: Colors.grey.shade500,
+                  size: 16,
+                ),
+                // Array list of items
+                items:
+                    clockingProvider.memberCategories.map((MemberCategory mc) {
+                  return DropdownMenuItem(
+                    value: mc,
+                    child: Text(mc.category!),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    clockingProvider.selectedMemberCategory =
+                        val as MemberCategory;
+                  });
+                  clockingProvider
+                      .getGroups(); // call method to fetch all groups
+                },
+              ),
+            ),
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.02,
+          ),
+          LabelWidgetContainer(
+            label: "Group",
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 0.0, color: Colors.grey.shade400),
+              ),
+              child: DropdownButtonFormField<Group>(
+                isExpanded: true,
+                style: const TextStyle(
+                  color: textColorPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+                hint: const Text('Select Group'),
+                decoration: const InputDecoration(border: InputBorder.none),
+                value: clockingProvider.selectedGroup,
+                icon: Icon(
+                  CupertinoIcons.chevron_up_chevron_down,
+                  color: Colors.grey.shade500,
+                  size: 16,
+                ),
+                // Array list of items
+                items: clockingProvider.groups.map((Group group) {
+                  return DropdownMenuItem(
+                    value: group,
+                    child: Text(group.group!),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    clockingProvider.selectedGroup = val as Group;
+                  });
+                  clockingProvider.getSubGroups();
+                },
+              ),
+            ),
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.02,
+          ),
+          LabelWidgetContainer(
+            label: "Sub Group",
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 0.0, color: Colors.grey.shade400),
+              ),
+              child: DropdownButtonFormField<SubGroup>(
+                isExpanded: true,
+                style: const TextStyle(
+                  color: textColorPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+                hint: const Text('Select SubGroup'),
+                decoration: const InputDecoration(border: InputBorder.none),
+                value: clockingProvider.selectedSubGroup,
+                icon: Icon(
+                  CupertinoIcons.chevron_up_chevron_down,
+                  color: Colors.grey.shade500,
+                  size: 16,
+                ),
+                // Array list of items
+                items: clockingProvider.subGroups.map((SubGroup subGroup) {
+                  return DropdownMenuItem(
+                    value: subGroup,
+                    child: Text(subGroup.subgroup!),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    clockingProvider.selectedSubGroup = val as SubGroup;
+                  });
+                },
+              ),
+            ),
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.02,
+          ),
+          LabelWidgetContainer(
+            label: "Gender",
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 0.0, color: Colors.grey.shade400),
+              ),
+              child: DropdownButtonFormField<Gender>(
+                isExpanded: true,
+                style: const TextStyle(
+                  color: textColorPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+                hint: const Text('Select Gender'),
+                decoration: const InputDecoration(border: InputBorder.none),
+                value: clockingProvider.selectedGender,
+                icon: Icon(
+                  CupertinoIcons.chevron_up_chevron_down,
+                  color: Colors.grey.shade500,
+                  size: 16,
+                ),
+                // Array list of items
+                items: clockingProvider.genders.map((Gender gender) {
+                  return DropdownMenuItem(
+                    value: gender,
+                    child: Text(gender.name!),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    clockingProvider.selectedGender = val as Gender;
+                  });
+                },
+              ),
+            ),
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.02,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: LabelWidgetContainer(
+                  label: "Minimum Age",
+                  child: FormTextField(
+                    controller: clockingProvider.minAgeTEC,
+                    textInputType: TextInputType.number,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 12,
+              ),
+              Expanded(
+                child: LabelWidgetContainer(
+                  label: "Maximum Age",
+                  child: FormTextField(
+                    controller: clockingProvider.maxAgeTEC,
+                    textInputType: TextInputType.number,
+                  ),
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.008,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                    onTap: () => clockingProvider.clearFilters(),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                          vertical: 12, horizontal: 10),
                       decoration: BoxDecoration(
-                        color: whiteColor,
-                        borderRadius: BorderRadius.circular(8),
-                        border:
-                            Border.all(width: 0.0, color: Colors.grey.shade400),
+                        color: fillColor,
+                        borderRadius:
+                            BorderRadius.circular(AppRadius.borderRadius8),
                       ),
-                      child: DropdownButtonFormField<Branch>(
-                        isExpanded: true,
-                        style: const TextStyle(
-                          color: textColorPrimary,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        hint: const Text('Select Branch'),
-                        decoration:
-                            const InputDecoration(border: InputBorder.none),
-                        value: clockingProvider.selectedBranch,
-                        icon: Icon(
-                          CupertinoIcons.chevron_up_chevron_down,
-                          color: Colors.grey.shade500,
-                          size: 16,
-                        ),
-                        // Array list of items
-                        items: clockingProvider.branches.map((Branch branch) {
-                          return DropdownMenuItem(
-                            value: branch,
-                            child: Text(branch.name!),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            clockingProvider.selectedBranch = val as Branch;
-                          });
-                          clockingProvider.getMemberCategories();
-                        },
+                      child: const Text(
+                        'Clear',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.red, fontSize: 15),
                       ),
-                    ),
-                  )
-                : const SizedBox();
-          },
-        ),
-
-        SizedBox(
-          height: displayHeight(context) * 0.02,
-        ),
-        LabelWidgetContainer(
-          label: "Member Category",
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 0.0, color: Colors.grey.shade400),
-            ),
-            child: DropdownButtonFormField<MemberCategory>(
-              isExpanded: true,
-              style: const TextStyle(
-                color: textColorPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
+                    )),
               ),
-              hint: const Text('Select Member Category'),
-              decoration: const InputDecoration(border: InputBorder.none),
-              value: clockingProvider.selectedMemberCategory,
-              icon: Icon(
-                CupertinoIcons.chevron_up_chevron_down,
-                color: Colors.grey.shade500,
-                size: 16,
+              SizedBox(
+                width: displayWidth(context) * 0.04,
               ),
-              // Array list of items
-              items: clockingProvider.memberCategories.map((MemberCategory mc) {
-                return DropdownMenuItem(
-                  value: mc,
-                  child: Text(mc.category!),
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  clockingProvider.selectedMemberCategory =
-                      val as MemberCategory;
-                });
-                clockingProvider.getGroups(); // call method to fetch all groups
-              },
-            ),
+              Expanded(
+                child: CustomElevatedButton(
+                    label: "Filter",
+                    radius: AppRadius.borderRadius8,
+                    function: () {
+                      clockingProvider.validateFilterFields();
+                      // if (clockingProvider.loading) {
+                      //   // scroll to bottom of the screen to show the loading progress
+                      //   _controller.animateTo(
+                      //     _controller.position.maxScrollExtent,
+                      //     duration: const Duration(seconds: 3),
+                      //     curve: Curves.ease,
+                      //   );
+                      // }
+                    }),
+              ),
+            ],
           ),
-        ),
-        SizedBox(
-          height: displayHeight(context) * 0.02,
-        ),
-        LabelWidgetContainer(
-          label: "Group",
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 0.0, color: Colors.grey.shade400),
-            ),
-            child: DropdownButtonFormField<Group>(
-              isExpanded: true,
-              style: const TextStyle(
-                color: textColorPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-              ),
-              hint: const Text('Select Group'),
-              decoration: const InputDecoration(border: InputBorder.none),
-              value: clockingProvider.selectedGroup,
-              icon: Icon(
-                CupertinoIcons.chevron_up_chevron_down,
-                color: Colors.grey.shade500,
-                size: 16,
-              ),
-              // Array list of items
-              items: clockingProvider.groups.map((Group group) {
-                return DropdownMenuItem(
-                  value: group,
-                  child: Text(group.group!),
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  clockingProvider.selectedGroup = val as Group;
-                });
-                clockingProvider.getSubGroups();
-              },
-            ),
-          ),
-        ),
-        SizedBox(
-          height: displayHeight(context) * 0.02,
-        ),
-        LabelWidgetContainer(
-          label: "Sub Group",
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 0.0, color: Colors.grey.shade400),
-            ),
-            child: DropdownButtonFormField<SubGroup>(
-              isExpanded: true,
-              style: const TextStyle(
-                color: textColorPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-              ),
-              hint: const Text('Select SubGroup'),
-              decoration: const InputDecoration(border: InputBorder.none),
-              value: clockingProvider.selectedSubGroup,
-              icon: Icon(
-                CupertinoIcons.chevron_up_chevron_down,
-                color: Colors.grey.shade500,
-                size: 16,
-              ),
-              // Array list of items
-              items: clockingProvider.subGroups.map((SubGroup subGroup) {
-                return DropdownMenuItem(
-                  value: subGroup,
-                  child: Text(subGroup.subgroup!),
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  clockingProvider.selectedSubGroup = val as SubGroup;
-                });
-              },
-            ),
-          ),
-        ),
-        SizedBox(
-          height: displayHeight(context) * 0.02,
-        ),
-        LabelWidgetContainer(
-          label: "Gender",
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 0.0, color: Colors.grey.shade400),
-            ),
-            child: DropdownButtonFormField<Gender>(
-              isExpanded: true,
-              style: const TextStyle(
-                color: textColorPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-              ),
-              hint: const Text('Select Gender'),
-              decoration: const InputDecoration(border: InputBorder.none),
-              value: clockingProvider.selectedGender,
-              icon: Icon(
-                CupertinoIcons.chevron_up_chevron_down,
-                color: Colors.grey.shade500,
-                size: 16,
-              ),
-              // Array list of items
-              items: clockingProvider.genders.map((Gender gender) {
-                return DropdownMenuItem(
-                  value: gender,
-                  child: Text(gender.name!),
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  clockingProvider.selectedGender = val as Gender;
-                });
-              },
-            ),
-          ),
-        ),
-        SizedBox(
-          height: displayHeight(context) * 0.02,
-        ),
-        // LabelWidgetContainer(
-        //     label: "Meeting Type",
-        //     child: FormButton(
-        //       label: "Select Meeting Type",
-        //       function: () {},
-        //     )),
-
-        Row(
-          children: [
-            Expanded(
-              child: LabelWidgetContainer(
-                label: "Minimum Age",
-                child: FormTextField(
-                  controller: clockingProvider.minAgeTEC,
-                  textInputType: TextInputType.number,
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 12,
-            ),
-            Expanded(
-              child: LabelWidgetContainer(
-                label: "Maximum Age",
-                child: FormTextField(
-                  controller: clockingProvider.maxAgeTEC,
-                  textInputType: TextInputType.number,
-                ),
-              ),
-            )
-          ],
-        ),
-
-        SizedBox(
-          height: displayHeight(context) * 0.008,
-        ),
-
-        Row(
-          children: [
-            Expanded(
-              child: InkWell(
-                  onTap: () => clockingProvider.clearFilters(),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: fillColor,
-                      borderRadius:
-                          BorderRadius.circular(AppRadius.borderRadius8),
-                    ),
-                    child: const Text(
-                      'Clear',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.red, fontSize: 15),
-                    ),
-                  )),
-            ),
-            SizedBox(
-              width: displayWidth(context) * 0.04,
-            ),
-            Expanded(
-              child: CustomElevatedButton(
-                  label: "Filter",
-                  radius: AppRadius.borderRadius8,
-                  function: () {
-                    clockingProvider.validateFilterFields();
-                    if (clockingProvider.loading) {
-                      // scroll to bottom of the screen to show the loading progress
-                      _controller.animateTo(
-                        _controller.position.maxScrollExtent,
-                        duration: const Duration(seconds: 3),
-                        curve: Curves.ease,
-                      );
-                    }
-                  }),
-            ),
-          ],
-        ),
-        // LabelWidgetContainer(
-        //   label: "Set Mass Time",
-        //   child: FormButton(
-        //     label: generalClockTime != null
-        //         ? DateFormat("hh:mm").format(generalClockTime!)
-        //         : "Select time",
-        //     function: () {},
-        //   ),
-        // ),
-      ],
+        ],
+      ),
     );
   }
 }

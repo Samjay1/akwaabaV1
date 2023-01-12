@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 class ClockingAPI {
   // get list of attendees for a meeting or event
   static Future<ClockedMembersResponse> getAbsenteesList({
+    required int page,
     required MeetingEventModel meetingEventModel,
     required String filterDate,
     required int branchId,
@@ -28,7 +29,7 @@ class ClockingAPI {
     ClockedMembersResponse membersResponse;
 
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance/absentees?meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
+        '${getBaseUrl()}/attendance/meeting-event/attendance/absentees?page=$page&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
     try {
       debugPrint("URL: ${url.toString()}");
       debugPrint("Meeting ID: ${meetingEventModel.id}");
@@ -57,6 +58,7 @@ class ClockingAPI {
 
   // get list of attendees for a meeting or event
   static Future<ClockedMembersResponse> getAttendeesList({
+    required int page,
     required MeetingEventModel meetingEventModel,
     required String filterDate,
     required int branchId,
@@ -69,7 +71,7 @@ class ClockingAPI {
   }) async {
     ClockedMembersResponse membersResponse;
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
+        '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
     try {
       debugPrint("URL: ${url.toString()}");
       debugPrint("Meeting ID: ${meetingEventModel.id}");

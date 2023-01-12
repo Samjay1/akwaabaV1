@@ -1,5 +1,6 @@
 class AppConstants {
   static const int mainAdmin = 1;
+  static const int pageLimit = 10;
   static const String akwaabaEduUrl = 'https://edu.akwaabasoftware.com/';
   static const String akwaabaMessengerUrl =
       'https://messenger.akwaabasoftware.com';

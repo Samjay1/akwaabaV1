@@ -334,8 +334,8 @@ class ClockedMemberItem extends StatelessWidget {
                         Expanded(
                           child: Consumer<ClientProvider>(
                             builder: (context, data, child) {
-                              debugPrint("BID: ${data.getUser.branchID}");
-                              return (data.getUser.branchID ==
+                              debugPrint("BID: ${data.branch.id}");
+                              return (data.branch.id ==
                                           AppConstants.mainAdmin &&
                                       (attendee!.attendance!.inTime != null))
                                   ? CustomElevatedButton(
