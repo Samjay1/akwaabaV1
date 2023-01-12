@@ -14,6 +14,7 @@ import 'package:akwaaba/models/general/region.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:akwaaba/versionOne/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -286,6 +287,7 @@ class MemberAPI {
 
 
   static void registerMember(
+      BuildContext context,
   {
   clientId,
   branchId,
@@ -368,10 +370,12 @@ class MemberAPI {
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 201) {
         debugPrint('REGISTRATION MEMBER -------------- $decodedResponse');
-        showErrorToast("Registration Successful, Proceed to Login.");
+        showNormalToast("Registration Successful, Proceed to Login.");
+        Navigator.push(context,MaterialPageRoute( builder: (_) => LoginPage(),));
       } else {
         debugPrint("error>>>. ${response.body}");
-        showErrorToast("Login Error");
+        var error = decodedResponse['non_field_errors'][0];
+        showErrorToast("$error");
       }
     } on SocketException catch(_){
         showErrorToast("Network Error");
@@ -467,6 +471,7 @@ class MemberAPI {
     }
   }
 
+
 //  LOCATION REQUESTS
    Future<List<Country>?> getCountry()async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
@@ -479,7 +484,7 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Country success: $decodedresponse");
+        // print("Country success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList
             .map((data) => Country.fromJson(data))
@@ -506,7 +511,7 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("REGION success: $decodedresponse");
+        // print("REGION success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList
             .map((data) => Region.fromJson(data))
@@ -533,7 +538,7 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("District success: $decodedresponse");
+        // print("District success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList
             .map((data) => District.fromJson(data))
@@ -560,7 +565,7 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Constituency success: $decodedresponse");
+        // print("Constituency success: $decodedresponse");
         Iterable dataList = decodedresponse['results'];
         return dataList
             .map((data) => Constituency.fromJson(data))
@@ -587,7 +592,7 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("ElectoralArea success: $decodedresponse");
+        // print("ElectoralArea success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList
             .map((data) => ElectoralArea.fromJson(data))
@@ -616,9 +621,10 @@ class MemberAPI {
             'Authorization': 'Token $token',
             'Content-Type': 'application/json'
           });
+      print("Branch TOKEN: $token");
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Branch success: $decodedresponse");
+        print("Branch success: $decodedresponse, TOKEN: $token");
         Iterable dataList = decodedresponse['data'];
         return dataList
             .map((data) => Branch.fromJson(data))
@@ -705,7 +711,7 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Occupation success: $decodedresponse");
+        // print("Occupation success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList
             .map((data) => AbstractModel.fromJson(data))
@@ -732,7 +738,7 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("profession success: $decodedresponse");
+        // print("profession success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList
             .map((data) => AbstractModel.fromJson(data))
@@ -759,7 +765,7 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("marital success: $decodedresponse");
+        // print("marital success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList
             .map((data) => AbstractModel.fromJson(data))
@@ -786,7 +792,7 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Education success: $decodedresponse");
+        // print("Education success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList
             .map((data) => AbstractModel.fromJson(data))
@@ -890,7 +896,7 @@ class MemberAPI {
   }
 
   // GET TOKEN
-  static Future<String?> getToken({required var clientID})async{
+  Future<String?> getToken({required var clientID})async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       var data = {

@@ -13,12 +13,16 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+import '../models/general/abstractGroup.dart';
 import '../models/general/abstractModel.dart';
+import '../models/general/abstractSubGroup.dart';
+import '../models/general/branch.dart';
 import '../models/general/constiteuncy.dart';
 import '../models/general/country.dart';
 import '../models/general/country.dart';
 import '../models/general/district.dart';
 import '../models/general/electoralArea.dart';
+import '../models/general/memberType.dart';
 import '../models/general/region.dart';
 
 class MemberRegistrationPageIndividual extends StatefulWidget {
@@ -54,8 +58,7 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
   final ImagePicker picker = ImagePicker();
   File? imageFile ;
   final formGlobalKey = GlobalKey < FormState > ();
-  var selectedBranch;
-  var selectedCategory;
+
 
 
   //LOCATION - COUNTRY
@@ -142,6 +145,49 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
+  //GROUPING - BRANCH
+  var selectedBranch;
+  var selectedBranchID;
+  late List<Branch>? branchList = [];
+  void _getBranchList ({required var token})async{
+    branchList = (await MemberAPI().getBranches(token: token));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+  //GROUPING - CATEGORY
+  var selectedCategory;
+  var selectedCategoryID;
+  late List<MemberType>? categoryList = [];
+  void _getCategoryList ({required var token})async{
+    categoryList = (await MemberAPI().getMemberType(token: token));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+  //GROUPING - GROUP
+  var selectedGroup;
+  var selectedGroupID;
+  late List<AbstractGroup>? groupList = [];
+  void _getGroupList ({required var branchID,var token})async{
+    groupList = (await MemberAPI().getGroup(branchID: branchID, token: token));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+  //GROUPING - SUB GROUP
+  var selectedSubGroup;
+  var selectedSubGroupID;
+  late List<AbstractSubGroup>? subGroupList = [];
+  void _getSubGroupList ({required var branchID, var token})async{
+    subGroupList = (await MemberAPI().getSubGroup(branchID: branchID, token: token));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+  var token;
+  void _getToken ({required var clientID})async{
+    token = (await MemberAPI().getToken(clientID: clientID));
+    Future.delayed(const Duration(seconds: 2)).then((value) => setState(() {}));
+    _getBranchList(token: token);
+    _getCategoryList(token: token);
+  }
 
   @override
   void initState() {
@@ -152,6 +198,8 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
     _getEducationList();
     _getOccupationList();
     _getProfessionList();
+    _getToken(clientID: widget.clientID);
+
 
     pageViewController.addListener(() {
       if (pageViewController.page?.round() != currentIndex) {
@@ -213,7 +261,7 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('maritalList ${maritalList}');
+    debugPrint('branchList ${branchList}');
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: currentIndex==0?true:false,
@@ -384,9 +432,10 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
         LabelWidgetContainer(label: "Branch",
             setCompulsory: true,
             child: FormButton(
-              label: "Select Branch",
+              label: selectedBranch??"Select Branch",
               function: (){
-
+                var newBranchList = branchList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
+                selectBranch(newBranchList);
               },
             )
         ),
@@ -394,27 +443,30 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
         LabelWidgetContainer(label: "Category",
             setCompulsory: true,
             child: FormButton(
-              label: "Select Category",
+              label:  selectedCategory??"Select Category",
               function: (){
-
+                var newCategoryList = categoryList?.map((value)=> {'name':value.category, 'id':value.id}).toList();
+                selectCategory(newCategoryList);
               },
             )
         ),
 
         LabelWidgetContainer(label: "Group",
             child: FormButton(
-              label: "Select Group",
+              label: selectedGroup??"Select Group",
               function: (){
-
+                var newGroupList = groupList?.map((value)=> {'name':value.group, 'id':value.id}).toList();
+                selectGroup(newGroupList);
               },
             )
         ),
 
         LabelWidgetContainer(label: "Sub Group",
             child: FormButton(
-              label: "Select Sub Group",
+              label: selectedSubGroup??"Select Sub Group",
               function: (){
-
+                var newSubgroupList = subGroupList?.map((value)=> {'name':value.subgroup, 'id':value.id}).toList();
+                selectSubGroup(newSubgroupList);
               },
             )
         )
@@ -624,14 +676,70 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
               'whatsapp ${_controllerWhatsappContact.text}'
               'phone ${_controllerPhone.text},'
               'email ${_controllerEmail.text}'
-              'IDnumber ${_controllerIDNumber.text}'
+              'referenceId ${_controllerIDNumber.text}'
               'password ${_controllerPassword.text}'
               'cpassword ${_controllerConfirmPassword.text}'
               'selectedGender ${selectedGender}'
-              'selectedDepartment ${selectedDepartment}'
-              'dateJoined ${dateJoined}'
               'birthDate ${birthDate}'
-              'disabilityOption ${disabilityOption}');
+              'disabilityOption ${disabilityOption},'
+              ''
+              'selectedBranch $selectedBranch,'
+              'selectedCategory $selectedCategory,'
+              'selectedGroup $selectedGroup'
+              'selectedSubGroup $selectedSubGroup'
+              ''
+              'selectedCountry $selectedCountry'
+              'selectedRegion $selectedRegion'
+              'selectedDistrict $selectedDistrict'
+              'selectedConstituency $selectedConstituency'
+              'selectedCommunity $selectedCommunity'
+              ''
+              'selectedMarital $selectedMarital'
+              'selectedEducation $selectedEducation '
+              'selectedOccupation $selectedOccupation '
+              'selectedProfession $selectedProfession,'
+              'branch $selectedBranchID'
+              'widget.clientID ${widget.clientID}'
+
+              '');
+          final DateTime? now = birthDate;
+          final DateFormat formatter = DateFormat('yyyy-MM-dd');
+          final String formatted = formatter.format(now!);
+          print(formatted);
+
+          MemberAPI.registerMember(
+              context,clientId: widget.clientID,
+              branchId:selectedBranchID,
+              firstname:'${_controllerFirstName.text}',
+              middlename: '${_controllerMiddleName.text}',
+              surname:'${_controllerSurname.text}',
+              gender: selectedGender == 'Male' ? 1:0 ,
+              dateOfBirth: formatted,
+              email: '${_controllerEmail.text}',
+              phone: '${_controllerPhone.text}',
+              memberType: selectedCategoryID,
+              referenceId: '${_controllerIDNumber.text}',
+              nationality: selectedCountryID,
+              countryOfResidence: selectedCountryID,
+              stateProvince: selectedRegionID,
+              region: selectedRegionID,
+              district: selectedDistrictID,
+              constituency: '$selectedConstituencyID',
+              electoralArea: selectedCommunityID,
+              community: '$selectedCommunityID',
+              digitalAddress: '-',
+              hometown: '-',
+              occupation: selectedOccupationID,
+              disability: disabilityOption == 0? false: true,
+              maritalStatus: '$selectedMaritalID',
+              occupationalStatus: '$selectedOccupationID',
+              professionStatus: '$selectedProfessionID',
+              educationalStatus: '$selectedEducationID',
+              groupIds: [selectedGroupID],
+              subgroupIds: [selectedSubGroupID],
+              password: '${_controllerPassword.text}',
+              confirm_password: '${_controllerConfirmPassword.text}'
+          );
             })
 
 
@@ -721,7 +829,7 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
         setState(() {
           selectedDistrict = value['name'];
           selectedDistrictID =  value['id'];
-          debugPrint('selectedRegion $selectedDistrict, $selectedDistrictID');
+          debugPrint('selectedDistrictID $selectedDistrict, $selectedDistrictID');
           _getConstituencyList(regionID:selectedRegionID, districtID:selectedDistrictID );
           _getCommunityList(regionID:selectedRegionID, districtID:selectedDistrictID );
         });
@@ -759,8 +867,8 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
     displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
       if(value!=null){
         setState(() {
-          // selectedMarital = value['name'];
-          // selectedMaritalID =  value['id'];
+          selectedMarital = value['name'];
+          selectedMaritalID =  value['id'];
           // debugPrint('selectedMaritalID $selectedMaritalID, $selectedMarital');
         });
       }
@@ -798,6 +906,57 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
           selectedProfession = value['name'];
           selectedProfessionID =  value['id'];
           debugPrint('selectedProfessionID $selectedProfessionID, $selectedProfession');
+        });
+      }
+    });
+  }
+
+//  GROUPINGS
+  selectBranch(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedBranch = value['name'];
+          selectedBranchID =  value['id'];
+          debugPrint('selectedBranchdf $selectedBranchID, $selectedBranch');
+          _getSubGroupList(token:token, branchID: selectedBranchID);
+          _getGroupList(token:token, branchID: selectedBranchID);
+        });
+      }
+    });
+  }
+
+  selectCategory(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedCategory = value['name'];
+          selectedCategoryID =  value['id'];
+          // debugPrint('selectedMaritalID $selectedMaritalID, $selectedMarital');
+        });
+      }
+    });
+  }
+
+  selectGroup(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedGroup = value['name'];
+          selectedGroupID =  value['id'];
+          // debugPrint('selectedMaritalID $selectedMaritalID, $selectedMarital');
+        });
+      }
+    });
+  }
+
+  selectSubGroup(options){
+    displayCustomDropDown(options: options, context: context,listItemsIsMap: true).then((value) {
+      if(value!=null){
+        setState(() {
+          selectedSubGroup = value['name'];
+          selectedSubGroupID =  value['id'];
+          // debugPrint('selectedMaritalID $selectedMaritalID, $selectedMarital');
         });
       }
     });

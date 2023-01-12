@@ -1,15 +1,15 @@
 class MemberType {
-  String? id;
-  String? type;
+  int? id;
+  String? category;
 
   MemberType(
       this.id,
-      this.type);
+      this.category);
 
   factory MemberType.fromJson(Map<String, dynamic> json) {
     return MemberType(
         json['id'],
-        json['type']
+        json['category']
     );
   }
 
