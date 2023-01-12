@@ -24,7 +24,7 @@ class AttendanceAPI {
       BuildContext context, var memberToken) async {
     List<MeetingEventModel> todayMeetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/today?datatable_plugin');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both');
     try {
       http.Response response = await http.get(
         url,
@@ -32,7 +32,7 @@ class AttendanceAPI {
       );
       var decodedresponse = jsonDecode(response.body);
       debugPrint("TODAY MeetingEventModel success: $decodedresponse");
-      Iterable meetingList = decodedresponse['data'];
+      Iterable meetingList = decodedresponse['results'];
       todayMeetings = meetingList
           .map(
             (data) => MeetingEventModel.fromJson(data),
@@ -50,7 +50,7 @@ class AttendanceAPI {
   }) async {
     List<MeetingEventModel> meetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/date/$date?datatable_plugin');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/date/$date');
     try {
       http.Response response = await http.get(
         url,
@@ -58,7 +58,7 @@ class AttendanceAPI {
       );
       var decodedresponse = jsonDecode(response.body);
       debugPrint("Meeting From Date success: $decodedresponse");
-      Iterable meetingList = decodedresponse['data'];
+      Iterable meetingList = decodedresponse['results'];
       meetings = meetingList
           .map(
             (data) => MeetingEventModel.fromJson(data),
@@ -74,8 +74,8 @@ class AttendanceAPI {
   static Future<List<MeetingEventModel>> getUpcomingMeetingEventList(
       BuildContext context, var memberToken) async {
     List<MeetingEventModel> upcomingMeetings = [];
-    var url =
-        Uri.parse('${getBaseUrl()}/attendance/meeting-event/schedule/upcoming');
+    var url = Uri.parse(
+        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both');
     try {
       http.Response response = await http.get(
         url,
@@ -83,7 +83,7 @@ class AttendanceAPI {
       );
       var decodedresponse = jsonDecode(response.body);
       debugPrint("UPCOMING MeetingEventModel success: $decodedresponse");
-      Iterable dataList = decodedresponse['results'];
+      Iterable dataList = decodedresponse['data'];
       upcomingMeetings = dataList
           .map(
             (data) => MeetingEventModel.fromJson(data),

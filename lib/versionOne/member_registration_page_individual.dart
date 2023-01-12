@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:akwaaba/Networks/member_api.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
 import '../models/general/abstractGroup.dart';
 import '../models/general/abstractModel.dart';
 import '../models/general/abstractSubGroup.dart';
@@ -30,30 +28,33 @@ class MemberRegistrationPageIndividual extends StatefulWidget {
   const MemberRegistrationPageIndividual({required this.clientID, Key? key}) : super(key: key);
 
   @override
-  State<MemberRegistrationPageIndividual> createState() => _MemberRegistrationPageIndividualState();
+  State<MemberRegistrationPageIndividual> createState() =>
+      _MemberRegistrationPageIndividualState();
 }
 
-class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPageIndividual> {
-
+class _MemberRegistrationPageIndividualState
+    extends State<MemberRegistrationPageIndividual> {
   final TextEditingController _controllerFirstName = TextEditingController();
   final TextEditingController _controllerSurname = TextEditingController();
   final TextEditingController _controllerMiddleName = TextEditingController();
-  final TextEditingController _controllerWhatsappContact = TextEditingController();
+  final TextEditingController _controllerWhatsappContact =
+      TextEditingController();
   final TextEditingController _controllerPhone = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerIDNumber = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  final TextEditingController _controllerConfirmPassword = TextEditingController();
+  final TextEditingController _controllerConfirmPassword =
+      TextEditingController();
 
-  List <String> departments =["Senior Staff","Casual Worker"];
-  List <String> genders =["Male","Female"];
+  List<String> departments = ["Senior Staff", "Casual Worker"];
+  List<String> genders = ["Male", "Female"];
   DateTime? dateJoined;
   DateTime? birthDate;
   String? selectedGender;
   String? selectedDepartment;
 
-  int disabilityOption=-1;
-   final PageController pageViewController= PageController();
+  int disabilityOption = -1;
+  final PageController pageViewController = PageController();
   int currentIndex = 0;
   final ImagePicker picker = ImagePicker();
   File? imageFile ;
@@ -200,7 +201,6 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
     _getProfessionList();
     _getToken(clientID: widget.clientID);
 
-
     pageViewController.addListener(() {
       if (pageViewController.page?.round() != currentIndex) {
         setState(() {
@@ -210,52 +210,48 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
     });
   }
 
-  void selectProfilePhoto() async{
+  void selectProfilePhoto() async {
     final getImage = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
-      if(getImage!=null){
+      if (getImage != null) {
         imageFile = File(getImage.path);
       }
     });
   }
 
-  nextButtonTapped({required  pageId}){
-
+  nextButtonTapped({required pageId}) {
     if (!formGlobalKey.currentState!.validate()) {
-     return;
+      return;
     }
-    switch(pageId){
+    switch (pageId) {
       case 0:
         //currently on bio data page,
         //check these inputs -> gender and dob
-      if(birthDate==null){
-        showErrorSnackBar(context, "select date of birth");
-        return;
-      }
-      if(selectedGender==null){
-        showErrorSnackBar(context, "select your gender");
-        return;
-      }
-        pageViewController.animateToPage(1, duration: const Duration(milliseconds: 100),
-             curve: Curves.easeIn);
+        if (birthDate == null) {
+          showErrorSnackBar(context, "select date of birth");
+          return;
+        }
+        if (selectedGender == null) {
+          showErrorSnackBar(context, "select your gender");
+          return;
+        }
+        pageViewController.animateToPage(1,
+            duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
       case 1:
         //currenty on grouping page
-        pageViewController.animateToPage(2, duration: const Duration(milliseconds: 100),
-            curve: Curves.easeIn);
+        pageViewController.animateToPage(2,
+            duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
       case 2:
-        pageViewController.animateToPage(3, duration: const Duration(milliseconds: 100),
-            curve: Curves.easeIn);
+        pageViewController.animateToPage(3,
+            duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
       case 3:
-        pageViewController.animateToPage(4, duration: const Duration(milliseconds: 100),
-            curve: Curves.easeIn);
+        pageViewController.animateToPage(4,
+            duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
-
-
-
     }
   }
 
@@ -264,7 +260,7 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
     debugPrint('branchList ${branchList}');
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: currentIndex==0?true:false,
+        automaticallyImplyLeading: currentIndex == 0 ? true : false,
         title: const Text("Individual Registration"),
       ),
       body: Padding(
@@ -273,15 +269,20 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              currentIndex==0?
-                  "Bio Data":
-                  currentIndex==1?"Grouping":
-                      currentIndex==2?"Location":currentIndex==3?"Statuses":"",
-              style: const TextStyle(
-                fontSize: 23,fontWeight: FontWeight.w700
-              ),
+              currentIndex == 0
+                  ? "Bio Data"
+                  : currentIndex == 1
+                      ? "Grouping"
+                      : currentIndex == 2
+                          ? "Location"
+                          : currentIndex == 3
+                              ? "Statuses"
+                              : "",
+              style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 12,),
+            const SizedBox(
+              height: 12,
+            ),
             Expanded(
               child: PageView(
                 physics: const BouncingScrollPhysics(),
@@ -296,140 +297,161 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
                 ],
               ),
             ),
-
             Container(
               decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.grey,width: 0))
-              ),
+                  border:
+                      Border(top: BorderSide(color: Colors.grey, width: 0))),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  currentIndex==0?
-                  Container():CupertinoButton(child: Row(
-                    children: const [
-                      Icon(CupertinoIcons.arrow_left),
-                      Text("Previous"),
-                    ],
+                  currentIndex == 0
+                      ? Container()
+                      : CupertinoButton(
+                          child: Row(
+                            children: const [
+                              Icon(CupertinoIcons.arrow_left),
+                              Text("Previous"),
+                            ],
+                          ),
+                          onPressed: () {
+                            pageViewController.animateToPage(currentIndex - 1,
+                                duration: const Duration(milliseconds: 100),
+                                curve: Curves.easeIn);
+                            // nextButtonTapped(pageId: pageViewController.page);
+                          }),
+                  const SizedBox(
+                    width: 12,
                   ),
-                      onPressed: (){
-                        pageViewController.animateToPage(
-                        currentIndex-1,
-                            duration: const Duration(milliseconds: 100),
-                            curve: Curves.easeIn);
-                       // nextButtonTapped(pageId: pageViewController.page);
-                      }),
-
-                  const SizedBox(width: 12,),
-
-                  currentIndex==4?
-                  Container():CupertinoButton(child: Row(
-                    children: const [
-                      Text("Next"),
-                      Icon(CupertinoIcons.arrow_right),
-                    ],
-                  ),
-                      onPressed: (){
-                        nextButtonTapped(pageId: pageViewController.page);
-                      })
+                  currentIndex == 4
+                      ? Container()
+                      : CupertinoButton(
+                          child: Row(
+                            children: const [
+                              Text("Next"),
+                              Icon(CupertinoIcons.arrow_right),
+                            ],
+                          ),
+                          onPressed: () {
+                            nextButtonTapped(pageId: pageViewController.page);
+                          })
                 ],
               ),
             ),
-
-
           ],
         ),
       ),
     );
   }
 
-  Widget bioDataView(){
+  Widget bioDataView() {
     return Form(
       key: formGlobalKey,
       child: ListView(
         physics: const BouncingScrollPhysics(),
         children: [
-          LabelWidgetContainer(label: "First Name",
+          LabelWidgetContainer(
+              label: "First Name",
               setCompulsory: true,
-              child:  FormTextField(controller: _controllerFirstName,
-                label: "",)
-          ),
-
-          LabelWidgetContainer(label: "Middle Name",
-              child:  FormTextField(controller: _controllerMiddleName,
-                label: "",applyValidation: false,)
-          ),
-
-          LabelWidgetContainer(label: "Surname",
+              child: FormTextField(
+                controller: _controllerFirstName,
+                label: "",
+              )),
+          LabelWidgetContainer(
+              label: "Middle Name",
+              child: FormTextField(
+                controller: _controllerMiddleName,
+                label: "",
+                applyValidation: false,
+              )),
+          LabelWidgetContainer(
+            label: "Surname",
             setCompulsory: true,
-            child:
-            FormTextField(controller: _controllerSurname,
-              label: "",),
+            child: FormTextField(
+              controller: _controllerSurname,
+              label: "",
+            ),
           ),
-
-          LabelWidgetContainer(label: "Gender",
+          LabelWidgetContainer(
+              label: "Gender",
               setCompulsory: true,
               child: FormButton(
-                label:selectedGender??"Select Gender",
-                function: (){selectGender();},
+                label: selectedGender ?? "Select Gender",
+                function: () {
+                  selectGender();
+                },
               )),
-
-          LabelWidgetContainer(label: "Date of Birth",
+          LabelWidgetContainer(
+              label: "Date of Birth",
               setCompulsory: true,
               child: FormButton(
-                label: birthDate!=null?DateFormat("dd MMM yyyy").format(birthDate!):
-                "Select Date",
-                function: (){selectDateOfBirth();},
+                label: birthDate != null
+                    ? DateFormat("dd MMM yyyy").format(birthDate!)
+                    : "Select Date",
+                function: () {
+                  selectDateOfBirth();
+                },
               )),
-
-
-          LabelWidgetContainer(label:"Phone" ,
+          LabelWidgetContainer(
+            label: "Phone",
             setCompulsory: true,
-            child:    FormTextField(controller: _controllerPhone,label: "",
-              textInputAction: TextInputAction.next,textInputType: TextInputType.phone,
-              maxLength: 10,),),
-
-          LabelWidgetContainer(label: "Email Address",
+            child: FormTextField(
+              controller: _controllerPhone,
+              label: "",
+              textInputAction: TextInputAction.next,
+              textInputType: TextInputType.phone,
+              maxLength: 10,
+            ),
+          ),
+          LabelWidgetContainer(
+            label: "Email Address",
             setCompulsory: true,
-            child: FormTextField(controller: _controllerEmail,
-            label: "",
-            textInputType: TextInputType.emailAddress,),),
-
-          LabelWidgetContainer(label: "Whatsapp Contact",
-              child: FormTextField(controller: _controllerWhatsappContact,
-                textInputType: TextInputType.phone,maxLength: 10,applyValidation: false,)),
-
-
-
+            child: FormTextField(
+              controller: _controllerEmail,
+              label: "",
+              textInputType: TextInputType.emailAddress,
+            ),
+          ),
+          LabelWidgetContainer(
+              label: "Whatsapp Contact",
+              child: FormTextField(
+                controller: _controllerWhatsappContact,
+                textInputType: TextInputType.phone,
+                maxLength: 10,
+                applyValidation: false,
+              )),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
-             imageFile!=null?
-             ClipRRect(
-               borderRadius: BorderRadius.circular(360),
-               child: Image.file(imageFile!,height: 120,width: 120,),
-             ):
-             defaultProfilePic(height: 120),
+              imageFile != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(360),
+                      child: Image.file(
+                        imageFile!,
+                        height: 120,
+                        width: 120,
+                      ),
+                    )
+                  : defaultProfilePic(height: 120),
               CupertinoButton(
-                  onPressed: (){
+                  onPressed: () {
                     selectProfilePhoto();
                   },
-                  child: Text(imageFile!=null?"Change Photo":"Select Photo"))
+                  child:
+                      Text(imageFile != null ? "Change Photo" : "Select Photo"))
             ],
           ),
-
-
         ],
       ),
     );
   }
 
-  Widget groupingView(){
+  Widget groupingView() {
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
-        LabelWidgetContainer(label: "Branch",
+        LabelWidgetContainer(
+            label: "Branch",
             setCompulsory: true,
             child: FormButton(
               label: selectedBranch??"Select Branch",
@@ -474,7 +496,7 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
     );
   }
 
-  Widget locationView(){
+  Widget locationView() {
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
@@ -491,14 +513,19 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
       ),
 
         LabelWidgetContainer(
-           // setCompulsory: true,
+            setCompulsory: true,
+            label: "Country",
+            child: FormButton(
+              label: "Select Country",
+              function: () {},
+            )),
+        LabelWidgetContainer(
+            // setCompulsory: true,
             label: "Province/State",
             child: FormButton(
               label: "Select Province/State",
-              function: (){},
-            )
-        ),
-
+              function: () {},
+            )),
         LabelWidgetContainer(
             //setCompulsory: true,
             label: "Region",
@@ -512,7 +539,7 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
         ),
 
         LabelWidgetContainer(
-           // setCompulsory: true,
+            // setCompulsory: true,
             label: "District",
             child: FormButton(
               label: selectedDistrict??"Select District",
@@ -536,7 +563,6 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
         ),
 
         LabelWidgetContainer(
-
             label: "Community",
             child: FormButton(
               label: selectedCommunity??"Select Community",
@@ -546,14 +572,12 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
               },
             )
         ),
-
-
       ],
     );
   }
 
 
-  Widget statusView(){
+  Widget statusView() {
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
@@ -561,18 +585,19 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
           children: [
             const Expanded(child: Text("Do you have a disability?")),
             Row(
-              children:  List.generate(2, (index) {
+              children: List.generate(2, (index) {
                 return Row(
                   children: [
                     Radio(
                         activeColor: primaryColor,
-                        value: index, groupValue: disabilityOption,
-                        onChanged: (int? value){
-                      setState(() {
-                        disabilityOption=value!;
-                      });
+                        value: index,
+                        groupValue: disabilityOption,
+                        onChanged: (int? value) {
+                          setState(() {
+                            disabilityOption = value!;
+                          });
                         }),
-                    Text(index==0?"Yes":"No")
+                    Text(index == 0 ? "Yes" : "No")
                   ],
                 );
               }),
@@ -641,122 +666,163 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
         LabelWidgetContainer(label: "CV Upload", child:
         FormButton(label: "Upload  CV",
           function: (){},)
-        )
+        ),
 
+        const SizedBox(
+          height: 12,
+        ),
+        LabelWidgetContainer(
+            label: "Marital Status",
+            child: FormButton(
+              label: "Select Status",
+              function: () {},
+            )),
+        LabelWidgetContainer(
+            label: "Education",
+            child: FormButton(
+              label: "Select Education",
+              function: () {},
+            )),
+        LabelWidgetContainer(
+            label: "Occupation",
+            child: FormButton(
+              label: "Select Occupation",
+              function: () {},
+            )),
+        LabelWidgetContainer(
+            label: "Profession",
+            child: FormButton(
+              label: "Select Profession",
+              function: () {},
+            )),
+        LabelWidgetContainer(
+            label: "ID Upload",
+            child: FormButton(
+              label: "Upload  ID",
+              function: () {},
+            )),
+        LabelWidgetContainer(
+            label: "ID Number",
+            child: FormTextField(
+              controller: _controllerIDNumber,
+            )),
+        LabelWidgetContainer(
+            label: "CV Upload",
+            child: FormButton(
+              label: "Upload  CV",
+              function: () {},
+            ))
       ],
     );
   }
 
-  Widget passwordsView(){
+  Widget passwordsView() {
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
-        LabelWidgetContainer(label: "Password",
-            child:
-        FormTextField(
-          controller: _controllerPassword,
-        )
-        ),
-
-
-        LabelWidgetContainer(label: "Confirm Password",
-            child:
-            FormTextField(
+        LabelWidgetContainer(
+            label: "Password",
+            child: FormTextField(
+              controller: _controllerPassword,
+            )),
+        LabelWidgetContainer(
+            label: "Confirm Password",
+            child: FormTextField(
               controller: _controllerConfirmPassword,
-            )
+            )),
+        const SizedBox(
+          height: 26,
         ),
 
         const SizedBox(height: 26,),
 
         CustomElevatedButton(label: "Submit",
             function: (){
-          debugPrint('firstname ${_controllerFirstName.text}, '
-              'lastname ${_controllerSurname.text},'
-              'middlename ${_controllerMiddleName.text},'
-              'whatsapp ${_controllerWhatsappContact.text}'
-              'phone ${_controllerPhone.text},'
-              'email ${_controllerEmail.text}'
-              'referenceId ${_controllerIDNumber.text}'
-              'password ${_controllerPassword.text}'
-              'cpassword ${_controllerConfirmPassword.text}'
-              'selectedGender ${selectedGender}'
-              'birthDate ${birthDate}'
-              'disabilityOption ${disabilityOption},'
-              ''
-              'selectedBranch $selectedBranch,'
-              'selectedCategory $selectedCategory,'
-              'selectedGroup $selectedGroup'
-              'selectedSubGroup $selectedSubGroup'
-              ''
-              'selectedCountry $selectedCountry'
-              'selectedRegion $selectedRegion'
-              'selectedDistrict $selectedDistrict'
-              'selectedConstituency $selectedConstituency'
-              'selectedCommunity $selectedCommunity'
-              ''
-              'selectedMarital $selectedMarital'
-              'selectedEducation $selectedEducation '
-              'selectedOccupation $selectedOccupation '
-              'selectedProfession $selectedProfession,'
-              'branch $selectedBranchID'
-              'widget.clientID ${widget.clientID}'
+    debugPrint('firstname ${_controllerFirstName.text}, '
+    'lastname ${_controllerSurname.text},'
+    'middlename ${_controllerMiddleName.text},'
+    'whatsapp ${_controllerWhatsappContact.text}'
+    'phone ${_controllerPhone.text},'
+    'email ${_controllerEmail.text}'
+    'referenceId ${_controllerIDNumber.text}'
+    'password ${_controllerPassword.text}'
+    'cpassword ${_controllerConfirmPassword.text}'
+    'selectedGender ${selectedGender}'
+    'birthDate ${birthDate}'
+    'disabilityOption ${disabilityOption},'
+    ''
+    'selectedBranch $selectedBranch,'
+    'selectedCategory $selectedCategory,'
+    'selectedGroup $selectedGroup'
+    'selectedSubGroup $selectedSubGroup'
+    ''
+    'selectedCountry $selectedCountry'
+    'selectedRegion $selectedRegion'
+    'selectedDistrict $selectedDistrict'
+    'selectedConstituency $selectedConstituency'
+    'selectedCommunity $selectedCommunity'
+    ''
+    'selectedMarital $selectedMarital'
+    'selectedEducation $selectedEducation '
+    'selectedOccupation $selectedOccupation '
+    'selectedProfession $selectedProfession,'
+    'branch $selectedBranchID'
+    'widget.clientID ${widget.clientID}'
 
-              '');
-          final DateTime? now = birthDate;
-          final DateFormat formatter = DateFormat('yyyy-MM-dd');
-          final String formatted = formatter.format(now!);
-          print(formatted);
+    '');
+    final DateTime? now = birthDate;
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formatted = formatter.format(now!);
+    print(formatted);
 
-          MemberAPI.registerMember(
-              context,clientId: widget.clientID,
-              branchId:selectedBranchID,
-              firstname:'${_controllerFirstName.text}',
-              middlename: '${_controllerMiddleName.text}',
-              surname:'${_controllerSurname.text}',
-              gender: selectedGender == 'Male' ? 1:0 ,
-              dateOfBirth: formatted,
-              email: '${_controllerEmail.text}',
-              phone: '${_controllerPhone.text}',
-              memberType: selectedCategoryID,
-              referenceId: '${_controllerIDNumber.text}',
-              nationality: selectedCountryID,
-              countryOfResidence: selectedCountryID,
-              stateProvince: selectedRegionID,
-              region: selectedRegionID,
-              district: selectedDistrictID,
-              constituency: '$selectedConstituencyID',
-              electoralArea: selectedCommunityID,
-              community: '$selectedCommunityID',
-              digitalAddress: '-',
-              hometown: '-',
-              occupation: selectedOccupationID,
-              disability: disabilityOption == 0? false: true,
-              maritalStatus: '$selectedMaritalID',
-              occupationalStatus: '$selectedOccupationID',
-              professionStatus: '$selectedProfessionID',
-              educationalStatus: '$selectedEducationID',
-              groupIds: [selectedGroupID],
-              subgroupIds: [selectedSubGroupID],
-              password: '${_controllerPassword.text}',
-              confirm_password: '${_controllerConfirmPassword.text}'
-          );
-            })
-
-
+    MemberAPI.registerMember(
+    context,clientId: widget.clientID,
+    branchId:selectedBranchID,
+    firstname:'${_controllerFirstName.text}',
+    middlename: '${_controllerMiddleName.text}',
+    surname:'${_controllerSurname.text}',
+    gender: selectedGender == 'Male' ? 1:0 ,
+    dateOfBirth: formatted,
+    email: '${_controllerEmail.text}',
+    phone: '${_controllerPhone.text}',
+    memberType: selectedCategoryID,
+    referenceId: '${_controllerIDNumber.text}',
+    nationality: selectedCountryID,
+    countryOfResidence: selectedCountryID,
+    stateProvince: selectedRegionID,
+    region: selectedRegionID,
+    district: selectedDistrictID,
+    constituency: '$selectedConstituencyID',
+    electoralArea: selectedCommunityID,
+    community: '$selectedCommunityID',
+    digitalAddress: '-',
+    hometown: '-',
+    occupation: selectedOccupationID,
+    disability: disabilityOption == 0? false: true,
+    maritalStatus: '$selectedMaritalID',
+    occupationalStatus: '$selectedOccupationID',
+    professionStatus: '$selectedProfessionID',
+    educationalStatus: '$selectedEducationID',
+    groupIds: [selectedGroupID],
+    subgroupIds: [selectedSubGroupID],
+    password: '${_controllerPassword.text}',
+    confirm_password: '${_controllerConfirmPassword.text}'
+    );
+    }),
       ],
     );
   }
 
-  registerUser(){
-    FocusManager.instance.primaryFocus?.unfocus();//hide keyboard
+  registerUser() {
+    FocusManager.instance.primaryFocus?.unfocus(); //hide keyboard
     //check inputs
-
   }
 
-
-  selectGender(){
-    displayCustomDropDown(options: genders, context: context,listItemsIsMap: false).then((value) {
-      if(value!=null){
+  selectGender() {
+    displayCustomDropDown(
+            options: genders, context: context, listItemsIsMap: false)
+        .then((value) {
+      if (value != null) {
         setState(() {
           selectedGender = value;
         });
@@ -764,9 +830,11 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
     });
   }
 
-  selectDepartment(){
-    displayCustomDropDown(options: departments, context: context,listItemsIsMap: false).then((value) {
-      if(value!=null){
+  selectDepartment() {
+    displayCustomDropDown(
+            options: departments, context: context, listItemsIsMap: false)
+        .then((value) {
+      if (value != null) {
         setState(() {
           selectedDepartment = value;
         });
@@ -774,23 +842,25 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
     });
   }
 
-  selectDateJoined(){
-    displayDateSelector(initialDate: dateJoined??DateTime.now(),
-        context: context).then((value) {
-       if(value!=null){
-         setState(() {
-           dateJoined=value;
-         });
-       }
+  selectDateJoined() {
+    displayDateSelector(
+            initialDate: dateJoined ?? DateTime.now(), context: context)
+        .then((value) {
+      if (value != null) {
+        setState(() {
+          dateJoined = value;
+        });
+      }
     });
   }
 
-  selectDateOfBirth(){
-    displayDateSelector(initialDate: birthDate??DateTime.now(),
-        context: context).then((value) {
-      if(value!=null){
+  selectDateOfBirth() {
+    displayDateSelector(
+            initialDate: birthDate ?? DateTime.now(), context: context)
+        .then((value) {
+      if (value != null) {
         setState(() {
-          birthDate=value;
+          birthDate = value;
         });
       }
     });
@@ -961,6 +1031,5 @@ class _MemberRegistrationPageIndividualState extends State<MemberRegistrationPag
       }
     });
   }
-
 
 }

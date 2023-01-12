@@ -1,150 +1,202 @@
 class ClientAccountInfo {
-  var id;
-  var name;
-  var accountType;
-  var country;
-  var stateProvince;
-  var applicantFirstname;
-  var applicantSurname;
-  var applicantEmail;
-  var applicantDesignationRole;
-  var region;
-  var district;
-  var constituency;
-  var community;
-  var subscriptionDuration;
-  var subscriptionDate;
-  var subscriptionFee;
-  var logo;
-  var status;
-  var archive;
-  var website;
-  var creationDate;
-
-  var accountCategory;
-  var accountCategoryClientId;
-
-  var subscriptionInfo;
-
-  var firstName;
-  var surName;
-  var profilePicture;
-  var phone;
-  var email;
-  var accountId;
-  var branchID;
-  var branchName;
-
-  var clientToken;
+  int? id;
+  String? name;
+  int? accountType;
+  String? country;
+  String? stateProvince;
+  String? applicantFirstname;
+  String? applicantSurname;
+  int? applicantGender;
+  String? applicantPhone;
+  String? applicantEmail;
+  int? applicantDesignationRole;
+  int? region;
+  int? district;
+  int? constituency;
+  String? community;
+  String? subscriptionDuration;
+  String? subscriptionDate;
+  String? subscriptionFee;
+  String? logo;
+  String? profilePicture;
+  int? status;
+  int? archive;
+  AccountCategory? accountCategory;
+  String? website;
+  String? creationDate;
+  int? updatedBy;
+  String? updateDate;
+  dynamic? subscriptionInfo;
+  List<CountryInfo>? countryInfo;
 
   ClientAccountInfo(
-    this.id,
-    this.name,
-    this.accountType,
-    this.country,
-    this.stateProvince,
-    this.applicantFirstname,
-    this.applicantSurname,
-    this.applicantEmail,
-    this.applicantDesignationRole,
-    this.region,
-    this.district,
-    this.constituency,
-    this.community,
-    this.subscriptionDuration,
-    this.subscriptionDate,
-    this.subscriptionFee,
-    this.logo,
-    this.status,
-    this.archive,
-    this.website,
-    this.creationDate,
-    this.accountCategory,
-    this.accountCategoryClientId,
-    this.subscriptionInfo,
-    this.firstName,
-    this.surName,
-    this.profilePicture,
-    this.phone,
-    this.email,
-    this.accountId,
-    this.branchID,
-    this.branchName,
-    this.clientToken,
-  );
+      {this.id,
+      this.name,
+      this.accountType,
+      this.country,
+      this.stateProvince,
+      this.applicantFirstname,
+      this.applicantSurname,
+      this.applicantGender,
+      this.applicantPhone,
+      this.applicantEmail,
+      this.applicantDesignationRole,
+      this.region,
+      this.district,
+      this.constituency,
+      this.community,
+      this.subscriptionDuration,
+      this.subscriptionDate,
+      this.subscriptionFee,
+      this.logo,
+      this.status,
+      this.archive,
+      this.accountCategory,
+      this.website,
+      this.creationDate,
+      this.updatedBy,
+      this.updateDate,
+      this.subscriptionInfo,
+      this.countryInfo});
 
-  factory ClientAccountInfo.fromJson(Map<String, dynamic> json,
-      Map<String, dynamic> userjson, var branchName, var clientToken) {
-    return ClientAccountInfo(
-        json['id'],
-        json['name'],
-        json['accountType'],
-        json['country'],
-        json['stateProvince'],
-        json['applicantFirstname'],
-        json['applicantSurname'],
-        json['applicantEmail'],
-        json['applicantDesignationRole'],
-        json['region'],
-        json['district'],
-        json['constituency'],
-        json['community'],
-        json['subscriptionDuration'],
-        json['subscriptionDate'],
-        json['subscriptionFee'],
-        json['logo'],
-        json['status'],
-        json['archive'],
-        json['website'],
-        json['creationDate'],
-        json['accountCategory']['category'],
-        json['accountCategory']['clientId'],
-        json['subscriptionInfo'],
-        userjson['firstname'],
-        userjson['surname'],
-        userjson['profilePicture'],
-        userjson['phone'],
-        userjson['email'],
-        userjson['accountID'],
-        userjson['branchId'],
-        branchName,
-        clientToken);
+  ClientAccountInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    accountType = json['accountType'];
+    country = json['country'];
+    stateProvince = json['stateProvince'];
+    applicantFirstname = json['applicantFirstname'];
+    applicantSurname = json['applicantSurname'];
+    applicantGender = json['applicantGender'];
+    applicantPhone = json['applicantPhone'];
+    applicantEmail = json['applicantEmail'];
+    applicantDesignationRole = json['applicantDesignationRole'];
+    region = json['region'];
+    district = json['district'];
+    constituency = json['constituency'];
+    community = json['community'];
+    subscriptionDuration = json['subscriptionDuration'];
+    subscriptionDate = json['subscriptionDate'];
+    subscriptionFee = json['subscriptionFee'];
+    logo = json['logo'];
+    status = json['status'];
+    archive = json['archive'];
+    accountCategory = json['accountCategory'] != null
+        ? AccountCategory.fromJson(json['accountCategory'])
+        : null;
+    website = json['website'];
+    creationDate = json['creationDate'];
+    updatedBy = json['updatedBy'];
+    updateDate = json['updateDate'];
+    subscriptionInfo = json['subscriptionInfo'];
+    if (json['countryInfo'] != null) {
+      countryInfo = <CountryInfo>[];
+      json['countryInfo'].forEach((v) {
+        countryInfo!.add(CountryInfo.fromJson(v));
+      });
+    }
   }
 
-  factory ClientAccountInfo.fromMap(Map<String, dynamic> json) {
-    return ClientAccountInfo(
-        json['id'],
-        json['name'],
-        json['accountType'],
-        json['country'],
-        json['stateProvince'],
-        json['applicantFirstname'],
-        json['applicantSurname'],
-        json['applicantEmail'],
-        json['applicantDesignationRole'],
-        json['region'],
-        json['district'],
-        json['constituency'],
-        json['community'],
-        json['subscriptionDuration'],
-        json['subscriptionDate'],
-        json['subscriptionFee'],
-        json['logo'],
-        json['status'],
-        json['archive'],
-        json['website'],
-        json['creationDate'],
-        json['accountCategory']['category'],
-        json['accountCategory']['clientId'],
-        json['subscriptionInfo'],
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null);
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['accountType'] = accountType;
+    data['country'] = country;
+    data['stateProvince'] = stateProvince;
+    data['applicantFirstname'] = applicantFirstname;
+    data['applicantSurname'] = applicantSurname;
+    data['applicantGender'] = applicantGender;
+    data['applicantPhone'] = applicantPhone;
+    data['applicantEmail'] = applicantEmail;
+    data['applicantDesignationRole'] = applicantDesignationRole;
+    data['region'] = region;
+    data['district'] = district;
+    data['constituency'] = constituency;
+    data['community'] = community;
+    data['subscriptionDuration'] = subscriptionDuration;
+    data['subscriptionDate'] = subscriptionDate;
+    data['subscriptionFee'] = subscriptionFee;
+    data['logo'] = logo;
+    data['status'] = status;
+    data['archive'] = archive;
+    if (accountCategory != null) {
+      data['accountCategory'] = accountCategory!.toJson();
+    }
+    data['website'] = website;
+    data['creationDate'] = creationDate;
+    data['updatedBy'] = updatedBy;
+    data['updateDate'] = updateDate;
+    data['subscriptionInfo'] = subscriptionInfo;
+    if (countryInfo != null) {
+      data['countryInfo'] = countryInfo!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class AccountCategory {
+  int? id;
+  int? clientId;
+  String? category;
+  int? createdBy;
+  int? updatedBy;
+  String? updateDate;
+  String? date;
+
+  AccountCategory(
+      {this.id,
+      this.clientId,
+      this.category,
+      this.createdBy,
+      this.updatedBy,
+      this.updateDate,
+      this.date});
+
+  AccountCategory.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    clientId = json['clientId'];
+    category = json['category'];
+    createdBy = json['createdBy'];
+    updatedBy = json['updatedBy'];
+    updateDate = json['updateDate'];
+    date = json['date'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['clientId'] = clientId;
+    data['category'] = category;
+    data['createdBy'] = createdBy;
+    data['updatedBy'] = updatedBy;
+    data['updateDate'] = updateDate;
+    data['date'] = date;
+    return data;
+  }
+}
+
+class CountryInfo {
+  int? id;
+  String? name;
+  String? short;
+  String? code;
+
+  CountryInfo({this.id, this.name, this.short, this.code});
+
+  CountryInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    short = json['short'];
+    code = json['code'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['short'] = short;
+    data['code'] = code;
+    return data;
   }
 }

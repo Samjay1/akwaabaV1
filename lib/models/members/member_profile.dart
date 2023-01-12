@@ -1,37 +1,34 @@
+import 'package:akwaaba/models/general/user.dart';
+
 class MemberProfile {
-  var id;
-  String? firstname;
-  String? surname;
-  String? profilePicture;
-  String? phone;
-  String? email;
-  int? clientId;
-  String? memberToken;
+  String? expiry;
+  String? token;
+  User? user;
+  List<dynamic>? nonFieldErrors;
 
-  MemberProfile(this.id, this.firstname, this.surname, this.profilePicture,
-      this.phone, this.email, this.clientId, this.memberToken);
+  MemberProfile({
+    required this.expiry,
+    this.token,
+    this.user,
+    this.nonFieldErrors,
+  });
 
-  factory MemberProfile.fromJson(Map<String, dynamic> json, memberToken) {
+  factory MemberProfile.fromJson(Map<String, dynamic> json) {
     return MemberProfile(
-        json['id'],
-        json['firstname'],
-        json['surname'],
-        json['profilePicture'],
-        json['phone'],
-        json['email'],
-        json['clientId'],
-        memberToken);
+      expiry: json['expiry'],
+      token: json['token'],
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+      nonFieldErrors: json['non_field_errors'],
+    );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['firstname'] = firstname;
-    data['surname'] = surname;
-    data['profilePicture'] = profilePicture;
-    data['phone'] = phone;
-    data['email'] = email;
-    data['clientId'] = clientId;
+    data['expiry'] = expiry;
+    data['token'] = token;
+    if (user != null) {
+      data['user'] = user!.toJson();
+    }
     return data;
   }
 }

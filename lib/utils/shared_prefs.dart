@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
-import 'package:akwaaba/providers/attendance_provider.dart';
+import 'package:akwaaba/providers/event_provider.dart';
 import 'package:akwaaba/versionOne/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +48,7 @@ class SharedPrefs {
     if (sd.getString("member_info") != null) {
       try {
         return MemberProfile.fromJson(
-            json.decode(sd.getString("member_info")!), '');
+            json.decode(sd.getString("member_info")!));
       } catch (e) {
         return null;
       }
@@ -113,6 +113,7 @@ class SharedPrefs {
   }
 
   void logout(BuildContext context) {
+    Provider.of<EventProvider>(context, listen: false).clearData();
     clear();
     //close the drawers
     Navigator.pushReplacement(

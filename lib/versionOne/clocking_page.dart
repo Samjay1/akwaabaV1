@@ -7,6 +7,7 @@ import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/models/general/branch.dart';
@@ -397,51 +398,93 @@ class _ClockingPageState extends State<ClockingPage> {
                       )
                     : const SizedBox(),
 
-                const SizedBox(
-                  height: 8,
+                SizedBox(
+                  height: displayHeight(context) * 0.02,
                 ),
                 const Divider(
                   height: 2,
-                  color: Colors.orange,
+                  color: primaryColor,
                 ),
-                const SizedBox(
-                  height: 8,
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                        child: CustomElevatedButton(
-                            label: "Clocking List",
-                            textColor: Colors.white,
-                            radius: 5,
-                            function: () {
-                              setState(() {
-                                clockingListState = true;
-                                checkAll = false;
-                                clockingProvider.selectedAttendees.clear();
-                                debugPrint(
-                                    '     clockingListState = $clockingListState');
-                              });
-                            })),
-                    const SizedBox(
-                      width: 16,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            clockingListState = true;
+                            checkAll = false;
+                            clockingProvider.selectedAttendees.clear();
+                            debugPrint(
+                                '     clockingListState = $clockingListState');
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(12.0),
+                          decoration: BoxDecoration(
+                              color: clockingListState
+                                  ? primaryColor
+                                  : Colors.transparent,
+                              border:
+                                  Border.all(color: primaryColor, width: 1.2),
+                              borderRadius: BorderRadius.circular(
+                                  AppRadius.borderRadius8)),
+                          child: Center(
+                            child: Text(
+                              'Clocking List',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                                color: clockingListState
+                                    ? whiteColor
+                                    : primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: displayWidth(context) * 0.03,
                     ),
                     Expanded(
-                      child: CustomElevatedButton(
-                          label: "Clocked List",
-                          color: Colors.green,
-                          textColor: Colors.white,
-                          radius: 5,
-                          function: () {
-                            setState(() {
-                              clockingListState = false;
-                              checkAll = false;
-                              clockingProvider.selectedAbsentees.clear();
-                              debugPrint(
-                                  '     clockingListState = $clockingListState');
-                            });
-                          }),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            clockingListState = false;
+                            checkAll = false;
+                            clockingProvider.selectedAbsentees.clear();
+                            debugPrint(
+                                'clockingListState = $clockingListState');
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(12.0),
+                          decoration: BoxDecoration(
+                              color: !clockingListState
+                                  ? primaryColor
+                                  : Colors.transparent,
+                              border:
+                                  Border.all(color: primaryColor, width: 1.2),
+                              borderRadius: BorderRadius.circular(
+                                  AppRadius.borderRadius8)),
+                          child: Center(
+                            child: Text(
+                              'Clocked List',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                                color: !clockingListState
+                                    ? whiteColor
+                                    : primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -732,8 +775,6 @@ class _ClockingPageState extends State<ClockingPage> {
                       val as MemberCategory;
                 });
                 clockingProvider.getGroups(); // call method to fetch all groups
-                clockingProvider
-                    .getGenders(); // call method to fetch all genders
               },
             ),
           ),
@@ -901,48 +942,51 @@ class _ClockingPageState extends State<ClockingPage> {
           ],
         ),
 
-        // LabelWidgetContainer(
-        //     label: "Date",
-        //     child: FormButton(
-        //       label: clockingProvider.selectedDate == null
-        //           ? 'Select Date'
-        //           : clockingProvider.selectedDate!
-        //               .toIso8601String()
-        //               .substring(0, 10),
-        //       function: () {
-        //         displayDateSelector(
-        //           initialDate: DateTime.now(),
-        //           context: context,
-        //         ).then((value) {
-        //           if (value != null) {
-        //             setState(() {
-        //               clockingProvider.selectedDate = value;
-        //               debugPrint(
-        //                   "DateTime: ${clockingProvider.selectedDate!.toIso8601String().substring(0, 10)}");
-        //             });
-        //           }
-        //         });
-        //       },
-        //     )),
-
         SizedBox(
           height: displayHeight(context) * 0.008,
         ),
 
-        CustomElevatedButton(
-            label: "Filter",
-            //showProgress: clockingProvider.loading,
-            function: () {
-              clockingProvider.validateFilterFields();
-              if (clockingProvider.loading) {
-                // scroll to bottom of the screen to show the loading progress
-                _controller.animateTo(
-                  _controller.position.maxScrollExtent,
-                  duration: const Duration(seconds: 3),
-                  curve: Curves.ease,
-                );
-              }
-            }),
+        Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                  onTap: () => clockingProvider.clearFilters(),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: fillColor,
+                      borderRadius:
+                          BorderRadius.circular(AppRadius.borderRadius8),
+                    ),
+                    child: const Text(
+                      'Clear',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red, fontSize: 15),
+                    ),
+                  )),
+            ),
+            SizedBox(
+              width: displayWidth(context) * 0.04,
+            ),
+            Expanded(
+              child: CustomElevatedButton(
+                  label: "Filter",
+                  radius: AppRadius.borderRadius8,
+                  function: () {
+                    clockingProvider.validateFilterFields();
+                    if (clockingProvider.loading) {
+                      // scroll to bottom of the screen to show the loading progress
+                      _controller.animateTo(
+                        _controller.position.maxScrollExtent,
+                        duration: const Duration(seconds: 3),
+                        curve: Curves.ease,
+                      );
+                    }
+                  }),
+            ),
+          ],
+        ),
         // LabelWidgetContainer(
         //   label: "Set Mass Time",
         //   child: FormButton(

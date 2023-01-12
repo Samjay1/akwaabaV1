@@ -2,6 +2,7 @@ import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/clocking_api.dart';
 import 'package:akwaaba/Networks/group_api.dart';
+import 'package:akwaaba/dialogs_modals/info_dialog.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/gender.dart';
 import 'package:akwaaba/models/general/group.dart';
@@ -121,7 +122,7 @@ class PostClockingProvider extends ChangeNotifier {
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
-      getGroups();
+      getSubGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -138,6 +139,7 @@ class PostClockingProvider extends ChangeNotifier {
       if (_branches.isNotEmpty) {
         selectedBranch = _branches[0];
       }
+      getGroups();
       // getGenders();
     } catch (err) {
       setLoading(false);
@@ -172,7 +174,7 @@ class PostClockingProvider extends ChangeNotifier {
       );
       debugPrint('Groups: ${_groups.length}');
       // selectedGroup = _groups[0];
-      getSubGroups();
+
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');
@@ -182,6 +184,10 @@ class PostClockingProvider extends ChangeNotifier {
   }
 
   Future<void> refreshList() async {
+    if (selectedPastMeetingEvent == null) {
+      showErrorToast('Please select a date and meeting or event to proceed');
+      return;
+    }
     await getAllAbsentees(
       meetingEventModel: selectedPastMeetingEvent!,
     );
@@ -197,7 +203,7 @@ class PostClockingProvider extends ChangeNotifier {
               : selectedBranch!.id!,
           memberCategoryId: selectedMemberCategory!.id!,
         );
-        getGenders();
+
         debugPrint('Sub Groups: ${_subGroups.length}');
       } catch (err) {
         setLoading(false);
@@ -216,8 +222,18 @@ class PostClockingProvider extends ChangeNotifier {
       );
       if (_pastMeetingEvents.isNotEmpty) {
         selectedPastMeetingEvent = _pastMeetingEvents[0];
+      } else {
+        showInfoDialog(
+          'ok',
+          context: _context!,
+          title: 'Sorry!',
+          content:
+              'No meetings/events were held on this date. \nPlease try again with another date',
+          onTap: () => Navigator.pop(_context!),
+        );
       }
-      // getGenders();
+      getGenders();
+      getGroups();
     } catch (err) {
       debugPrint('Error PMs: ${err.toString()}');
       showErrorToast(err.toString());
@@ -340,8 +356,10 @@ class PostClockingProvider extends ChangeNotifier {
     selectedGroup = null;
     selectedSubGroup = null;
     selectedMemberCategory = null;
+    selectedPastMeetingEvent = null;
     minAgeTEC.clear();
     maxAgeTEC.clear();
+    notifyListeners();
   }
 
 // clocks a member in of a meeting or event by admin
@@ -362,10 +380,10 @@ class PostClockingProvider extends ChangeNotifier {
         debugPrint("ClockingTime $time");
         debugPrint("SUCCESS ${response.message}");
         debugPrint("ClockingId ${attendee.attendance!.id!}");
-        // remove from list after member is been clocked in
-        if (_absentees.contains(attendee)) {
-          _absentees.remove(attendee);
-        }
+        // // remove from list after member is been clocked in
+        // if (_absentees.contains(attendee)) {
+        //   _absentees.remove(attendee);
+        // }
       } else {
         // Perform bulk clock-in
         for (Attendee? attendee in _selectedAbsentees) {
@@ -379,14 +397,13 @@ class PostClockingProvider extends ChangeNotifier {
           attendee.attendance!.memberId!.selected = false;
         }
         _selectedAbsentees.clear();
-        // refresh list when there is bulk operation
-        getAllAbsentees(
-          meetingEventModel: selectedPastMeetingEvent!,
-        );
       }
-      Navigator.of(context).pop();
-
+      // refresh list when there is bulk operation
+      getAllAbsentees(
+        meetingEventModel: selectedPastMeetingEvent!,
+      );
       showNormalToast(response.message);
+      Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error Clocking In: ${err.toString()}');
@@ -530,14 +547,60 @@ class PostClockingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // cancel clocking for meeting
+  Future<void> cancelClocking({
+    required BuildContext context,
+    required Attendee? attendee,
+    required String? time,
+  }) async {
+    try {
+      showLoadingDialog(context);
+      var response;
+      if (selectedAttendees.isEmpty) {
+        // Perform individual start break
+        response = await ClockingAPI.cancelClocking(
+          clockingId: attendee!.attendance!.id!,
+          time: time!,
+        );
+        debugPrint("SUCCESS ${response.message}");
+        debugPrint("ClockingId ${attendee.attendance!.id!}");
+      } else {
+        // Perform bulk start break
+        for (Attendee? attendee in selectedAttendees) {
+          response = await ClockingAPI.cancelClocking(
+            clockingId: attendee!.attendance!.id!,
+            time: time!,
+          );
+        }
+        _selectedAttendees.clear();
+      }
+      // refresh list when there is bulk operation
+      getAllAbsentees(
+        meetingEventModel: selectedPastMeetingEvent!,
+      );
+      if (response.message == null) {
+        showErrorToast(response.nonFieldErrors![0]);
+      } else {
+        showNormalToast(response.message);
+        debugPrint("SUCCESS ${response.message}");
+      }
+      Navigator.pop(context);
+    } catch (err) {
+      Navigator.pop(context);
+      debugPrint('Error ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
   void validateFilterFields(context) {
-    if (selectedPastMeetingEvent != null ||
-        selectedMemberCategory != null ||
+    if (selectedDate != null ||
+        selectedPastMeetingEvent != null ||
         selectedBranch != null ||
+        selectedMemberCategory != null ||
         selectedGender != null ||
         selectedGroup != null ||
         selectedSubGroup != null ||
-        selectedDate != null ||
         minAgeTEC.text.isNotEmpty ||
         maxAgeTEC.text.isNotEmpty) {
       getAllAbsentees(
@@ -597,47 +660,45 @@ class PostClockingProvider extends ChangeNotifier {
   // search through clocked member list by name
   void searchAttendeesByName({required String searchText}) {
     List<Attendee?> results = [];
-    if (_tempAttendees.isNotEmpty) {
-      if (searchText.isEmpty) {
-        results = _tempAttendees;
-      } else {
-        results = _tempAttendees
-            .where((element) =>
-                element!.attendance!.memberId!.firstname!
-                    .toString()
-                    .toLowerCase()
-                    .contains(searchText.toLowerCase()) ||
-                element.attendance!.memberId!.surname!
-                    .toString()
-                    .toLowerCase()
-                    .contains(searchText.toLowerCase()))
-            .toList();
-      }
-      _attendees = results;
+    if (searchText.isEmpty) {
+      results = _tempAttendees;
+    } else {
+      results = _tempAttendees
+          .where((element) =>
+              element!.attendance!.memberId!.firstname!
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()) ||
+              element.attendance!.memberId!.surname!
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()))
+          .toList();
     }
+    _attendees = results;
+    notifyListeners();
   }
 
   // search through clocked member list by name
   void searchAttendeesById({required String searchText}) {
     List<Attendee?> results = [];
-    if (_tempAttendees.isNotEmpty) {
-      if (searchText.isEmpty) {
-        results = _tempAttendees;
-      } else {
-        results = _tempAttendees
-            .where((element) =>
-                element!.attendance!.memberId!.id!
-                    .toString()
-                    .toLowerCase()
-                    .contains(searchText.toLowerCase()) ||
-                element.attendance!.memberId!.surname!
-                    .toString()
-                    .toLowerCase()
-                    .contains(searchText.toLowerCase()))
-            .toList();
-      }
-      _attendees = results;
+    if (searchText.isEmpty) {
+      results = _tempAttendees;
+    } else {
+      results = _tempAttendees
+          .where((element) =>
+              element!.attendance!.memberId!.id!
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()) ||
+              element.attendance!.memberId!.surname!
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()))
+          .toList();
     }
+    _attendees = results;
+    notifyListeners();
   }
 
   String getPostClockDateTime() {
@@ -647,7 +708,7 @@ class PostClockingProvider extends ChangeNotifier {
     return '$date$time';
   }
 
-  void clearData() {
+  Future<void> clearData() async {
     clearFilters();
     postClockTime = null;
     _attendees.clear();
@@ -655,12 +716,5 @@ class PostClockingProvider extends ChangeNotifier {
     _selectedAttendees.clear();
     _absentees.clear();
     _tempAbsentees.clear();
-    selectedDate = null;
-    selectedBranch = null;
-    selectedGender = null;
-    selectedGroup = null;
-    selectedSubGroup = null;
-    selectedMemberCategory = null;
-    selectedPastMeetingEvent = null;
   }
 }

@@ -1,10 +1,6 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
-import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
-import 'package:akwaaba/models/admin/clocked_member.dart';
-import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/post_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -100,7 +96,7 @@ class PostClockClockingMemberItem extends StatelessWidget {
                       context: context,
                       title: 'Sorry!',
                       content:
-                          'Please select the time to clock-in $attendeeName. \nThank you!',
+                          'Please select the time to clock-in on behalf of $attendeeName. \nThank you!',
                       onTap: () => Navigator.pop(context),
                     );
                   } else {
@@ -113,7 +109,7 @@ class PostClockClockingMemberItem extends StatelessWidget {
                         content: ConfirmDialog(
                           title: 'Clock In',
                           content:
-                              'Are you sure you want to clock-in $attendeeName?',
+                              'Are you sure you want to clock-in on behalf of $attendeeName?',
                           onConfirmTap: () {
                             Navigator.pop(context);
                             postClockingProvider.clockMemberIn(

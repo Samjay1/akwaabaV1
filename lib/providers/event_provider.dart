@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
-class AttendanceProvider extends ChangeNotifier {
+class EventProvider extends ChangeNotifier {
   String? _memberToken;
   bool _loading = false;
   bool _clocking = false;
@@ -83,6 +83,7 @@ class AttendanceProvider extends ChangeNotifier {
         context,
         memberToken,
       );
+      debugPrint("TODAY Meeting: ${_todayMeetingEventList.length}");
       if (_todayMeetingEventList.isNotEmpty) {
         for (var meeting in _todayMeetingEventList) {
           await checkClockedMeetings(
@@ -144,6 +145,19 @@ class AttendanceProvider extends ChangeNotifier {
     debugPrint("Latitude: ${response.results![0].latitude}");
     debugPrint("Longitude: ${response.results![0].longitude}");
 
+    if (response.results == null) {
+      Navigator.of(context).pop();
+      debugPrint('You\'re not within the radius of the premise');
+      showInfoDialog(
+        'ok',
+        context: context,
+        title: 'Hey there!',
+        content:
+            'Sorry, we were unable to get your meeting location. Please contact your admin and try again.',
+        onTap: () => Navigator.pop(context),
+      );
+      return;
+    }
     double totalDistance = calculateDistance(
       currentUserLocation.latitude,
       currentUserLocation.longitude,
@@ -299,6 +313,10 @@ class AttendanceProvider extends ChangeNotifier {
         time: time ?? getClockingTime(),
       );
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
+      meetingEventModel.startBreak = response.startBreak;
+      meetingEventModel.endBreak = response.endBreak;
+      meetingEventModel.inTime = response.inTime;
+      meetingEventModel.outTime = response.outTime;
       debugPrint("SUCCESS ${response.message}");
       showNormalToast('You\'re Welcome');
       Navigator.pop(context);
@@ -321,6 +339,10 @@ class AttendanceProvider extends ChangeNotifier {
         time: time ?? getClockingTime(),
       );
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
+      meetingEventModel.startBreak = response.startBreak;
+      meetingEventModel.endBreak = response.endBreak;
+      meetingEventModel.inTime = response.inTime;
+      meetingEventModel.outTime = response.outTime;
       debugPrint("SUCCESS ${response.message}");
       showNormalToast('Good Bye!');
       Navigator.pop(context);
@@ -343,14 +365,19 @@ class AttendanceProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
-      // update fields of meeting event model
-      meetingEventModel.inOrOut = response.inOrOut;
-      meetingEventModel.startBreak = response.startBreak;
-      meetingEventModel.endBreak = response.endBreak;
-      meetingEventModel.inTime = response.inTime;
-      meetingEventModel.outTime = response.outTime;
+
+      if (response.message == null) {
+        showErrorToast(response.nonFieldErrors![0]);
+      } else {
+        // update fields of meeting event model
+        meetingEventModel.inOrOut = response.inOrOut;
+        meetingEventModel.startBreak = response.startBreak;
+        meetingEventModel.endBreak = response.endBreak;
+        meetingEventModel.inTime = response.inTime;
+        meetingEventModel.outTime = response.outTime;
+        showNormalToast('Enjoy Break Time!');
+      }
       debugPrint("SUCCESS ${response.message}");
-      showNormalToast('Enjoy Break Time!');
       Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);
@@ -371,14 +398,18 @@ class AttendanceProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
-      // update fields of meeting event model
-      meetingEventModel.inOrOut = response.inOrOut;
-      meetingEventModel.startBreak = response.startBreak;
-      meetingEventModel.endBreak = response.endBreak;
-      meetingEventModel.inTime = response.inTime;
-      meetingEventModel.outTime = response.outTime;
-      debugPrint("SUCCESS ${response.message}");
-      showNormalToast('Welcome Back!');
+      //showNormalToast('Welcome Back!');
+      if (response.message == null) {
+        showErrorToast(response.nonFieldErrors![0]);
+      } else {
+        // update fields of meeting event model
+        meetingEventModel.inOrOut = response.inOrOut;
+        meetingEventModel.startBreak = response.startBreak;
+        meetingEventModel.endBreak = response.endBreak;
+        meetingEventModel.inTime = response.inTime;
+        meetingEventModel.outTime = response.outTime;
+        showNormalToast('Welcome Back!');
+      }
       Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);
@@ -388,6 +419,7 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+// checks if member has clcoked in for a meeting
   Future<void> checkClockedMeetings({
     required MeetingEventModel meetingEventModel,
     required int branchId,
@@ -398,7 +430,6 @@ class AttendanceProvider extends ChangeNotifier {
               .substring(0, 10)
               .trim();
       var response = await AttendanceAPI.getAttendanceList(
-        //meetingEventIds: [meetingEventModel.id!],
         meetingEventModel: meetingEventModel,
         filterDate: currentDate,
       );
@@ -412,7 +443,7 @@ class AttendanceProvider extends ChangeNotifier {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      debugPrint('Error ${err.toString()}');
+      debugPrint('Error CCM: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();

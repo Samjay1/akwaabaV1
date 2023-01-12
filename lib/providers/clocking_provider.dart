@@ -135,7 +135,7 @@ class ClockingProvider extends ChangeNotifier {
       if (_memberCategories.isNotEmpty) {
         selectedMemberCategory = _memberCategories[0];
       }
-      // getGroups();
+      getGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -152,7 +152,7 @@ class ClockingProvider extends ChangeNotifier {
       if (_branches.isNotEmpty) {
         selectedBranch = _branches[0];
       }
-      // getGenders();
+      getGenders();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Branch: ${err.toString()}');
@@ -184,7 +184,7 @@ class ClockingProvider extends ChangeNotifier {
       );
       debugPrint('Groups: ${_groups.length}');
       // selectedGroup = _groups[0];
-      // getSubGroups();
+      getSubGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');
@@ -325,13 +325,14 @@ class ClockingProvider extends ChangeNotifier {
   }
 
   void clearFilters() {
-    selectedDate = null;
+    selectedBranch = null;
     selectedGender = null;
     selectedGroup = null;
     selectedSubGroup = null;
     selectedMemberCategory = null;
     minAgeTEC.clear();
     maxAgeTEC.clear();
+    notifyListeners();
   }
 
 // clocks a member in of a meeting or event by admin
@@ -352,10 +353,10 @@ class ClockingProvider extends ChangeNotifier {
         );
         debugPrint("SUCCESS ${response.message}");
         debugPrint("ClockingId ${attendee.attendance!.id!}");
-        // remove from list after member is been clocked in
-        if (_absentees.contains(attendee)) {
-          _absentees.remove(attendee);
-        }
+        // // remove from list after member is been clocked in
+        // if (_absentees.contains(attendee)) {
+        //   _absentees.remove(attendee);
+        // }
       } else {
         // Perform bulk clock-in
         for (Attendee? attendee in _selectedAbsentees) {
@@ -369,9 +370,9 @@ class ClockingProvider extends ChangeNotifier {
           attendee.attendance!.memberId!.selected = false;
         }
         _selectedAbsentees.clear();
-        // refresh list when there is bulk operation
-        getAllAbsentees(meetingEventModel: selectedCurrentMeeting);
       }
+      // refresh list when there is bulk operation
+      getAllAbsentees(meetingEventModel: selectedCurrentMeeting);
       showNormalToast(response.message!);
       Navigator.pop(context);
     } catch (err) {
@@ -536,7 +537,7 @@ class ClockingProvider extends ChangeNotifier {
       } else {
         // Perform bulk start break
         for (Attendee? attendee in selectedAttendees) {
-          response = await ClockingAPI.endBreak(
+          response = await ClockingAPI.cancelClocking(
             clockingId: attendee!.attendance!.id!,
             time: time ?? getCurrentClockingTime(),
           );
@@ -621,42 +622,40 @@ class ClockingProvider extends ChangeNotifier {
   // search through clocked member list by name
   void searchAttendeesByName({required String searchText}) {
     List<Attendee?> results = [];
-    if (_tempAttendees.isNotEmpty) {
-      if (searchText.isEmpty) {
-        results = _tempAttendees;
-      } else {
-        results = _tempAttendees
-            .where((element) =>
-                element!.attendance!.memberId!.firstname!
-                    .toString()
-                    .toLowerCase()
-                    .contains(searchText.toLowerCase()) ||
-                element.attendance!.memberId!.surname!
-                    .toString()
-                    .toLowerCase()
-                    .contains(searchText.toLowerCase()))
-            .toList();
-      }
-      _attendees = results;
+    if (searchText.isEmpty) {
+      results = _tempAttendees;
+    } else {
+      results = _tempAttendees
+          .where((element) =>
+              element!.attendance!.memberId!.firstname!
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()) ||
+              element.attendance!.memberId!.surname!
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()))
+          .toList();
     }
+    _attendees = results;
+    notifyListeners();
   }
 
   // search through clocked member list by name
   void searchAttendeesById({required String searchText}) {
     List<Attendee?> results = [];
-    if (_tempAttendees.isNotEmpty) {
-      if (searchText.isEmpty) {
-        results = _tempAttendees;
-      } else {
-        results = _tempAttendees
-            .where((element) => element!.additionalInfo!.id!
-                .toString()
-                .toLowerCase()
-                .contains(searchText.toLowerCase()))
-            .toList();
-      }
-      _attendees = results;
+    if (searchText.isEmpty) {
+      results = _tempAttendees;
+    } else {
+      results = _tempAttendees
+          .where((element) => element!.additionalInfo!.id!
+              .toString()
+              .toLowerCase()
+              .contains(searchText.toLowerCase()))
+          .toList();
     }
+    _attendees = results;
+    notifyListeners();
   }
 
   void clearData() {

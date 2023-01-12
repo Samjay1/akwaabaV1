@@ -29,7 +29,7 @@ class ProfileShimmerItem extends StatelessWidget {
             height: 18,
             decoration: BoxDecoration(
               color: whiteColor,
-              borderRadius: BorderRadius.circular(AppDimen.borderRadius16),
+              borderRadius: BorderRadius.circular(AppRadius.borderRadius16),
             ),
           ),
           SizedBox(
@@ -40,7 +40,7 @@ class ProfileShimmerItem extends StatelessWidget {
             height: 18,
             decoration: BoxDecoration(
               color: whiteColor,
-              borderRadius: BorderRadius.circular(AppDimen.borderRadius16),
+              borderRadius: BorderRadius.circular(AppRadius.borderRadius16),
             ),
           ),
           SizedBox(

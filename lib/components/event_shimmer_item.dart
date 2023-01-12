@@ -14,7 +14,7 @@ class EventShimmerItem extends StatelessWidget {
         padding: const EdgeInsets.all(6.0),
         decoration: BoxDecoration(
           color: whiteColor,
-          borderRadius: BorderRadius.circular(AppDimen.borderRadius13),
+          borderRadius: BorderRadius.circular(AppRadius.borderRadius13),
         ),
         child: Column(
           children: [
@@ -28,7 +28,7 @@ class EventShimmerItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: whiteColor,
                       borderRadius:
-                          BorderRadius.circular(AppDimen.borderRadius16),
+                          BorderRadius.circular(AppRadius.borderRadius16),
                     ),
                   ),
                 ),
@@ -41,7 +41,7 @@ class EventShimmerItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: whiteColor,
                       borderRadius:
-                          BorderRadius.circular(AppDimen.borderRadius16),
+                          BorderRadius.circular(AppRadius.borderRadius16),
                     ),
                   ),
                 ),
@@ -59,7 +59,7 @@ class EventShimmerItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: whiteColor,
                       borderRadius: BorderRadius.circular(
-                        AppDimen.borderRadius16,
+                        AppRadius.borderRadius16,
                       ),
                     ),
                   ),
@@ -73,7 +73,7 @@ class EventShimmerItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: whiteColor,
                       borderRadius: BorderRadius.circular(
-                        AppDimen.borderRadius16,
+                        AppRadius.borderRadius16,
                       ),
                     ),
                   ),
@@ -92,7 +92,7 @@ class EventShimmerItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: whiteColor,
                       borderRadius: BorderRadius.circular(
-                        AppDimen.borderRadius16,
+                        AppRadius.borderRadius16,
                       ),
                     ),
                   ),
@@ -106,7 +106,7 @@ class EventShimmerItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: whiteColor,
                       borderRadius: BorderRadius.circular(
-                        AppDimen.borderRadius16,
+                        AppRadius.borderRadius16,
                       ),
                     ),
                   ),

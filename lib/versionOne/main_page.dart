@@ -1,13 +1,19 @@
+import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
+import 'package:akwaaba/dialogs_modals/contact_admin_dialog.dart';
+import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/versionOne/attendance_history_page.dart';
 import 'package:akwaaba/versionOne/device_activation_request_page.dart';
 import 'package:akwaaba/versionOne/home_page.dart';
 import 'package:akwaaba/versionOne/login_page.dart';
-import 'package:akwaaba/screens/all_events_page.dart';
+import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/screens/akwaaba_modules.dart';
 import 'package:akwaaba/screens/web_admin_setup_page.dart';
 import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
@@ -18,6 +24,7 @@ import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../components/custom_cached_image_widget.dart';
 import '../utils/shared_prefs.dart';
 import '../versionOne/attendance_report_page.dart';
@@ -183,7 +190,7 @@ class _MainPageState extends State<MainPage> {
                 return adminDrawerView(
                   logo: data.getUser?.logo,
                   name: data.getUser?.name,
-                  branch: data.getUser?.branchName,
+                  branch: data.branch?.name,
                   id: data.getUser?.id,
                 );
               },
@@ -191,8 +198,7 @@ class _MainPageState extends State<MainPage> {
           : Consumer<MemberProvider>(
               builder: (context, data, child) {
                 return memberDrawerView(
-                  logo: data.clientAccountInfo?.logo,
-                  name: data.clientAccountInfo?.name,
+                  clientAccountInfo: data.clientAccountInfo,
                   branch: data.branch?.name,
                 );
               },
@@ -259,37 +265,23 @@ class _MainPageState extends State<MainPage> {
                       physics: const BouncingScrollPhysics(),
                       children: [
                         drawerItemView(
-                          title: "Database",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const WebViewPage(
-                                        url:
-                                            'https://fees.akwaabasoftware.com/api/dashboard/',
-                                        title: 'Database')));
-                          },
-                        ),
-
-                        drawerItemView(
                           title: "View Members",
                           iconData: Icons.phone_android,
                           function: () {
                             Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const WebViewPage(
-                                        url:
-                                            'https://fees.akwaabasoftware.com/api/dashboard/',
-                                        title: 'View Members')));
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (_) => const WebViewPage(
+                            //         url:
+                            //             'https://fees.akwaabasoftware.com/api/dashboard/',
+                            //         title: 'View Members'),
+                            //   ),
+                            // );
                           },
                         ),
-
                         drawerItemView(
-                          title: "Create Meetings",
+                          title: "Create Meetings/Event",
                           iconData: Icons.phone_android,
                           function: () {
                             Navigator.pop(context);
@@ -297,14 +289,12 @@ class _MainPageState extends State<MainPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => const WebViewPage(
-                                        url:
-                                            'https://fees.akwaabasoftware.com/api/dashboard/',
+                                        url: AppConstants.createMeetingUrl,
                                         title: 'Create Meetings')));
                           },
                         ),
-
                         drawerItemView(
-                          title: "Scheduled Meetings",
+                          title: "Update Meetings/Event",
                           iconData: Icons.phone_android,
                           function: () {
                             Navigator.pop(context);
@@ -312,82 +302,21 @@ class _MainPageState extends State<MainPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => const WebViewPage(
-                                        url:
-                                            'https://fees.akwaabasoftware.com/api/dashboard/',
-                                        title: 'Scheduled Meetings')));
+                                        url: AppConstants.updateMeetingUrl,
+                                        title: 'Update Meetings')));
                           },
                         ),
-
-                        drawerItemView(
-                          title: "Assign Absent/Leave Status",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const WebViewPage(
-                                        url:
-                                            'https://fees.akwaabasoftware.com/api/dashboard/',
-                                        title: 'Assign Absent/Leave Status')));
-                          },
-                        ),
-
-                        drawerItemView(
-                          title: "View Absent/Leave Status",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const WebViewPage(
-                                        url:
-                                            'https://fees.akwaabasoftware.com/api/dashboard/',
-                                        title: 'View Absent/Leave Status')));
-                          },
-                        ),
-
-                        drawerItemView(
-                          title: "Cash Manager",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const WebViewPage(
-                                        url:
-                                            'https://fees.akwaabasoftware.com/api/dashboard/',
-                                        title: 'Cash Manager')));
-                          },
-                        ),
-
-                        drawerItemView(
-                          title: "Account Subscription",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const WebViewPage(
-                                        url:
-                                            'https://fees.akwaabasoftware.com/api/dashboard/',
-                                        title: 'Account Subscription')));
-                          },
-                        ),
-
                         drawerItemView(
                           title: "Attendance History",
                           iconData: Icons.history,
                           function: () {
                             Navigator.pop(context); //close the drawer
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const AttendanceHistoryPage()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AttendanceHistoryPage(),
+                              ),
+                            );
                           },
                           index: 8,
                         ),
@@ -397,23 +326,174 @@ class _MainPageState extends State<MainPage> {
                           function: () {
                             Navigator.pop(context);
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const AttendanceReportPage()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AttendanceReportPage(),
+                              ),
+                            );
                           },
                         ),
-                        // drawerItemView(
-                        //   title: "Request Device Activation",
-                        //   iconData: Icons.phone_android,
-                        //   function: () {
-                        //     Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //             builder: (_) =>
-                        //                 const DeviceActivationRequestPage()));
-                        //   },
-                        // ),
+                        drawerItemView(
+                          title: "Assign Leave/Excuse",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.assignLeaveUrl,
+                                    title: 'Assign Leave/Excuse'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "View Assigned Leave/Excuse",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.viewLeaveUrl,
+                                    title: 'View Assigned Leave/Excuse'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Approve Device Request",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.deviceRequestUrl,
+                                    title: 'Approve Device Request'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Follow-Up Report",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                  url: AppConstants.followUpReportUrl,
+                                  title: 'Follow-Up Report',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        Container(
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(width: 0, color: Colors.grey),
+                            ),
+                          ),
+                          child: ExpansionTile(
+                            title: const Text(
+                              'Akwaaba Modules',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            iconColor: blackColor,
+                            collapsedIconColor: blackColor,
+                            collapsedTextColor: blackColor,
+                            tilePadding:
+                                const EdgeInsets.symmetric(horizontal: 26),
+                            children: [
+                              drawerItemView(
+                                title: "Database Manager",
+                                iconData: Icons.phone_android,
+                                function: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const WebViewPage(
+                                        url: AppConstants.databaseManagerUrl,
+                                        title: 'Database Manager',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              drawerItemView(
+                                title: "Attendance Manager",
+                                iconData: Icons.phone_android,
+                                function: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const WebViewPage(
+                                        url: AppConstants.databaseManagerUrl,
+                                        title: 'Attendance Manager',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              drawerItemView(
+                                title: "Cash Manager",
+                                iconData: Icons.phone_android,
+                                function: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const WebViewPage(
+                                        url: AppConstants.cashManagerUrl,
+                                        title: 'Cash Manager',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              drawerItemView(
+                                title: "Akwaaba Messenger",
+                                iconData: Icons.phone_android,
+                                function: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const WebViewPage(
+                                        url: AppConstants.akwaabaMessengerUrl,
+                                        title: 'Akwaaba Messenger',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              drawerItemView(
+                                title: "School Manager",
+                                iconData: Icons.phone_android,
+                                function: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const WebViewPage(
+                                        url: AppConstants.akwaabaEduUrl,
+                                        title: 'School Manager',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
                         drawerItemView(
                             title: "Log out",
                             iconData: Icons.logout_rounded,
@@ -451,10 +531,14 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget memberDrawerView({
-    var logo,
-    var name,
-    var branch,
+    required ClientAccountInfo clientAccountInfo,
+    required String branch,
   }) {
+    var phone = clientAccountInfo.countryInfo == null
+        ? formattedPhone('+233', clientAccountInfo.applicantPhone!)
+        : formattedPhone(clientAccountInfo.countryInfo![0].code!,
+            clientAccountInfo.applicantPhone!);
+    debugPrint("Phone: $phone");
     return Drawer(
       backgroundColor: Colors.grey.shade300,
       child: Column(
@@ -470,7 +554,7 @@ class _MainPageState extends State<MainPage> {
                 Align(
                   alignment: Alignment.center,
                   child: CustomCachedImageWidget(
-                    url: logo ?? "",
+                    url: clientAccountInfo.logo ?? "",
                     height: 100,
                   ),
                 ),
@@ -478,7 +562,7 @@ class _MainPageState extends State<MainPage> {
                   height: 8,
                 ),
                 Text(
-                  "${name ?? ""}",
+                  clientAccountInfo.name ?? "",
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
@@ -506,27 +590,66 @@ class _MainPageState extends State<MainPage> {
                     return ListView(
                       physics: const BouncingScrollPhysics(),
                       children: [
-                        // drawerItemView(title: "My Account", iconData: Icons.person_outline,
-                        //     function: (){
-                        //       Navigator.pop(context);//close the drawer
-                        //       Navigator.push(context, MaterialPageRoute(builder: (_)=>const
-                        //       MyAccountPage()));
-                        //     },index: 8),
-
                         drawerItemView(
-                          title: "Attendance History",
-                          iconData: Icons.history,
+                          title: "View Members",
+                          iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context); //close the drawer
+                            Navigator.pop(context);
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const AttendanceHistoryPage()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const MembersPage(),
+                              ),
+                            );
                           },
-                          index: 8,
                         ),
-
+                        drawerItemView(
+                          title: "Update Profile",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.akwaabaProfileUrl,
+                                    title: 'Update Profile'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Apply Leave/Excuse",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                  url: AppConstants.applyLeaveUrl,
+                                  title: 'Apply Leave/Excuse',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "View Leave/Absent Status ",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                  url: AppConstants.viewLeaveStatusUrl,
+                                  title: 'View Leave/Absent Status',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                         drawerItemView(
                           title: "Attendance Report",
                           iconData: Icons.bar_chart,
@@ -538,19 +661,116 @@ class _MainPageState extends State<MainPage> {
                                         const AttendanceReportPage()));
                           },
                         ),
-
+                        drawerItemView(
+                          title: "Attendance History",
+                          iconData: Icons.history,
+                          function: () {
+                            Navigator.pop(context); //close the drawer
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AttendanceHistoryPage(),
+                              ),
+                            );
+                          },
+                          index: 8,
+                        ),
                         drawerItemView(
                           title: "Request Device Activation",
                           iconData: Icons.phone_android,
                           function: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const DeviceActivationRequestPage()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    const DeviceActivationRequestPage(),
+                              ),
+                            );
                           },
                         ),
-
+                        drawerItemView(
+                          title: "Akwaaba Messenger",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.akwaabaMessengerUrl,
+                                    title: 'Akwaaba Messenger'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Make Payment",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.akwaabaPaymentUrl,
+                                    title: 'Make Payment'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Student Account",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                    url: AppConstants.akwaabaEduUrl,
+                                    title: 'Student Account'),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Contact Admin",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            //TODO: show popup with call and whatsapp buttons
+                            showModalBottomSheet(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(
+                                        AppRadius.borderRadius16),
+                                    topRight: Radius.circular(
+                                        AppRadius.borderRadius16),
+                                  ),
+                                ),
+                                context: context,
+                                builder: (context) {
+                                  return ContactAdminDialog(
+                                      title: 'Are you experiencing issues?',
+                                      subtitle:
+                                          'You can reach out to your admin on',
+                                      firstText: 'Call',
+                                      secondText: 'Whatsapp',
+                                      onCallTap: () {
+                                        Navigator.of(context).pop();
+                                        makePhoneCall(phone);
+                                      },
+                                      onWhatsappTap: () async {
+                                        Navigator.of(context).pop();
+                                        openwhatsapp(
+                                          context,
+                                          phone,
+                                          'Hello ${clientAccountInfo.name}, \n\nI\'m experiencing an issue and I need an assistance.',
+                                        );
+                                      });
+                                });
+                          },
+                        ),
                         drawerItemView(
                             title: "Log out",
                             iconData: Icons.logout_rounded,
@@ -620,12 +840,15 @@ class _MainPageState extends State<MainPage> {
       required VoidCallback function,
       int? index}) {
     //index is not relevant, you can ignore it
-    return GestureDetector(
+    return InkWell(
       onTap: function,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(width: 0, color: Colors.grey))),
+          border: Border(
+            bottom: BorderSide(width: 0, color: Colors.grey),
+          ),
+        ),
         child: Row(
           children: [
             //Icon(iconData,color: primaryColor,),

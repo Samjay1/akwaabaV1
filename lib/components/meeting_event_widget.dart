@@ -14,10 +14,50 @@ class MeetingEventWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var date = DateUtil.formatStringDate(
-      DateFormat.yMMMEd(),
-      date: DateTime.parse(meetingEventModel!.updateDate!),
-    );
+    var date = '';
+    // check if there are many dates are added
+    if (!meetingEventModel!.isRecuring! &&
+        meetingEventModel!.upcomingDates != null) {
+      if (meetingEventModel!.upcomingDates!.length > 1) {
+        for (var i = 0; i < meetingEventModel!.upcomingDates!.length; i++) {
+          if (DateTime.now().toIso8601String().substring(0, 10).trim() ==
+              DateTime.parse(meetingEventModel!.upcomingDates![i].date!)
+                  .toIso8601String()
+                  .substring(0, 10)
+                  .trim()) {
+            debugPrint(
+                'Current Date: ${DateTime.now().toIso8601String().substring(0, 10)}');
+            debugPrint(
+                'First Date: ${DateTime.parse(meetingEventModel!.upcomingDates![i].date!).toIso8601String().substring(0, 10)}');
+            date = DateUtil.formatStringDate(
+              DateFormat.yMMMEd(),
+              date: DateTime.parse(
+                  meetingEventModel!.upcomingDates![i + 1].date!),
+            );
+            debugPrint(
+                'Next Date: ${DateTime.parse(meetingEventModel!.upcomingDates![i + 1].date!).toIso8601String().substring(0, 10)}');
+            break;
+          }
+        }
+      }
+      // check if there is only one date added
+      else {
+        date = DateUtil.formatStringDate(
+          DateFormat.yMMMEd(),
+          date: DateTime.parse(meetingEventModel!.upcomingDates![0].date!),
+        );
+      }
+    } else {
+      date = DateUtil.formatStringDate(
+        DateFormat.yMMMEd(),
+        date: DateTime.parse(meetingEventModel!.upcomingDays != null
+            ? meetingEventModel!.upcomingDays![0].endDate!
+            : meetingEventModel!.upcomingDates != null
+                ? meetingEventModel!.upcomingDates![0].date!
+                : meetingEventModel!.updateDate!),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Card(

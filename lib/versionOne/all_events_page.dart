@@ -2,7 +2,7 @@ import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/attendance_provider.dart';
+import 'package:akwaaba/providers/event_provider.dart';
 import 'package:akwaaba/screens/all_events_filter_page.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +33,7 @@ class _AllEventsPageState extends State<AllEventsPage> {
   final TextEditingController _controllerSearch = TextEditingController();
 
   int listType = 0; //0= events, 1 = meetings
-  int selectedEventType = -1;
+  int selectedEventType = 0;
   SharedPreferences? prefs;
   var memberToken;
 
@@ -100,34 +100,37 @@ class _AllEventsPageState extends State<AllEventsPage> {
             ),
 
             Container(
+              padding: EdgeInsets.only(right: 12.0),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(width: 0.0, color: Colors.grey.shade400)),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 0.0, color: Colors.grey.shade400),
+              ),
               child: Row(
-                children: List.generate(2, (index) {
-                  return Expanded(
-                    child: Row(
-                      children: [
-                        Row(
-                          children: [
-                            Radio(
-                                activeColor: primaryColor,
-                                value: index,
-                                groupValue: selectedEventType,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    selectedEventType = index;
-                                  });
-                                }),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(index == 0 ? "Events" : "Meetings"),
-                          ],
-                        ),
-                      ],
-                    ),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(3, (index) {
+                  return Row(
+                    children: [
+                      Radio(
+                          activeColor: primaryColor,
+                          value: index,
+                          groupValue: selectedEventType,
+                          onChanged: (int? value) {
+                            setState(() {
+                              selectedEventType = index;
+                            });
+                          }),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        index == 0
+                            ? 'All'
+                            : index == 1
+                                ? "Events"
+                                : "Meetings",
+                      ),
+                    ],
                   );
                 }),
               ),
@@ -189,7 +192,7 @@ class _AllEventsPageState extends State<AllEventsPage> {
             //   return  MeetingEventWidget(events[index]);
             // }),),
 
-            context.watch<AttendanceProvider>().loading
+            context.watch<EventProvider>().loading
                 ? Shimmer.fromColors(
                     baseColor: greyColorShade300,
                     highlightColor: greyColorShade100,
@@ -199,29 +202,25 @@ class _AllEventsPageState extends State<AllEventsPage> {
                       itemCount: 10,
                     ),
                   )
-                : SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    width: MediaQuery.of(context).size.width,
-                    child: Consumer<AttendanceProvider>(
-                      builder: (context, data, child) {
-                        if (data.upcomingMeetings.isEmpty) {
-                          return const EmptyStateWidget(
-                            text:
-                                'You currently have no upcoming \nmeetings at the moment!',
-                          );
-                        }
-                        return ListView.builder(
-                            itemCount: data.upcomingMeetings.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              var item = data.upcomingMeetings[index];
-                              debugPrint('MEETING LIST ${item.memberType}');
-                              return upcomingEvents(
-                                meetingEvent: item,
-                              );
-                            });
-                      },
-                    ),
+                : Consumer<EventProvider>(
+                    builder: (context, data, child) {
+                      if (data.upcomingMeetings.isEmpty) {
+                        return const EmptyStateWidget(
+                          text:
+                              'You currently have no upcoming \nmeetings at the moment!',
+                        );
+                      }
+                      return ListView.builder(
+                          itemCount: data.upcomingMeetings.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            var item = data.upcomingMeetings[index];
+                            debugPrint('MEETING LIST ${item.memberType}');
+                            return upcomingEvents(
+                              meetingEvent: item,
+                            );
+                          });
+                    },
                   )
           ],
         ),

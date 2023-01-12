@@ -7,10 +7,14 @@ import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
+import 'package:akwaaba/providers/general_provider.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/general/deviceInfoModel.dart';
 import '../utils/widget_utils.dart';
@@ -71,36 +75,65 @@ class MemberProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login(
-      {required BuildContext context,
-      var phoneEmail,
-      var password,
-      required bool checkDeviceInfo}) async {
-    debugPrint('PROVIDER LOGIN CLIENT');
-    _showLoginProgressIndicator = true;
-    MemberAPI()
-        .login(
-            context: context,
-            phoneEmail: phoneEmail,
-            password: password,
-            checkDeviceInfo: checkDeviceInfo)
-        .then((value) {
-      if (value == 'login_error') {
-        showErrorSnackBar(context, "Incorrect Login Details");
+  void validateInputFields({
+    required BuildContext context,
+    required bool isAdmin,
+    required String phoneEmail,
+    required String password,
+  }) {
+    FocusManager.instance.primaryFocus?.unfocus(); //hide keyboard
+    if (phoneEmail.isEmpty) {
+      showErrorSnackBar(context, "Please input your email address or phone");
+      return;
+    }
+    if (password.isEmpty) {
+      showErrorSnackBar(context, "Please input your password");
+      return;
+    }
+    login(
+      context: context,
+      phoneEmail: phoneEmail,
+      password: password,
+      isAdmin: isAdmin,
+    );
+  }
+
+  Future<void> login({
+    required BuildContext context,
+    required phoneEmail,
+    required password,
+    required bool isAdmin,
+  }) async {
+    setLoading(true);
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _memberProfile = await MemberAPI().login(
+        context: context,
+        phoneEmail: phoneEmail,
+        password: password,
+        checkDeviceInfo: false,
+      );
+      if (_memberProfile != null && _memberProfile!.nonFieldErrors != null) {
+        setLoading(false);
+        showErrorToast(_memberProfile!.nonFieldErrors![0]);
         return;
-      } else if (value == 'network_error') {
-        showErrorSnackBar(context, "Network Issue");
-        return;
-      } else {
-        _memberProfile = value;
-        getClientAccountInfo(
-          context: context,
-          clientId: _memberProfile!.clientId!,
-        );
-        debugPrint('TESTING ${value.memberToken}');
-        debugPrint('INFO ${_memberProfile!.toJson()}');
       }
-    });
+      Provider.of<GeneralProvider>(context, listen: false)
+          .setAdminStatus(isAdmin: isAdmin);
+      prefs.setString('token', _memberProfile!.token!);
+      SharedPrefs().setUserType(userType: "member");
+      SharedPrefs()
+          .saveLoginCredentials(emailOrPhone: phoneEmail, password: password);
+      SharedPrefs().saveMemberInfo(memberProfile: _memberProfile!);
+      getClientAccountInfo(
+        context: context,
+        clientId: _memberProfile!.user!.clientId!,
+      );
+    } catch (err) {
+      setLoading(false);
+      debugPrint('Error: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
     notifyListeners();
   }
 
@@ -114,9 +147,11 @@ class MemberProvider with ChangeNotifier {
     )
         .then((value) {
       if (value == 'login_error') {
+        setLoading(false);
         showErrorSnackBar(context, "Incorrect Login Details");
         return;
       } else if (value == 'network_error') {
+        setLoading(false);
         showErrorSnackBar(context, "Network Issue");
         return;
       } else {
@@ -142,12 +177,13 @@ class MemberProvider with ChangeNotifier {
       branchId: branchId,
     )
         .then((value) {
-      _showLoginProgressIndicator = false;
       notifyListeners();
       if (value == 'login_error') {
+        setLoading(false);
         showErrorSnackBar(context, "Incorrect Login Details");
         return;
       } else if (value == 'network_error') {
+        setLoading(false);
         showErrorSnackBar(context, "Network Issue");
         return;
       } else {
@@ -166,18 +202,20 @@ class MemberProvider with ChangeNotifier {
   }) async {
     MemberAPI()
         .getIdentityNumber(
-      memberId: _memberProfile!.id!,
+      memberId: _memberProfile!.user!.id!,
     )
         .then((value) {
-      _showLoginProgressIndicator = false;
       notifyListeners();
       if (value == 'login_error') {
+        setLoading(false);
         showErrorSnackBar(context, "Incorrect Login Details");
         return;
       } else if (value == 'network_error') {
+        setLoading(false);
         showErrorSnackBar(context, "Network Issue");
         return;
       } else {
+        setLoading(false);
         _identityNumber = value;
         Navigator.pushReplacement(
           context,
@@ -203,7 +241,7 @@ class MemberProvider with ChangeNotifier {
         'deviceId': androidDeviceInfo.id
       };
 
-      print('Running on $deviceInfoObj'); //deviceType
+      print('Running on $deviceInfoObj'); // deviceType
 
       deviceInfoModel = DeviceInfoModel.fromJson(deviceInfoObj);
     } else if (Platform.isIOS) {

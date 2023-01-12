@@ -6,11 +6,12 @@ import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/components/profile_shimmer_item.dart';
 import 'package:akwaaba/components/text_shimmer_item.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/attendance_provider.dart';
+import 'package:akwaaba/providers/event_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
@@ -52,7 +53,7 @@ class _HomePageState extends State<HomePage> {
 
   late MemberProvider memberProvider;
 
-  late AttendanceProvider attendanceProvider;
+  late EventProvider eventProvider;
 
   @override
   void initState() {
@@ -82,22 +83,21 @@ class _HomePageState extends State<HomePage> {
       // print('HOMEPAGE member id ${memberProfile.id}');
 
       Future.delayed(Duration.zero, () {
-        if (Provider.of<AttendanceProvider>(context, listen: false)
+        if (Provider.of<EventProvider>(context, listen: false)
                 .upcomingMeetings
                 .isEmpty ||
-            Provider.of<AttendanceProvider>(context, listen: false)
+            Provider.of<EventProvider>(context, listen: false)
                 .todayMeetings
                 .isEmpty) {
-          Provider.of<AttendanceProvider>(context, listen: false)
+          Provider.of<EventProvider>(context, listen: false)
               .getUpcomingMeetingEvents(
             memberToken: memberToken,
             context: context,
           );
           debugPrint('Loading fresh data:...');
         }
-
         setState(() {});
-        Provider.of<AttendanceProvider>(context, listen: false)
+        Provider.of<EventProvider>(context, listen: false)
             .getUpcomingMeetingEvents(
           memberToken: memberToken,
           context: context,
@@ -106,26 +106,17 @@ class _HomePageState extends State<HomePage> {
         // MemberAPI().getRecentClocking(context,memberToken,6908);
         // setState(() {});
       });
-
-      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //   Provider.of<AttendanceProvider>(context, listen: false)
-      //       .getUpcomingMeetingEvents(
-      //     memberToken: memberToken,
-      //     context: context,
-      //   );
-      //   setState(() {});
-      // });
     } else {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('token');
       Future.delayed(Duration.zero, () {
-        if (Provider.of<AttendanceProvider>(context, listen: false)
+        if (Provider.of<EventProvider>(context, listen: false)
                 .upcomingMeetings
                 .isEmpty ||
-            Provider.of<AttendanceProvider>(context, listen: false)
+            Provider.of<EventProvider>(context, listen: false)
                 .todayMeetings
                 .isEmpty) {
-          Provider.of<AttendanceProvider>(context, listen: false)
+          Provider.of<EventProvider>(context, listen: false)
               .getUpcomingMeetingEvents(
             memberToken: memberToken,
             context: context,
@@ -140,14 +131,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    attendanceProvider = context.watch<AttendanceProvider>();
-    screenHeight = MediaQuery.of(context).size.height;
-    screenWidth = MediaQuery.of(context).size.width;
-    ClientAccountInfo? userInfo =
-        Provider.of<ClientProvider>(context, listen: false).getUser;
-    var profileImage = userInfo?.profilePicture;
-    var firstName = userInfo?.firstName;
-    var surName = userInfo?.surName;
+    eventProvider = context.watch<EventProvider>();
 
     var subscriptionFee = 0;
     var subscriptionDuration = 0;
@@ -166,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                 height: 24,
               ),
 
-              attendanceProvider.loading
+              eventProvider.loading
                   ? Shimmer.fromColors(
                       baseColor: greyColorShade300,
                       highlightColor: greyColorShade100,
@@ -176,10 +160,11 @@ class _HomePageState extends State<HomePage> {
                       ? Consumer<MemberProvider>(
                           builder: (context, data, child) {
                             return memberHeaderView(
-                              firstName: data.memberProfile.firstname,
-                              surName: data.memberProfile.surname,
+                              firstName: data.memberProfile.user.firstname,
+                              surName: data.memberProfile.user.surname,
                               userId: data.identityNumber,
-                              profileImage: data.memberProfile.profilePicture,
+                              profileImage:
+                                  data.memberProfile.user.profilePicture,
                             );
                           },
                         )
@@ -187,10 +172,10 @@ class _HomePageState extends State<HomePage> {
                           ? Consumer<ClientProvider>(
                               builder: (context, data, child) {
                               return adminHeaderView(
-                                firstName: data.getUser?.firstName,
-                                surName: data.getUser?.surName,
-                                userId: data.getUser?.email,
-                                profileImage: data.getUser?.profilePicture,
+                                firstName: data.getUser?.applicantFirstname,
+                                surName: data.getUser?.applicantSurname,
+                                userId: data.getUser?.applicantEmail,
+                                profileImage: data.adminProfile?.profilePicture,
                               );
                             })
                           : const Text("Unknown User type"),
@@ -218,19 +203,18 @@ class _HomePageState extends State<HomePage> {
                 height: 36,
               ),
 
-
               const SizedBox(
                 height: 36,
               ),
 
-              attendanceProvider.loading
+              eventProvider.loading
                   ? Shimmer.fromColors(
                       baseColor: greyColorShade300,
                       highlightColor: greyColorShade100,
                       child: const TextShimmerItem(),
                     )
                   : const Text(
-                      "Current Meeting",
+                      "Today's Meetings",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
@@ -241,7 +225,7 @@ class _HomePageState extends State<HomePage> {
 
               //----------------------------------------------------------------------
 
-              attendanceProvider.loading
+              eventProvider.loading
                   ? Shimmer.fromColors(
                       baseColor: greyColorShade300,
                       highlightColor: greyColorShade100,
@@ -253,11 +237,11 @@ class _HomePageState extends State<HomePage> {
                     )
                   : RefreshIndicator(
                       onRefresh: () async =>
-                          await attendanceProvider.getUpcomingMeetingEvents(
+                          await eventProvider.getUpcomingMeetingEvents(
                         memberToken: memberToken,
                         context: context,
                       ),
-                      child: Consumer<AttendanceProvider>(
+                      child: Consumer<EventProvider>(
                         builder: (context, data, child) {
                           if (data.todayMeetings.isEmpty) {
                             return const EmptyStateWidget(
@@ -270,7 +254,6 @@ class _HomePageState extends State<HomePage> {
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   final item = data.todayMeetings[index];
-
                                   return todaysEvents(
                                     meetingEventModel: item,
                                   );
@@ -308,57 +291,56 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
               //----------------------------------------------------------------------
-              const SizedBox(
-                height: 12,
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(defaultRadius),
-                child: Theme(
-                  data: Theme.of(context)
-                      .copyWith(dividerColor: Colors.transparent),
-                  child: ExpansionTile(
-                    tilePadding: EdgeInsets.zero,
-                    backgroundColor: backgroundColor,
-                    collapsedBackgroundColor: backgroundColor,
-                    initiallyExpanded: true,
-                    title: const Text(
-                      "Upcoming",
-                      style: TextStyle(
-                        color: textColorPrimary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,
-                        fontFamily: "Lato",
-                      ),
-                    ),
-                    children: <Widget>[
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        width: MediaQuery.of(context).size.width,
-                        child: Consumer<AttendanceProvider>(
-                          builder: (context, data, child) {
-                            if (data.upcomingMeetings.isEmpty) {
-                              return const EmptyStateWidget(
-                                text:
-                                    'You currently have no upcoming \nmeetings at the moment!',
-                              );
-                            }
-                            return ListView.builder(
-                                itemCount: data.upcomingMeetings.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  var item = data.upcomingMeetings[index];
-
-                                  return upcomingEvents(
-                                    meetingEvent: item,
-                                  );
-                                });
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+              // const SizedBox(
+              //   height: 12,
+              // ),
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(defaultRadius),
+              //   child: Theme(
+              //     data: Theme.of(context)
+              //         .copyWith(dividerColor: Colors.transparent),
+              //     child: ExpansionTile(
+              //       tilePadding: EdgeInsets.zero,
+              //       backgroundColor: backgroundColor,
+              //       collapsedBackgroundColor: backgroundColor,
+              //       initiallyExpanded: true,
+              //       title: const Text(
+              //         "Upcoming",
+              //         style: TextStyle(
+              //           color: textColorPrimary,
+              //           fontWeight: FontWeight.w600,
+              //           fontSize: 19,
+              //           fontFamily: "Lato",
+              //         ),
+              //       ),
+              //       children: <Widget>[
+              //         SizedBox(
+              //           height: MediaQuery.of(context).size.height * 0.3,
+              //           width: MediaQuery.of(context).size.width,
+              //           child: Consumer<AttendanceProvider>(
+              //             builder: (context, data, child) {
+              //               if (data.upcomingMeetings.isEmpty) {
+              //                 return const EmptyStateWidget(
+              //                   text:
+              //                       'You currently have no upcoming \nmeetings at the moment!',
+              //                 );
+              //               }
+              //               return ListView.builder(
+              //                   itemCount: data.upcomingMeetings.length,
+              //                   shrinkWrap: true,
+              //                   itemBuilder: (context, index) {
+              //                     var item = data.upcomingMeetings[index];
+              //                     return upcomingEvents(
+              //                       meetingEvent: item,
+              //                     );
+              //                   });
+              //             },
+              //           ),
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -763,7 +745,7 @@ class _HomePageState extends State<HomePage> {
   }) {
     var date = DateUtil.formatStringDate(
       DateFormat.yMMMEd(),
-      date: DateTime.parse(meetingEventModel.updateDate!),
+      date: DateTime.now(),
     );
 
     return Card(
@@ -882,48 +864,139 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       )),
-                      CircleAvatar(
-                        radius: 13,
-                        backgroundColor: Colors.grey.shade200,
-                        child: const Icon(
-                          Icons.chevron_right,
-                          size: 24,
-                          color: Colors.orange,
-                        ),
-                      )
+                      // CircleAvatar(
+                      //   radius: 13,
+                      //   backgroundColor: Colors.grey.shade200,
+                      //   child: const Icon(
+                      //     Icons.chevron_right,
+                      //     size: 24,
+                      //     color: Colors.orange,
+                      //   ),
+                      // )
                     ],
                   ),
                 ),
+                // SizedBox(
+                //   height: displayHeight(context) * 0.005,
+                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(23))),
-                      onPressed: () {
-                        // set meeting as selected
-                        context
-                            .read<AttendanceProvider>()
-                            .setSelectedMeeting(meetingEventModel);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ExcuseInputPage(),
+                    Row(
+                      children: [
+                        const Icon(
+                          CupertinoIcons.alarm,
+                          size: 16,
+                          color: primaryColor,
+                        ),
+                        Text(
+                          meetingEventModel.inTime == null
+                              ? 'CI: N/A'
+                              : 'CI: ${DateUtil.formatStringDate(
+                                  DateFormat.jm(),
+                                  date:
+                                      DateTime.parse(meetingEventModel.inTime),
+                                ).toLowerCase()}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: textColorLight,
                           ),
-                        );
-                      },
-                      child: const Text("Excuse"),
+                        ),
+                      ],
                     ),
+                    Row(
+                      children: [
+                        const Icon(
+                          CupertinoIcons.alarm,
+                          size: 16,
+                          color: primaryColor,
+                        ),
+                        Text(
+                          meetingEventModel.outTime == null
+                              ? 'CO: N/A'
+                              : 'CO: ${DateUtil.formatStringDate(
+                                  DateFormat.jm(),
+                                  date:
+                                      DateTime.parse(meetingEventModel.outTime),
+                                ).toLowerCase()}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: blackColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
+                ),
+                meetingEventModel.hasBreakTime!
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                CupertinoIcons.alarm,
+                                size: 16,
+                                color: primaryColor,
+                              ),
+                              Text(
+                                meetingEventModel.startBreak == null
+                                    ? 'SB: N/A'
+                                    : 'SB: ${DateUtil.formatStringDate(
+                                        DateFormat.jm(),
+                                        date: DateTime.parse(
+                                            meetingEventModel.startBreak),
+                                      ).toLowerCase()}',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: textColorLight,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Icon(
+                                CupertinoIcons.alarm,
+                                size: 16,
+                                color: primaryColor,
+                              ),
+                              Text(
+                                meetingEventModel.endBreak == null
+                                    ? 'EB: N/A'
+                                    : 'EB: ${DateUtil.formatStringDate(
+                                        DateFormat.jm(),
+                                        date: DateTime.parse(
+                                            meetingEventModel.endBreak),
+                                      ).toLowerCase()}',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: blackColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : const SizedBox(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     // clock-in or clock-out button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          primary: Colors.green,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(23))),
+                        primary: Colors.green,
+                        elevation: 0.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(AppRadius.borderRadius16),
+                        ),
+                      ),
                       onPressed: () {
-                        Provider.of<AttendanceProvider>(context, listen: false)
+                        Provider.of<EventProvider>(context, listen: false)
                             .setSelectedMeeting(meetingEventModel);
 
                         if (meetingEventModel.outTime != null) {
@@ -949,7 +1022,7 @@ class _HomePageState extends State<HomePage> {
                                     '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you are within the meeting premises to continue.',
                                 onConfirmTap: () {
                                   Navigator.pop(context);
-                                  Provider.of<AttendanceProvider>(context,
+                                  Provider.of<EventProvider>(context,
                                           listen: false)
                                       .getMeetingCoordinates(
                                     context: context,
@@ -970,48 +1043,20 @@ class _HomePageState extends State<HomePage> {
                           ? 'Clock Out'
                           : 'Clock In'),
                     ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.grey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(23))),
-                        onPressed: () {
-                          Provider.of<AttendanceProvider>(context,
-                                  listen: false)
-                              .setSelectedMeeting(meetingEventModel);
-                          showModalBottomSheet(
-                            context: context,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16.0),
-                                topRight: Radius.circular(16.0),
-                              ),
-                            ),
-                            builder: (context) => const AgendaDialog(),
-                          );
-                        },
-                        child: const Text(
-                          "Agenda",
-                          style: TextStyle(color: Colors.white),
-                        )),
+
                     // if user has clocked out, there is no need to show 'Start Break' button
-                    meetingEventModel.hasBreakTime! &&
-                            meetingEventModel.outTime == null
+                    meetingEventModel.hasBreakTime!
                         ? ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.blue,
+                              primary: primaryColor,
+                              elevation: 0.0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(23),
+                                borderRadius: BorderRadius.circular(
+                                    AppRadius.borderRadius16),
                               ),
                             ),
                             onPressed: () {
-                              Provider.of<AttendanceProvider>(context,
-                                      listen: false)
+                              Provider.of<EventProvider>(context, listen: false)
                                   .setSelectedMeeting(meetingEventModel);
 
                               if (meetingEventModel.startBreak != null &&
@@ -1056,7 +1101,7 @@ class _HomePageState extends State<HomePage> {
                                       //'${meeting.startBreak != null ? 'Are you sure you want to end?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
                                       onConfirmTap: () {
                                         Navigator.pop(context);
-                                        Provider.of<AttendanceProvider>(context,
+                                        Provider.of<EventProvider>(context,
                                                 listen: false)
                                             .getMeetingCoordinates(
                                           context: context,
@@ -1086,6 +1131,60 @@ class _HomePageState extends State<HomePage> {
                             : const SizedBox()
                   ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.grey,
+                            elevation: 0.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  AppRadius.borderRadius16),
+                            ),
+                          ),
+                          onPressed: () {
+                            Provider.of<EventProvider>(context, listen: false)
+                                .setSelectedMeeting(meetingEventModel);
+                            showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(16.0),
+                                  topRight: Radius.circular(16.0),
+                                ),
+                              ),
+                              builder: (context) => const AgendaDialog(),
+                            );
+                          },
+                          child: const Text(
+                            "Agenda",
+                            style: TextStyle(color: Colors.white),
+                          )),
+                    ),
+                    // ElevatedButton(
+                    //   style: ElevatedButton.styleFrom(
+                    //       primary: Colors.red,
+                    //     elevation: 0.0,
+                    //       shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(23))),
+                    //   onPressed: () {
+                    //     // set meeting as selected
+                    //     context
+                    //         .read<AttendanceProvider>()
+                    //         .setSelectedMeeting(meetingEventModel);
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (_) => ExcuseInputPage(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: const Text("Excuse"),
+                    // ),
+                  ],
+                ),
               ],
             ),
           ],
@@ -1099,7 +1198,7 @@ class _HomePageState extends State<HomePage> {
   }) {
     var date = DateUtil.formatStringDate(
       DateFormat.yMMMEd(),
-      date: DateTime.parse(meetingEventModel.updateDate!),
+      date: DateTime.now(),
     );
     return Card(
       elevation: 4,
