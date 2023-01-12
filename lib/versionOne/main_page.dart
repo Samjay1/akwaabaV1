@@ -9,6 +9,7 @@ import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/versionOne/alerts_page.dart';
 import 'package:akwaaba/versionOne/attendance_history_page.dart';
 import 'package:akwaaba/versionOne/device_activation_request_page.dart';
 import 'package:akwaaba/versionOne/home_page.dart';
@@ -183,6 +184,36 @@ class _MainPageState extends State<MainPage> {
                       : "More",
           style: const TextStyle(color: Colors.black),
         ),
+        actions: [
+
+          Stack(
+            children: [
+              IconButton(
+                onPressed:(){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                  const AlertsPage()));
+                },
+                icon: Icon(Icons.notifications),
+                tooltip:'hello',
+                isSelected:true,
+              ),
+              Positioned(
+                right: 5,
+                  top: 5,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(color: Colors.orange),
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                    child: Text('3', style: TextStyle(fontSize: 14),),
+                  )
+              )
+            ],
+          ),
+          SizedBox(width: 5,),
+        ],
       ),
       drawer: userType == 'admin'
           ? Consumer<ClientProvider>(
