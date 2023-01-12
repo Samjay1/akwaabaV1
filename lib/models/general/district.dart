@@ -1,5 +1,5 @@
 class District {
-  String? id;
+  int? id;
   String? location;
 
   District(

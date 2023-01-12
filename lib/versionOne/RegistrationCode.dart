@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/member_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,52 +17,53 @@ class RegistrationCode extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Registration Code'),
       ),
-      body: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                'Enter Registration Code',
-                textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 20),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              FormTextField(
-                controller: _controller,
-                label: "Registration code",
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_controller.text.trim().isEmpty) {
-                    showErrorSnackBar(
-                        context, "Please input your registration code");
-                    return;
+      body: Container(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            const SizedBox(height: 20,),
+            const Text('Enter Registration Code', style: TextStyle(fontSize: 20),),
+            const SizedBox(height: 20,),
+            FormTextField(controller: _controller,label: "Registration code",),
+            ElevatedButton(onPressed: (){
+              if (_controller.text.trim().isEmpty) {
+                showErrorSnackBar(context, "Please input your registration code");
+                return;
+              }
+              if(regType == 'member'){
+                var regCode = _controller.text.trim();
+                MemberAPI.searchRegCode(regCode: regCode).
+                then((value){
+                  if(value !=null){
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(content: Text('Registration Code has been accepted')));
+                    debugPrint('clientID = $value');
+                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageIndividual(clientID: value,),));
+                  }else{
+                    showErrorSnackBar(context, "Please a valid Registration Code");
                   }
-                  if (regType == 'member') {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const MemberRegistrationPageIndividual(),
-                        ));
-                  } else {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const MemberRegistrationPageOrganization(),
-                        ));
+                });
+
+              }else{
+                var regCode = _controller.text.trim();
+                MemberAPI.searchRegCode(regCode: regCode).
+                then((value){
+                  if(value !=null){
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(content: Text('Registration Code has been accepted')));
+                    debugPrint('clientID = $value');
+                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageOrganization(clientID: value,),));
+                  }else{
+                    showErrorSnackBar(context, "Please a valid Registration Code");
                   }
-                },
-                child: const Text('Proceed'),
-              )
-            ],
-          )),
+                });
+
+              }
+            },
+                child: const Text('Proceed'))
+          ],
+        )
+      ),
     );
   }
 }

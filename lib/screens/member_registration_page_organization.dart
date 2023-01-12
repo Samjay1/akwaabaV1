@@ -11,7 +11,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MemberRegistrationPageOrganization extends StatefulWidget {
-  const MemberRegistrationPageOrganization({Key? key}) : super(key: key);
+  final clientID;
+  const MemberRegistrationPageOrganization({required this.clientID, Key? key}) : super(key: key);
 
   @override
   State<MemberRegistrationPageOrganization> createState() => _MemberRegistrationPageOrganizationState();

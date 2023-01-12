@@ -2,6 +2,7 @@ import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_outlined_button.dart';
 import 'package:akwaaba/components/custom_progress_indicator.dart';
+import 'package:akwaaba/components/custom_tab_widget.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/form_button.dart';
@@ -63,7 +64,9 @@ class _ClockingPageState extends State<ClockingPage> {
   DateTime? generalClockTime;
   bool checkAll = false;
 
-  bool clockingListState = true;
+  //bool clockingListState = true;
+
+  int _selectedIndex = 0;
 
   bool isFilterExpanded = false;
 
@@ -135,7 +138,6 @@ class _ClockingPageState extends State<ClockingPage> {
   @override
   Widget build(BuildContext context) {
     clockingProvider = context.watch<ClockingProvider>();
-
     var absentees = clockingProvider.absentees;
     var attendees = clockingProvider.attendees;
     return Scaffold(
@@ -163,7 +165,7 @@ class _ClockingPageState extends State<ClockingPage> {
                             CupertinoSearchTextField(
                               onChanged: (val) {
                                 setState(() {
-                                  if (clockingListState) {
+                                  if (_selectedIndex == 0) {
                                     // search absentees by name
                                     clockingProvider.searchAbsenteesByName(
                                         searchText: val);
@@ -182,7 +184,7 @@ class _ClockingPageState extends State<ClockingPage> {
                               placeholder: "Enter ID",
                               onChanged: (val) {
                                 setState(() {
-                                  if (clockingListState) {
+                                  if (_selectedIndex == 0) {
                                     // search absentees by id
                                     clockingProvider.searchAbsenteesById(
                                         searchText: val);
@@ -458,82 +460,107 @@ class _ClockingPageState extends State<ClockingPage> {
                       ),
                     )
                   : const SizedBox(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          clockingListState = true;
-                          checkAll = false;
-                          clockingProvider.selectedAttendees.clear();
-                          debugPrint(
-                              '     clockingListState = $clockingListState');
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(12.0),
-                        decoration: BoxDecoration(
-                            color: clockingListState
-                                ? primaryColor
-                                : Colors.transparent,
-                            border: Border.all(color: primaryColor, width: 1.2),
-                            borderRadius:
-                                BorderRadius.circular(AppRadius.borderRadius8)),
-                        child: Center(
-                          child: Text(
-                            'Clocking List',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w600,
-                              color:
-                                  clockingListState ? whiteColor : primaryColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: displayWidth(context) * 0.03,
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          clockingListState = false;
-                          checkAll = false;
-                          clockingProvider.selectedAbsentees.clear();
-                          debugPrint('clockingListState = $clockingListState');
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(12.0),
-                        decoration: BoxDecoration(
-                            color: !clockingListState
-                                ? primaryColor
-                                : Colors.transparent,
-                            border: Border.all(color: primaryColor, width: 1.2),
-                            borderRadius:
-                                BorderRadius.circular(AppRadius.borderRadius8)),
-                        child: Center(
-                          child: Text(
-                            'Clocked List',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w600,
-                              color: !clockingListState
-                                  ? whiteColor
-                                  : primaryColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+              CustomTabWidget(
+                selectedIndex: _selectedIndex,
+                tabTitles: const [
+                  'Clocking List',
+                  'Clocked List',
+                ],
+                onTaps: [
+                  () {
+                    setState(() {
+                      _selectedIndex = 0;
+                      checkAll = false;
+                      clockingProvider.selectedAttendees.clear();
+                      debugPrint('     clockingListState = $_selectedIndex');
+                    });
+                  },
+                  () {
+                    setState(() {
+                      _selectedIndex = 1;
+                      checkAll = false;
+                      clockingProvider.selectedAbsentees.clear();
+                      debugPrint('clockingListState = $_selectedIndex');
+                    });
+                  },
                 ],
               ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Expanded(
+              //       child: InkWell(
+              //         onTap: () {
+              //           setState(() {
+              //             clockingListState = true;
+              //             checkAll = false;
+              //             clockingProvider.selectedAttendees.clear();
+              //             debugPrint(
+              //                 '     clockingListState = $clockingListState');
+              //           });
+              //         },
+              //         child: Container(
+              //           padding: const EdgeInsets.all(12.0),
+              //           decoration: BoxDecoration(
+              //               color: clockingListState
+              //                   ? primaryColor
+              //                   : Colors.transparent,
+              //               border: Border.all(color: primaryColor, width: 1.2),
+              //               borderRadius:
+              //                   BorderRadius.circular(AppRadius.borderRadius8)),
+              //           child: Center(
+              //             child: Text(
+              //               'Clocking List',
+              //               style: TextStyle(
+              //                 fontSize: 16.0,
+              //                 fontWeight: FontWeight.w600,
+              //                 color:
+              //                     clockingListState ? whiteColor : primaryColor,
+              //               ),
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //     SizedBox(
+              //       width: displayWidth(context) * 0.03,
+              //     ),
+              //     Expanded(
+              //       child: InkWell(
+              //         onTap: () {
+              //           setState(() {
+              //             clockingListState = false;
+              //             checkAll = false;
+              //             clockingProvider.selectedAbsentees.clear();
+              //             debugPrint('clockingListState = $clockingListState');
+              //           });
+              //         },
+              //         child: Container(
+              //           padding: const EdgeInsets.all(12.0),
+              //           decoration: BoxDecoration(
+              //               color: !clockingListState
+              //                   ? primaryColor
+              //                   : Colors.transparent,
+              //               border: Border.all(color: primaryColor, width: 1.2),
+              //               borderRadius:
+              //                   BorderRadius.circular(AppRadius.borderRadius8)),
+              //           child: Center(
+              //             child: Text(
+              //               'Clocked List',
+              //               style: TextStyle(
+              //                 fontSize: 16.0,
+              //                 fontWeight: FontWeight.w600,
+              //                 color: !clockingListState
+              //                     ? whiteColor
+              //                     : primaryColor,
+              //               ),
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
               SizedBox(
                 height: displayHeight(context) * 0.01,
               ),
@@ -548,7 +575,7 @@ class _ClockingPageState extends State<ClockingPage> {
                         checkAll = val!;
                       });
 
-                      if (clockingListState) {
+                      if (_selectedIndex == 0) {
                         for (Attendee? absentee in absentees) {
                           absentee!.selected = checkAll;
                           if (absentee.selected!) {
@@ -606,7 +633,7 @@ class _ClockingPageState extends State<ClockingPage> {
                         ),
                       ),
                     )
-                  : clockingListState
+                  : _selectedIndex == 0
                       ? Expanded(
                           child: absentees.isEmpty
                               ? const EmptyStateWidget(

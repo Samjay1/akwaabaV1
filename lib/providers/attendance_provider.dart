@@ -18,7 +18,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PostClockingProvider extends ChangeNotifier {
+class AttendanceProvider extends ChangeNotifier {
   bool _loading = false;
   bool _loadingMore = false;
   bool _clocking = false;
@@ -38,6 +38,8 @@ class PostClockingProvider extends ChangeNotifier {
   List<Attendee?> _tempAbsentees = [];
 
   final List<Attendee?> _selectedAbsentees = [];
+
+  final List<int> _selectedClockingIds = [];
 
   List<Attendee?> _attendees = [];
 
@@ -68,6 +70,10 @@ class PostClockingProvider extends ChangeNotifier {
   List<Gender> get genders => _genders;
   List<Branch> get branches => _branches;
 
+  int totalMembers = 0;
+  List<Attendee?> totalMales = [];
+  List<Attendee?> totalFemales = [];
+
   BuildContext? _context;
 
   List<Attendee?> get absentees => _absentees;
@@ -77,6 +83,8 @@ class PostClockingProvider extends ChangeNotifier {
   List<Attendee?> get attendees => _attendees;
 
   List<Attendee?> get selectedAttendees => _selectedAttendees;
+
+  List<int> get selectedClockingIds => _selectedClockingIds;
 
   MeetingEventModel get selectedCurrentMeeting => _meetingEventModel!;
 
@@ -138,6 +146,49 @@ class PostClockingProvider extends ChangeNotifier {
             .substring(0, 10)
             .trim();
     return filterDate;
+  }
+
+  // validate member attendance - single
+  Future<void> validateMemberAttendance({required int clockingId}) async {
+    try {
+      showLoadingDialog(_context!);
+      var response = await AttendanceAPI.validateMemberAttendance(
+        clockingId: clockingId,
+      );
+      Navigator.of(_context!).pop();
+      showNormalToast(response.message!);
+      getAllAbsentees(
+        meetingEventModel: selectedPastMeetingEvent!,
+      );
+    } catch (err) {
+      Navigator.of(_context!).pop();
+      setLoading(false);
+      debugPrint('Error: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // validate member attendances - bulk
+  Future<void> validateMemberAttendances() async {
+    try {
+      debugPrint('ClockingIds: ${_selectedClockingIds.toString()}');
+      showLoadingDialog(_context!);
+      var message = await AttendanceAPI.validateMemberAttendances(
+        clockingIds: _selectedClockingIds,
+      );
+      Navigator.of(_context!).pop();
+      showNormalToast(message);
+      getAllAbsentees(
+        meetingEventModel: selectedPastMeetingEvent!,
+      );
+    } catch (err) {
+      Navigator.of(_context!).pop();
+      setLoading(false);
+      debugPrint('Error: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
   }
 
   // get list of member categories
@@ -290,6 +341,8 @@ class PostClockingProvider extends ChangeNotifier {
       );
       selectedAbsentees.clear();
 
+      totalMembers = response.count!;
+
       if (response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
@@ -305,6 +358,18 @@ class PostClockingProvider extends ChangeNotifier {
             .toList();
 
         _tempAbsentees = _absentees;
+
+        // calc total males
+        totalMales = _absentees
+            .where((absentee) =>
+                absentee!.attendance!.memberId!.gender == AppConstants.male)
+            .toList();
+
+        // calc total females
+        totalFemales = _absentees
+            .where((absentee) =>
+                absentee!.attendance!.memberId!.gender == AppConstants.female)
+            .toList();
 
         debugPrint('Absentees: ${_absentees.length}');
       }
@@ -359,7 +424,20 @@ class PostClockingProvider extends ChangeNotifier {
                           .getUser!
                           .applicantPhone))
               .toList());
+
           _tempAbsentees.addAll(_absentees);
+
+          // calc rest of the total males
+          totalMales.addAll(_absentees
+              .where((absentee) =>
+                  absentee!.attendance!.memberId!.gender == AppConstants.male)
+              .toList());
+
+          // calc rest of the total females
+          totalFemales.addAll(absentees
+              .where((absentee) =>
+                  absentee!.attendance!.memberId!.gender == AppConstants.female)
+              .toList());
         } else {
           hasNextPage = false;
         }
@@ -837,6 +915,9 @@ class PostClockingProvider extends ChangeNotifier {
   Future<void> clearData() async {
     clearFilters();
     postClockTime = null;
+    totalMembers = 0;
+    totalMales.clear();
+    totalFemales.clear();
     _attendees.clear();
     _tempAttendees.clear();
     _selectedAttendees.clear();

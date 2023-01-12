@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../screens/my_account_page.dart';
 import '../utils/widget_utils.dart';
+import '../versionOne/member_account_page.dart';
 
 class MemberWidget extends StatefulWidget {
   const MemberWidget({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class _MemberWidgetState extends State<MemberWidget> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const MyAccountPage()));
+            context, MaterialPageRoute(builder: (_) => const MemberAccountPage()));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),

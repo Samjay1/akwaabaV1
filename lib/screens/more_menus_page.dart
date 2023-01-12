@@ -191,11 +191,11 @@ class _MorePageState extends State<MorePage> {
         Navigator.push(context, MaterialPageRoute(builder: (_)=>const
         AttendanceReportPage()));
         break;
-      case 4:
-        //register member
-        Navigator.push(context, MaterialPageRoute(builder: (_)=>const
-        MemberRegistrationPageIndividual()));
-        break;
+      // case 4:
+      //   //register member
+      //   Navigator.push(context, MaterialPageRoute(builder: (_)=>const
+      //   MemberRegistrationPageIndividual()));
+      //   break;
       default:
         Navigator.push(context, MaterialPageRoute(builder: (_)=>WebViewPage(url: url,)));
 

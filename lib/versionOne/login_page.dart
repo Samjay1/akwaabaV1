@@ -159,11 +159,40 @@ class _LoginPageState extends State<LoginPage> {
                               adminLoginView()
                             ]),
                           ),
+
                         ],
                       ),
                     ),
                   ),
-                )
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const WebViewPage(
+                                  url:
+                                  'https://akwaabasolutions.com/about-akwaaba-software/',
+                                  title: 'About Akwaaba '),
+                            ),
+                          );
+
+                          // Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                          // const ForgotPasswordPage()));
+                        },
+                        child: const Text(
+                          "ABOUT AKWAABA",
+                          style: TextStyle(color: Colors.white,),
+                        )),
+                  ),
+                ),
               ],
             ),
           ),

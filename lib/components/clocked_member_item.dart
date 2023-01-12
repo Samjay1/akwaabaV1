@@ -108,7 +108,7 @@ class ClockedMemberItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'ID: ${attendee!.additionalInfo!.id!.toString()}',
+                          'ID: ${attendee!.identification}',
                           style: const TextStyle(
                               fontSize: 16, color: primaryColor),
                         ),

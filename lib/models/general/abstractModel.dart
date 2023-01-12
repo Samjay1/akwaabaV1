@@ -1,5 +1,5 @@
 class AbstractModel {
-  String? id;
+  int? id;
   String? name;
 
   AbstractModel(

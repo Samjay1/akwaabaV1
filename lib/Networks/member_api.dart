@@ -14,11 +14,11 @@ import 'package:akwaaba/models/general/region.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:akwaaba/versionOne/login_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import '../models/general/abstractGroup.dart';
 import '../models/general/abstractSubGroup.dart';
 import '../models/general/constiteuncy.dart';
@@ -312,37 +312,41 @@ class MemberAPI {
   }
 
   static void registerMember(
-      {clientId,
-      branchId,
-      firstname,
-      middlename,
-      surname,
-      gender,
-      dateOfBirth,
-      email,
-      phone,
-      memberType,
-      referenceId,
-      nationality,
-      countryOfResidence,
-      stateProvince,
-      region,
-      district,
-      constituency,
-      electoralArea,
-      community,
-      digitalAddress,
-      hometown,
-      occupation,
-      disability,
-      maritalStatus,
-      occupationalStatus,
-      professionStatus,
-      educationalStatus,
-      groupIds,
-      subgroupIds,
-      password,
-      confirm_password}) async {
+
+      BuildContext context,
+  {
+  clientId,
+  branchId,
+  firstname,
+  middlename,
+  surname,
+  gender,
+  dateOfBirth,
+  email,
+  phone,
+  memberType,
+  referenceId,
+  nationality,
+  countryOfResidence,
+  stateProvince,
+  region,
+  district,
+  constituency,
+  electoralArea,
+  community,
+  digitalAddress,
+  hometown,
+  occupation,
+  disability,
+  maritalStatus,
+  occupationalStatus,
+  professionStatus,
+  educationalStatus,
+    groupIds,
+    subgroupIds,
+  password,
+  confirm_password}
+    ) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       var data = {
@@ -391,10 +395,12 @@ class MemberAPI {
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 201) {
         debugPrint('REGISTRATION MEMBER -------------- $decodedResponse');
-        showErrorToast("Registration Successful, Proceed to Login.");
+        showNormalToast("Registration Successful, Proceed to Login.");
+        Navigator.push(context,MaterialPageRoute( builder: (_) => LoginPage(),));
       } else {
         debugPrint("error>>>. ${response.body}");
-        showErrorToast("Login Error");
+        var error = decodedResponse['non_field_errors'][0];
+        showErrorToast("$error");
       }
     } on SocketException catch (_) {
       showErrorToast("Network Error");
@@ -485,8 +491,10 @@ class MemberAPI {
     }
   }
 
+
 //  LOCATION REQUESTS
-  static Future<List<Country>?> getCountry() async {
+
+   Future<List<Country>?> getCountry()async{
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -494,7 +502,7 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Country success: $decodedresponse");
+        // print("Country success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList.map((data) => Country.fromJson(data)).toList();
       } else {
@@ -508,7 +516,9 @@ class MemberAPI {
     }
   }
 
-  static Future<List<Region>?> getRegion() async {
+
+   Future<List<Region>?> getRegion() async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -516,7 +526,7 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("REGION success: $decodedresponse");
+        // print("REGION success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList.map((data) => Region.fromJson(data)).toList();
       } else {
@@ -530,7 +540,9 @@ class MemberAPI {
     }
   }
 
-  static Future<List<District>?> getDistrict({required var regionID}) async {
+
+   Future<List<District>?> getDistrict({required var regionID}) async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -538,7 +550,7 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("District success: $decodedresponse");
+        // print("District success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList.map((data) => District.fromJson(data)).toList();
       } else {
@@ -552,8 +564,10 @@ class MemberAPI {
     }
   }
 
-  static Future<List<Constituency>?> getConstituency(
+
+   Future<List<Constituency>?> getConstituency(
       {required var regionID, var districtID}) async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -562,9 +576,13 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Constituency success: $decodedresponse");
-        Iterable dataList = decodedresponse;
-        return dataList.map((data) => Constituency.fromJson(data)).toList();
+
+        // print("Constituency success: $decodedresponse");
+        Iterable dataList = decodedresponse['results'];
+        return dataList
+            .map((data) => Constituency.fromJson(data))
+            .toList();
+
       } else {
         print('Constituency error ${jsonDecode(response.body)}');
         return null;
@@ -576,8 +594,10 @@ class MemberAPI {
     }
   }
 
-  static Future<List<ElectoralArea>?> getElectoralArea(
+
+   Future<List<ElectoralArea>?> getElectoralArea(
       {required var regionID, var districtID}) async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -586,7 +606,7 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("ElectoralArea success: $decodedresponse");
+        // print("ElectoralArea success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList.map((data) => ElectoralArea.fromJson(data)).toList();
       } else {
@@ -602,7 +622,8 @@ class MemberAPI {
 
 //  BRANCH REQUEST
 
-  static Future<List<Branch>?> getBranches({required var token}) async {
+
+   Future<List<Branch>?> getBranches({required var token}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http
@@ -612,7 +633,7 @@ class MemberAPI {
       });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Branch success: $decodedresponse");
+        print("Branch success: $decodedresponse, TOKEN: $token");
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => Branch.fromJson(data)).toList();
       } else {
@@ -628,8 +649,10 @@ class MemberAPI {
 
 //  GROUP AND SUB GROUPS REQUEST
 
-  static Future<List<AbstractGroup>?> getGroup(
+
+   Future<List<AbstractGroup>?> getGroup(
       {required var token, var branchID}) async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -654,8 +677,9 @@ class MemberAPI {
     }
   }
 
-  static Future<List<AbstractSubGroup>?> getSubGroup(
+   Future<List<AbstractSubGroup>?> getSubGroup(
       {required var token, var branchID}) async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -683,7 +707,9 @@ class MemberAPI {
 
 // OCCUPATION, PROFESSION, MARITAL STATUS
 
-  static Future<List<AbstractModel>?> getOccupation() async {
+
+   Future<List<AbstractModel>?> getOccupation() async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -691,7 +717,7 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Occupation success: $decodedresponse");
+        // print("Occupation success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => AbstractModel.fromJson(data)).toList();
       } else {
@@ -705,7 +731,9 @@ class MemberAPI {
     }
   }
 
-  static Future<List<AbstractModel>?> getProfession() async {
+
+   Future<List<AbstractModel>?> getProfession() async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -713,7 +741,7 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("profession success: $decodedresponse");
+        // print("profession success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => AbstractModel.fromJson(data)).toList();
       } else {
@@ -727,7 +755,9 @@ class MemberAPI {
     }
   }
 
-  static Future<List<AbstractModel>?> getMaritalStatus() async {
+
+   Future<List<AbstractModel>?> getMaritalStatus() async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -735,7 +765,7 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("marital success: $decodedresponse");
+        // print("marital success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => AbstractModel.fromJson(data)).toList();
       } else {
@@ -749,7 +779,9 @@ class MemberAPI {
     }
   }
 
-  static Future<List<AbstractModel>?> getEducation() async {
+
+   Future<List<AbstractModel>?> getEducation() async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -757,7 +789,7 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Education success: $decodedresponse");
+        // print("Education success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => AbstractModel.fromJson(data)).toList();
       } else {
@@ -773,7 +805,9 @@ class MemberAPI {
 
 //  ORGANISATION TYPE AND MEMBER TYPE
 
-  static Future<List<MemberType>?> getMemberType({required var token}) async {
+
+   Future<List<MemberType>?> getMemberType({required var token}) async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -798,8 +832,10 @@ class MemberAPI {
     }
   }
 
-  static Future<List<MemberType>?> getOrganisationType(
+
+   Future<List<MemberType>?> getOrganisationType(
       {required var token}) async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -825,7 +861,9 @@ class MemberAPI {
   }
 
   // REGISTRATION CODE
+
   static Future<String?> searchRegCode({required var regCode}) async {
+
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -840,35 +878,39 @@ class MemberAPI {
         print('searchRegCode error ${jsonDecode(response.body)}');
         return null;
       }
-    } on SocketException catch (_) {
+    } on SocketException catch (e) {
       // ScaffoldMessenger.of(context)
       //     .showSnackBar(SnackBar(content: Text('Network issue')));
+      print('searchRegCode error, $regCode, $e');
       return null;
     }
   }
 
   // GET TOKEN
-  static Future<String?> getToken({required var clientID}) async {
-    var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
-    try {
-      var data = {"accountId": clientID};
-      http.Response response = await http.post(
-          Uri.parse('$mybaseUrl/clients/hash-hash'),
-          body: json.encode(data),
-          headers: {'Content-Type': 'application/json'});
-      if (response.statusCode == 200) {
-        var decodedresponse = jsonDecode(response.body);
-        print("token success: $decodedresponse");
-        var token = decodedresponse['token'];
-        return token;
-      } else {
-        print('token error ${jsonDecode(response.body)}');
-        return null;
+
+   Future<String?> getToken({required var clientID}) async {
+      var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+      try {
+        var data = {"accountId": clientID};
+        http.Response response = await http.post(
+        Uri.parse('$mybaseUrl/clients/hash-hash'),
+        body: json.encode(data),
+        headers: {'Content-Type': 'application/json'});
+        if (response.statusCode == 200) {
+          var decodedresponse = jsonDecode(response.body);
+          print("token success: $decodedresponse");
+          var token = decodedresponse['token'];
+          return token;
+          } else {
+          print('token error ${jsonDecode(response.body)}');
+          return null;
+          }
+        } on SocketException catch (_) {
+          // ScaffoldMessenger.of(context)
+          //     .showSnackBar(SnackBar(content: Text('Network issue')));
+          return null;
+        }
       }
-    } on SocketException catch (_) {
-      // ScaffoldMessenger.of(context)
-      //     .showSnackBar(SnackBar(content: Text('Network issue')));
-      return null;
-    }
-  }
 }
+
+

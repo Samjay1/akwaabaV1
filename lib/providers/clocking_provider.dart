@@ -1,5 +1,6 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
+import 'package:akwaaba/Networks/event_api.dart';
 import 'package:akwaaba/Networks/clocking_api.dart';
 import 'package:akwaaba/Networks/group_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';

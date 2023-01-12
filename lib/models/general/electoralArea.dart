@@ -1,5 +1,5 @@
 class ElectoralArea {
-  String? id;
+  int? id;
   String? location;
 
   ElectoralArea(
