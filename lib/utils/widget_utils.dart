@@ -69,9 +69,12 @@ Future displayCustomDropDown(
                           selectedOption = e;
                           Navigator.pop(context, e);
                         },
-                        child: Text(listItemsIsMap
-                            ? "${e.values.elementAt(0)}"
-                            : "$e")))
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(listItemsIsMap
+                              ? "${e.values.elementAt(0)}"
+                              : "$e", style: TextStyle(color: Colors.black),),
+                        )))
                     .toList(),
             cancelButton: CupertinoActionSheetAction(
               child: const Text("Cancel"),

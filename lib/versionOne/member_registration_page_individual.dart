@@ -24,6 +24,7 @@ import '../models/general/district.dart';
 import '../models/general/electoralArea.dart';
 import '../models/general/memberType.dart';
 import '../models/general/region.dart';
+import 'login_page.dart';
 
 class MemberRegistrationPageIndividual extends StatefulWidget {
   final clientID;
@@ -50,6 +51,8 @@ class _MemberRegistrationPageIndividualState
   final TextEditingController _controllerConfirmPassword =
       TextEditingController();
 
+  bool loading = false;
+
   List<String> departments = ["Senior Staff", "Casual Worker"];
   List<String> genders = ["Male", "Female"];
   DateTime? dateJoined;
@@ -62,7 +65,9 @@ class _MemberRegistrationPageIndividualState
   int currentIndex = 0;
   final ImagePicker picker = ImagePicker();
   File? imageFile ;
-  final formGlobalKey = GlobalKey < FormState > ();
+  final formGlobalKeyBio = GlobalKey < FormState > ();
+  final formGlobalKeyStatus = GlobalKey < FormState > ();
+  final formGlobalKeyPassword = GlobalKey < FormState > ();
 
 
 
@@ -72,7 +77,8 @@ class _MemberRegistrationPageIndividualState
    late List<Country>? countryList = [];
    void _getCountryList ()async{
      countryList = (await MemberAPI().getCountry());
-     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {loadingLocation = false;}));
+
    }
 
   //LOCATION - REGION
@@ -81,7 +87,8 @@ class _MemberRegistrationPageIndividualState
   late List<Region>? regionList = [];
   void _getRegionList ()async{
     regionList = (await MemberAPI().getRegion());
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {loadingLocation = false;}));
+
   }
 
 
@@ -91,16 +98,18 @@ class _MemberRegistrationPageIndividualState
   late List<District>? districtList = [];
   void _getDistrictList ({var regionID})async{
     districtList = (await MemberAPI().getDistrict(regionID: regionID));
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {loadingLocation = false;}));
+
   }
 
   //LOCATION - CONSTITUENCY
   var selectedConstituency;
-  var selectedConstituencyID;
+  var selectedConstituencyID ;
   late List<Constituency>? constituencyList = [];
   void _getConstituencyList ({var regionID, var districtID})async{
     constituencyList = (await MemberAPI().getConstituency(regionID: regionID,districtID:districtID));
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {loadingLocation = false;}));
+
   }
 
   //LOCATION - COMMUNITY
@@ -109,7 +118,8 @@ class _MemberRegistrationPageIndividualState
   late List<ElectoralArea>? communityList = [];
   void _getCommunityList ({var regionID, var districtID})async{
     communityList = (await MemberAPI().getElectoralArea(regionID: regionID, districtID:districtID));
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {loadingLocation = false;}));
+
   }
 
 
@@ -166,6 +176,7 @@ class _MemberRegistrationPageIndividualState
   void _getCategoryList ({required var token})async{
     categoryList = (await MemberAPI().getMemberType(token: token));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    loadingGroup = false;
   }
 
   //GROUPING - GROUP
@@ -175,6 +186,7 @@ class _MemberRegistrationPageIndividualState
   void _getGroupList ({required var branchID,var token})async{
     groupList = (await MemberAPI().getGroup(branchID: branchID, token: token));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    loadingGroup = false;
   }
 
   //GROUPING - SUB GROUP
@@ -225,13 +237,14 @@ class _MemberRegistrationPageIndividualState
   }
 
   nextButtonTapped({required pageId}) {
-    if (!formGlobalKey.currentState!.validate()) {
-      return;
-    }
+
     switch (pageId) {
       case 0:
         //currently on bio data page,
         //check these inputs -> gender and dob
+        if (!formGlobalKeyBio.currentState!.validate()) {
+          return;
+        }
         if (birthDate == null) {
           showErrorSnackBar(context, "select date of birth");
           return;
@@ -245,14 +258,70 @@ class _MemberRegistrationPageIndividualState
         break;
       case 1:
         //currenty on grouping page
+        if (selectedBranchID == null) {
+          showErrorSnackBar(context, "select date of Branch");
+          return;
+        }
+        if (selectedCategoryID == null) {
+          showErrorSnackBar(context, "select your Category");
+          return;
+        }
         pageViewController.animateToPage(2,
             duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
       case 2:
+        if (selectedCountryID == null) {
+            showErrorSnackBar(context, "select your Country");
+            return;
+        }
+        // if (selectedID == null) {
+        //   showErrorSnackBar(context, "select your State/Province");
+        //   return;
+        // }
+        if (selectedRegionID == null) {
+          showErrorSnackBar(context, "select your Region");
+          return;
+        }
+        if (selectedDistrictID == null) {
+          showErrorSnackBar(context, "select your District");
+          return;
+        }
+        if (selectedConstituencyID == null) {
+          showErrorSnackBar(context, "select your Constituency");
+          return;
+        }
+
+        if (selectedCommunityID == null) {
+          showErrorSnackBar(context, "select your Community");
+          return;
+        }
+
         pageViewController.animateToPage(3,
             duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
       case 3:
+        if (selectedMaritalID == null) {
+          showErrorSnackBar(context, "select your Marital Status");
+          return;
+        }
+
+        if (selectedEducationID == null) {
+          showErrorSnackBar(context, "select your Education");
+          return;
+        }
+        if (selectedOccupationID == null) {
+          showErrorSnackBar(context, "select your Occupation");
+          return;
+        }
+
+        if (selectedProfessionID == null) {
+          showErrorSnackBar(context, "select your Profession");
+          return;
+        }
+
+        if (!formGlobalKeyStatus.currentState!.validate()) {
+          return;
+        }
         pageViewController.animateToPage(4,
             duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
@@ -262,6 +331,7 @@ class _MemberRegistrationPageIndividualState
   @override
   Widget build(BuildContext context) {
     debugPrint('branchList ${branchList}');
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: currentIndex == 0 ? true : false,
@@ -272,7 +342,7 @@ class _MemberRegistrationPageIndividualState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
+            size.height >= 800? Container(
               child:Column(
                 children: [
                   Container(
@@ -301,7 +371,7 @@ class _MemberRegistrationPageIndividualState
                   ),
                 ],
               )
-            ),
+            ): Container(),
             Text(
               currentIndex == 0
                   ? "Bio Data"
@@ -402,7 +472,7 @@ class _MemberRegistrationPageIndividualState
 
   Widget bioDataView() {
     return Form(
-      key: formGlobalKey,
+      key: formGlobalKeyBio,
       child: ListView(
         physics: const BouncingScrollPhysics(),
         children: [
@@ -491,6 +561,7 @@ class _MemberRegistrationPageIndividualState
                   : defaultProfilePic(height: 120),
               CupertinoButton(
                   onPressed: () {
+                    print('IMAGE FILE----- ${imageFile?.path}');
                     selectProfilePhoto();
                   },
                   child:
@@ -502,136 +573,145 @@ class _MemberRegistrationPageIndividualState
     );
   }
 
+  bool loadingGroup = false;
   Widget groupingView() {
-    return ListView(
-      physics: const BouncingScrollPhysics(),
+    return Stack(
       children: [
-        LabelWidgetContainer(
-            label: "Branch",
-            setCompulsory: true,
-            child: FormButton(
-              label: selectedBranch??"Select Branch",
-              function: (){
-                var newBranchList = branchList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
-                selectBranch(newBranchList);
-              },
-            )
-        ),
+        ListView(
+          physics: const BouncingScrollPhysics(),
+          children: [
+            LabelWidgetContainer(
+                label: "Branch",
+                setCompulsory: true,
+                child: FormButton(
+                  label: selectedBranch??"Select Branch",
+                  function: (){
+                    var newBranchList = branchList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
+                    selectBranch(newBranchList);
+                  },
+                )
+            ),
 
-        LabelWidgetContainer(label: "Category",
-            setCompulsory: true,
-            child: FormButton(
-              label:  selectedCategory??"Select Category",
-              function: (){
-                var newCategoryList = categoryList?.map((value)=> {'name':value.category, 'id':value.id}).toList();
-                selectCategory(newCategoryList);
-              },
-            )
-        ),
+            LabelWidgetContainer(label: "Category",
+                setCompulsory: true,
+                child: FormButton(
+                  label:  selectedCategory??"Select Category",
+                  function: (){
+                    var newCategoryList = categoryList?.map((value)=> {'name':value.category, 'id':value.id}).toList();
+                    selectCategory(newCategoryList);
+                  },
+                )
+            ),
 
-        LabelWidgetContainer(label: "Group",
-            child: FormButton(
-              label: selectedGroup??"Select Group",
-              function: (){
-                var newGroupList = groupList?.map((value)=> {'name':value.group, 'id':value.id}).toList();
-                selectGroup(newGroupList);
-              },
-            )
-        ),
+            LabelWidgetContainer(label: "Group",
+                child: FormButton(
+                  label: selectedGroup??"Select Group",
+                  function: (){
+                    var newGroupList = groupList?.map((value)=> {'name':value.group, 'id':value.id}).toList();
+                    selectGroup(newGroupList);
+                  },
+                )
+            ),
 
-        LabelWidgetContainer(label: "Sub Group",
-            child: FormButton(
-              label: selectedSubGroup??"Select Sub Group",
-              function: (){
-                var newSubgroupList = subGroupList?.map((value)=> {'name':value.subgroup, 'id':value.id}).toList();
-                selectSubGroup(newSubgroupList);
-              },
+            LabelWidgetContainer(label: "Sub Group",
+                child: FormButton(
+                  label: selectedSubGroup??"Select Sub Group",
+                  function: (){
+                    var newSubgroupList = subGroupList?.map((value)=> {'name':value.subgroup, 'id':value.id}).toList();
+                    selectSubGroup(newSubgroupList);
+                  },
+                )
             )
-        )
-      ],
+          ],
+        ),
+        loadingGroup? const Align(
+          child: CircularProgressIndicator(),
+        ): Container(),
+      ]
     );
   }
 
+
+  bool loadingLocation = false;
   Widget locationView() {
-    return ListView(
-      physics: const BouncingScrollPhysics(),
+    return Stack(
       children: [
-      LabelWidgetContainer(
-          setCompulsory: true,
-          label: "Country",
-          child: FormButton(
-            label: selectedCountry??"Select Country",
-            function: (){
-              var newCountryList = countryList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
-              selectCountry(newCountryList);
-            },
-          )
-      ),
+        ListView(
+          physics: const BouncingScrollPhysics(),
+          children: [
+            LabelWidgetContainer(
+                setCompulsory: true,
+                label: "Country",
+                child: FormButton(
+                  label: selectedCountry??"Select Country",
+                  function: (){
+                    var newCountryList = countryList?.map((value)=> {'name':value.name, 'id':value.id}).toList();
+                    selectCountry(newCountryList);
+                  },
+                )
+            ),
 
-        LabelWidgetContainer(
-            setCompulsory: true,
-            label: "Country",
-            child: FormButton(
-              label: "Select Country",
-              function: () {},
-            )),
-        LabelWidgetContainer(
-            // setCompulsory: true,
-            label: "Province/State",
-            child: FormButton(
-              label: "Select Province/State",
-              function: () {},
-            )),
-        LabelWidgetContainer(
-            //setCompulsory: true,
-            label: "Region",
-            child: FormButton(
-              label: selectedRegion??"Select Region",
-              function: (){
-                var newRegionList = regionList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
-                selectRegion(newRegionList);
-              },
-            )
-        ),
+            LabelWidgetContainer(
+              // setCompulsory: true,
+                label: "Province/State",
+                child: FormButton(
+                  label: "Select Province/State",
+                  function: () {},
+                )),
+            LabelWidgetContainer(
+              //setCompulsory: true,
+                label: "Region",
+                child: FormButton(
+                  label: selectedRegion??"Select Region",
+                  function: (){
+                    var newRegionList = regionList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
+                    selectRegion(newRegionList);
+                  },
+                )
+            ),
 
-        LabelWidgetContainer(
-            // setCompulsory: true,
-            label: "District",
-            child: FormButton(
-              label: selectedDistrict??"Select District",
-              function: (){
-                var newDistrictList = districtList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
-                selectDistrict(newDistrictList);
-              },
-            )
-        ),
+            LabelWidgetContainer(
+              // setCompulsory: true,
+                label: "District",
+                child: FormButton(
+                  label: selectedDistrict??"Select District",
+                  function: (){
+                    var newDistrictList = districtList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
+                    selectDistrict(newDistrictList);
+                  },
+                )
+            ),
 
-        LabelWidgetContainer(
-            //setCompulsory: true,
-            label: "Constituency",
-            child: FormButton(
-              label: selectedConstituency??"Select Constituency",
-              function: (){
-                var newConstituencyList = constituencyList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
-                selectConstituency(newConstituencyList);
-              },
-            )
-        ),
+            LabelWidgetContainer(
+              //setCompulsory: true,
+                label: "Constituency",
+                child: FormButton(
+                  label: selectedConstituency??"Select Constituency",
+                  function: (){
+                    var newConstituencyList = constituencyList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
+                    selectConstituency(newConstituencyList);
+                  },
+                )
+            ),
 
-        LabelWidgetContainer(
-            label: "Community",
-            child: FormButton(
-              label: selectedCommunity??"Select Community",
-              function: (){
-                var newCommunityList = communityList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
-                selectCommunity(newCommunityList);
-              },
-            )
+            LabelWidgetContainer(
+                label: "Electoral Area",
+                child: FormButton(
+                  label: selectedCommunity??"Select Electoral Area",
+                  function: (){
+                    var newCommunityList = communityList?.map((value)=> {'name':value.location, 'id':value.id}).toList();
+                    selectCommunity(newCommunityList);
+                  },
+                )
+            ),
+          ],
         ),
-      ],
+        loadingLocation? const Align(
+          child: CircularProgressIndicator(),
+        ): Container(),
+      ]
     );
   }
-
 
   Widget statusView() {
     return ListView(
@@ -712,11 +792,13 @@ class _MemberRegistrationPageIndividualState
         function: (){},)
         ),
 
-
-        LabelWidgetContainer(label: "ID Number", child:
-        FormTextField(
-          controller: _controllerIDNumber,
-        )
+      Form(
+        key: formGlobalKeyStatus,
+        child:  LabelWidgetContainer(label: "ID Number",
+            child:FormTextField(
+                  controller: _controllerIDNumber,
+                  )
+              ),
         ),
 
         LabelWidgetContainer(label: "CV Upload", child:
@@ -727,54 +809,16 @@ class _MemberRegistrationPageIndividualState
         const SizedBox(
           height: 12,
         ),
-        LabelWidgetContainer(
-            label: "Marital Status",
-            child: FormButton(
-              label: "Select Status",
-              function: () {},
-            )),
-        LabelWidgetContainer(
-            label: "Education",
-            child: FormButton(
-              label: "Select Education",
-              function: () {},
-            )),
-        LabelWidgetContainer(
-            label: "Occupation",
-            child: FormButton(
-              label: "Select Occupation",
-              function: () {},
-            )),
-        LabelWidgetContainer(
-            label: "Profession",
-            child: FormButton(
-              label: "Select Profession",
-              function: () {},
-            )),
-        LabelWidgetContainer(
-            label: "ID Upload",
-            child: FormButton(
-              label: "Upload  ID",
-              function: () {},
-            )),
-        LabelWidgetContainer(
-            label: "ID Number",
-            child: FormTextField(
-              controller: _controllerIDNumber,
-            )),
-        LabelWidgetContainer(
-            label: "CV Upload",
-            child: FormButton(
-              label: "Upload  CV",
-              function: () {},
-            ))
+
       ],
     );
   }
 
   Widget passwordsView() {
-    return ListView(
-      physics: const BouncingScrollPhysics(),
+    return Form(
+        key: formGlobalKeyPassword,
+        child:ListView(
+        physics: const BouncingScrollPhysics(),
       children: [
         LabelWidgetContainer(
             label: "Password",
@@ -828,45 +872,135 @@ class _MemberRegistrationPageIndividualState
     '');
     final DateTime? now = birthDate;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final String formatted = formatter.format(now!);
-    print(formatted);
+    String? formatted;
+    if(birthDate!=null){
+      setState((){
+        formatted = formatter.format(now!);
+      });
 
-    MemberAPI.registerMember(
-    context,clientId: widget.clientID,
-    branchId:selectedBranchID,
-    firstname:'${_controllerFirstName.text}',
-    middlename: '${_controllerMiddleName.text}',
-    surname:'${_controllerSurname.text}',
-    gender: selectedGender == 'Male' ? 1:0 ,
-    dateOfBirth: formatted,
-    email: '${_controllerEmail.text}',
-    phone: '${_controllerPhone.text}',
-    memberType: selectedCategoryID,
-    referenceId: '${_controllerIDNumber.text}',
-    nationality: selectedCountryID,
-    countryOfResidence: selectedCountryID,
-    stateProvince: selectedRegionID,
-    region: selectedRegionID,
-    district: selectedDistrictID,
-    constituency: '$selectedConstituencyID',
-    electoralArea: selectedCommunityID,
-    community: '$selectedCommunityID',
-    digitalAddress: '-',
-    hometown: '-',
-    occupation: selectedOccupationID,
-    disability: disabilityOption == 0? false: true,
-    maritalStatus: '$selectedMaritalID',
-    occupationalStatus: '$selectedOccupationID',
-    professionStatus: '$selectedProfessionID',
-    educationalStatus: '$selectedEducationID',
-    groupIds: [selectedGroupID],
-    subgroupIds: [selectedSubGroupID],
-    password: '${_controllerPassword.text}',
-    confirm_password: '${_controllerConfirmPassword.text}'
-    );
-    }),
+    }
+    print(formatted);
+      var password = _controllerPassword.text.trim();
+      var repeat_password = _controllerConfirmPassword.text.trim();
+        if (!formGlobalKeyPassword.currentState!.validate()) {
+          return;
+        }else if(password != repeat_password){
+          showErrorSnackBar(context, 'Passwords must be the same');
+        }else if(password.length < 7){
+          showErrorSnackBar(context, 'Passwords must contain at least 8 characters');
+        }else if(!password.contains(new RegExp(r'[0-9]'))){
+          showErrorSnackBar(context, 'This password is too common, add special symbols eg.!@#');
+        }else{
+          setState(() {
+            loading = true;
+          });
+          print(' value');
+          if(imageFile?.path !=null){
+            MemberAPI.registerMemberWithImage(
+                context,
+                profilePicture:imageFile?.path,
+                clientId: '${widget.clientID}',
+                branchId:'${selectedBranchID}',
+                firstname:_controllerFirstName.text,
+                middlename: _controllerMiddleName.text,
+                surname:_controllerSurname.text,
+                gender: selectedGender == 'Male' ? 1:0 ,
+                dateOfBirth: formatted,
+                email: _controllerEmail.text,
+                phone: _controllerPhone.text,
+                memberType: selectedCategoryID,
+                referenceId: _controllerIDNumber.text,
+                nationality: selectedCountryID,
+                countryOfResidence: selectedCountryID,
+                stateProvince: selectedRegionID,
+                region: selectedRegionID,
+                district: selectedDistrictID,
+                constituency: selectedConstituencyID,
+                electoralArea: selectedCommunityID,
+                community: '$selectedCommunityID',
+                digitalAddress: '-',
+                hometown: '-',
+                occupation: selectedOccupationID,
+                disability: disabilityOption == 0? false: true,
+                maritalStatus: selectedMaritalID,
+                occupationalStatus: selectedOccupationID,
+                professionStatus: selectedProfessionID,
+                educationalStatus: selectedEducationID,
+                groupIds: [selectedGroupID],
+                subgroupIds: [selectedSubGroupID],
+                password: _controllerPassword.text.trim(),
+                confirm_password: _controllerConfirmPassword.text.trim()
+            ).then((value){
+              setState(() {
+                loading = false;
+              });
+              if(value == 'non_field_errors'){
+                showErrorToast("Please fill all required fields");
+
+              }else if(value == 'successful'){
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
+              }
+            });
+          }
+          else{
+            MemberAPI.registerMember(
+                context,
+                clientId: '${widget.clientID}',
+                branchId:'${selectedBranchID}',
+                firstname:_controllerFirstName.text,
+                middlename: _controllerMiddleName.text,
+                surname:_controllerSurname.text,
+                gender: selectedGender == 'Male' ? 1:0 ,
+                dateOfBirth: formatted,
+                email: _controllerEmail.text,
+                phone: _controllerPhone.text,
+                memberType: selectedCategoryID,
+                referenceId: _controllerIDNumber.text,
+                nationality: selectedCountryID,
+                countryOfResidence: selectedCountryID,
+                stateProvince: selectedRegionID,
+                region: selectedRegionID,
+                district: selectedDistrictID,
+                constituency: selectedConstituencyID,
+                electoralArea: selectedCommunityID,
+                community: '$selectedCommunityID',
+                digitalAddress: '-',
+                hometown: '-',
+                occupation: selectedOccupationID,
+                disability: disabilityOption == 0? false: true,
+                maritalStatus: selectedMaritalID,
+                occupationalStatus: selectedOccupationID,
+                professionStatus: selectedProfessionID,
+                educationalStatus: selectedEducationID,
+                groupIds: [selectedGroupID],
+                subgroupIds: [selectedSubGroupID],
+                password: _controllerPassword.text.trim(),
+                confirm_password: _controllerConfirmPassword.text.trim()
+            ).then((value){
+              setState(() {
+                loading = false;
+              });
+              print('$value value');
+              if(value == 'response_error'){
+                showErrorToast("Please fill all required fields");
+              }
+              else if(value == 'successful'){
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
+              }
+            });
+          }
+
+        }
+        }),
+
+        const SizedBox(height: 26,),
+        loading?const Align(
+          child: CircularProgressIndicator(),
+        ): Container()
       ],
-    );
+        ));
   }
 
   registerUser() {
@@ -931,6 +1065,7 @@ class _MemberRegistrationPageIndividualState
           selectedCountry = value['name'];
           selectedCountryID =  value['id'];
           debugPrint('selectedCountryID $selectedCountryID, $selectedCountry');
+
         });
       }
     });
@@ -944,6 +1079,7 @@ class _MemberRegistrationPageIndividualState
           selectedRegionID =  value['id'];
           debugPrint('selectedRegion $selectedRegion, $selectedRegionID');
           _getDistrictList(regionID:selectedRegionID);
+          loadingLocation = true;
         });
       }
     });
@@ -958,6 +1094,7 @@ class _MemberRegistrationPageIndividualState
           debugPrint('selectedDistrictID $selectedDistrict, $selectedDistrictID');
           _getConstituencyList(regionID:selectedRegionID, districtID:selectedDistrictID );
           _getCommunityList(regionID:selectedRegionID, districtID:selectedDistrictID );
+          loadingLocation = false;
         });
       }
     });
@@ -1047,6 +1184,7 @@ class _MemberRegistrationPageIndividualState
           debugPrint('selectedBranchdf $selectedBranchID, $selectedBranch');
           _getSubGroupList(token:token, branchID: selectedBranchID);
           _getGroupList(token:token, branchID: selectedBranchID);
+          loadingGroup = true;
         });
       }
     });
