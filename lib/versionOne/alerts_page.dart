@@ -22,31 +22,22 @@ class _AlertsPageState extends State<AlertsPage> {
             alertItem(title: 'Title', description: 'Description')
           ],
         ),
-
       ),
     );
   }
 
-  Widget alertItem({var title, var description}){
+  Widget alertItem({var title, var description}) {
     return Container(
         width: MediaQuery.of(context).size.width,
         margin: const EdgeInsets.all(7),
         padding: const EdgeInsets.all(8),
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [BoxShadow(
-                color: Colors.black26,
-                blurRadius: 8.0,
-                offset: Offset(0,6)
-            )]
-        ),
+        decoration: const BoxDecoration(color: Colors.white, boxShadow: [
+          BoxShadow(
+              color: Colors.black26, blurRadius: 8.0, offset: Offset(0, 6))
+        ]),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('$title'),
-            Text('$description')
-          ],
-        )
-    );
+          children: [Text('$title'), Text('$description')],
+        ));
   }
 }

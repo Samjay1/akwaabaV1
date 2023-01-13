@@ -1,101 +1,122 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
-import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/api_responses/clocking_response.dart';
+import 'package:akwaaba/Networks/api_responses/coordinates_response.dart';
 import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart';
-
 import 'package:akwaaba/models/attendance/excuse_model.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
+import 'package:akwaaba/models/members/deviceRequestModel.dart';
+import 'package:akwaaba/utils/general_utils.dart';
+import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class ClockingAPI {
-  // get list of attendees for a meeting or event
-  static Future<ClockedMembersResponse> getAbsenteesList({
-    required int page,
-    required MeetingEventModel meetingEventModel,
-    required String filterDate,
-    required int branchId,
-    required int memberCategoryId,
-    required int groupId,
-    required int subGroupId,
-    required int genderId,
-    required int fromAge,
-    required int toAge,
-  }) async {
-    ClockedMembersResponse membersResponse;
+import '../models/members/member_profile.dart';
 
+class EventAPI {
+  static final baseUrl = 'https://db-api-v2.akwaabasoftware.com';
+  late SharedPreferences prefs;
+
+  static Future<List<MeetingEventModel>> getTodayMeetingEventList(
+      BuildContext context, var memberToken) async {
+    List<MeetingEventModel> todayMeetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance/absentees?page=$page&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both');
     try {
-      debugPrint("URL: ${url.toString()}");
-      debugPrint("Meeting ID: ${meetingEventModel.id}");
-      debugPrint("Filter Date: $filterDate");
-      debugPrint("Branch ID: $branchId");
-      debugPrint("MemberCategoryId: $memberCategoryId");
-      debugPrint("groupId: $groupId");
-      debugPrint("subGroupId: $subGroupId");
-      debugPrint("genderId: $genderId");
-      debugPrint("fromAge: $fromAge");
-      debugPrint("toAge: $toAge");
       http.Response response = await http.get(
         url,
         headers: await getAllHeaders(),
       );
-      debugPrint("Absentees Response: ${jsonDecode(response.body)}");
-      membersResponse = ClockedMembersResponse.fromJson(
-        await returnResponse(response),
-      );
+      var decodedresponse = jsonDecode(response.body);
+      debugPrint("TODAY MeetingEventModel success: $decodedresponse");
+      Iterable meetingList = decodedresponse['results'];
+      todayMeetings = meetingList
+          .map(
+            (data) => MeetingEventModel.fromJson(data),
+          )
+          .toList();
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return membersResponse;
+    return todayMeetings;
   }
 
-  // get list of attendees for a meeting or event
-  static Future<ClockedMembersResponse> getAttendeesList({
-    required int page,
-    required MeetingEventModel meetingEventModel,
-    required String filterDate,
-    required int branchId,
-    required int memberCategoryId,
-    required int groupId,
-    required int subGroupId,
-    required int genderId,
-    required int fromAge,
-    required int toAge,
+  static Future<List<MeetingEventModel>> getMeetingsFromDate({
+    required String date,
   }) async {
-    ClockedMembersResponse membersResponse;
+    List<MeetingEventModel> meetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/date/$date');
     try {
-      debugPrint("URL: ${url.toString()}");
-      debugPrint("Meeting ID: ${meetingEventModel.id}");
-      debugPrint("Filter Date: $filterDate");
-      debugPrint("Branch ID: $branchId");
-      debugPrint("MemberCategoryId: $memberCategoryId");
-      debugPrint("groupId: $groupId");
-      debugPrint("subGroupId: $subGroupId");
-      debugPrint("genderId: $genderId");
-      debugPrint("fromAge: $fromAge");
-      debugPrint("toAge: $toAge");
       http.Response response = await http.get(
         url,
         headers: await getAllHeaders(),
       );
-      debugPrint("Attendees Response: ${jsonDecode(response.body)}");
-      membersResponse = ClockedMembersResponse.fromJson(
+      var decodedresponse = jsonDecode(response.body);
+      debugPrint("Meeting From Date success: $decodedresponse");
+      Iterable meetingList = decodedresponse['results'];
+      meetings = meetingList
+          .map(
+            (data) => MeetingEventModel.fromJson(data),
+          )
+          .toList();
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return meetings;
+  }
+
+  static Future<List<MeetingEventModel>> getUpcomingMeetingEventList(
+      BuildContext context, var memberToken) async {
+    List<MeetingEventModel> upcomingMeetings = [];
+    var url = Uri.parse(
+        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      var decodedresponse = jsonDecode(response.body);
+      debugPrint("UPCOMING MeetingEventModel success: $decodedresponse");
+      Iterable dataList = decodedresponse['data'];
+      upcomingMeetings = dataList
+          .map(
+            (data) => MeetingEventModel.fromJson(data),
+          )
+          .toList();
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return upcomingMeetings;
+  }
+
+  // get coordinates for a meeting
+  static Future<CoordinatesResponse> getMeetingCoordinates({
+    required MeetingEventModel meetingEventModel,
+  }) async {
+    CoordinatesResponse coordinateResponse;
+    var url = Uri.parse(
+        '${getBaseUrl()}/attendance/meeting-event/location?meetingEventId=${meetingEventModel.id}');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Coordinates Response: ${jsonDecode(response.body)}");
+      coordinateResponse = CoordinatesResponse.fromJson(
         await returnResponse(response),
       );
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return membersResponse;
+    return coordinateResponse;
   }
 
   static Future<MeetingAttendanceResponse> getAttendanceList({
@@ -190,7 +211,8 @@ class ClockingAPI {
   }) async {
     ClockingResponse clockOutResponse;
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance/clock-out/$clockingId');
+      '${getBaseUrl()}/attendance/meeting-event/attendance/clock-out/$clockingId',
+    );
     try {
       http.Response response = await http.patch(
         url,
@@ -261,32 +283,6 @@ class ClockingAPI {
     return clockInResponse;
   }
 
-  // End break data source
-  static Future<ClockingResponse> cancelClocking({
-    required int clockingId,
-    required String time,
-  }) async {
-    ClockingResponse clockInResponse;
-    try {
-      var url = Uri.parse(
-          '${getBaseUrl()}/attendance/meeting-event/attendance/cancel-clocking/$clockingId');
-      http.Response response = await http.patch(
-        url,
-        body: {
-          'time': time,
-        },
-        headers: await getTokenHeader(),
-      );
-      clockInResponse = ClockingResponse.fromJson(
-        await returnResponse(response),
-      );
-    } on SocketException catch (_) {
-      debugPrint('No net');
-      throw FetchDataException('No Internet connection');
-    }
-    return clockInResponse;
-  }
-
   // submit an excuse data source
   static Future<ExcuseModel> submitExcuse({
     required int meetingEventId,
@@ -305,7 +301,7 @@ class ClockingAPI {
           'enteredBy': "0",
           'excuse': excuse,
         },
-        headers: await getAllHeaders(),
+        headers: await getTokenHeader(),
       );
       debugPrint("Submit Excuse Response: ${jsonDecode(response.body)}");
       excuseModel = ExcuseModel.fromJson(await returnResponse(response));

@@ -108,7 +108,7 @@ class ClockedMemberItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'ID: ${attendee!.additionalInfo!.id!.toString()}',
+                          'ID: ${attendee!.identification}',
                           style: const TextStyle(
                               fontSize: 16, color: primaryColor),
                         ),
@@ -334,8 +334,8 @@ class ClockedMemberItem extends StatelessWidget {
                         Expanded(
                           child: Consumer<ClientProvider>(
                             builder: (context, data, child) {
-                              debugPrint("BID: ${data.getUser.branchID}");
-                              return (data.getUser.branchID ==
+                              debugPrint("BID: ${data.branch.id}");
+                              return (data.branch.id ==
                                           AppConstants.mainAdmin &&
                                       (attendee!.attendance!.inTime != null))
                                   ? CustomElevatedButton(

@@ -23,24 +23,27 @@ class Attendance {
   int? validatedBy;
   String? date;
   String? clockingMethodName;
+  String? message;
 
-  Attendance(
-      {this.id,
-      this.meetingEventId,
-      this.memberId,
-      this.accountType,
-      this.inOrOut,
-      this.inTime,
-      this.outTime,
-      this.startBreak,
-      this.endBreak,
-      this.clockedBy,
-      this.clockingMethod,
-      this.validate,
-      this.validationDate,
-      this.validatedBy,
-      this.date,
-      this.clockingMethodName});
+  Attendance({
+    this.id,
+    this.meetingEventId,
+    this.memberId,
+    this.accountType,
+    this.inOrOut,
+    this.inTime,
+    this.outTime,
+    this.startBreak,
+    this.endBreak,
+    this.clockedBy,
+    this.clockingMethod,
+    this.validate,
+    this.validationDate,
+    this.validatedBy,
+    this.date,
+    this.clockingMethodName,
+    this.message,
+  });
 
   Attendance.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -63,6 +66,7 @@ class Attendance {
     validatedBy = json['validatedBy'];
     date = json['date'];
     clockingMethodName = json['clockingMethodName'];
+    message = json['SUCCESS_RESPONSE_MESSAGE'];
   }
 
   Map<String, dynamic> toJson() {
@@ -89,6 +93,7 @@ class Attendance {
     data['validatedBy'] = validatedBy;
     data['date'] = date;
     data['clockingMethodName'] = clockingMethodName;
+    data['SUCCESS_RESPONSE_MESSAGE'] = message;
     return data;
   }
 }

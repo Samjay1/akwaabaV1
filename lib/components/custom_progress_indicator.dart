@@ -9,9 +9,11 @@ class CustomProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Platform.isIOS?
-      const CupertinoActivityIndicator(radius:  18,):
-      const CircularProgressIndicator(),
+      child: Platform.isIOS
+          ? const CupertinoActivityIndicator(
+              radius: 18,
+            )
+          : const CircularProgressIndicator(),
     );
   }
 }

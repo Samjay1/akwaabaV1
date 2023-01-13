@@ -6,6 +6,7 @@ import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/components/profile_shimmer_item.dart';
 import 'package:akwaaba/components/text_shimmer_item.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
@@ -73,7 +74,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadMeetingEventsByUserType({var userType}) async {
-    if (userType == 'member') {
+    if (userType == AppConstants.member) {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('token');
 
@@ -156,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                       highlightColor: greyColorShade100,
                       child: const ProfileShimmerItem(),
                     )
-                  : userType.compareTo("member") == 0
+                  : userType.compareTo(AppConstants.member) == 0
                       ? Consumer<MemberProvider>(
                           builder: (context, data, child) {
                             return memberHeaderView(
@@ -168,7 +169,7 @@ class _HomePageState extends State<HomePage> {
                             );
                           },
                         )
-                      : userType.compareTo("admin") == 0
+                      : userType.compareTo(AppConstants.admin) == 0
                           ? Consumer<ClientProvider>(
                               builder: (context, data, child) {
                               return adminHeaderView(
@@ -248,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                               text: 'You currently have no \nmeetings now.',
                             );
                           }
-                          if (userType == 'member') {
+                          if (userType == AppConstants.member) {
                             return ListView.builder(
                                 itemCount: data.todayMeetings.length,
                                 shrinkWrap: true,

@@ -39,9 +39,15 @@ class Attendee {
   Attendance? attendance;
   String? lastSeen;
   String? status;
+  String? identification;
   bool? selected = false;
 
-  Attendee({this.additionalInfo, this.attendance, this.lastSeen, this.status});
+  Attendee(
+      {this.additionalInfo,
+      this.attendance,
+      this.lastSeen,
+      this.status,
+      this.identification});
 
   Attendee.fromJson(Map<String, dynamic> json) {
     additionalInfo = json['additionalInfo'] != null
@@ -52,6 +58,7 @@ class Attendee {
         : null;
     lastSeen = json['lastSeen'];
     status = json['status'];
+    identification = json['identification'];
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +71,7 @@ class Attendee {
     }
     data['lastSeen'] = lastSeen;
     data['status'] = status;
+    data['identification'] = identification;
     return data;
   }
 

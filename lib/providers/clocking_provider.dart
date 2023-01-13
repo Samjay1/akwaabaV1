@@ -1,7 +1,9 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
+import 'package:akwaaba/Networks/event_api.dart';
 import 'package:akwaaba/Networks/clocking_api.dart';
 import 'package:akwaaba/Networks/group_api.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/gender.dart';
 import 'package:akwaaba/models/general/group.dart';
@@ -17,6 +19,7 @@ import 'package:provider/provider.dart';
 
 class ClockingProvider extends ChangeNotifier {
   bool _loading = false;
+  bool _loadingMore = false;
   bool _clocking = false;
   bool _submitting = false;
 
@@ -72,11 +75,28 @@ class ClockingProvider extends ChangeNotifier {
   BuildContext get currentContext => _context!;
 
   bool get loading => _loading;
+  bool get loadingMore => _loadingMore;
   bool get clocking => _clocking;
   bool get submitting => _submitting;
 
+  // pagination variables
+  int _absenteesPage = 1;
+  int _attendeesPage = 1;
+  bool hasNextPage = true;
+
+  late ScrollController absenteesScrollController = ScrollController()
+    ..addListener(_loadMoreAbsentees);
+
+  late ScrollController attendeesScrollController = ScrollController()
+    ..addListener(_loadMoreAttendees);
+
   setLoading(bool loading) {
     _loading = loading;
+    notifyListeners();
+  }
+
+  setLoadingMore(bool loading) {
+    _loadingMore = loading;
     notifyListeners();
   }
 
@@ -216,13 +236,15 @@ class ClockingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // get clocked members for a meeting
+  // initial loading of members or absentees for a meeting
   Future<void> getAllAbsentees({
     required MeetingEventModel meetingEventModel,
   }) async {
     try {
       setLoading(true);
+      _absenteesPage = 1;
       var response = await ClockingAPI.getAbsenteesList(
+        page: _absenteesPage,
         meetingEventModel: meetingEventModel,
         branchId: selectedBranch == null
             ? meetingEventModel.branchId!
@@ -238,10 +260,8 @@ class ClockingProvider extends ChangeNotifier {
         fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
         toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
       );
-      _selectedAbsentees.clear();
       _absentees.clear();
-      //_clockedMembers.clear();
-      //_tempClockedMembers.clear();
+      _selectedAbsentees.clear();
       if (response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
@@ -249,11 +269,11 @@ class ClockingProvider extends ChangeNotifier {
             .where((absentee) => (absentee.attendance!.memberId!.email !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .email ||
+                        .applicantEmail ||
                 absentee.attendance!.memberId!.phone !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .phone))
+                        .applicantPhone))
             .toList();
 
         _tempAbsentees = _absentees;
@@ -274,12 +294,65 @@ class ClockingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // load more list of attendees of a meeting
+  Future<void> _loadMoreAbsentees() async {
+    if (hasNextPage == true &&
+        loading == false &&
+        _loadingMore == false &&
+        absenteesScrollController.position.extentAfter < 300) {
+      setLoadingMore(true); // show loading indicator
+      _absenteesPage += 1; // increase page by 1
+      try {
+        var response = await ClockingAPI.getAbsenteesList(
+          page: _absenteesPage,
+          meetingEventModel: selectedCurrentMeeting,
+          branchId: selectedBranch == null
+              ? selectedCurrentMeeting.branchId!
+              : selectedBranch!.id!,
+          filterDate: selectedDate == null
+              ? getFilterDate()
+              : selectedDate!.toIso8601String().substring(0, 10),
+          memberCategoryId:
+              selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
+          groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
+          subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
+          genderId: selectedGender == null ? 0 : selectedGender!.id!,
+          fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
+          toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+        );
+        if (response.results!.isNotEmpty) {
+          var newAbsenteesList = response.results!
+              .where((absentee) => (absentee.attendance!.memberId!.email !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantEmail ||
+                  absentee.attendance!.memberId!.phone !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantPhone))
+              .toList();
+          _absentees.addAll(newAbsenteesList);
+          _tempAbsentees.addAll(_absentees);
+        } else {
+          hasNextPage = false;
+        }
+        setLoadingMore(false);
+      } catch (err) {
+        setLoadingMore(false);
+        debugPrint("error --> $err");
+      }
+    }
+    notifyListeners();
+  }
+
   // get clocked members for a meeting
   Future<void> getAllAtendees({
     required MeetingEventModel meetingEventModel,
   }) async {
     try {
+      _attendeesPage = 1;
       var response = await ClockingAPI.getAttendeesList(
+        page: _attendeesPage,
         meetingEventModel: meetingEventModel,
         branchId: selectedBranch == null
             ? meetingEventModel.branchId!
@@ -305,11 +378,11 @@ class ClockingProvider extends ChangeNotifier {
             .where((attendee) => (attendee.attendance!.memberId!.email !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .email ||
+                        .applicantEmail ||
                 attendee.attendance!.memberId!.phone !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .phone))
+                        .applicantPhone))
             .toList();
 
         _tempAttendees = _attendees;
@@ -320,6 +393,57 @@ class ClockingProvider extends ChangeNotifier {
       setLoading(false);
       debugPrint('Error Attendees: ${err.toString()}');
       showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // load more list of absentees of a meeting
+  Future<void> _loadMoreAttendees() async {
+    if (hasNextPage == true &&
+        loading == false &&
+        _loadingMore == false &&
+        attendeesScrollController.position.extentAfter < 300) {
+      setLoadingMore(true); // show loading indicator
+      _attendeesPage += 1; // increase page by 1
+      try {
+        var response = await ClockingAPI.getAttendeesList(
+          page: _attendeesPage,
+          meetingEventModel: selectedCurrentMeeting,
+          branchId: selectedBranch == null
+              ? selectedCurrentMeeting.branchId!
+              : selectedBranch!.id!,
+          filterDate: selectedDate == null
+              ? getFilterDate()
+              : selectedDate!.toIso8601String().substring(0, 10),
+          memberCategoryId:
+              selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
+          groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
+          subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
+          genderId: selectedGender == null ? 0 : selectedGender!.id!,
+          fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
+          toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+        );
+        if (response.results!.isNotEmpty) {
+          var newAtendeesList = response.results!
+              .where((attendee) => (attendee.attendance!.memberId!.email !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantEmail ||
+                  attendee.attendance!.memberId!.phone !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantPhone))
+              .toList();
+          _attendees.addAll(newAtendeesList);
+          _tempAttendees.addAll(_attendees);
+        } else {
+          hasNextPage = false;
+        }
+        setLoadingMore(false);
+      } catch (err) {
+        setLoadingMore(false);
+        debugPrint("error --> $err");
+      }
     }
     notifyListeners();
   }

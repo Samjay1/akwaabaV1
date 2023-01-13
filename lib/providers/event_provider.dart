@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:akwaaba/Networks/attendance_api.dart';
+import 'package:akwaaba/Networks/event_api.dart';
 import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/location/location_services.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
@@ -79,7 +79,7 @@ class EventProvider extends ChangeNotifier {
   }) async {
     _todayMeetingEventList.clear();
     try {
-      _todayMeetingEventList = await AttendanceAPI.getTodayMeetingEventList(
+      _todayMeetingEventList = await EventAPI.getTodayMeetingEventList(
         context,
         memberToken,
       );
@@ -109,8 +109,7 @@ class EventProvider extends ChangeNotifier {
     _upcomingMeetingEventList.clear();
     setLoading(true);
     try {
-      _upcomingMeetingEventList =
-          await AttendanceAPI.getUpcomingMeetingEventList(
+      _upcomingMeetingEventList = await EventAPI.getUpcomingMeetingEventList(
         context,
         memberToken,
       );
@@ -139,7 +138,7 @@ class EventProvider extends ChangeNotifier {
     showLoadingDialog(context);
     getCurrentUserLocation();
 
-    var response = await AttendanceAPI.getMeetingCoordinates(
+    var response = await EventAPI.getMeetingCoordinates(
       meetingEventModel: meetingEventModel,
     );
     debugPrint("Latitude: ${response.results![0].latitude}");
@@ -209,7 +208,7 @@ class EventProvider extends ChangeNotifier {
   Future<int> getClockingId({
     required MeetingEventModel meetingEventModel,
   }) async {
-    var response = await AttendanceAPI.getAttendanceList(
+    var response = await EventAPI.getAttendanceList(
       meetingEventModel: meetingEventModel,
       filterDate: getFilterDate(),
     );
@@ -224,7 +223,7 @@ class EventProvider extends ChangeNotifier {
     required String? time,
   }) async {
     try {
-      var response = await AttendanceAPI.getAttendanceList(
+      var response = await EventAPI.getAttendanceList(
         meetingEventModel: meetingEventModel,
         filterDate: getFilterDate(),
       );
@@ -308,7 +307,7 @@ class EventProvider extends ChangeNotifier {
       required int clockingId,
       required String? time}) async {
     try {
-      var response = await AttendanceAPI.clockIn(
+      var response = await EventAPI.clockIn(
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
@@ -334,7 +333,7 @@ class EventProvider extends ChangeNotifier {
       required int clockingId,
       required String? time}) async {
     try {
-      var response = await AttendanceAPI.clockOut(
+      var response = await EventAPI.clockOut(
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
@@ -361,7 +360,7 @@ class EventProvider extends ChangeNotifier {
       required int clockingId,
       required String? time}) async {
     try {
-      var response = await AttendanceAPI.startBreak(
+      var response = await EventAPI.startBreak(
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
@@ -394,7 +393,7 @@ class EventProvider extends ChangeNotifier {
       required int clockingId,
       required String? time}) async {
     try {
-      var response = await AttendanceAPI.endBreak(
+      var response = await EventAPI.endBreak(
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
@@ -429,7 +428,7 @@ class EventProvider extends ChangeNotifier {
           DateUtil.formatDate('yyyy-MM-dd', dateTime: DateTime.now())
               .substring(0, 10)
               .trim();
-      var response = await AttendanceAPI.getAttendanceList(
+      var response = await EventAPI.getAttendanceList(
         meetingEventModel: meetingEventModel,
         filterDate: currentDate,
       );
@@ -476,7 +475,7 @@ class EventProvider extends ChangeNotifier {
     required String excuse,
   }) async {
     try {
-      var response = await AttendanceAPI.submitExcuse(
+      var response = await EventAPI.submitExcuse(
         meetingEventId: meetingId,
         clockingId: clockingId,
         excuse: excuse,
