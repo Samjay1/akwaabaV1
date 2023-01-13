@@ -227,7 +227,7 @@ class MemberAPI {
       };
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? memberToken = prefs.getString('memberToken');
+      String? memberToken = prefs.getString('token');
 
       http.Response response = await http.post(
           Uri.parse('$baseUrl/attendance/clocking-device/request'),
@@ -237,15 +237,16 @@ class MemberAPI {
             'Content-Type': 'application/json'
           });
       var decodedResponse = jsonDecode(response.body);
+      print('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
       if (response.statusCode == 201) {
-        debugPrint('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
-        debugPrint(
-            '2.MEMBER TOKEN---------- --------------------- $memberToken');
+        // debugPrint('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
+        // debugPrint(
+        //     '2.MEMBER TOKEN---------- --------------------- $memberToken');
         // return response.body;
-        showErrorToast("Device Activation request sent.");
+        showNormalToast("Device Activation request sent.");
       } else {
         debugPrint("error>>>. ${response.body}");
-        showErrorToast("Login Error");
+        showErrorToast("Invalid Token");
       }
     } on SocketException catch (_) {
       showErrorToast("Network Error");

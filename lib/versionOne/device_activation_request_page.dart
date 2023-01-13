@@ -28,8 +28,7 @@ class _DeviceActivationRequestPageState
 
   void loadToken({var memberId}) async {
     prefs = await SharedPreferences.getInstance();
-    memberToken = prefs?.getString('memberToken');
-
+    memberToken = prefs?.getString('token');
     Provider.of<MemberProvider>(context, listen: false).callDeviceRequestList(
         memberToken: memberToken, memberID: memberId, context: context);
     print('DEVICE ACTIVATION TOKEN ${memberToken}');
@@ -42,7 +41,6 @@ class _DeviceActivationRequestPageState
     MemberProfile memberProfile =
         Provider.of<MemberProvider>(context, listen: false).memberProfile;
     var memberId = memberProfile.user!.id; // GETS THE MEMBER ID
-    debugPrint('MEMBER memberToken ____ ${memberProfile.token.toString()}');
 
     //GETS DEVICE INFO
     var deviceInfo =
