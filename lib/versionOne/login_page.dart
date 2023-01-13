@@ -180,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                               builder: (_) => const WebViewPage(
                                   url:
                                   'https://akwaabasolutions.com/about-akwaaba-software/',
-                                  title: 'About Akwaaba '),
+                                  title: 'About Akwaaba'),
                             ),
                           );
 
@@ -188,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                           // const ForgotPasswordPage()));
                         },
                         child: const Text(
-                          "ABOUT AKWAABA",
+                          "About Akwaaba",
                           style: TextStyle(color: Colors.white,),
                         )),
                   ),

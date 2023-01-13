@@ -7,6 +7,7 @@ import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -369,6 +370,28 @@ class _MemberRegistrationPageIndividualState
                             nextButtonTapped(pageId: pageViewController.page);
                           })
                 ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const WebViewPage(
+                              url:
+                              'https://akwaabasolutions.com/terms-and-conditions-2/',
+                              title: 'Terms & Conditions'),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "Terms & Conditions",
+                      style: TextStyle(color: Colors.black,),
+                    )),
               ),
             ),
           ],
