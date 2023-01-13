@@ -29,7 +29,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../components/custom_cached_image_widget.dart';
 import '../utils/shared_prefs.dart';
 import '../versionOne/attendance_report_page.dart';
-import '../screens/members_page.dart';
+import 'members_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -185,34 +185,36 @@ class _MainPageState extends State<MainPage> {
           style: const TextStyle(color: Colors.black),
         ),
         actions: [
-
           Stack(
             children: [
               IconButton(
-                onPressed:(){
-                  Navigator.push(context, MaterialPageRoute(builder: (_)=>
-                  const AlertsPage()));
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const AlertsPage()));
                 },
                 icon: Icon(Icons.notifications),
-                tooltip:'hello',
-                isSelected:true,
+                tooltip: 'hello',
+                isSelected: true,
               ),
               Positioned(
-                right: 5,
+                  right: 5,
                   top: 5,
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
-                      color: Colors.black,
-                      border: Border.all(color: Colors.orange),
-                      borderRadius: BorderRadius.circular(100)
+                        color: Colors.black,
+                        border: Border.all(color: Colors.orange),
+                        borderRadius: BorderRadius.circular(100)),
+                    child: Text(
+                      '3',
+                      style: TextStyle(fontSize: 14),
                     ),
-                    child: Text('3', style: TextStyle(fontSize: 14),),
-                  )
-              )
+                  ))
             ],
           ),
-          SizedBox(width: 5,),
+          SizedBox(
+            width: 5,
+          ),
         ],
       ),
       drawer: userType == 'admin'
@@ -300,15 +302,12 @@ class _MainPageState extends State<MainPage> {
                           iconData: Icons.phone_android,
                           function: () {
                             Navigator.pop(context);
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (_) => const WebViewPage(
-                            //         url:
-                            //             'https://fees.akwaabasoftware.com/api/dashboard/',
-                            //         title: 'View Members'),
-                            //   ),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const MembersPage(),
+                              ),
+                            );
                           },
                         ),
                         drawerItemView(
@@ -793,7 +792,7 @@ class _MainPageState extends State<MainPage> {
                                       },
                                       onWhatsappTap: () async {
                                         Navigator.of(context).pop();
-                                        openwhatsapp(
+                                        openWhatsapp(
                                           context,
                                           phone,
                                           'Hello ${clientAccountInfo.name}, \n\nI\'m experiencing an issue and I need an assistance.',

@@ -4,12 +4,12 @@ import 'package:akwaaba/Networks/event_api.dart';
 import 'package:akwaaba/Networks/clocking_api.dart';
 import 'package:akwaaba/Networks/group_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
-import 'package:akwaaba/dialogs_modals/info_dialog.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/gender.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/member_category.dart';
+import 'package:akwaaba/models/general/messaging_type.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
@@ -27,11 +27,13 @@ class AttendanceProvider extends ChangeNotifier {
   List<Group> _groups = [];
   List<SubGroup> _subGroups = [];
   List<MemberCategory> _memberCategories = [];
+  List<MessagingType> _messagingTypes = [];
   List<Gender> _genders = [];
   List<Branch> _branches = [];
 
   final TextEditingController minAgeTEC = TextEditingController();
   final TextEditingController maxAgeTEC = TextEditingController();
+  final TextEditingController followUpTEC = TextEditingController();
 
   List<Attendee?> _absentees = [];
 
@@ -53,19 +55,18 @@ class AttendanceProvider extends ChangeNotifier {
 
   MeetingEventModel? selectedPastMeetingEvent;
   DateTime? selectedDate;
-  DateTime? postClockTime;
-
-  MeetingEventModel? _meetingEventModel;
 
   Group? selectedGroup;
   SubGroup? selectedSubGroup;
   MemberCategory? selectedMemberCategory;
   Gender? selectedGender;
   Branch? selectedBranch;
+  MessagingType? selectedMessagingType;
 
   // Retrieve all meetings
   List<Group> get groups => _groups;
   List<SubGroup> get subGroups => _subGroups;
+  List<MessagingType> get messagingTypes => _messagingTypes;
   List<MemberCategory> get memberCategories => _memberCategories;
   List<Gender> get genders => _genders;
   List<Branch> get branches => _branches;
@@ -75,6 +76,7 @@ class AttendanceProvider extends ChangeNotifier {
   List<Attendee?> totalFemales = [];
 
   BuildContext? _context;
+  String? search = '';
 
   List<Attendee?> get absentees => _absentees;
 
@@ -85,8 +87,6 @@ class AttendanceProvider extends ChangeNotifier {
   List<Attendee?> get selectedAttendees => _selectedAttendees;
 
   List<int> get selectedClockingIds => _selectedClockingIds;
-
-  MeetingEventModel get selectedCurrentMeeting => _meetingEventModel!;
 
   bool get loading => _loading;
   bool get loadingMore => _loadingMore;
@@ -131,11 +131,6 @@ class AttendanceProvider extends ChangeNotifier {
 
   setCurrentContext(BuildContext context) {
     _context = context;
-    notifyListeners();
-  }
-
-  setSelectedMeeting(MeetingEventModel meetingEventModel) {
-    _meetingEventModel = meetingEventModel;
     notifyListeners();
   }
 
@@ -186,6 +181,67 @@ class AttendanceProvider extends ChangeNotifier {
       Navigator.of(_context!).pop();
       setLoading(false);
       debugPrint('Error: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  void validateFollowUpField({
+    required int meetingEventId,
+    required int clockingId,
+  }) {
+    if (followUpTEC.text.isEmpty) {
+      showErrorToast('Please enter your follow-up message');
+      return;
+    }
+    if (selectedMessagingType == null) {
+      showErrorToast('Please select messaging type');
+      return;
+    }
+    submitFollowUp(
+      meetingEventId: meetingEventId,
+      clockingId: clockingId,
+      messagingType: selectedMessagingType!.id!,
+      followUp: followUpTEC.text.trim(),
+    );
+  }
+
+  // submit follow up
+  Future<void> submitFollowUp({
+    required int meetingEventId,
+    required int clockingId,
+    required int messagingType,
+    required String followUp,
+  }) async {
+    try {
+      setLoading(true);
+      var message = await AttendanceAPI.submitFollowUp(
+        meetingEventId: meetingEventId,
+        clockingId: clockingId,
+        messagingType: messagingType,
+        followUp: followUp,
+      );
+      setLoading(false);
+      followUpTEC.clear();
+      Navigator.of(_context!).pop();
+      showNormalToast(message);
+    } catch (err) {
+      setLoading(false);
+      debugPrint('Error: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // get list of messaging types
+  Future<void> getMessagingTypes({required int gender}) async {
+    try {
+      _messagingTypes = await AttendanceAPI.getMessagingTypes(gender: gender);
+      debugPrint('Messaging Types: ${_messagingTypes.length}');
+      getSubGroups();
+    } catch (err) {
+      setLoading(false);
+      debugPrint('Error MT: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -374,7 +430,7 @@ class AttendanceProvider extends ChangeNotifier {
         debugPrint('Absentees: ${_absentees.length}');
       }
 
-      getAllAtendees(
+      getAllAttendees(
         meetingEventModel: meetingEventModel,
       );
 
@@ -450,8 +506,8 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // get clocked members for a meeting
-  Future<void> getAllAtendees({
+  // get all attendees members for a meeting
+  Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
   }) async {
     try {
@@ -566,191 +622,6 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-// clocks a member in of a meeting or event by admin
-  Future<void> clockMemberIn({
-    required BuildContext context,
-    required Attendee? attendee,
-    required String time,
-  }) async {
-    try {
-      showLoadingDialog(context);
-      var response;
-      if (_selectedAbsentees.isEmpty) {
-        // Perform individual clock-in
-        response = await ClockingAPI.clockIn(
-          clockingId: attendee!.attendance!.id!,
-          time: time,
-        );
-        debugPrint("ClockingTime $time");
-        debugPrint("SUCCESS ${response.message}");
-        debugPrint("ClockingId ${attendee.attendance!.id!}");
-        // // remove from list after member is been clocked in
-        // if (_absentees.contains(attendee)) {
-        //   _absentees.remove(attendee);
-        // }
-      } else {
-        // Perform bulk clock-in
-        for (Attendee? attendee in _selectedAbsentees) {
-          response = await ClockingAPI.clockIn(
-            clockingId: attendee!.attendance!.id!,
-            time: time,
-          );
-          if (_absentees.contains(attendee)) {
-            _absentees.remove(attendee);
-          }
-          attendee.attendance!.memberId!.selected = false;
-        }
-        _selectedAbsentees.clear();
-      }
-      // refresh list when there is bulk operation
-      getAllAbsentees(
-        meetingEventModel: selectedPastMeetingEvent!,
-      );
-      showNormalToast(response.message);
-      Navigator.of(context).pop();
-    } catch (err) {
-      Navigator.pop(context);
-      debugPrint('Error Clocking In: ${err.toString()}');
-      showErrorToast(err.toString());
-    }
-    notifyListeners();
-  }
-
-  Future<void> clockMemberOut({
-    required BuildContext context,
-    required Attendee? attendee,
-    required String time,
-  }) async {
-    try {
-      showLoadingDialog(context);
-      var response;
-      if (selectedAttendees.isEmpty) {
-        // Perform individual clock-out
-        response = await ClockingAPI.clockOut(
-          clockingId: attendee!.attendance!.id!,
-          time: time,
-        );
-        debugPrint("SUCCESS ${response.message}");
-        debugPrint("ClockingId ${attendee.attendance!.id!}");
-      } else {
-        // Perform bulk clock-out
-        for (Attendee? attendee in selectedAttendees) {
-          // check if member has already clocked out
-          if (attendee!.attendance!.outTime == null) {
-            response = await ClockingAPI.clockOut(
-              clockingId: attendee.attendance!.id!,
-              time: time,
-            );
-            attendee.attendance!.memberId!.selected = false;
-          }
-        }
-        _selectedAttendees.clear();
-      }
-      Navigator.of(context).pop();
-      // refresh list when there is bulk operation
-      getAllAbsentees(
-        meetingEventModel: selectedPastMeetingEvent!,
-      );
-      showNormalToast(response.message);
-    } catch (err) {
-      Navigator.pop(context);
-      debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
-    }
-    notifyListeners();
-  }
-
-// starts break time for meeting
-  Future<void> startMeetingBreak({
-    required BuildContext context,
-    required Attendee? attendee,
-    required String time,
-  }) async {
-    try {
-      showLoadingDialog(context);
-      var response;
-      if (selectedAttendees.isEmpty) {
-        // Perform individual start break
-        response = await ClockingAPI.startBreak(
-          clockingId: attendee!.attendance!.id!,
-          time: time,
-        );
-        debugPrint("SUCCESS ${response.message}");
-        debugPrint("ClockingId ${attendee.attendance!.id!}");
-      } else {
-        // Perform bulk start break
-        for (Attendee? attendee in selectedAttendees) {
-          response = await ClockingAPI.startBreak(
-            clockingId: attendee!.attendance!.id!,
-            time: time,
-          );
-        }
-        _selectedAttendees.clear();
-      }
-      Navigator.of(context).pop();
-      // refresh list when there is bulk operation
-      getAllAbsentees(
-        meetingEventModel: selectedPastMeetingEvent!,
-      );
-
-      if (response.message == null) {
-        showErrorToast(response.nonFieldErrors[0]);
-      } else {
-        showNormalToast(response.message);
-      }
-    } catch (err) {
-      Navigator.pop(context);
-      debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
-    }
-    notifyListeners();
-  }
-
-// ends break time for meeting
-  Future<void> endMeetingBreak({
-    required BuildContext context,
-    required Attendee? attendee,
-    required String time,
-  }) async {
-    try {
-      showLoadingDialog(context);
-      var response;
-      if (selectedAttendees.isEmpty) {
-        // Perform individual start break
-        response = await ClockingAPI.endBreak(
-          clockingId: attendee!.attendance!.id!,
-          time: time,
-        );
-        debugPrint("SUCCESS ${response.message}");
-        debugPrint("ClockingId ${attendee.attendance!.id!}");
-      } else {
-        // Perform bulk start break
-        for (Attendee? attendee in selectedAttendees) {
-          response = await ClockingAPI.endBreak(
-            clockingId: attendee!.attendance!.id!,
-            time: time,
-          );
-        }
-        _selectedAttendees.clear();
-      }
-      Navigator.of(context).pop();
-      // refresh list when there is bulk operation
-      getAllAbsentees(
-        meetingEventModel: selectedPastMeetingEvent!,
-      );
-      if (response.message == null) {
-        showErrorToast(response.nonFieldErrors[0]);
-      } else {
-        showNormalToast(response.message);
-      }
-    } catch (err) {
-      Navigator.pop(context);
-      debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
-    }
-    notifyListeners();
-  }
-
   // cancel clocking for meeting
   Future<void> cancelClocking({
     required BuildContext context,
@@ -764,7 +635,7 @@ class AttendanceProvider extends ChangeNotifier {
         // Perform individual start break
         response = await ClockingAPI.cancelClocking(
           clockingId: attendee!.attendance!.id!,
-          time: time!,
+          time: time ?? selectedDate!.toIso8601String().substring(0, 10),
         );
         debugPrint("SUCCESS ${response.message}");
         debugPrint("ClockingId ${attendee.attendance!.id!}");
@@ -773,7 +644,7 @@ class AttendanceProvider extends ChangeNotifier {
         for (Attendee? attendee in selectedAttendees) {
           response = await ClockingAPI.cancelClocking(
             clockingId: attendee!.attendance!.id!,
-            time: time!,
+            time: time ?? selectedDate!.toIso8601String().substring(0, 10),
           );
         }
         _selectedAttendees.clear();
@@ -905,16 +776,9 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String getPostClockDateTime() {
-    var date = selectedDate!.toIso8601String().substring(0, 11);
-    var time = postClockTime!.toIso8601String().substring(11, 19);
-
-    return '$date$time';
-  }
-
   Future<void> clearData() async {
     clearFilters();
-    postClockTime = null;
+    search = '';
     totalMembers = 0;
     totalMales.clear();
     totalFemales.clear();

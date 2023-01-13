@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
+import 'package:akwaaba/Networks/api_responses/attendance_history_response.dart';
 import 'package:akwaaba/Networks/api_responses/clocking_response.dart';
 import 'package:akwaaba/Networks/api_responses/coordinates_response.dart';
 import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart';
 import 'package:akwaaba/models/attendance/attendance.dart';
 import 'package:akwaaba/models/attendance/excuse_model.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
+import 'package:akwaaba/models/general/messaging_type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +39,58 @@ class AttendanceAPI {
       throw FetchDataException('No Internet connection');
     }
     return attendanceResponse;
+  }
+
+  // get list of attendees for a meeting or event
+  static Future<AttendanceHistoryResponse> getAttendanceHistory({
+    required int page,
+    required MeetingEventModel meetingEventModel,
+    required String startDate,
+    required String endDate,
+    required String search,
+    required String status,
+    required int? branchId,
+    required String? memberCategoryId,
+    required String? groupId,
+    required String? subGroupId,
+    required String? genderId,
+    required String? fromAge,
+    required String? toAge,
+  }) async {
+    AttendanceHistoryResponse membersResponse;
+
+    var url = Uri.parse(
+      '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&meetingEventId=${meetingEventModel.id}&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_activeStatus=$status&filter_from_age=$fromAge&filter_to_age=$toAge',
+    );
+
+    try {
+      debugPrint("URL: ${url.toString()}");
+      debugPrint("page: $page");
+      debugPrint("Meeting ID: ${meetingEventModel.id}");
+      debugPrint("Search: $search");
+      debugPrint("Start Date: $startDate");
+      debugPrint("End Date: $endDate");
+      debugPrint("Branch ID: $branchId");
+      debugPrint("MemberCategoryId: $memberCategoryId");
+      debugPrint("groupId: $groupId");
+      debugPrint("subGroupId: $subGroupId");
+      debugPrint("genderId: $genderId");
+      debugPrint("fromAge: $fromAge");
+      debugPrint("toAge: $toAge");
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint(
+          "Attendance History Response: ${await returnResponse(response)}");
+      membersResponse = AttendanceHistoryResponse.fromJson(
+        await returnResponse(response),
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return membersResponse;
   }
 
   // validate member attendance - single
@@ -90,33 +144,60 @@ class AttendanceAPI {
     return message;
   }
 
-  // submit an excuse data source
-  static Future<ExcuseModel> submitExcuse({
-    required int meetingEventId,
-    required int clockingId,
-    required String excuse,
+  static Future<List<MessagingType>> getMessagingTypes({
+    required int gender,
   }) async {
-    ExcuseModel excuseModel;
-    var url =
-        Uri.parse('${getBaseUrl()}/attendance/meeting-event/attendance-excuse');
+    List<MessagingType> messagingTypes = [];
+    var url = Uri.parse('${getBaseUrl()}/generic/messaging-type?id=$gender');
     try {
-      http.Response response = await http.post(
+      http.Response response = await http.get(
         url,
-        body: {
-          'meetingEventId': meetingEventId.toString(),
-          'clockingId': clockingId.toString(),
-          'enteredBy': "0",
-          'excuse': excuse,
-        },
-        headers: await getTokenHeader(),
+        headers: await getAllHeaders(),
       );
-      debugPrint("Submit Excuse Response: ${jsonDecode(response.body)}");
-      excuseModel = ExcuseModel.fromJson(await returnResponse(response));
+      debugPrint("MessagingType Response: ${await returnResponse(response)}");
+      var res = await returnResponse(response);
+      if (res['data'] != null) {
+        messagingTypes = <MessagingType>[];
+        res['data'].forEach((v) {
+          messagingTypes.add(MessagingType.fromJson(v));
+        });
+      }
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return excuseModel;
+    return messagingTypes;
+  }
+
+  // submit an excuse data source
+  static Future<String> submitFollowUp({
+    required int meetingEventId,
+    required int clockingId,
+    required int messagingType,
+    required String followUp,
+  }) async {
+    String message;
+    var url = Uri.parse(
+        '${getBaseUrl()}/attendance/meeting-event/attendance-follow-up');
+    try {
+      http.Response response = await http.post(
+        url,
+        body: json.encode({
+          'meetingEventId': meetingEventId,
+          'clockingId': clockingId,
+          'followUp': followUp,
+          'messagingType': messagingType,
+        }),
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Submit Excuse Response: ${jsonDecode(response.body)}");
+      var res = await returnResponse(response);
+      message = res['SUCCESS_RESPONSE_MESSAGE'];
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return message;
   }
 
   static Future<Map<String, String>> getTokenHeader() async {

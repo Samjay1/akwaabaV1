@@ -121,10 +121,6 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
     });
 
     Future.delayed(Duration.zero, () {
-      // load attendance list for meeting
-      // Provider.of<AttendanceProvider>(context, listen: false).getAllAbsentees(
-      //   meetingEventModel: widget.meetingEventModel,
-      // );
       // check if admin is main branch admin or not
       if (Provider.of<ClientProvider>(context, listen: false).branch.id ==
           AppConstants.mainAdmin) {
@@ -230,7 +226,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     setState(() {
                       _selectedIndex = 0;
                       checkAll = false;
-                      //clockingProvider.selectedAttendees.clear();
+                      attendanceProvider.selectedClockingIds.clear();
                       debugPrint('Selected Index: $_selectedIndex');
                     });
                   },
@@ -238,7 +234,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     setState(() {
                       _selectedIndex = 1;
                       checkAll = false;
-                      //clockingProvider.selectedAbsentees.clear();
+                      attendanceProvider.selectedClockingIds.clear();
                       debugPrint('Selected Index: $_selectedIndex');
                     });
                   },
@@ -369,7 +365,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                   ),
                   InkWell(
                     onTap: () {
-                      if (attendanceProvider.selectedAttendees.isEmpty) {
+                      if (attendanceProvider.selectedClockingIds.isEmpty) {
                         showInfoDialog(
                           'ok',
                           context: context,
@@ -673,7 +669,8 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
           ),
           Consumer<ClientProvider>(
             builder: (context, data, child) {
-              return data.branch.id == AppConstants.mainAdmin
+              return (data.branch.id == AppConstants.mainAdmin &&
+                      userType == AppConstants.admin)
                   ? LabelWidgetContainer(
                       label: "Branch",
                       child: Container(
@@ -1003,120 +1000,6 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget attendanceReportFilterOptionsList1() {
-    return Padding(
-      padding: const EdgeInsets.all(AppPadding.p12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(
-            height: 16,
-          ),
-          LabelWidgetContainer(
-              label: "Meeting Type",
-              child: FormButton(
-                label: "Select Meeting Type",
-                function: () {},
-              )),
-          Row(
-            children: [
-              Expanded(
-                child: LabelWidgetContainer(
-                    label: "Start Date",
-                    child: FormButton(
-                      label: "Select Start Date",
-                      function: () {},
-                    )),
-              ),
-              const SizedBox(
-                width: 24,
-              ),
-              Expanded(
-                child: LabelWidgetContainer(
-                    label: "End Date",
-                    child: FormButton(
-                      label: "Select End Date",
-                      function: () {},
-                    )),
-              )
-            ],
-          ),
-          LabelWidgetContainer(
-              label: "Select Gender ",
-              child: FormButton(
-                label: selectedGender ?? "Select Gender",
-                function: () {
-                  selectGender();
-                },
-              )),
-          LabelWidgetContainer(
-              label: "Branch",
-              child: FormButton(
-                label: "All",
-                function: () {},
-              )),
-          LabelWidgetContainer(
-              label: "Member Category",
-              child: FormButton(
-                label: "All",
-                function: () {},
-              )),
-          LabelWidgetContainer(
-              label: "Group",
-              child: FormButton(
-                label: "All",
-                function: () {},
-              )),
-          LabelWidgetContainer(
-              label: "Sub Group",
-              child: FormButton(
-                label: "All",
-                function: () {},
-              )),
-          LabelWidgetContainer(
-              label: "Members ",
-              child: FormButton(
-                label: "All",
-                function: () {},
-              )),
-          LabelWidgetContainer(
-              label: "Id",
-              child: FormTextField(
-                controller: _controllerId,
-                hint: "Enter Id",
-              )),
-          const Text("Age Bracket"),
-          const SizedBox(
-            height: 12,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: LabelWidgetContainer(
-                  label: "Minimum Age",
-                  child: FormTextField(
-                    controller: _controllerMinAge,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              Expanded(
-                child: LabelWidgetContainer(
-                  label: "Maximum Age",
-                  child: FormTextField(
-                    controller: _controllerMaxAge,
-                  ),
-                ),
-              )
-            ],
-          )
         ],
       ),
     );

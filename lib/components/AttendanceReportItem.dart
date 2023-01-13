@@ -215,7 +215,9 @@ class AttendanceReportItem extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) =>
-                                                const AttendanceReportDetailsPage(),
+                                                AttendanceReportDetailsPage(
+                                              attendee: attendee,
+                                            ),
                                           ),
                                         );
                                       },

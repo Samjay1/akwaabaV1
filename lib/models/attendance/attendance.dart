@@ -8,7 +8,6 @@ import 'package:akwaaba/models/admin/clocked_member.dart';
 class Attendance {
   int? id;
   MeetingEventId? meetingEventId;
-  //MemberId? memberId;
   Member? memberId;
   int? accountType;
   bool? inOrOut;
