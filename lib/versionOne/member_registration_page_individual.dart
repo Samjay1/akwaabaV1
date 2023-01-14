@@ -50,6 +50,8 @@ class _MemberRegistrationPageIndividualState
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerConfirmPassword =
       TextEditingController();
+  final TextEditingController _controllerStateProvince =
+  TextEditingController();
 
   bool loading = false;
 
@@ -651,13 +653,17 @@ class _MemberRegistrationPageIndividualState
                 )
             ),
 
-            LabelWidgetContainer(
-              // setCompulsory: true,
+          Form(
+            key: formGlobalKeyBio,
+            child:  LabelWidgetContainer(
                 label: "Province/State",
-                child: FormButton(
+                setCompulsory: true,
+                child: FormTextField(
+                  controller: _controllerStateProvince,
                   label: "Select Province/State",
-                  function: () {},
                 )),
+          ),
+
             LabelWidgetContainer(
               //setCompulsory: true,
                 label: "Region",
@@ -901,8 +907,8 @@ class _MemberRegistrationPageIndividualState
                 profilePicture:imageFile?.path,
                 clientId: '${widget.clientID}',
                 branchId:'${selectedBranchID}',
-                firstname:_controllerFirstName.text,
-                middlename: _controllerMiddleName.text,
+                firstname:_controllerFirstName.text.trim(),
+                middlename: _controllerMiddleName.text.trim(),
                 surname:_controllerSurname.text,
                 gender: selectedGender == 'Male' ? 1:0 ,
                 dateOfBirth: formatted,
@@ -912,7 +918,7 @@ class _MemberRegistrationPageIndividualState
                 referenceId: _controllerIDNumber.text,
                 nationality: selectedCountryID,
                 countryOfResidence: selectedCountryID,
-                stateProvince: selectedRegionID,
+                stateProvince: _controllerStateProvince.text.trim(),
                 region: selectedRegionID,
                 district: selectedDistrictID,
                 constituency: selectedConstituencyID,
@@ -959,7 +965,7 @@ class _MemberRegistrationPageIndividualState
                 referenceId: _controllerIDNumber.text,
                 nationality: selectedCountryID,
                 countryOfResidence: selectedCountryID,
-                stateProvince: selectedRegionID,
+                stateProvince: _controllerStateProvince.text.trim(),
                 region: selectedRegionID,
                 district: selectedDistrictID,
                 constituency: selectedConstituencyID,
