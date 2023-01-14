@@ -1,5 +1,6 @@
 import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/location/location_services.dart';
+import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/providers/event_provider.dart';
 import 'package:akwaaba/providers/client_provider.dart';
@@ -36,6 +37,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => FeeProvider()),
         ChangeNotifierProvider(create: (_) => EventProvider()),
         ChangeNotifierProvider(create: (_) => AttendanceProvider()),
+        ChangeNotifierProvider(create: (_) => AttendanceHistoryProvider()),
         ChangeNotifierProvider(create: (_) => ClockingProvider()),
         ChangeNotifierProvider(create: (_) => PostClockingProvider()),
       ],

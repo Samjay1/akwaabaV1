@@ -1,6 +1,5 @@
-import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/models/attendance/attendance.dart';
-import 'package:akwaaba/models/general/meetingEventModel.dart';
+import 'package:akwaaba/models/general/member_category.dart';
 
 class MeetingAttendanceResponse {
   int? count;
@@ -42,7 +41,7 @@ class MeetingEventId {
   String? name;
   ClientId? clientId;
   BranchId? branchId;
-  MemberCategoryId? memberCategoryId;
+  MemberCategory? memberCategoryId;
   int? meetingSpan;
   String? startTime;
   String? closeTime;
@@ -99,7 +98,7 @@ class MeetingEventId {
     branchId =
         json['branchId'] != null ? BranchId.fromJson(json['branchId']) : null;
     memberCategoryId = json['memberCategoryId'] != null
-        ? MemberCategoryId.fromJson(json['memberCategoryId'])
+        ? MemberCategory.fromJson(json['memberCategoryId'])
         : null;
     meetingSpan = json['meetingSpan'];
     startTime = json['startTime'];
@@ -397,47 +396,6 @@ class BranchId {
     data['creationDate'] = creationDate;
     data['updatedBy'] = updatedBy;
     data['updateDate'] = updateDate;
-    return data;
-  }
-}
-
-class MemberCategoryId {
-  int? id;
-  int? clientId;
-  String? category;
-  int? createdBy;
-  int? updatedBy;
-  String? updateDate;
-  String? date;
-
-  MemberCategoryId(
-      {this.id,
-      this.clientId,
-      this.category,
-      this.createdBy,
-      this.updatedBy,
-      this.updateDate,
-      this.date});
-
-  MemberCategoryId.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    clientId = json['clientId'];
-    category = json['category'];
-    createdBy = json['createdBy'];
-    updatedBy = json['updatedBy'];
-    updateDate = json['updateDate'];
-    date = json['date'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['clientId'] = clientId;
-    data['category'] = category;
-    data['createdBy'] = createdBy;
-    data['updatedBy'] = updatedBy;
-    data['updateDate'] = updateDate;
-    data['date'] = date;
     return data;
   }
 }

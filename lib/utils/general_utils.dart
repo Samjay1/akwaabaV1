@@ -40,8 +40,7 @@ String formattedPhone(String code, String phone) {
       : '${code.substring(1)}$phone';
 }
 
-openwhatsapp(BuildContext context, String phone, String message) async {
-  var whatsapp = "+919144040888";
+openWhatsapp(BuildContext context, String phone, String message) async {
   var whatsappURl_android = "whatsapp://send?phone=$phone&text=$message";
   var whatappURL_ios = "https://wa.me/$phone?text=${Uri.parse(message)}";
   if (Platform.isIOS) {
