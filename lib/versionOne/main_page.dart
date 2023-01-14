@@ -17,6 +17,7 @@ import 'package:akwaaba/versionOne/login_page.dart';
 import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/screens/akwaaba_modules.dart';
 import 'package:akwaaba/screens/web_admin_setup_page.dart';
+import 'package:akwaaba/versionOne/member_account_page.dart';
 import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -641,9 +642,7 @@ class _MainPageState extends State<MainPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const WebViewPage(
-                                    url: AppConstants.akwaabaProfileUrl,
-                                    title: 'Update Profile'),
+                                builder: (_) => const MemberAccountPage(),
                               ),
                             );
                           },

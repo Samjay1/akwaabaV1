@@ -71,9 +71,13 @@ class AttendanceProvider extends ChangeNotifier {
   List<Gender> get genders => _genders;
   List<Branch> get branches => _branches;
 
-  int totalMembers = 0;
-  List<Attendee?> totalMales = [];
-  List<Attendee?> totalFemales = [];
+  int totalAttendees = 0;
+  List<Attendee?> totalMaleAttendees = [];
+  List<Attendee?> totalFemaleAttendees = [];
+
+  int totalAbsentees = 0;
+  List<Attendee?> totalMaleAbsentees = [];
+  List<Attendee?> totalFemaleAbsentees = [];
 
   BuildContext? _context;
   String? search = '';
@@ -318,7 +322,7 @@ class AttendanceProvider extends ChangeNotifier {
       showErrorToast('Please select a date and meeting or event to proceed');
       return;
     }
-    await getAllAbsentees(
+    await getAllAttendees(
       meetingEventModel: selectedPastMeetingEvent!,
     );
   }
@@ -371,12 +375,146 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // get all attendees members for a meeting
+  Future<void> getAllAttendees({
+    required MeetingEventModel meetingEventModel,
+  }) async {
+    setLoading(true);
+    try {
+      _attendeesPage = 1;
+      var response = await ClockingAPI.getAttendeesList(
+        page: _attendeesPage,
+        meetingEventModel: meetingEventModel,
+        branchId: selectedBranch == null
+            ? selectedPastMeetingEvent!.branchId!
+            : selectedBranch!.id!,
+        filterDate: selectedDate == null
+            ? getFilterDate()
+            : selectedDate!.toIso8601String().substring(0, 10),
+        memberCategoryId:
+            selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
+        groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
+        subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
+        genderId: selectedGender == null ? 0 : selectedGender!.id!,
+        fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
+        toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+      );
+      selectedAttendees.clear();
+
+      if (response.results!.isNotEmpty) {
+        // get total number of attendees
+        totalAttendees = response.count!;
+        // filter list for only members excluding
+        // admin if he is also a member
+        _attendees = response.results!
+            .where((attendee) => (attendee.attendance!.memberId!.email !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .applicantEmail ||
+                attendee.attendance!.memberId!.phone !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .applicantPhone))
+            .toList();
+
+        _tempAttendees = _attendees;
+
+        // calc total males
+        totalMaleAttendees = _attendees
+            .where((attendee) =>
+                attendee!.attendance!.memberId!.gender == AppConstants.male)
+            .toList();
+
+        // calc total females
+        totalFemaleAttendees = _attendees
+            .where((attendee) =>
+                attendee!.attendance!.memberId!.gender == AppConstants.female)
+            .toList();
+
+        debugPrint('Atendees: ${_attendees.length}');
+      }
+
+      getAllAbsentees(
+        meetingEventModel: meetingEventModel,
+      );
+
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      debugPrint('Error CK: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // load more list of absentees of past meeting
+  Future<void> _loadMoreAttendees() async {
+    if (hasNextPage == true &&
+        loading == false &&
+        isLoadMoreRunning == false &&
+        attendeesScrollController.position.extentAfter < 300) {
+      setLoadingMore(true); // show loading indicator
+      _attendeesPage += 1; // increase page by 1
+      try {
+        var response = await ClockingAPI.getAttendeesList(
+          page: _attendeesPage,
+          meetingEventModel: selectedPastMeetingEvent!,
+          branchId: selectedBranch == null
+              ? selectedPastMeetingEvent!.branchId!
+              : selectedBranch!.id!,
+          filterDate: selectedDate == null
+              ? getFilterDate()
+              : selectedDate!.toIso8601String().substring(0, 10),
+          memberCategoryId:
+              selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
+          groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
+          subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
+          genderId: selectedGender == null ? 0 : selectedGender!.id!,
+          fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
+          toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+        );
+        if (response.results!.isNotEmpty) {
+          _attendees.addAll(response.results!
+              .where((atendee) => (atendee.attendance!.memberId!.email !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantEmail ||
+                  atendee.attendance!.memberId!.phone !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantPhone))
+              .toList());
+
+          _tempAttendees.addAll(_attendees);
+
+          // calc rest of the total males
+          totalMaleAttendees.addAll(_attendees
+              .where((attendee) =>
+                  attendee!.attendance!.memberId!.gender == AppConstants.male)
+              .toList());
+
+          // calc rest of the total females
+          totalFemaleAttendees.addAll(absentees
+              .where((attendee) =>
+                  attendee!.attendance!.memberId!.gender == AppConstants.female)
+              .toList());
+        } else {
+          hasNextPage = false;
+        }
+        setLoadingMore(false);
+      } catch (err) {
+        setLoadingMore(false);
+        debugPrint("error --> $err");
+      }
+    }
+    notifyListeners();
+  }
+
   // get clocked members for a meeting
   Future<void> getAllAbsentees({
     required MeetingEventModel meetingEventModel,
   }) async {
     try {
-      setLoading(true);
       _absenteesPage = 1;
       var response = await ClockingAPI.getAbsenteesList(
         page: _absenteesPage,
@@ -397,9 +535,9 @@ class AttendanceProvider extends ChangeNotifier {
       );
       selectedAbsentees.clear();
 
-      totalMembers = response.count!;
-
       if (response.results!.isNotEmpty) {
+// get total number of absentees
+        totalAbsentees = response.count!;
         // filter list for only members excluding
         // admin if he is also a member
         _absentees = response.results!
@@ -416,23 +554,19 @@ class AttendanceProvider extends ChangeNotifier {
         _tempAbsentees = _absentees;
 
         // calc total males
-        totalMales = _absentees
+        totalMaleAbsentees = _absentees
             .where((absentee) =>
                 absentee!.attendance!.memberId!.gender == AppConstants.male)
             .toList();
 
         // calc total females
-        totalFemales = _absentees
+        totalFemaleAbsentees = _absentees
             .where((absentee) =>
                 absentee!.attendance!.memberId!.gender == AppConstants.female)
             .toList();
 
         debugPrint('Absentees: ${_absentees.length}');
       }
-
-      getAllAttendees(
-        meetingEventModel: meetingEventModel,
-      );
 
       setLoading(false);
     } catch (err) {
@@ -484,119 +618,16 @@ class AttendanceProvider extends ChangeNotifier {
           _tempAbsentees.addAll(_absentees);
 
           // calc rest of the total males
-          totalMales.addAll(_absentees
+          totalMaleAbsentees.addAll(_absentees
               .where((absentee) =>
                   absentee!.attendance!.memberId!.gender == AppConstants.male)
               .toList());
 
           // calc rest of the total females
-          totalFemales.addAll(absentees
+          totalFemaleAbsentees.addAll(absentees
               .where((absentee) =>
                   absentee!.attendance!.memberId!.gender == AppConstants.female)
               .toList());
-        } else {
-          hasNextPage = false;
-        }
-        setLoadingMore(false);
-      } catch (err) {
-        setLoadingMore(false);
-        debugPrint("error --> $err");
-      }
-    }
-    notifyListeners();
-  }
-
-  // get all attendees members for a meeting
-  Future<void> getAllAttendees({
-    required MeetingEventModel meetingEventModel,
-  }) async {
-    try {
-      _attendeesPage = 1;
-      var response = await ClockingAPI.getAttendeesList(
-        page: _attendeesPage,
-        meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null
-            ? selectedPastMeetingEvent!.branchId!
-            : selectedBranch!.id!,
-        filterDate: selectedDate == null
-            ? getFilterDate()
-            : selectedDate!.toIso8601String().substring(0, 10),
-        memberCategoryId:
-            selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-        groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-        subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-        genderId: selectedGender == null ? 0 : selectedGender!.id!,
-        fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-        toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
-      );
-      selectedAttendees.clear();
-
-      if (response.results!.isNotEmpty) {
-        // filter list for only members excluding
-        // admin if he is also a member
-        _attendees = response.results!
-            .where((attendee) => (attendee.attendance!.memberId!.email !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantEmail ||
-                attendee.attendance!.memberId!.phone !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantPhone))
-            .toList();
-
-        _tempAttendees = _attendees;
-
-        debugPrint('Atendees: ${_attendees.length}');
-      }
-
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      debugPrint('Error CK: ${err.toString()}');
-      showErrorToast(err.toString());
-    }
-    notifyListeners();
-  }
-
-  // load more list of absentees of past meeting
-  Future<void> _loadMoreAttendees() async {
-    if (hasNextPage == true &&
-        loading == false &&
-        isLoadMoreRunning == false &&
-        attendeesScrollController.position.extentAfter < 300) {
-      setLoadingMore(true); // show loading indicator
-      _attendeesPage += 1; // increase page by 1
-      try {
-        var response = await ClockingAPI.getAttendeesList(
-          page: _attendeesPage,
-          meetingEventModel: selectedPastMeetingEvent!,
-          branchId: selectedBranch == null
-              ? selectedPastMeetingEvent!.branchId!
-              : selectedBranch!.id!,
-          filterDate: selectedDate == null
-              ? getFilterDate()
-              : selectedDate!.toIso8601String().substring(0, 10),
-          memberCategoryId:
-              selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-          groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-          subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-          genderId: selectedGender == null ? 0 : selectedGender!.id!,
-          fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-          toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
-        );
-        if (response.results!.isNotEmpty) {
-          _attendees.addAll(response.results!
-              .where((atendee) => (atendee.attendance!.memberId!.email !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantEmail ||
-                  atendee.attendance!.memberId!.phone !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantPhone))
-              .toList());
-          _tempAttendees.addAll(_attendees);
         } else {
           hasNextPage = false;
         }
@@ -650,7 +681,7 @@ class AttendanceProvider extends ChangeNotifier {
         _selectedAttendees.clear();
       }
       // refresh list when there is bulk operation
-      getAllAbsentees(
+      getAllAttendees(
         meetingEventModel: selectedPastMeetingEvent!,
       );
       if (response.message == null) {
@@ -678,7 +709,7 @@ class AttendanceProvider extends ChangeNotifier {
         selectedSubGroup != null ||
         minAgeTEC.text.isNotEmpty ||
         maxAgeTEC.text.isNotEmpty) {
-      getAllAbsentees(
+      getAllAttendees(
         meetingEventModel: selectedPastMeetingEvent!,
       );
     } else if (selectedPastMeetingEvent == null) {
@@ -779,9 +810,12 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> clearData() async {
     clearFilters();
     search = '';
-    totalMembers = 0;
-    totalMales.clear();
-    totalFemales.clear();
+    totalAttendees = 0;
+    totalAbsentees = 0;
+    totalMaleAttendees.clear();
+    totalFemaleAttendees.clear();
+    totalMaleAbsentees.clear();
+    totalFemaleAbsentees.clear();
     _attendees.clear();
     _tempAttendees.clear();
     _selectedAttendees.clear();

@@ -560,8 +560,8 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                     label: "Filter",
                     radius: AppRadius.borderRadius8,
                     function: () {
-                      showErrorToast('This feature is under development');
-                      //attendanceHistoryProvider.validateFilterFields(context);
+                      //showErrorToast('This feature is under development');
+                      attendanceHistoryProvider.validateFilterFields(context);
                     }),
               ),
             ],

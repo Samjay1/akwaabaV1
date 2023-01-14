@@ -180,9 +180,11 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 children: [
                   Column(
                     children: [
-                      const Text('Total users'),
+                      const Text('Total Users'),
                       Text(
-                        attendanceProvider.totalMembers.toString(),
+                        _selectedIndex == 0
+                            ? attendanceProvider.totalAttendees.toString()
+                            : attendanceProvider.totalAbsentees.toString(),
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       )
@@ -192,7 +194,11 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     children: [
                       const Text('Total Males'),
                       Text(
-                        attendanceProvider.totalMales.length.toString(),
+                        _selectedIndex == 0
+                            ? attendanceProvider.totalMaleAttendees.length
+                                .toString()
+                            : attendanceProvider.totalMaleAbsentees.length
+                                .toString(),
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       )
@@ -202,7 +208,11 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     children: [
                       const Text('Total Females'),
                       Text(
-                        attendanceProvider.totalFemales.length.toString(),
+                        _selectedIndex == 0
+                            ? attendanceProvider.totalFemaleAttendees.length
+                                .toString()
+                            : attendanceProvider.totalFemaleAbsentees.length
+                                .toString(),
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       )
@@ -218,8 +228,8 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
               CustomTabWidget(
                 selectedIndex: _selectedIndex,
                 tabTitles: const [
-                  'Absentees',
                   'Atendees',
+                  'Absentees',
                 ],
                 onTaps: [
                   () {
@@ -285,130 +295,117 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 height: 12,
               ),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                        activeColor: primaryColor,
-                        shape: const CircleBorder(),
-                        value: checkAll,
-                        onChanged: (val) {
-                          setState(() {
-                            checkAll = val!;
-                          });
+              _selectedIndex == 0
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              activeColor: primaryColor,
+                              shape: const CircleBorder(),
+                              value: checkAll,
+                              onChanged: (val) {
+                                setState(() {
+                                  checkAll = val!;
+                                });
 
-                          if (_selectedIndex == 0) {
-                            for (Attendee? absentee in absentees) {
-                              absentee!.selected = checkAll;
-                              if (absentee.selected!) {
-                                attendanceProvider.selectedAbsentees
-                                    .add(absentee);
-                                attendanceProvider.selectedClockingIds
-                                    .add(absentee.attendance!.id!);
-                              }
-                              if (!absentee.selected!) {
-                                attendanceProvider.selectedAbsentees
-                                    .remove(absentee);
-                                attendanceProvider.selectedClockingIds
-                                    .remove(absentee.attendance!.id!);
-                              }
-                            }
-                            debugPrint(
-                              "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
-                            );
-                          } else {
-                            for (Attendee? attendee in attendees) {
-                              attendee!.selected = checkAll;
-                              if (attendee.selected!) {
-                                attendanceProvider.selectedAttendees
-                                    .add(attendee);
-                                attendanceProvider.selectedClockingIds
-                                    .add(attendee.attendance!.id!);
-                              }
-                              if (!attendee.selected!) {
-                                attendanceProvider.selectedAttendees
-                                    .remove(attendee);
-                                attendanceProvider.selectedClockingIds
-                                    .remove(attendee.attendance!.id!);
-                              }
-                            }
-                            debugPrint(
-                              "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
-                            );
-                          }
-                        },
-                      ),
-                      const Text("Select All")
-                    ],
-                  ),
-                  // Row(
-                  //   children: [
-                  //     Checkbox(
-                  //         activeColor: primaryColor,
-                  //         shape: const CircleBorder(),
-                  //         value: checkAll,
-                  //         onChanged: (val) {
-                  //           setState(() {
-                  //             checkAll = val!;
-                  //             for (Map map in members) {
-                  //               map["status"] = checkAll;
-                  //             }
-                  //           });
-                  //         }),
-                  //     const Text("Check All"),
-                  //   ],
-                  // ),
-                  const SizedBox(
-                    width: 25,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      if (attendanceProvider.selectedClockingIds.isEmpty) {
-                        showInfoDialog(
-                          'ok',
-                          context: context,
-                          title: 'Sorry!',
-                          content:
-                              'Please select members to perform validation',
-                          onTap: () => Navigator.pop(context),
-                        );
-                      } else {
-                        // perform bulk clock out
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            insetPadding: const EdgeInsets.all(10),
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                            content: ConfirmDialog(
-                              title: 'Validate',
-                              content:
-                                  'Are you sure you want to perform \nthis bulk operation?',
-                              onConfirmTap: () {
-                                Navigator.pop(context);
-                                attendanceProvider.validateMemberAttendances();
+                                if (_selectedIndex == 0) {
+                                  for (Attendee? attendee in attendees) {
+                                    attendee!.selected = checkAll;
+                                    if (attendee.selected!) {
+                                      attendanceProvider.selectedAttendees
+                                          .add(attendee);
+                                      attendanceProvider.selectedClockingIds
+                                          .add(attendee.attendance!.id!);
+                                    }
+                                    if (!attendee.selected!) {
+                                      attendanceProvider.selectedAttendees
+                                          .remove(attendee);
+                                      attendanceProvider.selectedClockingIds
+                                          .remove(attendee.attendance!.id!);
+                                    }
+                                  }
+                                  debugPrint(
+                                    "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
+                                  );
+                                } else {
+                                  for (Attendee? absentee in absentees) {
+                                    absentee!.selected = checkAll;
+                                    if (absentee.selected!) {
+                                      attendanceProvider.selectedAbsentees
+                                          .add(absentee);
+                                      attendanceProvider.selectedClockingIds
+                                          .add(absentee.attendance!.id!);
+                                    }
+                                    if (!absentee.selected!) {
+                                      attendanceProvider.selectedAbsentees
+                                          .remove(absentee);
+                                      attendanceProvider.selectedClockingIds
+                                          .remove(absentee.attendance!.id!);
+                                    }
+                                  }
+                                  debugPrint(
+                                    "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
+                                  );
+                                }
                               },
-                              onCancelTap: () => Navigator.pop(context),
-                              confirmText: 'Yes',
-                              cancelText: 'Cancel',
                             ),
+                            const Text("Select All")
+                          ],
+                        ),
+                        const SizedBox(
+                          width: 25,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (attendanceProvider
+                                .selectedClockingIds.isEmpty) {
+                              showInfoDialog(
+                                'ok',
+                                context: context,
+                                title: 'Sorry!',
+                                content:
+                                    'Please select attendees to perform validation',
+                                onTap: () => Navigator.pop(context),
+                              );
+                            } else {
+                              // perform bulk clock out
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  insetPadding: const EdgeInsets.all(10),
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  content: ConfirmDialog(
+                                    title: 'Validate',
+                                    content:
+                                        'Are you sure you want to perform \nthis bulk operation?',
+                                    onConfirmTap: () {
+                                      Navigator.pop(context);
+                                      attendanceProvider
+                                          .validateMemberAttendances();
+                                    },
+                                    onCancelTap: () => Navigator.pop(context),
+                                    confirmText: 'Yes',
+                                    cancelText: 'Cancel',
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(10)),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
+                            child: const Text("Validate"),
                           ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 10),
-                      child: const Text("Validate"),
-                    ),
-                  )
-                ],
-              ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
 
               attendanceProvider.loading
                   ? Expanded(
@@ -424,87 +421,6 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     )
                   : _selectedIndex == 0
                       ? Expanded(
-                          child: absentees.isEmpty
-                              ? const EmptyStateWidget(
-                                  text: 'No absentees found!',
-                                )
-                              : Column(
-                                  children: [
-                                    NotificationListener<ScrollNotification>(
-                                      onNotification: _handleScrollNotification,
-                                      child: Expanded(
-                                        child: ListView.builder(
-                                            controller: attendanceProvider
-                                                .absenteesScrollController,
-                                            itemCount: absentees.length,
-                                            shrinkWrap: true,
-                                            itemBuilder: (context, index) {
-                                              if (absentees.isEmpty) {
-                                                return const EmptyStateWidget(
-                                                  text: 'No absentees found!',
-                                                );
-                                              }
-                                              return GestureDetector(
-                                                onTap: () async {
-                                                  setState(() {
-                                                    if (absentees[index]!
-                                                        .selected!) {
-                                                      //remove it
-                                                      absentees[index]!
-                                                          .selected = false;
-                                                      attendanceProvider
-                                                          .selectedAbsentees
-                                                          .remove(
-                                                              absentees[index]);
-                                                      attendanceProvider
-                                                          .selectedClockingIds
-                                                          .remove(
-                                                              absentees[index]!
-                                                                  .attendance!
-                                                                  .id!);
-                                                    } else {
-                                                      absentees[index]!
-                                                          .selected = true;
-                                                      attendanceProvider
-                                                          .selectedAbsentees
-                                                          .add(
-                                                              absentees[index]);
-                                                      attendanceProvider
-                                                          .selectedClockingIds
-                                                          .add(absentees[index]!
-                                                              .attendance!
-                                                              .id!);
-                                                    }
-                                                    if (attendanceProvider
-                                                        .selectedAbsentees
-                                                        .isNotEmpty) {
-                                                      itemHasBeenSelected =
-                                                          true;
-                                                    } else {
-                                                      itemHasBeenSelected =
-                                                          false;
-                                                    }
-                                                  });
-                                                  debugPrint(
-                                                    "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
-                                                  );
-                                                },
-                                                child: AttendanceReportItem(
-                                                  attendee: absentees[index]!,
-                                                  userType: userType,
-                                                ),
-                                              );
-                                            }),
-                                      ),
-                                    ),
-                                    if (attendanceProvider.loadingMore)
-                                      const PaginationLoader(
-                                        loadingText: 'Loading. please wait...',
-                                      )
-                                  ],
-                                ),
-                        )
-                      : Expanded(
                           child: attendees.isEmpty
                               ? const EmptyStateWidget(
                                   text: 'No attendees found!',
@@ -578,6 +494,87 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                                 },
                                                 child: AttendanceReportItem(
                                                   attendee: attendees[index]!,
+                                                  userType: userType,
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                    if (attendanceProvider.loadingMore)
+                                      const PaginationLoader(
+                                        loadingText: 'Loading. please wait...',
+                                      )
+                                  ],
+                                ),
+                        )
+                      : Expanded(
+                          child: absentees.isEmpty
+                              ? const EmptyStateWidget(
+                                  text: 'No absentees found!',
+                                )
+                              : Column(
+                                  children: [
+                                    NotificationListener<ScrollNotification>(
+                                      onNotification: _handleScrollNotification,
+                                      child: Expanded(
+                                        child: ListView.builder(
+                                            controller: attendanceProvider
+                                                .absenteesScrollController,
+                                            itemCount: absentees.length,
+                                            shrinkWrap: true,
+                                            itemBuilder: (context, index) {
+                                              if (absentees.isEmpty) {
+                                                return const EmptyStateWidget(
+                                                  text: 'No absentees found!',
+                                                );
+                                              }
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  setState(() {
+                                                    if (absentees[index]!
+                                                        .selected!) {
+                                                      //remove it
+                                                      absentees[index]!
+                                                          .selected = false;
+                                                      attendanceProvider
+                                                          .selectedAbsentees
+                                                          .remove(
+                                                              absentees[index]);
+                                                      attendanceProvider
+                                                          .selectedClockingIds
+                                                          .remove(
+                                                              absentees[index]!
+                                                                  .attendance!
+                                                                  .id!);
+                                                    } else {
+                                                      absentees[index]!
+                                                          .selected = true;
+                                                      attendanceProvider
+                                                          .selectedAbsentees
+                                                          .add(
+                                                              absentees[index]);
+                                                      attendanceProvider
+                                                          .selectedClockingIds
+                                                          .add(absentees[index]!
+                                                              .attendance!
+                                                              .id!);
+                                                    }
+                                                    if (attendanceProvider
+                                                        .selectedAbsentees
+                                                        .isNotEmpty) {
+                                                      itemHasBeenSelected =
+                                                          true;
+                                                    } else {
+                                                      itemHasBeenSelected =
+                                                          false;
+                                                    }
+                                                  });
+                                                  debugPrint(
+                                                    "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
+                                                  );
+                                                },
+                                                child: AttendanceReportItem(
+                                                  attendee: absentees[index]!,
                                                   userType: userType,
                                                 ),
                                               );

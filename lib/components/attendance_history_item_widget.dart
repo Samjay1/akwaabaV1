@@ -1,4 +1,6 @@
 import 'package:akwaaba/Networks/api_responses/attendance_history_response.dart';
+import 'package:akwaaba/components/custom_cached_image_widget.dart';
+import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/models/attendance_history_item.dart';
 import 'package:akwaaba/versionOne/attendance_history_item_preview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -36,7 +38,16 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
               //  crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-                defaultProfilePic(height: 50),
+                attendanceHistory!.attendanceRecord!.member!.profilePicture !=
+                        null
+                    ? Align(
+                        child: CustomCachedImageWidget(
+                          url: attendanceHistory!
+                              .attendanceRecord!.member!.profilePicture!,
+                          height: 50,
+                        ),
+                      )
+                    : defaultProfilePic(height: 50),
                 const SizedBox(
                   width: 12,
                 ),
@@ -70,28 +81,28 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                     const SizedBox(
                       height: 4,
                     ),
-                    Text("Meeting Type : All",
+                    Text(
+                        "Meeting Type : ${attendanceHistory!.attendanceRecord!.meetings![0].meeting!.type! == 1 ? 'Meeting' : 'Event'}",
                         style: TextStyle(fontSize: 14, color: textColorLight)),
                     const SizedBox(
                       height: 4,
                     ),
-                    Text("Under time:   2:15 hrs",
-                        style: TextStyle(fontSize: 14, color: textColorLight)),
+                    Text(
+                      "Under time: ${attendanceHistory!.attendanceRecord!.meetings![0].undertime}",
+                      style: TextStyle(fontSize: 14, color: textColorLight),
+                    ),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                        child: Text(
-                          "Inactive",
-                          style: TextStyle(color: Colors.white, fontSize: 13),
-                        ),
+                      child: TagWidget(
+                        text: attendanceHistory!
+                            .attendanceRecord!.meetings![0].status!.name!,
+                        color: attendanceHistory!.attendanceRecord!.meetings![0]
+                                    .status!.name ==
+                                'Inactive'
+                            ? Colors.red
+                            : Colors.green,
                       ),
-                    )
+                    ),
                   ],
                 )),
                 Align(

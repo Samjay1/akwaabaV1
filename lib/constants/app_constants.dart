@@ -5,6 +5,8 @@ class AppConstants {
   static const String admin = 'admin';
   static const int male = 1;
   static const int female = 2;
+  static const int meetingTypeMeeting = 1;
+  static const int meetingTypeEvent = 2;
   static const String akwaabaEduUrl = 'https://edu.akwaabasoftware.com/';
   static const String akwaabaMessengerUrl =
       'https://messenger.akwaabasoftware.com';
