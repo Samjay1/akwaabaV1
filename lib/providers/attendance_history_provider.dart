@@ -175,6 +175,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       showErrorToast('Please select a date and meeting or event to proceed');
       return;
     }
+    search = '';
     await getAttendanceHistory();
   }
 
@@ -207,6 +208,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       );
       if (_pastMeetingEvents.isNotEmpty) {
         selectedPastMeetingEvent = _pastMeetingEvents[0];
+        getMemberCategories();
       } else {
         showInfoDialog(
           'ok',
@@ -227,27 +229,28 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   }
 
   void validateFilterFields(context) {
-    if (selectedPastMeetingEvent != null ||
+    if ((selectedStartDate != null && selectedEndDate != null) ||
+        selectedPastMeetingEvent != null ||
         selectedBranch != null ||
         selectedMemberCategory != null ||
         selectedGender != null ||
         selectedGroup != null ||
         selectedSubGroup != null ||
-        selectedStatus != null ||
+        selectedStatus.isNotEmpty ||
         minAgeTEC.text.isNotEmpty ||
         maxAgeTEC.text.isNotEmpty) {
       getAttendanceHistory();
     } else if (selectedPastMeetingEvent == null) {
       showErrorToast('Please select a meeting or event to contitue');
     } else {
-      showErrorToast('Please select fields to filter by');
+      showErrorToast('Please select start and end date to proceed');
     }
   }
 
   // get attendance history for a meeting
   Future<void> getAttendanceHistory() async {
+    setLoading(true);
     try {
-      setLoading(true);
       _page = 1;
       var response = await AttendanceAPI.getAttendanceHistory(
         page: _page,
@@ -285,7 +288,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error AH: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast('No records found');
     }
     notifyListeners();
   }
@@ -338,7 +341,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint('Error AH: ${err.toString()}');
-        showErrorToast(err.toString());
+        //showErrorToast(err.toString());
       }
     }
     notifyListeners();
@@ -353,6 +356,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     selectedSubGroup = null;
     selectedMemberCategory = null;
     selectedPastMeetingEvent = null;
+    search = '';
     minAgeTEC.clear();
     maxAgeTEC.clear();
     notifyListeners();

@@ -159,7 +159,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
               isShowTopView
                   ? SizedBox(
                       height: isTileExpanded
-                          ? displayHeight(context) * 0.40
+                          ? displayHeight(context) * 0.50
                           : displayHeight(context) * 0.07,
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),

@@ -2,21 +2,28 @@ import 'package:akwaaba/Networks/api_responses/attendance_history_response.dart'
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/models/attendance_history_item.dart';
+import 'package:akwaaba/providers/attendance_history_provider.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/versionOne/attendance_history_item_preview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AttendanceHistoryItemWidget extends StatelessWidget {
   final AttendanceHistory? attendanceHistory;
-  const AttendanceHistoryItemWidget({
+  AttendanceHistoryItemWidget({
     Key? key,
     this.attendanceHistory,
   }) : super(key: key);
 
+  late AttendanceHistoryProvider attendanceHistoryProvider;
+
   @override
   Widget build(BuildContext context) {
+    attendanceHistoryProvider = context.watch<AttendanceHistoryProvider>();
     var attendeeName =
         "${attendanceHistory!.attendanceRecord!.member!.firstname!} ${attendanceHistory!.attendanceRecord!.member!.surname!}";
     return Padding(
@@ -24,9 +31,13 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => const AttendanceHistoryItemPreviewPage()));
+            context,
+            MaterialPageRoute(
+              builder: (_) => AttendanceHistoryItemPreviewPage(
+                attendanceHistory: attendanceHistory,
+              ),
+            ),
+          );
         },
         child: Card(
           shape:
@@ -64,7 +75,7 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.calendar_month,
                           size: 16,
                           color: textColorLight,
@@ -73,7 +84,7 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                           width: 8,
                         ),
                         Text(
-                          "2nd Jan  -  3rd Mar 2022",
+                          "${DateUtil.formatStringDate(DateFormat.MMMEd(), date: attendanceHistoryProvider.selectedStartDate!)} -  ${DateUtil.formatStringDate(DateFormat.yMMMEd(), date: attendanceHistoryProvider.selectedEndDate!)}",
                           style: TextStyle(fontSize: 14, color: textColorLight),
                         ),
                       ],
@@ -88,7 +99,7 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                       height: 4,
                     ),
                     Text(
-                      "Under time: ${attendanceHistory!.attendanceRecord!.meetings![0].undertime}",
+                      "Under time: ${attendanceHistory!.attendanceRecord!.meetings![0].undertime} hrs",
                       style: TextStyle(fontSize: 14, color: textColorLight),
                     ),
                     Align(

@@ -1,9 +1,11 @@
 import 'package:akwaaba/components/attendance_history_item_widget.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
+import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
+import 'package:akwaaba/components/pagination_loader.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/models/general/branch.dart';
@@ -20,8 +22,10 @@ import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../models/attendance_history_item.dart';
 import '../utils/widget_utils.dart';
@@ -37,6 +41,10 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   late AttendanceHistoryProvider attendanceHistoryProvider;
 
   String? userType;
+
+  bool isShowTopView = true;
+
+  bool isTileExpanded = false;
 
   @override
   void initState() {
@@ -65,6 +73,30 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
     super.initState();
   }
 
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification.depth == 0) {
+      if (notification is UserScrollNotification) {
+        final UserScrollNotification userScroll = notification;
+        switch (userScroll.direction) {
+          case ScrollDirection.forward:
+            setState(() {
+              isShowTopView = true;
+            });
+
+            break;
+          case ScrollDirection.reverse:
+            setState(() {
+              isShowTopView = false;
+            });
+            break;
+          case ScrollDirection.idle:
+            break;
+        }
+      }
+    }
+    return false;
+  }
+
   @override
   void dispose() {
     attendanceHistoryProvider.clearData();
@@ -78,14 +110,28 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
       appBar: AppBar(
         title: const Text("Attendance History"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          // controller: attendanceHistoryProvider.historyScrollController,
-          physics: const BouncingScrollPhysics(),
+      body: RefreshIndicator(
+        onRefresh: () => attendanceHistoryProvider.refreshList(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              filterButton(),
+              isShowTopView
+                  ? SizedBox(
+                      height: isTileExpanded
+                          ? displayHeight(context) * 0.50
+                          : displayHeight(context) * 0.07,
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            filterButton(),
+                          ],
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+              //filterButton(),
               SizedBox(
                 height: displayHeight(context) * 0.02,
               ),
@@ -99,7 +145,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   setState(() {
                     attendanceHistoryProvider.search = val;
                   });
-                  // attendanceHistoryProvider.getAttendanceHistory();
+                  attendanceHistoryProvider.getAttendanceHistory();
                 },
               ),
               SizedBox(
@@ -179,6 +225,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                             debugPrint(
                                 "Selected Start Date: ${attendanceHistoryProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
                           });
+                          attendanceHistoryProvider.getGenders();
                         }
                       });
                     },
@@ -579,6 +626,13 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
         child: ExpansionTile(
           backgroundColor: backgroundColor,
           collapsedBackgroundColor: Colors.white,
+          initiallyExpanded: isTileExpanded,
+          onExpansionChanged: (value) {
+            setState(() {
+              isTileExpanded = value;
+            });
+            debugPrint("Expanded: $isTileExpanded");
+          },
           title: const Text(
             "Filter Options",
             style: TextStyle(
@@ -593,18 +647,49 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   }
 
   Widget _historyList() {
-    return ListView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: attendanceHistoryProvider.attendanceRecords.isEmpty
-          ? [const EmptyStateWidget(text: 'No Attendance History')]
-          : List.generate(attendanceHistoryProvider.attendanceRecords.length,
-              (index) {
-              return AttendanceHistoryItemWidget(
-                attendanceHistory:
-                    attendanceHistoryProvider.attendanceRecords[index],
-              );
-            }),
-    );
+    return attendanceHistoryProvider.loading
+        ? Expanded(
+            child: Shimmer.fromColors(
+              baseColor: greyColorShade300,
+              highlightColor: greyColorShade100,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (_, __) => const EventShimmerItem(),
+                itemCount: 20,
+              ),
+            ),
+          )
+        : Expanded(
+            child: Column(
+              children: [
+                NotificationListener<ScrollNotification>(
+                  onNotification: _handleScrollNotification,
+                  child: Expanded(
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      controller:
+                          attendanceHistoryProvider.historyScrollController,
+                      children: attendanceHistoryProvider
+                              .attendanceRecords.isEmpty
+                          ? [const EmptyStateWidget(text: 'No records found!')]
+                          : List.generate(
+                              attendanceHistoryProvider
+                                  .attendanceRecords.length, (index) {
+                              return AttendanceHistoryItemWidget(
+                                attendanceHistory: attendanceHistoryProvider
+                                    .attendanceRecords[index],
+                              );
+                            }),
+                    ),
+                  ),
+                ),
+                if (attendanceHistoryProvider.loadingMore)
+                  const PaginationLoader(
+                    loadingText: 'Loading. please wait...',
+                  )
+              ],
+            ),
+          );
   }
 }
