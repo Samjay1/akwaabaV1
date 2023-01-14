@@ -375,6 +375,16 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+// reset stats data
+  resetStatsData() {
+    totalAbsentees = 0;
+    totalAttendees = 0;
+    totalMaleAttendees.clear();
+    totalMaleAbsentees.clear();
+    totalFemaleAttendees.clear();
+    totalFemaleAbsentees.clear();
+  }
+
   // get all attendees members for a meeting
   Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
@@ -401,6 +411,8 @@ class AttendanceProvider extends ChangeNotifier {
       );
       selectedAttendees.clear();
 
+      resetStatsData();
+
       if (response.results!.isNotEmpty) {
         // get total number of attendees
         totalAttendees = response.count!;
@@ -420,13 +432,13 @@ class AttendanceProvider extends ChangeNotifier {
         _tempAttendees = _attendees;
 
         // calc total males
-        totalMaleAttendees = _attendees
+        totalMaleAttendees = _tempAttendees
             .where((attendee) =>
                 attendee!.attendance!.memberId!.gender == AppConstants.male)
             .toList();
 
         // calc total females
-        totalFemaleAttendees = _attendees
+        totalFemaleAttendees = _tempAttendees
             .where((attendee) =>
                 attendee!.attendance!.memberId!.gender == AppConstants.female)
             .toList();
@@ -441,7 +453,7 @@ class AttendanceProvider extends ChangeNotifier {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      debugPrint('Error CK: ${err.toString()}');
+      debugPrint("Error Attendees --> $err");
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -474,37 +486,47 @@ class AttendanceProvider extends ChangeNotifier {
           toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
         );
         if (response.results!.isNotEmpty) {
-          _attendees.addAll(response.results!
-              .where((atendee) => (atendee.attendance!.memberId!.email !=
+          _tempAttendees = response.results!;
+
+          _tempAttendees.removeWhere((attendee) =>
+              (attendee!.attendance!.memberId!.email ==
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
                           .applicantEmail ||
-                  atendee.attendance!.memberId!.phone !=
+                  attendee.attendance!.memberId!.phone ==
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantPhone))
-              .toList());
+                          .applicantPhone));
 
-          _tempAttendees.addAll(_attendees);
+          _attendees.addAll(_tempAttendees);
+
+          //_tempAbsentees.addAll(_absentees);
 
           // calc rest of the total males
-          totalMaleAttendees.addAll(_attendees
-              .where((attendee) =>
-                  attendee!.attendance!.memberId!.gender == AppConstants.male)
-              .toList());
+          for (var attendee in _tempAttendees) {
+            if (attendee!.attendance!.memberId!.gender == AppConstants.male) {
+              totalMaleAttendees.add(attendee);
+            }
+          }
+
+          debugPrint("Total male attendees: ${totalMaleAttendees.length}");
 
           // calc rest of the total females
-          totalFemaleAttendees.addAll(absentees
-              .where((attendee) =>
-                  attendee!.attendance!.memberId!.gender == AppConstants.female)
-              .toList());
+          for (var attendee in _tempAttendees) {
+            if (attendee!.attendance!.memberId!.gender == AppConstants.female) {
+              totalFemaleAttendees.add(attendee);
+            }
+          }
+
+          debugPrint("Total female attendees: ${totalFemaleAttendees.length}");
         } else {
           hasNextPage = false;
         }
         setLoadingMore(false);
       } catch (err) {
         setLoadingMore(false);
-        debugPrint("error --> $err");
+
+        debugPrint("Error Attendees --> $err");
       }
     }
     notifyListeners();
@@ -554,16 +576,18 @@ class AttendanceProvider extends ChangeNotifier {
         _tempAbsentees = _absentees;
 
         // calc total males
-        totalMaleAbsentees = _absentees
-            .where((absentee) =>
-                absentee!.attendance!.memberId!.gender == AppConstants.male)
-            .toList();
+        for (var absentee in _tempAbsentees) {
+          if (absentee!.attendance!.memberId!.gender == AppConstants.male) {
+            totalMaleAbsentees.add(absentee);
+          }
+        }
 
         // calc total females
-        totalFemaleAbsentees = _absentees
-            .where((absentee) =>
-                absentee!.attendance!.memberId!.gender == AppConstants.female)
-            .toList();
+        for (var absentee in _tempAbsentees) {
+          if (absentee!.attendance!.memberId!.gender == AppConstants.female) {
+            totalFemaleAbsentees.add(absentee);
+          }
+        }
 
         debugPrint('Absentees: ${_absentees.length}');
       }
@@ -571,7 +595,7 @@ class AttendanceProvider extends ChangeNotifier {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      debugPrint('Error CK: ${err.toString()}');
+      debugPrint("Error Absentees --> $err");
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -604,37 +628,48 @@ class AttendanceProvider extends ChangeNotifier {
           toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
         );
         if (response.results!.isNotEmpty) {
-          _absentees.addAll(response.results!
-              .where((absentee) => (absentee.attendance!.memberId!.email !=
+          _tempAbsentees = response.results!;
+
+          _tempAbsentees.removeWhere((absentee) =>
+              (absentee!.attendance!.memberId!.email ==
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
                           .applicantEmail ||
-                  absentee.attendance!.memberId!.phone !=
+                  absentee.attendance!.memberId!.phone ==
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantPhone))
-              .toList());
+                          .applicantPhone));
 
-          _tempAbsentees.addAll(_absentees);
+          _absentees.addAll(_tempAbsentees);
+
+          //_tempAbsentees.addAll(_absentees);
 
           // calc rest of the total males
-          totalMaleAbsentees.addAll(_absentees
-              .where((absentee) =>
-                  absentee!.attendance!.memberId!.gender == AppConstants.male)
-              .toList());
+          for (var absentee in _tempAbsentees) {
+            if (absentee!.attendance!.memberId!.gender == AppConstants.male) {
+              totalMaleAbsentees.add(absentee);
+            }
+          }
+
+          debugPrint("Total male absentees: ${totalMaleAbsentees.length}");
 
           // calc rest of the total females
-          totalFemaleAbsentees.addAll(absentees
-              .where((absentee) =>
-                  absentee!.attendance!.memberId!.gender == AppConstants.female)
-              .toList());
+          for (var absentee in _tempAbsentees) {
+            if (absentee!.attendance!.memberId!.gender == AppConstants.female) {
+              totalFemaleAbsentees.add(absentee);
+            }
+          }
+
+          debugPrint("Total female absentees: ${totalFemaleAbsentees.length}");
         } else {
           hasNextPage = false;
         }
+
+        debugPrint("Total users: ${_absentees.length}");
         setLoadingMore(false);
       } catch (err) {
         setLoadingMore(false);
-        debugPrint("error --> $err");
+        debugPrint("Error Absentees --> $err");
       }
     }
     notifyListeners();

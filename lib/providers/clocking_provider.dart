@@ -281,7 +281,7 @@ class ClockingProvider extends ChangeNotifier {
 
       debugPrint('Absentees: ${_absentees.length}');
 
-      getAllAtendees(
+      getAllAttendees(
         meetingEventModel: meetingEventModel,
       );
 
@@ -346,7 +346,7 @@ class ClockingProvider extends ChangeNotifier {
   }
 
   // get clocked members for a meeting
-  Future<void> getAllAtendees({
+  Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
   }) async {
     try {
