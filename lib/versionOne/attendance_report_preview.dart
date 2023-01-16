@@ -281,7 +281,7 @@ class _AttendanceReportDetailsPageState
                             ? "N/A"
                             : DateUtil.formatStringDate(DateFormat.jm(),
                                     date: DateTime.parse(
-                                        widget.attendee!.attendance!.outTime!))
+                                        widget.attendee!.attendance!.inTime!))
                                 .toLowerCase(),
                       ),
                       _customTextWidget(label: "Out", text: outTime),

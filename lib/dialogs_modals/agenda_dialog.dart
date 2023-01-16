@@ -1,6 +1,6 @@
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
-import 'package:akwaaba/providers/event_provider.dart';
+import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -15,7 +15,7 @@ class AgendaDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var attendanceProvider = context.watch<EventProvider>();
+    var attendanceProvider = context.watch<HomeProvider>();
     return Container(
       padding: const EdgeInsets.all((AppPadding.p20)),
       decoration: BoxDecoration(

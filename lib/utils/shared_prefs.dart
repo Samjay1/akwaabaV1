@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
-import 'package:akwaaba/providers/event_provider.dart';
+import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/versionOne/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -113,7 +113,7 @@ class SharedPrefs {
   }
 
   void logout(BuildContext context) {
-    Provider.of<EventProvider>(context, listen: false).clearData();
+    Provider.of<HomeProvider>(context, listen: false).clearData();
     clear();
     //close the drawers
     Navigator.pushReplacement(

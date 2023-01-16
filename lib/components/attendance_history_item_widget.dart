@@ -1,9 +1,11 @@
 import 'package:akwaaba/Networks/api_responses/attendance_history_response.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/tag_widget.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/attendance_history_item.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/versionOne/attendance_history_item_preview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
@@ -14,31 +16,33 @@ import 'package:provider/provider.dart';
 
 class AttendanceHistoryItemWidget extends StatelessWidget {
   final AttendanceHistory? attendanceHistory;
-  AttendanceHistoryItemWidget({
-    Key? key,
-    this.attendanceHistory,
-  }) : super(key: key);
+  final String? userType;
+  AttendanceHistoryItemWidget({Key? key, this.attendanceHistory, this.userType})
+      : super(key: key);
 
   late AttendanceHistoryProvider attendanceHistoryProvider;
 
   @override
   Widget build(BuildContext context) {
     attendanceHistoryProvider = context.watch<AttendanceHistoryProvider>();
+
     var attendeeName =
         "${attendanceHistory!.attendanceRecord!.member!.firstname!} ${attendanceHistory!.attendanceRecord!.member!.surname!}";
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => AttendanceHistoryItemPreviewPage(
-                attendanceHistory: attendanceHistory,
-              ),
-            ),
-          );
-        },
+        onTap: userType == AppConstants.member
+            ? null
+            : () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AttendanceHistoryItemPreviewPage(
+                      attendanceHistory: attendanceHistory,
+                    ),
+                  ),
+                );
+              },
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -47,7 +51,6 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: Row(
               //  crossAxisAlignment: CrossAxisAlignment.start,
-
               children: [
                 attendanceHistory!.attendanceRecord!.member!.profilePicture !=
                         null
@@ -68,7 +71,7 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       attendeeName,
-                      style: TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 18),
                     ),
                     const SizedBox(
                       height: 6,
@@ -85,7 +88,8 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                         ),
                         Text(
                           "${DateUtil.formatStringDate(DateFormat.MMMEd(), date: attendanceHistoryProvider.selectedStartDate!)} -  ${DateUtil.formatStringDate(DateFormat.yMMMEd(), date: attendanceHistoryProvider.selectedEndDate!)}",
-                          style: TextStyle(fontSize: 14, color: textColorLight),
+                          style: const TextStyle(
+                              fontSize: 14, color: textColorLight),
                         ),
                       ],
                     ),
@@ -94,13 +98,15 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                     ),
                     Text(
                         "Meeting Type : ${attendanceHistory!.attendanceRecord!.meetings![0].meeting!.type! == 1 ? 'Meeting' : 'Event'}",
-                        style: TextStyle(fontSize: 14, color: textColorLight)),
+                        style: const TextStyle(
+                            fontSize: 14, color: textColorLight)),
                     const SizedBox(
                       height: 4,
                     ),
                     Text(
                       "Under time: ${attendanceHistory!.attendanceRecord!.meetings![0].undertime} hrs",
-                      style: TextStyle(fontSize: 14, color: textColorLight),
+                      style:
+                          const TextStyle(fontSize: 14, color: textColorLight),
                     ),
                     Align(
                       alignment: Alignment.centerRight,
@@ -116,9 +122,12 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                     ),
                   ],
                 )),
-                Align(
-                    alignment: Alignment.center,
-                    child: Icon(Icons.chevron_right))
+                userType == AppConstants.member
+                    ? const SizedBox()
+                    : const Align(
+                        alignment: Alignment.center,
+                        child: Icon(Icons.chevron_right),
+                      )
               ],
             ),
           ),

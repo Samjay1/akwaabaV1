@@ -5,7 +5,7 @@ import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/messaging_type.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
-import 'package:akwaaba/providers/event_provider.dart';
+import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';

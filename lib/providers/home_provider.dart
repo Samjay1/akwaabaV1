@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
-class EventProvider extends ChangeNotifier {
+class HomeProvider extends ChangeNotifier {
   String? _memberToken;
   bool _loading = false;
   bool _clocking = false;
@@ -73,16 +73,10 @@ class EventProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getTodayMeetingEvents({
-    required var memberToken,
-    required BuildContext context,
-  }) async {
+  Future<void> getTodayMeetingEvents() async {
     _todayMeetingEventList.clear();
     try {
-      _todayMeetingEventList = await EventAPI.getTodayMeetingEventList(
-        context,
-        memberToken,
-      );
+      _todayMeetingEventList = await EventAPI.getTodayMeetingEventList();
       debugPrint("TODAY Meeting: ${_todayMeetingEventList.length}");
       if (_todayMeetingEventList.isNotEmpty) {
         for (var meeting in _todayMeetingEventList) {
@@ -102,30 +96,27 @@ class EventProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getUpcomingMeetingEvents({
-    required var memberToken,
-    required BuildContext context,
-  }) async {
-    _upcomingMeetingEventList.clear();
-    setLoading(true);
-    try {
-      _upcomingMeetingEventList = await EventAPI.getUpcomingMeetingEventList(
-        context,
-        memberToken,
-      );
-      getCurrentUserLocation();
-      // getAttendanceList();
-      getTodayMeetingEvents(
-        memberToken: memberToken,
-        context: context,
-      );
-    } catch (err) {
-      debugPrint('Error UM ${err.toString()}');
-      showErrorToast(err.toString());
-    }
+  // Future<void> getUpcomingMeetingEvents({
+  //   required var memberToken,
+  //   required BuildContext context,
+  // }) async {
+  //   _upcomingMeetingEventList.clear();
+  //   setLoading(true);
+  //   try {
+  //     _upcomingMeetingEventList = await EventAPI.getUpcomingMeetingEventList();
+  //     getCurrentUserLocation();
+  //     // getAttendanceList();
+  //     getTodayMeetingEvents(
+  //       memberToken: memberToken,
+  //       context: context,
+  //     );
+  //   } catch (err) {
+  //     debugPrint('Error UM ${err.toString()}');
+  //     showErrorToast(err.toString());
+  //   }
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
   // queries for coordinates of a particular meeting
   Future<void> getMeetingCoordinates({

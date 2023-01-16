@@ -307,8 +307,7 @@ class _MainPageState extends State<MainPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => const MyAccountPage()
-                                ));
+                                    builder: (_) => const MyAccountPage()));
                           },
                         ),
                         drawerItemView(
@@ -696,6 +695,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Attendance Report",
                           iconData: Icons.bar_chart,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -721,6 +721,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Request Device Activation",
                           iconData: Icons.phone_android,
                           function: () {
+                            Navigator.pop(context);
                             Navigator.push(
                               context,
                               MaterialPageRoute(

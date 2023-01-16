@@ -2,7 +2,8 @@ import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/event_provider.dart';
+import 'package:akwaaba/providers/all_events_provider.dart';
+import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/screens/all_events_filter_page.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -64,14 +65,12 @@ class _AllEventsPageState extends State<AllEventsPage> {
   }
 
   void loadMeetingEventsByUserType() async {
-    prefs = await SharedPreferences.getInstance();
-    memberToken = prefs?.getString('memberToken');
+    Future.delayed(Duration.zero, () {
+      // check if admin is main branch admin or not
+      Provider.of<AllEventsProvider>(context, listen: false)
+          .getUpcomingMeetingEvents();
 
-    print('HOMEPAGE TOKEN ${memberToken}');
-    // print('HOMEPAGE member id ${memberProfile.id}');
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // Provider.of<AttendanceProvider>(context, listen: false)
-      //     .getUpcomingMeetingEvents(memberToken: memberToken, context: context);
+      setState(() {});
     });
   }
 
@@ -192,7 +191,7 @@ class _AllEventsPageState extends State<AllEventsPage> {
             //   return  MeetingEventWidget(events[index]);
             // }),),
 
-            context.watch<EventProvider>().loading
+            context.watch<AllEventsProvider>().loading
                 ? Shimmer.fromColors(
                     baseColor: greyColorShade300,
                     highlightColor: greyColorShade100,
@@ -202,7 +201,7 @@ class _AllEventsPageState extends State<AllEventsPage> {
                       itemCount: 10,
                     ),
                   )
-                : Consumer<EventProvider>(
+                : Consumer<AllEventsProvider>(
                     builder: (context, data, child) {
                       if (data.upcomingMeetings.isEmpty) {
                         return const EmptyStateWidget(

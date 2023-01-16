@@ -141,6 +141,7 @@ class _ClockingPageState extends State<ClockingPage> {
     var absentees = clockingProvider.absentees;
     var attendees = clockingProvider.attendees;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.meetingEventModel.name!),
       ),
@@ -641,9 +642,11 @@ class _ClockingPageState extends State<ClockingPage> {
                                 )
                               : Column(
                                   children: [
-                                    NotificationListener<ScrollNotification>(
-                                      onNotification: _handleScrollNotification,
-                                      child: Expanded(
+                                    Expanded(
+                                      child: NotificationListener<
+                                          ScrollNotification>(
+                                        onNotification:
+                                            _handleScrollNotification,
                                         child: ListView.builder(
                                             controller: clockingProvider
                                                 .absenteesScrollController,

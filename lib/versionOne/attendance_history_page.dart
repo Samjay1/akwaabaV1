@@ -59,8 +59,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
 
     Future.delayed(Duration.zero, () {
       // check if admin is main branch admin or not
-      if (Provider.of<ClientProvider>(context, listen: false).branch.id ==
-          AppConstants.mainAdmin) {
+      if (userType == AppConstants.admin) {
         Provider.of<AttendanceHistoryProvider>(context, listen: false)
             .getBranches();
       } else {
@@ -107,6 +106,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   Widget build(BuildContext context) {
     attendanceHistoryProvider = context.watch<AttendanceHistoryProvider>();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Attendance History"),
       ),
@@ -135,19 +135,16 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               SizedBox(
                 height: displayHeight(context) * 0.02,
               ),
-              CupertinoSearchTextField(
-                // onChanged: (val) {
-                //   setState(() {
-                //     attendanceProvider.search = val;
-                //   });
-                // },
-                onSubmitted: (val) {
-                  setState(() {
-                    attendanceHistoryProvider.search = val;
-                  });
-                  attendanceHistoryProvider.getAttendanceHistory();
-                },
-              ),
+              userType == AppConstants.admin
+                  ? CupertinoSearchTextField(
+                      onSubmitted: (val) {
+                        setState(() {
+                          attendanceHistoryProvider.search = val;
+                        });
+                        attendanceHistoryProvider.getAttendanceHistory();
+                      },
+                    )
+                  : const SizedBox(),
               SizedBox(
                 height: displayHeight(context) * 0.02,
               ),
@@ -190,7 +187,8 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                 "Selected Start Date: ${attendanceHistoryProvider.selectedStartDate!.toIso8601String().substring(0, 10)}");
                           });
                           // if admin is main branch admin
-                          if (context.read<ClientProvider>().branch.id == 1) {
+                          if (context.read<ClientProvider>().branch != null &&
+                              context.read<ClientProvider>().branch.id == 1) {
                             attendanceHistoryProvider.getBranches();
                           }
                           // admin is just a branch admin
@@ -236,8 +234,9 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
           ),
           Consumer<ClientProvider>(
             builder: (context, data, child) {
-              return (data.branch.id == AppConstants.mainAdmin &&
-                      userType == AppConstants.admin)
+              return ((data.branch != null) &&
+                      (data.branch.id == AppConstants.mainAdmin &&
+                          userType == AppConstants.admin))
                   ? LabelWidgetContainer(
                       label: "Branch",
                       child: Container(
@@ -286,9 +285,11 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   : const SizedBox();
             },
           ),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
+          userType == AppConstants.admin
+              ? SizedBox(
+                  height: displayHeight(context) * 0.02,
+                )
+              : const SizedBox(),
           LabelWidgetContainer(
             label: "Meeting/Event",
             child: Container(
@@ -333,9 +334,11 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               ),
             ),
           ),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
+          userType == AppConstants.admin
+              ? SizedBox(
+                  height: displayHeight(context) * 0.02,
+                )
+              : const SizedBox(),
           userType == AppConstants.admin
               ? LabelWidgetContainer(
                   label: "Member Category",
@@ -383,9 +386,11 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   ),
                 )
               : const SizedBox(),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
+          userType == AppConstants.admin
+              ? SizedBox(
+                  height: displayHeight(context) * 0.02,
+                )
+              : const SizedBox(),
           userType == AppConstants.admin
               ? LabelWidgetContainer(
                   label: "Group",
@@ -432,9 +437,11 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   ),
                 )
               : const SizedBox(),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
+          userType == AppConstants.admin
+              ? SizedBox(
+                  height: displayHeight(context) * 0.02,
+                )
+              : const SizedBox(),
           userType == AppConstants.admin
               ? LabelWidgetContainer(
                   label: "Sub Group",
@@ -481,9 +488,11 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   ),
                 )
               : const SizedBox(),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
+          userType == AppConstants.admin
+              ? SizedBox(
+                  height: displayHeight(context) * 0.02,
+                )
+              : const SizedBox(),
           userType == AppConstants.admin
               ? LabelWidgetContainer(
                   label: "Gender",
@@ -705,6 +714,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                               return AttendanceHistoryItemWidget(
                                 attendanceHistory: attendanceHistoryProvider
                                     .attendanceRecords[index],
+                                userType: userType,
                               );
                             }),
                     ),

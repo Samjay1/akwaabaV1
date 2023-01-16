@@ -704,7 +704,7 @@ class ClockingProvider extends ChangeNotifier {
     }
   }
 
-  // search through attendance list by name
+  // search through absentees list by name
   void searchAbsenteesByName({required String searchText}) {
     List<Attendee?> results = [];
     if (searchText.isEmpty) {
@@ -726,15 +726,14 @@ class ClockingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // search through attendance list by id
+  // search through absentees list by id
   void searchAbsenteesById({required String searchText}) {
     List<Attendee?> results = [];
     if (searchText.isEmpty) {
       results = _tempAbsentees;
     } else {
       results = _tempAbsentees
-          .where((element) => element!.additionalInfo!.id!
-              .toString()
+          .where((absentee) => absentee!.identification!
               .toLowerCase()
               .contains(searchText.toLowerCase()))
           .toList();
@@ -743,19 +742,19 @@ class ClockingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // search through clocked member list by name
+  // search through attendees list by name
   void searchAttendeesByName({required String searchText}) {
     List<Attendee?> results = [];
     if (searchText.isEmpty) {
       results = _tempAttendees;
     } else {
       results = _tempAttendees
-          .where((element) =>
-              element!.attendance!.memberId!.firstname!
+          .where((attendee) =>
+              attendee!.attendance!.memberId!.firstname!
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
+              attendee.attendance!.memberId!.surname!
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase()))
@@ -765,15 +764,14 @@ class ClockingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // search through clocked member list by name
+  // search through attendees list by name
   void searchAttendeesById({required String searchText}) {
     List<Attendee?> results = [];
     if (searchText.isEmpty) {
       results = _tempAttendees;
     } else {
       results = _tempAttendees
-          .where((element) => element!.additionalInfo!.id!
-              .toString()
+          .where((attendee) => attendee!.identification!
               .toLowerCase()
               .contains(searchText.toLowerCase()))
           .toList();

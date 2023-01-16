@@ -1,5 +1,6 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/attendance_history_item_widget.dart';
+import 'package:akwaaba/components/attendance_record_attendee_item.dart';
 import 'package:akwaaba/components/attendance_report_item_widget.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_tab_widget.dart';
@@ -146,6 +147,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
     var absentees = attendanceProvider.absentees;
     var attendees = attendanceProvider.attendees;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Attendance Report"),
       ),
@@ -159,7 +161,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
               isShowTopView
                   ? SizedBox(
                       height: isTileExpanded
-                          ? displayHeight(context) * 0.50
+                          ? displayHeight(context) * 0.40
                           : displayHeight(context) * 0.07,
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
@@ -295,7 +297,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 height: 12,
               ),
 
-              _selectedIndex == 0
+              (userType == AppConstants.admin && _selectedIndex == 0)
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -444,57 +446,64 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                                 );
                                               }
                                               return GestureDetector(
-                                                onTap: () {
-                                                  setState(
-                                                    () {
-                                                      if (attendees[index]!
-                                                          .selected!) {
-                                                        //remove it
-                                                        attendees[index]!
-                                                            .selected = false;
+                                                onTap: userType ==
+                                                        AppConstants.member
+                                                    ? null
+                                                    : () {
+                                                        setState(
+                                                          () {
+                                                            if (attendees[
+                                                                    index]!
+                                                                .selected!) {
+                                                              //remove it
+                                                              attendees[index]!
+                                                                      .selected =
+                                                                  false;
 
-                                                        attendanceProvider
-                                                            .selectedAttendees
-                                                            .remove(attendees[
-                                                                index]!);
-                                                        attendanceProvider
-                                                            .selectedClockingIds
-                                                            .remove(absentees[
-                                                                    index]!
-                                                                .attendance!
-                                                                .id!);
-                                                      } else {
-                                                        attendees[index]!
-                                                            .selected = true;
-                                                        attendanceProvider
-                                                            .selectedAttendees
-                                                            .add(attendees[
-                                                                index]!);
-                                                        attendanceProvider
-                                                            .selectedClockingIds
-                                                            .add(absentees[
-                                                                    index]!
-                                                                .attendance!
-                                                                .id!);
-                                                      }
-                                                      if (attendanceProvider
-                                                          .selectedAttendees
-                                                          .isNotEmpty) {
-                                                        itemHasBeenSelected =
-                                                            true;
-                                                      } else {
-                                                        itemHasBeenSelected =
-                                                            false;
-                                                      }
-                                                      debugPrint(
-                                                        "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                child: AttendanceReportItem(
+                                                              attendanceProvider
+                                                                  .selectedAttendees
+                                                                  .remove(
+                                                                      attendees[
+                                                                          index]!);
+                                                              attendanceProvider
+                                                                  .selectedClockingIds
+                                                                  .remove(absentees[
+                                                                          index]!
+                                                                      .attendance!
+                                                                      .id!);
+                                                            } else {
+                                                              attendees[index]!
+                                                                      .selected =
+                                                                  true;
+                                                              attendanceProvider
+                                                                  .selectedAttendees
+                                                                  .add(attendees[
+                                                                      index]!);
+                                                              attendanceProvider
+                                                                  .selectedClockingIds
+                                                                  .add(absentees[
+                                                                          index]!
+                                                                      .attendance!
+                                                                      .id!);
+                                                            }
+                                                            if (attendanceProvider
+                                                                .selectedAttendees
+                                                                .isNotEmpty) {
+                                                              itemHasBeenSelected =
+                                                                  true;
+                                                            } else {
+                                                              itemHasBeenSelected =
+                                                                  false;
+                                                            }
+                                                            debugPrint(
+                                                              "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                child:
+                                                    AttendanceReportAttendeeItem(
                                                   attendee: attendees[index]!,
-                                                  userType: userType,
                                                 ),
                                               );
                                             }),
@@ -529,50 +538,57 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                                 );
                                               }
                                               return GestureDetector(
-                                                onTap: () async {
-                                                  setState(() {
-                                                    if (absentees[index]!
-                                                        .selected!) {
-                                                      //remove it
-                                                      absentees[index]!
-                                                          .selected = false;
-                                                      attendanceProvider
-                                                          .selectedAbsentees
-                                                          .remove(
-                                                              absentees[index]);
-                                                      attendanceProvider
-                                                          .selectedClockingIds
-                                                          .remove(
-                                                              absentees[index]!
-                                                                  .attendance!
-                                                                  .id!);
-                                                    } else {
-                                                      absentees[index]!
-                                                          .selected = true;
-                                                      attendanceProvider
-                                                          .selectedAbsentees
-                                                          .add(
-                                                              absentees[index]);
-                                                      attendanceProvider
-                                                          .selectedClockingIds
-                                                          .add(absentees[index]!
-                                                              .attendance!
-                                                              .id!);
-                                                    }
-                                                    if (attendanceProvider
-                                                        .selectedAbsentees
-                                                        .isNotEmpty) {
-                                                      itemHasBeenSelected =
-                                                          true;
-                                                    } else {
-                                                      itemHasBeenSelected =
-                                                          false;
-                                                    }
-                                                  });
-                                                  debugPrint(
-                                                    "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
-                                                  );
-                                                },
+                                                onTap: userType ==
+                                                        AppConstants.member
+                                                    ? null
+                                                    : () async {
+                                                        setState(() {
+                                                          if (absentees[index]!
+                                                              .selected!) {
+                                                            //remove it
+                                                            absentees[index]!
+                                                                    .selected =
+                                                                false;
+                                                            attendanceProvider
+                                                                .selectedAbsentees
+                                                                .remove(
+                                                                    absentees[
+                                                                        index]);
+                                                            attendanceProvider
+                                                                .selectedClockingIds
+                                                                .remove(absentees[
+                                                                        index]!
+                                                                    .attendance!
+                                                                    .id!);
+                                                          } else {
+                                                            absentees[index]!
+                                                                    .selected =
+                                                                true;
+                                                            attendanceProvider
+                                                                .selectedAbsentees
+                                                                .add(absentees[
+                                                                    index]);
+                                                            attendanceProvider
+                                                                .selectedClockingIds
+                                                                .add(absentees[
+                                                                        index]!
+                                                                    .attendance!
+                                                                    .id!);
+                                                          }
+                                                          if (attendanceProvider
+                                                              .selectedAbsentees
+                                                              .isNotEmpty) {
+                                                            itemHasBeenSelected =
+                                                                true;
+                                                          } else {
+                                                            itemHasBeenSelected =
+                                                                false;
+                                                          }
+                                                        });
+                                                        debugPrint(
+                                                          "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
+                                                        );
+                                                      },
                                                 child: AttendanceReportItem(
                                                   attendee: absentees[index]!,
                                                   userType: userType,
@@ -654,7 +670,8 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                           "Selected DateTime: ${attendanceProvider.selectedDate!.toIso8601String().substring(0, 10)}");
                     });
                     // if admin is main branch admin
-                    if (context.read<ClientProvider>().branch.id == 1) {
+                    if (context.read<ClientProvider>().branch != null &&
+                        context.read<ClientProvider>().branch.id == 1) {
                       attendanceProvider.getBranches();
                     }
                     // admin is just a branch admin
@@ -666,8 +683,9 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
           ),
           Consumer<ClientProvider>(
             builder: (context, data, child) {
-              return (data.branch.id == AppConstants.mainAdmin &&
-                      userType == AppConstants.admin)
+              return ((data.branch != null) &&
+                      (data.branch.id == AppConstants.mainAdmin &&
+                          userType == AppConstants.admin))
                   ? LabelWidgetContainer(
                       label: "Branch",
                       child: Container(
@@ -715,9 +733,11 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                   : const SizedBox();
             },
           ),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
+          userType == AppConstants.admin
+              ? SizedBox(
+                  height: displayHeight(context) * 0.02,
+                )
+              : const SizedBox(),
           LabelWidgetContainer(
             label: "Meeting/Event",
             child: Container(

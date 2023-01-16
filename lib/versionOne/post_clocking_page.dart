@@ -113,9 +113,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
     var absentees = postClockingProvider.absentees;
     var attendees = postClockingProvider.attendees;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: RefreshIndicator(
         onRefresh: () => postClockingProvider.refreshList(),
-        child: Container(
+        child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -139,11 +140,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                   if (clockingListState) {
                                     // search absentees by name
                                     postClockingProvider.searchAbsenteesByName(
-                                        searchText: val);
+                                      searchText: val,
+                                    );
                                   } else {
                                     // search atendees by name
                                     postClockingProvider.searchAttendeesByName(
-                                        searchText: val);
+                                      searchText: val,
+                                    );
                                   }
                                 });
                               },
@@ -357,11 +360,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 ],
                               ),
                             ),
-
-                            const SizedBox(
-                              height: 4,
-                            ),
-
                             (postClockingProvider.selectedPastMeetingEvent !=
                                         null &&
                                     postClockingProvider
@@ -506,21 +504,22 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                       ],
                                     ))
                                 : const SizedBox(),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            const Divider(
+                              height: 2,
+                              color: primaryColor,
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
                           ],
                         ),
                       ),
                     )
                   : const SizedBox(),
-              SizedBox(
-                height: displayHeight(context) * 0.02,
-              ),
-              const Divider(
-                height: 2,
-                color: primaryColor,
-              ),
-              SizedBox(
-                height: displayHeight(context) * 0.01,
-              ),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -673,14 +672,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 )
                               : Column(
                                   children: [
-                                    Expanded(
-                                      child: NotificationListener<
-                                          ScrollNotification>(
-                                        onNotification:
-                                            _handleScrollNotification,
+                                    NotificationListener<ScrollNotification>(
+                                      onNotification: _handleScrollNotification,
+                                      child: Expanded(
                                         child: ListView.builder(
                                             controller: postClockingProvider
                                                 .absenteesScrollController,
+                                            shrinkWrap: true,
                                             itemCount: absentees.length,
                                             itemBuilder: (context, index) {
                                               return GestureDetector(
@@ -784,6 +782,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                         child: ListView.builder(
                                             controller: postClockingProvider
                                                 .attendeesScrollController,
+                                            shrinkWrap: true,
                                             itemCount: attendees.length,
                                             itemBuilder: (context, index) {
                                               return GestureDetector(

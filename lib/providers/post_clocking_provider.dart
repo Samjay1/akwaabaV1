@@ -241,6 +241,7 @@ class PostClockingProvider extends ChangeNotifier {
   Future<void> getPastMeetingEvents() async {
     try {
       _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
+        page: 1,
         date: selectedDate!.toIso8601String().substring(0, 10),
       );
       if (_pastMeetingEvents.isNotEmpty) {
@@ -739,7 +740,7 @@ class PostClockingProvider extends ChangeNotifier {
     }
   }
 
-  // search through attendance list by name
+  // search through absentees list by name
   void searchAbsenteesByName({required String searchText}) {
     List<Attendee?> results = [];
     if (searchText.isEmpty) {
@@ -768,15 +769,10 @@ class PostClockingProvider extends ChangeNotifier {
       results = _tempAbsentees;
     } else {
       results = _tempAbsentees
-          .where((element) =>
-              element!.attendance!.memberId!.id!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
+          .where((absentees) => absentees!.identification!
+              .toString()
+              .toLowerCase()
+              .contains(searchText.toLowerCase()))
           .toList();
     }
     _absentees = results;
@@ -790,12 +786,12 @@ class PostClockingProvider extends ChangeNotifier {
       results = _tempAttendees;
     } else {
       results = _tempAttendees
-          .where((element) =>
-              element!.attendance!.memberId!.firstname!
+          .where((attendee) =>
+              attendee!.attendance!.memberId!.firstname!
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
+              attendee.attendance!.memberId!.surname!
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase()))
@@ -812,15 +808,9 @@ class PostClockingProvider extends ChangeNotifier {
       results = _tempAttendees;
     } else {
       results = _tempAttendees
-          .where((element) =>
-              element!.attendance!.memberId!.id!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
+          .where((attendee) => attendee!.identification!
+              .toLowerCase()
+              .contains(searchText.toLowerCase()))
           .toList();
     }
     _attendees = results;

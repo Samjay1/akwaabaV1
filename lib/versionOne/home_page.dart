@@ -12,7 +12,7 @@ import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/event_provider.dart';
+import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
 
   late MemberProvider memberProvider;
 
-  late EventProvider eventProvider;
+  late HomeProvider eventProvider;
 
   @override
   void initState() {
@@ -79,51 +79,28 @@ class _HomePageState extends State<HomePage> {
       memberToken = prefs?.getString('token');
 
       debugPrint('HOMEPAGE USER TYPE: $userType');
-      //debugPrint('HOMEPAGE TOKEN $memberToken');
-      // MemberProfile memberProfile =  Provider.of<MemberProvider>(context, listen: false).memberProfile;
-      // print('HOMEPAGE member id ${memberProfile.id}');
 
       Future.delayed(Duration.zero, () {
-        if (Provider.of<EventProvider>(context, listen: false)
-                .upcomingMeetings
-                .isEmpty ||
-            Provider.of<EventProvider>(context, listen: false)
-                .todayMeetings
-                .isEmpty) {
-          Provider.of<EventProvider>(context, listen: false)
-              .getUpcomingMeetingEvents(
-            memberToken: memberToken,
-            context: context,
-          );
+        if (Provider.of<HomeProvider>(context, listen: false)
+            .todayMeetings
+            .isEmpty) {
+          Provider.of<HomeProvider>(context, listen: false)
+              .getTodayMeetingEvents();
           debugPrint('Loading fresh data:...');
         }
         setState(() {});
-        Provider.of<EventProvider>(context, listen: false)
-            .getUpcomingMeetingEvents(
-          memberToken: memberToken,
-          context: context,
-        );
-
-        // MemberAPI().getRecentClocking(context,memberToken,6908);
-        // setState(() {});
       });
     } else {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('token');
       Future.delayed(Duration.zero, () {
-        if (Provider.of<EventProvider>(context, listen: false)
-                .upcomingMeetings
-                .isEmpty ||
-            Provider.of<EventProvider>(context, listen: false)
-                .todayMeetings
-                .isEmpty) {
-          Provider.of<EventProvider>(context, listen: false)
-              .getUpcomingMeetingEvents(
-            memberToken: memberToken,
-            context: context,
-          );
+        if (Provider.of<HomeProvider>(context, listen: false)
+            .todayMeetings
+            .isEmpty) {
+          Provider.of<HomeProvider>(context, listen: false)
+              .getTodayMeetingEvents();
+          debugPrint('Loading fresh data:...');
         }
-        debugPrint('Loading fresh data:...');
         setState(() {});
       });
     }
@@ -132,7 +109,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    eventProvider = context.watch<EventProvider>();
+    eventProvider = context.watch<HomeProvider>();
 
     var subscriptionFee = 0;
     var subscriptionDuration = 0;
@@ -238,11 +215,8 @@ class _HomePageState extends State<HomePage> {
                     )
                   : RefreshIndicator(
                       onRefresh: () async =>
-                          await eventProvider.getUpcomingMeetingEvents(
-                        memberToken: memberToken,
-                        context: context,
-                      ),
-                      child: Consumer<EventProvider>(
+                          await eventProvider.getTodayMeetingEvents(),
+                      child: Consumer<HomeProvider>(
                         builder: (context, data, child) {
                           if (data.todayMeetings.isEmpty) {
                             return const EmptyStateWidget(
@@ -997,7 +971,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onPressed: () {
-                        Provider.of<EventProvider>(context, listen: false)
+                        Provider.of<HomeProvider>(context, listen: false)
                             .setSelectedMeeting(meetingEventModel);
 
                         if (meetingEventModel.outTime != null) {
@@ -1023,7 +997,7 @@ class _HomePageState extends State<HomePage> {
                                     '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you are within the meeting premises to continue.',
                                 onConfirmTap: () {
                                   Navigator.pop(context);
-                                  Provider.of<EventProvider>(context,
+                                  Provider.of<HomeProvider>(context,
                                           listen: false)
                                       .getMeetingCoordinates(
                                     context: context,
@@ -1057,7 +1031,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             onPressed: () {
-                              Provider.of<EventProvider>(context, listen: false)
+                              Provider.of<HomeProvider>(context, listen: false)
                                   .setSelectedMeeting(meetingEventModel);
 
                               if (meetingEventModel.startBreak != null &&
@@ -1102,7 +1076,7 @@ class _HomePageState extends State<HomePage> {
                                       //'${meeting.startBreak != null ? 'Are you sure you want to end?' : 'Are you sure you want to clock-in?'} \nMake sure you\'re closer to the premise of the meeting or event to continue.',
                                       onConfirmTap: () {
                                         Navigator.pop(context);
-                                        Provider.of<EventProvider>(context,
+                                        Provider.of<HomeProvider>(context,
                                                 listen: false)
                                             .getMeetingCoordinates(
                                           context: context,
@@ -1146,7 +1120,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           onPressed: () {
-                            Provider.of<EventProvider>(context, listen: false)
+                            Provider.of<HomeProvider>(context, listen: false)
                                 .setSelectedMeeting(meetingEventModel);
                             showModalBottomSheet(
                               context: context,

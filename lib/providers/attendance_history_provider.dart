@@ -10,10 +10,13 @@ import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/messaging_type.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
+import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AttendanceHistoryProvider extends ChangeNotifier {
   bool _loading = false;
@@ -204,6 +207,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   Future<void> getPastMeetingEvents() async {
     try {
       _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
+        page: 1,
         date: selectedStartDate!.toIso8601String().substring(0, 10),
       );
       if (_pastMeetingEvents.isNotEmpty) {
@@ -250,6 +254,13 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   // get attendance history for a meeting
   Future<void> getAttendanceHistory() async {
     setLoading(true);
+    String? userType = await SharedPrefs().getUserType();
+    // search with member name if account type is member else
+    search = userType == AppConstants.member
+        ? '${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.firstname} ${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.surname}'
+        : search!.isNotEmpty
+            ? search!
+            : '';
     try {
       _page = 1;
       var response = await AttendanceAPI.getAttendanceHistory(
@@ -260,7 +271,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
             : selectedBranch!.id!,
         startDate: selectedStartDate!.toIso8601String().substring(0, 10),
         endDate: selectedEndDate!.toIso8601String().substring(0, 10),
-        search: search ?? '',
+        search: search!,
         status: selectedStatus == 'Both' ? '' : selectedStatus,
         memberCategoryId: selectedMemberCategory == null
             ? null
@@ -310,7 +321,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
               : selectedBranch!.id!,
           startDate: selectedStartDate!.toIso8601String().substring(0, 10),
           endDate: selectedEndDate!.toIso8601String().substring(0, 10),
-          search: search ?? '',
+          search: search!,
           status: selectedStatus == 'Both' ? '' : selectedStatus,
           memberCategoryId: selectedMemberCategory == null
               ? null

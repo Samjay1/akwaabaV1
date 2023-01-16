@@ -20,8 +20,7 @@ class EventAPI {
   static final baseUrl = 'https://db-api-v2.akwaabasoftware.com';
   late SharedPreferences prefs;
 
-  static Future<List<MeetingEventModel>> getTodayMeetingEventList(
-      BuildContext context, var memberToken) async {
+  static Future<List<MeetingEventModel>> getTodayMeetingEventList() async {
     List<MeetingEventModel> todayMeetings = [];
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both');
@@ -46,11 +45,12 @@ class EventAPI {
   }
 
   static Future<List<MeetingEventModel>> getMeetingsFromDate({
+    required int page,
     required String date,
   }) async {
     List<MeetingEventModel> meetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/date/$date');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/date/$date?page=$page');
     try {
       http.Response response = await http.get(
         url,
@@ -71,11 +71,13 @@ class EventAPI {
     return meetings;
   }
 
-  static Future<List<MeetingEventModel>> getUpcomingMeetingEventList(
-      BuildContext context, var memberToken) async {
+  static Future<List<MeetingEventModel>> getUpcomingMeetingEventList({
+    required int page,
+    required String? date,
+  }) async {
     List<MeetingEventModel> upcomingMeetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both?filter_date=$date');
     try {
       http.Response response = await http.get(
         url,

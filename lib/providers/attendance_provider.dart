@@ -13,6 +13,7 @@ import 'package:akwaaba/models/general/messaging_type.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -106,6 +107,8 @@ class AttendanceProvider extends ChangeNotifier {
   var isFirstLoadRunning = false;
   var hasNextPage = true;
   var isLoadMoreRunning = false;
+
+  String? userType;
 
   late ScrollController absenteesScrollController = ScrollController()
     ..addListener(_loadMoreAbsentees);
@@ -352,6 +355,7 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getPastMeetingEvents() async {
     try {
       _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
+        page: 1,
         date: selectedDate!.toIso8601String().substring(0, 10),
       );
       if (_pastMeetingEvents.isNotEmpty) {
@@ -389,6 +393,7 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
   }) async {
+    userType = await SharedPrefs().getUserType();
     setLoading(true);
     try {
       _attendeesPage = 1;
@@ -418,16 +423,7 @@ class AttendanceProvider extends ChangeNotifier {
         totalAttendees = response.count!;
         // filter list for only members excluding
         // admin if he is also a member
-        _attendees = response.results!
-            .where((attendee) => (attendee.attendance!.memberId!.email !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantEmail ||
-                attendee.attendance!.memberId!.phone !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantPhone))
-            .toList();
+        _attendees = response.results!;
 
         _tempAttendees = _attendees;
 
@@ -486,21 +482,9 @@ class AttendanceProvider extends ChangeNotifier {
           toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
         );
         if (response.results!.isNotEmpty) {
-          _tempAttendees = response.results!;
+          _attendees.addAll(response.results!);
 
-          _tempAttendees.removeWhere((attendee) =>
-              (attendee!.attendance!.memberId!.email ==
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantEmail ||
-                  attendee.attendance!.memberId!.phone ==
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantPhone));
-
-          _attendees.addAll(_tempAttendees);
-
-          //_tempAbsentees.addAll(_absentees);
+          _tempAttendees.addAll(_attendees);
 
           // calc rest of the total males
           for (var attendee in _tempAttendees) {
@@ -558,20 +542,11 @@ class AttendanceProvider extends ChangeNotifier {
       selectedAbsentees.clear();
 
       if (response.results!.isNotEmpty) {
-// get total number of absentees
+        // get total number of absentees
         totalAbsentees = response.count!;
         // filter list for only members excluding
         // admin if he is also a member
-        _absentees = response.results!
-            .where((absentee) => (absentee.attendance!.memberId!.email !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantEmail ||
-                absentee.attendance!.memberId!.phone !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantPhone))
-            .toList();
+        _absentees = response.results!;
 
         _tempAbsentees = _absentees;
 
@@ -628,21 +603,9 @@ class AttendanceProvider extends ChangeNotifier {
           toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
         );
         if (response.results!.isNotEmpty) {
-          _tempAbsentees = response.results!;
+          _absentees.addAll(response.results!);
 
-          _tempAbsentees.removeWhere((absentee) =>
-              (absentee!.attendance!.memberId!.email ==
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantEmail ||
-                  absentee.attendance!.memberId!.phone ==
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantPhone));
-
-          _absentees.addAll(_tempAbsentees);
-
-          //_tempAbsentees.addAll(_absentees);
+          _tempAbsentees.addAll(_absentees);
 
           // calc rest of the total males
           for (var absentee in _tempAbsentees) {
