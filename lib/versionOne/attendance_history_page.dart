@@ -336,176 +336,200 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
           SizedBox(
             height: displayHeight(context) * 0.02,
           ),
-          LabelWidgetContainer(
-            label: "Member Category",
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(width: 0.0, color: Colors.grey.shade400),
-              ),
-              child: DropdownButtonFormField<MemberCategory>(
-                isExpanded: true,
-                style: const TextStyle(
-                  color: textColorPrimary,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
-                hint: const Text('Select Member Category'),
-                decoration: const InputDecoration(border: InputBorder.none),
-                value: attendanceHistoryProvider.selectedMemberCategory,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
-                // Array list of items
-                items: attendanceHistoryProvider.memberCategories
-                    .map((MemberCategory mc) {
-                  return DropdownMenuItem(
-                    value: mc,
-                    child: Text(mc.category!),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  setState(() {
-                    attendanceHistoryProvider.selectedMemberCategory =
-                        val as MemberCategory;
-                  });
-                  attendanceHistoryProvider.getMemberCategories();
-                },
-              ),
-            ),
-          ),
+          userType == AppConstants.admin
+              ? LabelWidgetContainer(
+                  label: "Member Category",
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.circular(8),
+                      border:
+                          Border.all(width: 0.0, color: Colors.grey.shade400),
+                    ),
+                    child: DropdownButtonFormField<MemberCategory>(
+                      isExpanded: true,
+                      style: const TextStyle(
+                        color: textColorPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      hint: const Text('Select Member Category'),
+                      decoration:
+                          const InputDecoration(border: InputBorder.none),
+                      value: attendanceHistoryProvider.selectedMemberCategory,
+                      icon: Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
+                      // Array list of items
+                      items: attendanceHistoryProvider.memberCategories
+                          .map((MemberCategory mc) {
+                        return DropdownMenuItem(
+                          value: mc,
+                          child: Text(mc.category!),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          attendanceHistoryProvider.selectedMemberCategory =
+                              val as MemberCategory;
+                        });
+                        attendanceHistoryProvider.getMemberCategories();
+                      },
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           SizedBox(
             height: displayHeight(context) * 0.02,
           ),
-          LabelWidgetContainer(
-            label: "Group",
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(width: 0.0, color: Colors.grey.shade400),
-              ),
-              child: DropdownButtonFormField<Group>(
-                isExpanded: true,
-                style: const TextStyle(
-                  color: textColorPrimary,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
-                hint: const Text('Select Group'),
-                decoration: const InputDecoration(border: InputBorder.none),
-                value: attendanceHistoryProvider.selectedGroup,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
-                // Array list of items
-                items: attendanceHistoryProvider.groups.map((Group group) {
-                  return DropdownMenuItem(
-                    value: group,
-                    child: Text(group.group!),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  setState(() {
-                    attendanceHistoryProvider.selectedGroup = val as Group;
-                  });
-                },
-              ),
-            ),
-          ),
+          userType == AppConstants.admin
+              ? LabelWidgetContainer(
+                  label: "Group",
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.circular(8),
+                      border:
+                          Border.all(width: 0.0, color: Colors.grey.shade400),
+                    ),
+                    child: DropdownButtonFormField<Group>(
+                      isExpanded: true,
+                      style: const TextStyle(
+                        color: textColorPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      hint: const Text('Select Group'),
+                      decoration:
+                          const InputDecoration(border: InputBorder.none),
+                      value: attendanceHistoryProvider.selectedGroup,
+                      icon: Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
+                      // Array list of items
+                      items:
+                          attendanceHistoryProvider.groups.map((Group group) {
+                        return DropdownMenuItem(
+                          value: group,
+                          child: Text(group.group!),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          attendanceHistoryProvider.selectedGroup =
+                              val as Group;
+                        });
+                      },
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           SizedBox(
             height: displayHeight(context) * 0.02,
           ),
-          LabelWidgetContainer(
-            label: "Sub Group",
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(width: 0.0, color: Colors.grey.shade400),
-              ),
-              child: DropdownButtonFormField<SubGroup>(
-                isExpanded: true,
-                style: const TextStyle(
-                  color: textColorPrimary,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
-                hint: const Text('Select SubGroup'),
-                decoration: const InputDecoration(border: InputBorder.none),
-                value: attendanceHistoryProvider.selectedSubGroup,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
-                // Array list of items
-                items: attendanceHistoryProvider.subGroups
-                    .map((SubGroup subGroup) {
-                  return DropdownMenuItem(
-                    value: subGroup,
-                    child: Text(subGroup.subgroup!),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  setState(() {
-                    attendanceHistoryProvider.selectedSubGroup =
-                        val as SubGroup;
-                  });
-                },
-              ),
-            ),
-          ),
+          userType == AppConstants.admin
+              ? LabelWidgetContainer(
+                  label: "Sub Group",
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.circular(8),
+                      border:
+                          Border.all(width: 0.0, color: Colors.grey.shade400),
+                    ),
+                    child: DropdownButtonFormField<SubGroup>(
+                      isExpanded: true,
+                      style: const TextStyle(
+                        color: textColorPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      hint: const Text('Select SubGroup'),
+                      decoration:
+                          const InputDecoration(border: InputBorder.none),
+                      value: attendanceHistoryProvider.selectedSubGroup,
+                      icon: Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
+                      // Array list of items
+                      items: attendanceHistoryProvider.subGroups
+                          .map((SubGroup subGroup) {
+                        return DropdownMenuItem(
+                          value: subGroup,
+                          child: Text(subGroup.subgroup!),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          attendanceHistoryProvider.selectedSubGroup =
+                              val as SubGroup;
+                        });
+                      },
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           SizedBox(
             height: displayHeight(context) * 0.02,
           ),
-          LabelWidgetContainer(
-            label: "Gender",
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(width: 0.0, color: Colors.grey.shade400),
-              ),
-              child: DropdownButtonFormField<Gender>(
-                isExpanded: true,
-                style: const TextStyle(
-                  color: textColorPrimary,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
-                hint: const Text('Select Gender'),
-                decoration: const InputDecoration(border: InputBorder.none),
-                value: attendanceHistoryProvider.selectedGender,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
-                // Array list of items
-                items: attendanceHistoryProvider.genders.map((Gender gender) {
-                  return DropdownMenuItem(
-                    value: gender,
-                    child: Text(gender.name!),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  setState(() {
-                    attendanceHistoryProvider.selectedGender = val as Gender;
-                  });
-                },
-              ),
-            ),
-          ),
+          userType == AppConstants.admin
+              ? LabelWidgetContainer(
+                  label: "Gender",
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.circular(8),
+                      border:
+                          Border.all(width: 0.0, color: Colors.grey.shade400),
+                    ),
+                    child: DropdownButtonFormField<Gender>(
+                      isExpanded: true,
+                      style: const TextStyle(
+                        color: textColorPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      hint: const Text('Select Gender'),
+                      decoration:
+                          const InputDecoration(border: InputBorder.none),
+                      value: attendanceHistoryProvider.selectedGender,
+                      icon: Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
+                      // Array list of items
+                      items: attendanceHistoryProvider.genders
+                          .map((Gender gender) {
+                        return DropdownMenuItem(
+                          value: gender,
+                          child: Text(gender.name!),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          attendanceHistoryProvider.selectedGender =
+                              val as Gender;
+                        });
+                      },
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           SizedBox(
             height: displayHeight(context) * 0.02,
           ),
@@ -551,31 +575,33 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
           SizedBox(
             height: displayHeight(context) * 0.02,
           ),
-          Row(
-            children: [
-              Expanded(
-                child: LabelWidgetContainer(
-                  label: "Minimum Age",
-                  child: FormTextField(
-                    controller: attendanceHistoryProvider.minAgeTEC,
-                    textInputType: TextInputType.number,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              Expanded(
-                child: LabelWidgetContainer(
-                  label: "Maximum Age",
-                  child: FormTextField(
-                    controller: attendanceHistoryProvider.maxAgeTEC,
-                    textInputType: TextInputType.number,
-                  ),
-                ),
-              )
-            ],
-          ),
+          userType == AppConstants.admin
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: LabelWidgetContainer(
+                        label: "Minimum Age",
+                        child: FormTextField(
+                          controller: attendanceHistoryProvider.minAgeTEC,
+                          textInputType: TextInputType.number,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    Expanded(
+                      child: LabelWidgetContainer(
+                        label: "Maximum Age",
+                        child: FormTextField(
+                          controller: attendanceHistoryProvider.maxAgeTEC,
+                          textInputType: TextInputType.number,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              : const SizedBox(),
           SizedBox(
             height: displayHeight(context) * 0.008,
           ),

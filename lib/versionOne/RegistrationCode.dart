@@ -31,16 +31,20 @@ class RegistrationCode extends StatelessWidget {
                 return;
               }
               if(regType == 'member'){
+
                 var regCode = _controller.text.trim();
                 MemberAPI.searchRegCode(regCode: regCode).
                 then((value){
                   if(value !=null){
+                      var clientID = value['clientID'];
+                      var clientLogo  = value['clientLogo'];
+                      var clientName = value['clientName'];
+
                     ScaffoldMessenger.of(context)
                         .showSnackBar(const SnackBar(content: Text('Registration Code has been accepted')));
-                    debugPrint('clientID = $value');
-                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageIndividual(clientID: value,),));
-                  }else{
-                    showErrorSnackBar(context, "Please a valid Registration Code");
+                    debugPrint('clientID = $clientID, clientLogo = $clientLogo , clientName = $clientName');
+                      Navigator.pop(context);
+                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageIndividual(clientID: clientID,clientLogo:clientLogo,clientName:clientName),));
                   }
                 });
 
@@ -52,6 +56,7 @@ class RegistrationCode extends StatelessWidget {
                     ScaffoldMessenger.of(context)
                         .showSnackBar(const SnackBar(content: Text('Registration Code has been accepted')));
                     debugPrint('clientID = $value');
+                    Navigator.pop(context);
                     Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageOrganization(clientID: value,),));
                   }else{
                     showErrorSnackBar(context, "Please a valid Registration Code");
@@ -60,7 +65,8 @@ class RegistrationCode extends StatelessWidget {
 
               }
             },
-                child: const Text('Proceed'))
+                child: const Text('Proceed')),
+
           ],
         )
       ),

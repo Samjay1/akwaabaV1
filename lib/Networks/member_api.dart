@@ -227,7 +227,7 @@ class MemberAPI {
       };
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? memberToken = prefs.getString('memberToken');
+      String? memberToken = prefs.getString('token');
 
       http.Response response = await http.post(
           Uri.parse('$baseUrl/attendance/clocking-device/request'),
@@ -237,15 +237,16 @@ class MemberAPI {
             'Content-Type': 'application/json'
           });
       var decodedResponse = jsonDecode(response.body);
+      print('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
       if (response.statusCode == 201) {
-        debugPrint('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
-        debugPrint(
-            '2.MEMBER TOKEN---------- --------------------- $memberToken');
+        // debugPrint('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
+        // debugPrint(
+        //     '2.MEMBER TOKEN---------- --------------------- $memberToken');
         // return response.body;
-        showErrorToast("Device Activation request sent.");
+        showNormalToast("Device Activation request sent.");
       } else {
         debugPrint("error>>>. ${response.body}");
-        showErrorToast("Login Error");
+        showErrorToast("Invalid Token");
       }
     } on SocketException catch (_) {
       showErrorToast("Network Error");
@@ -311,7 +312,7 @@ class MemberAPI {
     }
   }
 
-  static void registerMember(
+  static Future<String?> registerMember(
 
       BuildContext context,
   {
@@ -396,14 +397,17 @@ class MemberAPI {
       if (response.statusCode == 201) {
         debugPrint('REGISTRATION MEMBER -------------- $decodedResponse');
         showNormalToast("Registration Successful, Proceed to Login.");
-        Navigator.push(context,MaterialPageRoute( builder: (_) => LoginPage(),));
+
+        return 'successful';
       } else {
-        debugPrint("error>>>. ${response.body}");
-        var error = decodedResponse['non_field_errors'][0];
-        showErrorToast("$error");
+        var message = decodedResponse['non_field_errors'][0];
+        debugPrint("error>>>. $message");
+        showErrorToast("$message");
+        return '$message';
       }
     } on SocketException catch (_) {
       showErrorToast("Network Error");
+      return 'network_error';
     }
   }
 
@@ -862,7 +866,7 @@ class MemberAPI {
 
   // REGISTRATION CODE
 
-  static Future<String?> searchRegCode({required var regCode}) async {
+  static Future<dynamic?> searchRegCode({required var regCode}) async {
 
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
@@ -873,12 +877,21 @@ class MemberAPI {
         var decodedresponse = jsonDecode(response.body);
         print("searchRegCode success: $decodedresponse");
         var clientID = decodedresponse['data']['clientId'];
-        return clientID;
+        var clientLogo = decodedresponse['data']['clientInfo']['logo'];
+        var clientName = decodedresponse['data']['clientInfo']['name'];
+        var clientInfo = {
+          'clientID':clientID,
+          'clientLogo':clientLogo,
+          'clientName':clientName
+        };
+        return clientInfo;
       } else {
         print('searchRegCode error ${jsonDecode(response.body)}');
+        showErrorToast("Please a valid Registration Code");
         return null;
       }
     } on SocketException catch (e) {
+      showErrorToast("Please check you network");
       // ScaffoldMessenger.of(context)
       //     .showSnackBar(SnackBar(content: Text('Network issue')));
       print('searchRegCode error, $regCode, $e');
@@ -911,6 +924,122 @@ class MemberAPI {
           return null;
         }
       }
+
+  static Future<String?> registerMemberWithImage(
+
+      BuildContext context,
+      {
+        profilePicture,
+        clientId,
+        branchId,
+        firstname,
+        middlename,
+        surname,
+        gender,
+        dateOfBirth,
+        email,
+        phone,
+        memberType,
+        referenceId,
+        nationality,
+        countryOfResidence,
+        stateProvince,
+        region,
+        district,
+        constituency,
+        electoralArea,
+        community,
+        digitalAddress,
+        hometown,
+        occupation,
+        disability,
+        maritalStatus,
+        occupationalStatus,
+        professionStatus,
+        educationalStatus,
+        groupIds,
+        subgroupIds,
+        password,
+        confirm_password}
+      ) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      var request = await http.MultipartRequest('POST',
+        Uri.parse('$regBaseUrl/members/user/app-register'));
+
+      Map<String, String> headers =  {'Content-Type': 'application/json'};
+
+      // multipart that takes file
+      var pic = await http.MultipartFile.fromPath('profilePicture', profilePicture);
+
+      request.headers.addAll(headers);
+
+      // add file to multipart
+      request.files.add(pic);
+      request.fields["clientId"]= clientId;
+      request.fields["branchId"]= branchId;
+      request.fields["firstname"]= firstname;
+      request.fields["middlename"]= middlename;
+      request.fields["surname"]= surname;
+      request.fields["gender"]= gender.toString();
+      request.fields["dateOfBirth"]= dateOfBirth;
+      request.fields["email"]= email;
+      request.fields["phone"]= phone;
+      request.fields["accountType"]= '1';
+      request.fields["memberType"]= memberType.toString();
+      request.fields["referenceId"]= referenceId;
+      request.fields["nationality"]= nationality.toString();
+      request.fields["countryOfResidence"]= countryOfResidence.toString();
+      request.fields["stateProvince"]= stateProvince.toString();
+      request.fields["region"]= region.toString();
+      request.fields["district"]= district.toString();
+      request.fields["constituency"]= constituency.toString();
+      request.fields["electoralArea"]= electoralArea.toString();
+      request.fields["community"]= community.toString();
+      request.fields["digitalAddress"]= digitalAddress.toString();
+      request.fields["hometown"]= hometown.toString();
+      request.fields["occupation"]= occupation.toString();
+      request.fields["disability"]= disability.toString();
+      request.fields["maritalStatus"]= maritalStatus.toString();
+      request.fields["occupationalStatus"]= occupationalStatus.toString();
+      request.fields["professionStatus"]= professionStatus.toString();
+      request.fields["educationalStatus"]= educationalStatus.toString();
+      request.fields["groupIds"]= groupIds.toString();
+      request.fields["subgroupIds"]= subgroupIds.toString();
+      request.fields["password"]= password;
+      request.fields["confirm_password"]= confirm_password;
+
+
+      // send
+      var response = await request.send();
+
+
+      // listen for response
+      print('response.statusCode ${response.statusCode}');
+
+
+      if (response.statusCode == 201) {
+        debugPrint('REGISTRATION MEMBER -------------- $response');
+        showNormalToast("Registration Successful, Proceed to Login.");
+        return 'successful';
+      } else {
+        response.stream.transform(utf8.decoder).listen((value) {
+          var data = json.decode(value);
+          var message = data['non_field_errors'][0];
+          print('RESPONSE: $message');
+          showNormalToast('$message');
+        });
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+
 }
+
+
+
 
 

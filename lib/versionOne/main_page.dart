@@ -21,6 +21,7 @@ import 'package:akwaaba/versionOne/member_account_page.dart';
 import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:akwaaba/versionOne/my_account_page.dart';
 import 'package:akwaaba/versionOne/post_clocking_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,14 +44,14 @@ class _MainPageState extends State<MainPage> {
   List<Map> bottomNavItems = [
     {"title": "Home", "icon_data": CupertinoIcons.home},
     {"title": "Events", "icon_data": Icons.calendar_month_outlined},
-    {"title": "Post .Clocking", "icon_data": CupertinoIcons.alarm},
+    {"title": "Post Clocking", "icon_data": CupertinoIcons.alarm},
     // {"title":"More","icon_data":Icons.menu},
   ];
 
   List<Map> bottomNavItemsFiled = [
     {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
     {"title": "Events", "icon_data": Icons.calendar_month},
-    {"title": "Post .Clocking", "icon_data": CupertinoIcons.alarm_fill},
+    {"title": "Post Clocking", "icon_data": CupertinoIcons.alarm_fill},
     // {"title":"More","icon_data":Icons.menu},
   ];
 
@@ -298,6 +299,18 @@ class _MainPageState extends State<MainPage> {
                     return ListView(
                       physics: const BouncingScrollPhysics(),
                       children: [
+                        drawerItemView(
+                          title: "Profile Page",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const MyAccountPage()
+                                ));
+                          },
+                        ),
                         drawerItemView(
                           title: "View Members",
                           iconData: Icons.phone_android,
