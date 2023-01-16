@@ -69,6 +69,7 @@ class _MemberRegistrationPageIndividualState
   File? imageFile ;
   final formGlobalKeyBio = GlobalKey < FormState > ();
   final formGlobalKeyStatus = GlobalKey < FormState > ();
+  final formGlobalKeyStateProvince = GlobalKey < FormState > ();
   final formGlobalKeyPassword = GlobalKey < FormState > ();
 
 
@@ -635,6 +636,7 @@ class _MemberRegistrationPageIndividualState
 
 
   bool loadingLocation = false;
+  bool ifGhanaSelected = false;
   Widget locationView() {
     return Stack(
       children: [
@@ -654,7 +656,7 @@ class _MemberRegistrationPageIndividualState
             ),
 
           Form(
-            key: formGlobalKeyBio,
+            key: formGlobalKeyStateProvince,
             child:  LabelWidgetContainer(
                 label: "Province/State",
                 setCompulsory: true,
@@ -1071,7 +1073,8 @@ class _MemberRegistrationPageIndividualState
           selectedCountry = value['name'];
           selectedCountryID =  value['id'];
           debugPrint('selectedCountryID $selectedCountryID, $selectedCountry');
-
+          ifGhanaSelected = selectedCountry.toString() =='Ghana'? true: false;
+          debugPrint('ifGhanaSelected $ifGhanaSelected;');
         });
       }
     });

@@ -315,14 +315,40 @@ class _MainPageState extends State<MainPage> {
                           title: "View Members",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const MembersPage(),
-                              ),
-                            );
-                          },
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  insetPadding: const EdgeInsets.all(10),
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  content: ConfirmDialog(
+                                    title: 'View all Members/Organisations',
+                                    content:
+                                    'Select the Clients you want to view',
+                                    onConfirmTap: () {
+                                      Navigator.pop(context);//close the popup
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const MembersPage(isMemberuser:true),
+                                        ),
+                                      );
+                                    },
+                                    onCancelTap: () {
+                                      Navigator.pop(context); //close the popup
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const MembersPage(isMemberuser:false),
+                                        ),
+                                      );
+                                    },
+                                    confirmText: 'Members',
+                                    cancelText: 'Organisations',
+                                  ),
+                                ),
+                              );
+                            }
                         ),
                         drawerItemView(
                           title: "Create Meetings/Event",
@@ -635,17 +661,45 @@ class _MainPageState extends State<MainPage> {
                       physics: const BouncingScrollPhysics(),
                       children: [
                         drawerItemView(
-                          title: "View Members",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const MembersPage(),
-                              ),
-                            );
-                          },
+                            title: "View Members",
+                            iconData: Icons.phone_android,
+                            function: () {
+                              Navigator.pop(context);
+
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  insetPadding: const EdgeInsets.all(10),
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  content: ConfirmDialog(
+                                    title: 'View all Members/Organisations',
+                                    content:
+                                    'Select the Clients you want to view',
+                                    onConfirmTap: () {
+                                      Navigator.pop(context); //close the popup
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const MembersPage(isMemberuser:true),
+                                        ),
+                                      );
+                                    },
+                                    onCancelTap: () {
+                                      Navigator.pop(context); //close the popup
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const MembersPage(isMemberuser:false),
+                                        ),
+                                      );
+                                    },
+                                    confirmText: 'Members',
+                                    cancelText: 'Organisations',
+                                  ),
+                                ),
+                              );
+                            }
                         ),
                         drawerItemView(
                           title: "Update Profile",
@@ -938,7 +992,7 @@ class _MainPageState extends State<MainPage> {
       case 8:
         //view members
         Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const MembersPage()));
+            context, MaterialPageRoute(builder: (_) => const MembersPage(isMemberuser: true,)));
 
         break;
       case 21:
