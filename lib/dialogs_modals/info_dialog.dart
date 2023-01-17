@@ -19,7 +19,7 @@ class InfoDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: displayHeight(context) * 0.30,
+      height: displayHeight(context) * 0.36,
       width: displayWidth(context),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -44,7 +44,7 @@ class InfoDialog extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: displayHeight(context) * 0.03),
+          SizedBox(height: displayHeight(context) * 0.02),
 
           Text(
             content,

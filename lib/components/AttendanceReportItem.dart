@@ -105,8 +105,7 @@ class AttendanceReportItem extends StatelessWidget {
       DateFormat.yMMMEd(),
       date: DateTime.parse(attendee!.attendance!.date!),
     );
-    var lastSeenDate = DateUtil.formatStringDate(
-      DateFormat.yMMMEd().add_jm(),
+    var lastSeenDate = DateUtil.convertToAgo(
       date: DateTime.parse(attendee!.lastSeen!),
     );
     return Container(

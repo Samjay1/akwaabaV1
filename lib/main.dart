@@ -3,6 +3,7 @@ import 'package:akwaaba/location/location_services.dart';
 import 'package:akwaaba/providers/all_events_provider.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
+import 'package:akwaaba/providers/auth_provider.dart';
 import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
@@ -42,6 +43,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AttendanceHistoryProvider()),
         ChangeNotifierProvider(create: (_) => ClockingProvider()),
         ChangeNotifierProvider(create: (_) => PostClockingProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: MaterialApp(
         key: scaffoldMessengerKey,

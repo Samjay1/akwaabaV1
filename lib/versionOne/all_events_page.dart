@@ -1,14 +1,14 @@
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
+import 'package:akwaaba/components/pagination_loader.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/all_events_provider.dart';
-import 'package:akwaaba/providers/home_provider.dart';
-import 'package:akwaaba/screens/all_events_filter_page.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
@@ -16,8 +16,6 @@ import 'package:shimmer/shimmer.dart';
 import '../components/custom_elevated_button.dart';
 import '../components/form_button.dart';
 import '../components/label_widget_container.dart';
-import '../models/meeting_event_item.dart';
-import '../providers/member_provider.dart';
 import '../utils/app_theme.dart';
 
 class AllEventsPage extends StatefulWidget {
@@ -28,48 +26,19 @@ class AllEventsPage extends StatefulWidget {
 }
 
 class _AllEventsPageState extends State<AllEventsPage> {
-  DateTime? startYear;
-  DateTime? endYear; //start and end year | month for filter range
-  bool showFilteredResults = false;
-  final TextEditingController _controllerSearch = TextEditingController();
-
-  int listType = 0; //0= events, 1 = meetings
   int selectedEventType = 0;
-  SharedPreferences? prefs;
-  var memberToken;
 
-  selectStartPeriod() {
-    displayDateSelector(
-      context: context,
-      initialDate: startYear ?? DateTime.now(),
-      minimumDate: DateTime(DateTime.now().year - 50, 1),
-      maxDate: DateTime.now(),
-    ).then((value) {
-      setState(() {
-        startYear = value;
-      });
-    });
-  }
+  late AllEventsProvider _eventsProvider;
 
-  selectEndPeriod() {
-    displayDateSelector(
-            context: context,
-            initialDate: endYear ?? DateTime.now(),
-            minimumDate: DateTime(DateTime.now().year - 50, 1),
-            maxDate: DateTime.now())
-        .then((value) {
-      setState(() {
-        endYear = value;
-      });
-    });
-  }
-
-  void loadMeetingEventsByUserType() async {
+  void loadAllMeetingEvents() async {
     Future.delayed(Duration.zero, () {
-      // check if admin is main branch admin or not
-      Provider.of<AllEventsProvider>(context, listen: false)
-          .getUpcomingMeetingEvents();
-
+      if (Provider.of<AllEventsProvider>(context, listen: false)
+          .upcomingMeetings
+          .isEmpty) {
+        // load all upcoming events or meetings
+        Provider.of<AllEventsProvider>(context, listen: false)
+            .getUpcomingMeetingEvents();
+      }
       setState(() {});
     });
   }
@@ -77,27 +46,34 @@ class _AllEventsPageState extends State<AllEventsPage> {
   @override
   initState() {
     super.initState();
-    loadMeetingEventsByUserType();
+    loadAllMeetingEvents();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      padding: const EdgeInsets.all(16),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
+    _eventsProvider = context.watch<AllEventsProvider>();
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CupertinoSearchTextField(
-              controller: _controllerSearch,
-            ),
-
+            filterButton(),
             const SizedBox(
               height: 16,
             ),
-
+            CupertinoSearchTextField(
+              onChanged: ((val) {
+                setState(() {
+                  _eventsProvider.searchEventMeetings(searchText: val);
+                });
+              }),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
             Container(
               padding: EdgeInsets.only(right: 12.0),
               decoration: BoxDecoration(
@@ -134,92 +110,78 @@ class _AllEventsPageState extends State<AllEventsPage> {
                 }),
               ),
             ),
-
-            const SizedBox(
-              height: 24,
+            SizedBox(
+              height: displayHeight(context) * 0.01,
             ),
-
-            Row(
-              children: [
-                Expanded(
-                  child: LabelWidgetContainer(
-                    label: "Start Date",
-                    child: FormButton(
-                      label: startYear != null
-                          ? DateFormat("dd MMM yyyy").format(startYear!)
-                          : "Start Period",
-                      function: () {
-                        selectStartPeriod();
-                      },
-                      iconData: Icons.calendar_month_outlined,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 18,
-                ),
-                Expanded(
-                  child: LabelWidgetContainer(
-                    label: "End Period",
-                    child: FormButton(
-                      label: endYear != null
-                          ? DateFormat("dd MMM yyyy").format(endYear!)
-                          : "End Period",
-                      function: () {
-                        selectEndPeriod();
-                      },
-                      iconData: Icons.calendar_month_outlined,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            CustomElevatedButton(label: "Apply Filter", function: () {}),
-
-            const SizedBox(
-              height: 24,
-            ),
-
-            //const SizedBox(height: 24,),
-
-            // ListView(
-            //   shrinkWrap: true,
-            //
-            //   physics: const NeverScrollableScrollPhysics(),
-            //   children:List.generate(events.length, (index) {
-            //   return  MeetingEventWidget(events[index]);
-            // }),),
-
-            context.watch<AllEventsProvider>().loading
-                ? Shimmer.fromColors(
-                    baseColor: greyColorShade300,
-                    highlightColor: greyColorShade100,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemBuilder: (_, __) => const EventShimmerItem(),
-                      itemCount: 10,
+            _eventsProvider.loading
+                ? Expanded(
+                    child: Shimmer.fromColors(
+                      baseColor: greyColorShade300,
+                      highlightColor: greyColorShade100,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: (_, __) => const EventShimmerItem(),
+                        itemCount: 10,
+                      ),
                     ),
                   )
-                : Consumer<AllEventsProvider>(
-                    builder: (context, data, child) {
-                      if (data.upcomingMeetings.isEmpty) {
-                        return const EmptyStateWidget(
-                          text:
-                              'You currently have no upcoming \nmeetings at the moment!',
-                        );
-                      }
-                      return ListView.builder(
-                          itemCount: data.upcomingMeetings.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            var item = data.upcomingMeetings[index];
-                            debugPrint('MEETING LIST ${item.memberType}');
-                            return upcomingEvents(
-                              meetingEvent: item,
-                            );
-                          });
-                    },
+                : Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () => _eventsProvider.refreshList(),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Consumer<AllEventsProvider>(
+                              builder: (context, data, child) {
+                                if (selectedEventType == 0 &&
+                                    data.upcomingMeetings.isEmpty) {
+                                  return const EmptyStateWidget(
+                                    text:
+                                        'You currently have no upcoming \nevents or meetings at the moment!',
+                                  );
+                                }
+
+                                if (selectedEventType == 1 &&
+                                    data.eventsList.isEmpty) {
+                                  return const EmptyStateWidget(
+                                    text:
+                                        'You currently have no upcoming \nevents at the moment!',
+                                  );
+                                }
+                                if (selectedEventType == 2 &&
+                                    data.meetingsList.isEmpty) {
+                                  return const EmptyStateWidget(
+                                    text:
+                                        'You currently have no upcoming \nmeetings at the moment!',
+                                  );
+                                }
+
+                                return ListView.builder(
+                                    controller:
+                                        _eventsProvider.scrollController,
+                                    itemCount: selectedEventType == 0
+                                        ? data.upcomingMeetings.length
+                                        : selectedEventType == 1
+                                            ? data.eventsList.length
+                                            : data.meetingsList.length,
+                                    physics: const BouncingScrollPhysics(),
+                                    //shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      var item = data.upcomingMeetings[index];
+                                      return upcomingEvents(
+                                        meetingEvent: item,
+                                      );
+                                    });
+                              },
+                            ),
+                          ),
+                          if (_eventsProvider.loadingMore)
+                            const PaginationLoader(
+                              loadingText: 'Loading. please wait...',
+                            )
+                        ],
+                      ),
+                    ),
                   )
           ],
         ),
@@ -232,6 +194,106 @@ class _AllEventsPageState extends State<AllEventsPage> {
   }) {
     return MeetingEventWidget(
       meetingEventModel: meetingEvent,
+    );
+  }
+
+  Widget filterButton() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          backgroundColor: Colors.transparent,
+          collapsedBackgroundColor: Colors.white,
+          // initiallyExpanded: isTileExpanded,
+          // onExpansionChanged: (value) {
+          //   setState(() {
+          //     isTileExpanded = value;
+          //   });
+          //   debugPrint("Expanded: $isTileExpanded");
+          // },
+          title: const Text(
+            "Filter Options ",
+            style: TextStyle(
+              fontSize: 17.0,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          children: <Widget>[filterOptionsList()],
+        ),
+      ),
+    );
+  }
+
+  Widget filterOptionsList() {
+    return Padding(
+      padding: const EdgeInsets.all(AppPadding.p12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          LabelWidgetContainer(
+            label: "Date",
+            child: FormButton(
+              label: _eventsProvider.selectedDate == null
+                  ? 'Select Date'
+                  : _eventsProvider.selectedDate!
+                      .toIso8601String()
+                      .substring(0, 10),
+              function: () {
+                displayDateSelector(
+                  initialDate: DateTime.now(),
+                  //maxDate: DateTime.now(),
+                  context: context,
+                ).then((value) {
+                  if (value != null) {
+                    setState(() {
+                      _eventsProvider.selectedDate = value;
+                      debugPrint(
+                          "Selected DateTime: ${_eventsProvider.selectedDate!.toIso8601String().substring(0, 10)}");
+                    });
+                  }
+                });
+              },
+            ),
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.008,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                    onTap: () => _eventsProvider.clearFilters(),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: fillColor,
+                        borderRadius:
+                            BorderRadius.circular(AppRadius.borderRadius8),
+                      ),
+                      child: const Text(
+                        'Clear',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.red, fontSize: 15),
+                      ),
+                    )),
+              ),
+              SizedBox(
+                width: displayWidth(context) * 0.04,
+              ),
+              Expanded(
+                child: CustomElevatedButton(
+                    label: "Filter",
+                    radius: AppRadius.borderRadius8,
+                    function: () {
+                      _eventsProvider.filterByDate();
+                    }),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -27,4 +27,28 @@ class DateUtil {
     final time = DateTime(0, 0, 0, hour, min, sec, 0, 0);
     return DateFormat.jm().format(time);
   }
+
+  static String convertToAgo({required DateTime date}) {
+    Duration diff = DateTime.now().difference(date);
+
+    if (diff.inDays == 1) {
+      return '${diff.inDays} day ago';
+    } else if (diff.inDays >= 1) {
+      return '${diff.inDays} days ago';
+    } else if (diff.inHours == 1) {
+      return '${diff.inHours} hour ago';
+    } else if (diff.inHours >= 1) {
+      return '${diff.inHours} hours ago';
+    } else if (diff.inMinutes == 1) {
+      return '${diff.inMinutes} minute ago';
+    } else if (diff.inMinutes >= 1) {
+      return '${diff.inMinutes} minutes ago';
+    } else if (diff.inSeconds == 1) {
+      return '${diff.inSeconds} seconds ago';
+    } else if (diff.inSeconds >= 1) {
+      return '${diff.inSeconds} seconds ago';
+    } else {
+      return 'just now';
+    }
+  }
 }

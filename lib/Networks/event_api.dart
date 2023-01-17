@@ -73,11 +73,10 @@ class EventAPI {
 
   static Future<List<MeetingEventModel>> getUpcomingMeetingEventList({
     required int page,
-    required String? date,
   }) async {
     List<MeetingEventModel> upcomingMeetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both?filter_date=$date');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both&page=$page');
     try {
       http.Response response = await http.get(
         url,

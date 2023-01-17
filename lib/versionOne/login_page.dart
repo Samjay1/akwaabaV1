@@ -2,7 +2,7 @@ import 'package:akwaaba/components/bottom_border_textfield.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
-import 'package:akwaaba/screens/forgot_password_page.dart';
+import 'package:akwaaba/versionOne/forgot_password_page.dart';
 import 'package:akwaaba/screens/member_registration_page_organization.dart';
 import 'package:akwaaba/versionOne/RegistrationCode.dart';
 import 'package:akwaaba/versionOne/main_page.dart';
@@ -159,7 +159,6 @@ class _LoginPageState extends State<LoginPage> {
                               adminLoginView()
                             ]),
                           ),
-
                         ],
                       ),
                     ),
@@ -179,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                             MaterialPageRoute(
                               builder: (_) => const WebViewPage(
                                   url:
-                                  'https://akwaabasolutions.com/about-akwaaba-software/',
+                                      'https://akwaabasolutions.com/about-akwaaba-software/',
                                   title: 'About Akwaaba'),
                             ),
                           );
@@ -189,7 +188,9 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: const Text(
                           "About Akwaaba",
-                          style: TextStyle(color: Colors.white,),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         )),
                   ),
                 ),

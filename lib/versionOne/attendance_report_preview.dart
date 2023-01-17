@@ -222,7 +222,7 @@ class _AttendanceReportDetailsPageState
                               fontSize: 18, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(
-                          height: 8,
+                          height: 4,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -244,7 +244,7 @@ class _AttendanceReportDetailsPageState
                           ],
                         ),
                         const SizedBox(
-                          height: 2,
+                          height: 4,
                         ),
                         Text(
                           "Time : $startTime  to  $closeTime",
@@ -362,7 +362,7 @@ class _AttendanceReportDetailsPageState
                 height: 8,
               ),
               LabelWidgetContainer(
-                  label: "Clocked Out by:",
+                  label: "Clocked Out by",
                   child: Text(widget.attendee!.attendance!.clockedBy == 0
                       ? "Me"
                       : "Admin")),
@@ -370,23 +370,22 @@ class _AttendanceReportDetailsPageState
               const Divider(
                 color: textColorPrimary,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
 
-              Row(
-                children: [
-                  Text("Last Seen"),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Text(
-                    widget.attendee!.lastSeen == null
-                        ? "N/A"
-                        : DateUtil.formatStringDate(
-                            DateFormat.yMMMEd().add_jm(),
-                            date: DateTime.parse(widget.attendee!.lastSeen!),
-                          ),
-                  )
-                ],
+              LabelWidgetContainer(
+                label: "Last Seen",
+                child: Text(
+                  widget.attendee!.lastSeen == null
+                      ? "N/A"
+                      : DateUtil.formatStringDate(
+                          DateFormat.yMMMEd().add_jm(),
+                          date: DateTime.parse(widget.attendee!.lastSeen!),
+                        ),
+                ),
+              ),
+
+              const Divider(
+                color: textColorPrimary,
               ),
 
               const SizedBox(
