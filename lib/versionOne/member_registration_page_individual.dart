@@ -52,6 +52,7 @@ class _MemberRegistrationPageIndividualState
       TextEditingController();
   final TextEditingController _controllerStateProvince =
   TextEditingController();
+  final TextEditingController _controllerCommunity = TextEditingController();
 
   bool loading = false;
 
@@ -67,6 +68,8 @@ class _MemberRegistrationPageIndividualState
   int currentIndex = 0;
   final ImagePicker picker = ImagePicker();
   File? imageFile ;
+  File? imageCV ;
+  File? imageIDCard ;
   final formGlobalKeyBio = GlobalKey < FormState > ();
   final formGlobalKeyStatus = GlobalKey < FormState > ();
   final formGlobalKeyStateProvince = GlobalKey < FormState > ();
@@ -239,6 +242,26 @@ class _MemberRegistrationPageIndividualState
     });
   }
 
+  void selectProfileCV() async {
+    final getImage = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (getImage != null) {
+        imageCV = File(getImage.path);
+      }
+    });
+  }
+
+  void selectProfileIDCard() async {
+    final getImage = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (getImage != null) {
+        imageIDCard = File(getImage.path);
+      }
+    });
+  }
+
   nextButtonTapped({required pageId}) {
 
     switch (pageId) {
@@ -277,28 +300,32 @@ class _MemberRegistrationPageIndividualState
             showErrorSnackBar(context, "select your Country");
             return;
         }
-        // if (selectedID == null) {
-        //   showErrorSnackBar(context, "select your State/Province");
-        //   return;
-        // }
-        if (selectedRegionID == null) {
-          showErrorSnackBar(context, "select your Region");
+        if (!formGlobalKeyStateProvince.currentState!.validate()) {
           return;
         }
-        if (selectedDistrictID == null) {
-          showErrorSnackBar(context, "select your District");
-          return;
-        }
-        if (selectedConstituencyID == null) {
-          showErrorSnackBar(context, "select your Constituency");
-          return;
-        }
+        if(ifGhanaSelected){
+          if (selectedRegionID == null) {
+            showErrorSnackBar(context, "select your Region");
+            return;
+          }
+          if (selectedDistrictID == null) {
+            showErrorSnackBar(context, "select your District");
+            return;
+          }
+          if (selectedConstituencyID == null) {
+            showErrorSnackBar(context, "select your Constituency");
+            return;
+          }
 
-        if (selectedCommunityID == null) {
-          showErrorSnackBar(context, "select your Community");
-          return;
+          if (selectedCommunityID == null) {
+            showErrorSnackBar(context, "select your Community");
+            return;
+          }
+        }else{
+          if (!formGlobalKeyStateProvince.currentState!.validate()) {
+            return;
+          }
         }
-
         pageViewController.animateToPage(3,
             duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
@@ -325,6 +352,15 @@ class _MemberRegistrationPageIndividualState
         if (!formGlobalKeyStatus.currentState!.validate()) {
           return;
         }
+
+        if(imageIDCard == null){
+          showErrorSnackBar(context, "Upload your ID Card");
+          return;
+        }
+        if(imageCV == null){
+          showErrorSnackBar(context, "Upload your CV");
+          return;
+        }
         pageViewController.animateToPage(4,
             duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
@@ -333,7 +369,6 @@ class _MemberRegistrationPageIndividualState
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('branchList ${branchList}');
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -655,19 +690,30 @@ class _MemberRegistrationPageIndividualState
                 )
             ),
 
-          Form(
+            !ifGhanaSelected?Form(
             key: formGlobalKeyStateProvince,
-            child:  LabelWidgetContainer(
-                label: "Province/State",
-                setCompulsory: true,
-                child: FormTextField(
-                  controller: _controllerStateProvince,
-                  label: "Select Province/State",
-                )),
-          ),
+            child:  Column(
+              children: [
+                LabelWidgetContainer(
+                    label: "Province/State",
+                    setCompulsory: true,
+                    child: FormTextField(
+                      controller: _controllerStateProvince,
+                      label: "Enter Province/State",
+                    )),
+                LabelWidgetContainer(
+                    label: "Community",
+                    setCompulsory: true,
+                    child: FormTextField(
+                      controller: _controllerCommunity,
+                      label: "Enter Community",
+                    )),
+              ],
+            ),
+          ):Container(),
 
-            LabelWidgetContainer(
-              //setCompulsory: true,
+            ifGhanaSelected?LabelWidgetContainer(
+              setCompulsory: true,
                 label: "Region",
                 child: FormButton(
                   label: selectedRegion??"Select Region",
@@ -676,9 +722,20 @@ class _MemberRegistrationPageIndividualState
                     selectRegion(newRegionList);
                   },
                 )
-            ),
+            ):Container(),
 
-            LabelWidgetContainer(
+            ifGhanaSelected?Form(
+              key: formGlobalKeyStateProvince,
+              child:  LabelWidgetContainer(
+                  label: "Community",
+                  setCompulsory: true,
+                  child: FormTextField(
+                    controller: _controllerCommunity,
+                    label: "Enter Community",
+                  )),
+            ):Container(),
+
+            ifGhanaSelected?LabelWidgetContainer(
               // setCompulsory: true,
                 label: "District",
                 child: FormButton(
@@ -688,9 +745,9 @@ class _MemberRegistrationPageIndividualState
                     selectDistrict(newDistrictList);
                   },
                 )
-            ),
+            ):Container(),
 
-            LabelWidgetContainer(
+            ifGhanaSelected?LabelWidgetContainer(
               //setCompulsory: true,
                 label: "Constituency",
                 child: FormButton(
@@ -700,9 +757,9 @@ class _MemberRegistrationPageIndividualState
                     selectConstituency(newConstituencyList);
                   },
                 )
-            ),
+            ):Container(),
 
-            LabelWidgetContainer(
+            ifGhanaSelected?LabelWidgetContainer(
                 label: "Electoral Area",
                 child: FormButton(
                   label: selectedCommunity??"Select Electoral Area",
@@ -711,7 +768,7 @@ class _MemberRegistrationPageIndividualState
                     selectCommunity(newCommunityList);
                   },
                 )
-            ),
+            ):Container(),
           ],
         ),
         loadingLocation? const Align(
@@ -722,6 +779,7 @@ class _MemberRegistrationPageIndividualState
   }
 
   Widget statusView() {
+    Size size = MediaQuery.of(context).size;
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
@@ -793,25 +851,103 @@ class _MemberRegistrationPageIndividualState
             )
         ),
 
-
-
-        LabelWidgetContainer(label: "ID Upload", child:
-        FormButton(label: "Upload  ID",
-        function: (){},)
+        Form(
+          key: formGlobalKeyStatus,
+          child:  LabelWidgetContainer(label: "ID Number",
+              child:FormTextField(
+                controller: _controllerIDNumber,
+              )
+          ),
         ),
 
-      Form(
-        key: formGlobalKeyStatus,
-        child:  LabelWidgetContainer(label: "ID Number",
-            child:FormTextField(
-                  controller: _controllerIDNumber,
-                  )
+
+
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            imageIDCard != null
+                ? Container(
+              width: size.width*0.93,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.green, width: 1),
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
               ),
+              child: Expanded(
+                child: IconButton(
+                    onPressed: (){},
+                    icon: Row(
+                        children:const[
+                          Text('ID Card selected', style: TextStyle(color:Colors.green),),
+                          SizedBox(width:10),
+                          Icon(Icons.check_circle_outlined, color: Colors.green,)
+                        ]
+                    )
+                ),
+              ),
+            )
+                : const Text('No File selected'),
+            CupertinoButton(
+              onPressed: () {
+                print('IMAGE NAME----- ${imageIDCard?.absolute}');
+                selectProfileIDCard();
+              },
+              child:
+              Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color:Colors.orange,
+                  ),
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: Text(imageIDCard != null ? "Change ID Card" : "Select ID Card", style: const TextStyle(color:Colors.black),)),
+            )
+          ],
         ),
 
-        LabelWidgetContainer(label: "CV Upload", child:
-        FormButton(label: "Upload  CV",
-          function: (){},)
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            imageCV != null
+                ? Container(
+              width: size.width*0.93,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.green, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+              ),
+              child: Expanded(
+                child: IconButton(
+                  onPressed: (){},
+                  icon: Row(
+                    children:const[
+                       Text('CV selected', style: TextStyle(color:Colors.green),),
+                      SizedBox(width:10),
+                      Icon(Icons.check_circle_outlined, color: Colors.green,)
+                    ]
+                  )
+                ),
+              ),
+            )
+                : const Text('No File selected'),
+            CupertinoButton(
+                onPressed: () {
+                  print('IMAGE NAME----- ${imageCV?.absolute}');
+                  selectProfileCV();
+                },
+                child:
+                Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color:Colors.orange,
+                    ),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                  child: Text(imageCV != null ? "Change CV" : "Select CV", style: const TextStyle(color:Colors.black),)),
+                  )
+          ],
         ),
 
         const SizedBox(
@@ -847,18 +983,7 @@ class _MemberRegistrationPageIndividualState
         CustomElevatedButton(label: "Submit",
             function: (){
     debugPrint('firstname ${_controllerFirstName.text}, '
-    'lastname ${_controllerSurname.text},'
-    'middlename ${_controllerMiddleName.text},'
-    'whatsapp ${_controllerWhatsappContact.text}'
-    'phone ${_controllerPhone.text},'
-    'email ${_controllerEmail.text}'
-    'referenceId ${_controllerIDNumber.text}'
-    'password ${_controllerPassword.text}'
-    'cpassword ${_controllerConfirmPassword.text}'
-    'selectedGender ${selectedGender}'
-    'birthDate ${birthDate}'
-    'disabilityOption ${disabilityOption},'
-    ''
+
     'selectedBranch $selectedBranch,'
     'selectedCategory $selectedCategory,'
     'selectedGroup $selectedGroup'
@@ -903,10 +1028,15 @@ class _MemberRegistrationPageIndividualState
             loading = true;
           });
           print(' value');
-          if(imageFile?.path !=null){
+          debugPrint('ProfileImage => ${imageFile?.path}'
+              ' profileResume:> ${imageCV?.path}'
+              ' profileIdentification:> ${imageIDCard?.path};');
+
             MemberAPI.registerMemberWithImage(
                 context,
                 profilePicture:imageFile?.path,
+                profileResume:imageCV?.path,
+                profileIdentification:imageIDCard?.path,
                 clientId: '${widget.clientID}',
                 branchId:'${selectedBranchID}',
                 firstname:_controllerFirstName.text.trim(),
@@ -950,55 +1080,6 @@ class _MemberRegistrationPageIndividualState
                 Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
               }
             });
-          }
-          else{
-            MemberAPI.registerMember(
-                context,
-                clientId: '${widget.clientID}',
-                branchId:'${selectedBranchID}',
-                firstname:_controllerFirstName.text,
-                middlename: _controllerMiddleName.text,
-                surname:_controllerSurname.text,
-                gender: selectedGender == 'Male' ? 1:0 ,
-                dateOfBirth: formatted,
-                email: _controllerEmail.text,
-                phone: _controllerPhone.text,
-                memberType: selectedCategoryID,
-                referenceId: _controllerIDNumber.text,
-                nationality: selectedCountryID,
-                countryOfResidence: selectedCountryID,
-                stateProvince: _controllerStateProvince.text.trim(),
-                region: selectedRegionID,
-                district: selectedDistrictID,
-                constituency: selectedConstituencyID,
-                electoralArea: selectedCommunityID,
-                community: '$selectedCommunityID',
-                digitalAddress: '-',
-                hometown: '-',
-                occupation: selectedOccupationID,
-                disability: disabilityOption == 0? false: true,
-                maritalStatus: selectedMaritalID,
-                occupationalStatus: selectedOccupationID,
-                professionStatus: selectedProfessionID,
-                educationalStatus: selectedEducationID,
-                groupIds: [selectedGroupID],
-                subgroupIds: [selectedSubGroupID],
-                password: _controllerPassword.text.trim(),
-                confirm_password: _controllerConfirmPassword.text.trim()
-            ).then((value){
-              setState(() {
-                loading = false;
-              });
-              print('$value value');
-              if(value == 'response_error'){
-                showErrorToast("Please fill all required fields");
-              }
-              else if(value == 'successful'){
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
-              }
-            });
-          }
 
         }
         }),

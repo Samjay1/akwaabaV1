@@ -12,5 +12,4 @@ class MemberType {
         json['category']
     );
   }
-
 }

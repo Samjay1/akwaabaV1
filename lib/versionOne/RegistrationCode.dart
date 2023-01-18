@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../components/form_textfield.dart';
-import '../screens/member_registration_page_organization.dart';
+import 'member_registration_page_organization.dart';
 import '../utils/widget_utils.dart';
 import 'member_registration_page_individual.dart';
 
@@ -53,11 +53,15 @@ class RegistrationCode extends StatelessWidget {
                 MemberAPI.searchRegCode(regCode: regCode).
                 then((value){
                   if(value !=null){
+                    var clientID = value['clientID'];
+                    var clientLogo  = value['clientLogo'];
+                    var clientName = value['clientName'];
+
                     ScaffoldMessenger.of(context)
                         .showSnackBar(const SnackBar(content: Text('Registration Code has been accepted')));
                     debugPrint('clientID = $value');
                     Navigator.pop(context);
-                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageOrganization(clientID: value,),));
+                    Navigator.push(context,MaterialPageRoute( builder: (_) => MemberRegistrationPageOrganization(clientID: clientID,clientLogo:clientLogo,clientName:clientName),));
                   }else{
                     showErrorSnackBar(context, "Please a valid Registration Code");
                   }
