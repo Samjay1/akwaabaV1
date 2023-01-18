@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/models/general/account_type.dart';
-import 'package:akwaaba/models/general/marital_status.dart';
+import 'package:akwaaba/models/general/member_status.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +19,10 @@ class MembersAPI {
     required String? branchId,
     required String? groupId,
     required String? subGroupId,
+    required String? startDate,
+    required String? endDate,
+    required String? fromAge,
+    required String? toAge,
     required String? maritalStatus,
     required String? occupationalStatus,
     required String? educationalStatus,
@@ -28,7 +32,7 @@ class MembersAPI {
     List<Member> member = [];
 
     var url = Uri.parse(
-        '${getBaseUrl()}/members/user/location?page=$page&search=$search&groupId=$groupId&subgroupId=$subGroupId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+        '${getBaseUrl()}/members/user/location?page=$page&search=$search&groupId=$groupId&subgroupId=$subGroupId&filter_start_date=$startDate&filter_end_date=$endDate&filter_from_age=$fromAge&filter_to_age=$toAge&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
     try {
       http.Response response = await http.get(
         url,
@@ -81,6 +85,10 @@ class MembersAPI {
     required String? branchId,
     required String? groupId,
     required String? subGroupId,
+    required String? startDate,
+    required String? endDate,
+    required String? fromAge,
+    required String? toAge,
     required String? maritalStatus,
     required String? occupationalStatus,
     required String? educationalStatus,
@@ -90,7 +98,9 @@ class MembersAPI {
     List<Member> member = [];
 
     var url = Uri.parse(
-        '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&groupId=$groupId&subgroupId=$subGroupId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+      '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&groupId=$groupId&subgroupId=$subGroupId&filter_start_date=$startDate&filter_end_date=$endDate&filter_from_age=$fromAge&filter_to_age=$toAge&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus',
+    );
+
     try {
       http.Response response = await http.get(
         url,
@@ -112,8 +122,8 @@ class MembersAPI {
   }
 
   // get list of marital statuses
-  static Future<List<MaritalStatus>> getMaritalStatuses() async {
-    List<MaritalStatus> maritalStatuses = [];
+  static Future<List<MemberStatus>> getMaritalStatuses() async {
+    List<MemberStatus> maritalStatuses = [];
 
     var url = Uri.parse('${getBaseUrl()}/members/user-status/marital');
     try {
@@ -124,9 +134,9 @@ class MembersAPI {
       debugPrint("Marital Status Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
-        maritalStatuses = <MaritalStatus>[];
+        maritalStatuses = <MemberStatus>[];
         res['data'].forEach((v) {
-          maritalStatuses.add(MaritalStatus.fromJson(v));
+          maritalStatuses.add(MemberStatus.fromJson(v));
         });
       }
     } on SocketException catch (_) {
@@ -137,8 +147,8 @@ class MembersAPI {
   }
 
   // get list of occupation
-  static Future<List<MaritalStatus>> getOccupations() async {
-    List<MaritalStatus> maritalStatuses = [];
+  static Future<List<MemberStatus>> getOccupations() async {
+    List<MemberStatus> maritalStatuses = [];
 
     var url = Uri.parse('${getBaseUrl()}/members/user-status/occupation');
     try {
@@ -149,9 +159,9 @@ class MembersAPI {
       debugPrint("Occupation Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
-        maritalStatuses = <MaritalStatus>[];
+        maritalStatuses = <MemberStatus>[];
         res['data'].forEach((v) {
-          maritalStatuses.add(MaritalStatus.fromJson(v));
+          maritalStatuses.add(MemberStatus.fromJson(v));
         });
       }
     } on SocketException catch (_) {
@@ -162,8 +172,8 @@ class MembersAPI {
   }
 
   // get list of professions
-  static Future<List<MaritalStatus>> getProfessions() async {
-    List<MaritalStatus> maritalStatuses = [];
+  static Future<List<MemberStatus>> getProfessions() async {
+    List<MemberStatus> maritalStatuses = [];
 
     var url = Uri.parse('${getBaseUrl()}/members/user-status/profession');
     try {
@@ -174,9 +184,9 @@ class MembersAPI {
       debugPrint("Profession Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
-        maritalStatuses = <MaritalStatus>[];
+        maritalStatuses = <MemberStatus>[];
         res['data'].forEach((v) {
-          maritalStatuses.add(MaritalStatus.fromJson(v));
+          maritalStatuses.add(MemberStatus.fromJson(v));
         });
       }
     } on SocketException catch (_) {
@@ -187,8 +197,8 @@ class MembersAPI {
   }
 
   // get list of education
-  static Future<List<MaritalStatus>> getEducations() async {
-    List<MaritalStatus> maritalStatuses = [];
+  static Future<List<MemberStatus>> getEducations() async {
+    List<MemberStatus> maritalStatuses = [];
 
     var url = Uri.parse('${getBaseUrl()}/members/user-status/education');
     try {
@@ -199,9 +209,9 @@ class MembersAPI {
       debugPrint("Education Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
-        maritalStatuses = <MaritalStatus>[];
+        maritalStatuses = <MemberStatus>[];
         res['data'].forEach((v) {
-          maritalStatuses.add(MaritalStatus.fromJson(v));
+          maritalStatuses.add(MemberStatus.fromJson(v));
         });
       }
     } on SocketException catch (_) {

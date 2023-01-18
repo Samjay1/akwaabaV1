@@ -1,15 +1,15 @@
-class MaritalStatus {
+class MemberStatus {
   int? id;
   String? name;
   int? memberId;
 
-  MaritalStatus({
+  MemberStatus({
     this.id,
     this.name,
     this.memberId,
   });
 
-  MaritalStatus.fromJson(Map<String, dynamic> json) {
+  MemberStatus.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     memberId = json['memberId'];
@@ -24,7 +24,7 @@ class MaritalStatus {
   }
 
   bool operator ==(dynamic other) =>
-      other != null && other is MaritalStatus && id == other.id;
+      other != null && other is MemberStatus && id == other.id;
 
   @override
   int get hashCode => super.hashCode;

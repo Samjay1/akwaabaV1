@@ -5,7 +5,7 @@ import 'package:akwaaba/Networks/members_api.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/gender.dart';
 import 'package:akwaaba/models/general/group.dart';
-import 'package:akwaaba/models/general/marital_status.dart';
+import 'package:akwaaba/models/general/member_status.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
@@ -26,10 +26,10 @@ class MembersProvider extends ChangeNotifier {
   List<Gender> _genders = [];
   List<Branch> _branches = [];
 
-  List<MaritalStatus> _maritalStatuses = [];
-  List<MaritalStatus> _occupations = [];
-  List<MaritalStatus> _professions = [];
-  List<MaritalStatus> _educations = [];
+  List<MemberStatus> _maritalStatuses = [];
+  List<MemberStatus> _occupations = [];
+  List<MemberStatus> _professions = [];
+  List<MemberStatus> _educations = [];
 
   List<Member?> _individualMembers = [];
 
@@ -40,10 +40,16 @@ class MembersProvider extends ChangeNotifier {
   MemberCategory? selectedMemberCategory;
   Gender? selectedGender;
   Branch? selectedBranch;
-  MaritalStatus? selectedMaritalStatus;
-  MaritalStatus? selectedOccupation;
-  MaritalStatus? selectedProfession;
-  MaritalStatus? selectedEducation;
+  MemberStatus? selectedMaritalStatus;
+  MemberStatus? selectedOccupation;
+  MemberStatus? selectedProfession;
+  MemberStatus? selectedEducation;
+
+  final TextEditingController minAgeTEC = TextEditingController();
+  final TextEditingController maxAgeTEC = TextEditingController();
+
+  DateTime? selectedStartDate;
+  DateTime? selectedEndDate;
 
   // Retrieve all meetings
   List<Group> get groups => _groups;
@@ -52,10 +58,10 @@ class MembersProvider extends ChangeNotifier {
   List<Gender> get genders => _genders;
   List<Branch> get branches => _branches;
 
-  List<MaritalStatus> get maritalStatuses => _maritalStatuses;
-  List<MaritalStatus> get professions => _professions;
-  List<MaritalStatus> get educations => _educations;
-  List<MaritalStatus> get occupations => _occupations;
+  List<MemberStatus> get maritalStatuses => _maritalStatuses;
+  List<MemberStatus> get professions => _professions;
+  List<MemberStatus> get educations => _educations;
+  List<MemberStatus> get occupations => _occupations;
 
   List<Member?> get individualMembers => _individualMembers;
   List<Member?> get organizationalMembers => _organizationalMembers;
@@ -223,6 +229,14 @@ class MembersProvider extends ChangeNotifier {
         groupId: selectedGroup == null ? null : selectedGroup!.id!.toString(),
         subGroupId:
             selectedSubGroup == null ? null : selectedSubGroup!.id!.toString(),
+        startDate: selectedStartDate == null
+            ? null
+            : selectedStartDate!.toIso8601String().substring(0, 10),
+        endDate: selectedEndDate == null
+            ? null
+            : selectedEndDate!.toIso8601String().substring(0, 10),
+        fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
+        toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
         maritalStatus: selectedMaritalStatus == null
             ? null
             : selectedMaritalStatus!.id!.toString(),
@@ -270,6 +284,14 @@ class MembersProvider extends ChangeNotifier {
           subGroupId: selectedSubGroup == null
               ? null
               : selectedSubGroup!.id!.toString(),
+          startDate: selectedStartDate == null
+              ? null
+              : selectedStartDate!.toIso8601String().substring(0, 10),
+          endDate: selectedEndDate == null
+              ? null
+              : selectedEndDate!.toIso8601String().substring(0, 10),
+          fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
+          toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
           maritalStatus: selectedMaritalStatus == null
               ? null
               : selectedMaritalStatus!.id!.toString(),
@@ -311,6 +333,14 @@ class MembersProvider extends ChangeNotifier {
         groupId: selectedGroup == null ? null : selectedGroup!.id!.toString(),
         subGroupId:
             selectedSubGroup == null ? null : selectedSubGroup!.id!.toString(),
+        startDate: selectedStartDate == null
+            ? null
+            : selectedStartDate!.toIso8601String().substring(0, 10),
+        endDate: selectedEndDate == null
+            ? null
+            : selectedEndDate!.toIso8601String().substring(0, 10),
+        fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
+        toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
         maritalStatus: selectedMaritalStatus == null
             ? null
             : selectedMaritalStatus!.id!.toString(),
@@ -354,6 +384,14 @@ class MembersProvider extends ChangeNotifier {
           subGroupId: selectedSubGroup == null
               ? null
               : selectedSubGroup!.id!.toString(),
+          startDate: selectedStartDate == null
+              ? null
+              : selectedStartDate!.toIso8601String().substring(0, 10),
+          endDate: selectedEndDate == null
+              ? null
+              : selectedEndDate!.toIso8601String().substring(0, 10),
+          fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
+          toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
           maritalStatus: selectedMaritalStatus == null
               ? null
               : selectedMaritalStatus!.id!.toString(),
@@ -384,10 +422,14 @@ class MembersProvider extends ChangeNotifier {
   void clearFilters() {
     selectedGroup = null;
     selectedSubGroup = null;
+    selectedStartDate = null;
+    selectedEndDate = null;
     selectedMaritalStatus = null;
     selectedOccupation = null;
     selectedProfession = null;
     selectedEducation = null;
+    minAgeTEC.clear();
+    maxAgeTEC.clear();
     isFilter = false;
     getAllIndividualMembers();
     notifyListeners();
@@ -396,10 +438,14 @@ class MembersProvider extends ChangeNotifier {
   void validateFilterFields({required int selectedIndex}) {
     if (selectedGroup != null ||
         selectedSubGroup != null ||
+        selectedStartDate != null ||
+        selectedEndDate != null ||
         selectedMaritalStatus != null ||
         selectedOccupation != null ||
         selectedProfession != null ||
-        selectedEducation != null) {
+        selectedEducation != null ||
+        minAgeTEC.text.isNotEmpty ||
+        maxAgeTEC.text.isNotEmpty) {
       selectedIndex == 0
           ? getAllIndividualMembers()
           : getAllOrganizationalMembers();
