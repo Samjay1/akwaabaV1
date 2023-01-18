@@ -26,6 +26,10 @@ class MembersProvider extends ChangeNotifier {
   List<Gender> _genders = [];
   List<Branch> _branches = [];
 
+  List<dynamic> _countries = [];
+  List<dynamic> _regions = [];
+  List<dynamic> _districts = [];
+
   List<MemberStatus> _maritalStatuses = [];
   List<MemberStatus> _occupations = [];
   List<MemberStatus> _professions = [];
@@ -44,12 +48,17 @@ class MembersProvider extends ChangeNotifier {
   MemberStatus? selectedOccupation;
   MemberStatus? selectedProfession;
   MemberStatus? selectedEducation;
+  dynamic selectedCountry;
+  dynamic selectedRegion;
+  dynamic selectedDistrict;
 
   final TextEditingController minAgeTEC = TextEditingController();
   final TextEditingController maxAgeTEC = TextEditingController();
 
   DateTime? selectedStartDate;
   DateTime? selectedEndDate;
+
+  String? selectedStatus;
 
   // Retrieve all meetings
   List<Group> get groups => _groups;
@@ -62,6 +71,10 @@ class MembersProvider extends ChangeNotifier {
   List<MemberStatus> get professions => _professions;
   List<MemberStatus> get educations => _educations;
   List<MemberStatus> get occupations => _occupations;
+
+  List<dynamic> get countries => _countries;
+  List<dynamic> get regions => _regions;
+  List<dynamic> get districts => _districts;
 
   List<Member?> get individualMembers => _individualMembers;
   List<Member?> get organizationalMembers => _organizationalMembers;
@@ -101,10 +114,6 @@ class MembersProvider extends ChangeNotifier {
     try {
       _branches = await GroupAPI.getBranches();
       debugPrint('Branches: ${_branches.length}');
-      if (_branches.isNotEmpty) {
-        selectedBranch = _branches[0];
-      }
-      getGenders();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Branch: ${err.toString()}');
@@ -113,16 +122,18 @@ class MembersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // get list of genders
-  Future<void> getGenders() async {
+  // get list of member categories
+  Future<void> getMemberCategories() async {
     try {
-      _genders = await GroupAPI.getGenders();
-      debugPrint('Genders: ${_genders.length}');
-      //selectedGender = _genders[0];
-      // getMemberCategories();
+      _memberCategories = await GroupAPI.getMemberCategories();
+      debugPrint('Member Categories: ${_memberCategories.length}');
+      if (_memberCategories.isNotEmpty) {
+        selectedMemberCategory = _memberCategories[0];
+      }
+      getGroups();
     } catch (err) {
       setLoading(false);
-      debugPrint('Error Gender: ${err.toString()}');
+      debugPrint('Error MC: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -237,6 +248,16 @@ class MembersProvider extends ChangeNotifier {
             : selectedEndDate!.toIso8601String().substring(0, 10),
         fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
         toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+        memberCategoryId: selectedMemberCategory == null
+            ? null
+            : selectedMemberCategory!.id!.toString(),
+        countryId:
+            selectedCountry == null ? null : selectedCountry!.id!.toString(),
+        regionId:
+            selectedRegion == null ? null : selectedRegion!.id!.toString(),
+        districtId:
+            selectedDistrict == null ? null : selectedDistrict!.id!.toString(),
+        status: selectedStatus,
         maritalStatus: selectedMaritalStatus == null
             ? null
             : selectedMaritalStatus!.id!.toString(),
@@ -252,10 +273,6 @@ class MembersProvider extends ChangeNotifier {
       );
 
       debugPrint('Ind Members: ${_individualMembers.length}');
-
-      if (!isFilter) {
-        getAllOrganizationalMembers();
-      }
 
       setLoading(false);
     } catch (err) {
@@ -292,6 +309,17 @@ class MembersProvider extends ChangeNotifier {
               : selectedEndDate!.toIso8601String().substring(0, 10),
           fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
           toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+          memberCategoryId: selectedMemberCategory == null
+              ? null
+              : selectedMemberCategory!.id!.toString(),
+          countryId:
+              selectedCountry == null ? null : selectedCountry!.id!.toString(),
+          regionId:
+              selectedRegion == null ? null : selectedRegion!.id!.toString(),
+          districtId: selectedDistrict == null
+              ? null
+              : selectedDistrict!.id!.toString(),
+          status: selectedStatus,
           maritalStatus: selectedMaritalStatus == null
               ? null
               : selectedMaritalStatus!.id!.toString(),
@@ -341,6 +369,16 @@ class MembersProvider extends ChangeNotifier {
             : selectedEndDate!.toIso8601String().substring(0, 10),
         fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
         toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+        memberCategoryId: selectedMemberCategory == null
+            ? null
+            : selectedMemberCategory!.id!.toString(),
+        countryId:
+            selectedCountry == null ? null : selectedCountry!.id!.toString(),
+        regionId:
+            selectedRegion == null ? null : selectedRegion!.id!.toString(),
+        districtId:
+            selectedDistrict == null ? null : selectedDistrict!.id!.toString(),
+        status: selectedStatus,
         maritalStatus: selectedMaritalStatus == null
             ? null
             : selectedMaritalStatus!.id!.toString(),
@@ -392,6 +430,17 @@ class MembersProvider extends ChangeNotifier {
               : selectedEndDate!.toIso8601String().substring(0, 10),
           fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
           toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+          memberCategoryId: selectedMemberCategory == null
+              ? null
+              : selectedMemberCategory!.id!.toString(),
+          countryId:
+              selectedCountry == null ? null : selectedCountry!.id!.toString(),
+          regionId:
+              selectedRegion == null ? null : selectedRegion!.id!.toString(),
+          districtId: selectedDistrict == null
+              ? null
+              : selectedDistrict!.id!.toString(),
+          status: selectedStatus,
           maritalStatus: selectedMaritalStatus == null
               ? null
               : selectedMaritalStatus!.id!.toString(),
@@ -428,6 +477,11 @@ class MembersProvider extends ChangeNotifier {
     selectedOccupation = null;
     selectedProfession = null;
     selectedEducation = null;
+    selectedMemberCategory = null;
+    selectedCountry = null;
+    selectedRegion = null;
+    selectedDistrict = null;
+    selectedStatus = null;
     minAgeTEC.clear();
     maxAgeTEC.clear();
     isFilter = false;
@@ -435,20 +489,23 @@ class MembersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void validateFilterFields({required int selectedIndex}) {
+  void validateFilterFields({required bool isMember}) {
     if (selectedGroup != null ||
         selectedSubGroup != null ||
         selectedStartDate != null ||
         selectedEndDate != null ||
+        selectedMemberCategory != null ||
+        selectedCountry != null ||
+        selectedRegion != null ||
+        selectedDistrict != null ||
+        selectedStatus != null ||
         selectedMaritalStatus != null ||
         selectedOccupation != null ||
         selectedProfession != null ||
         selectedEducation != null ||
         minAgeTEC.text.isNotEmpty ||
         maxAgeTEC.text.isNotEmpty) {
-      selectedIndex == 0
-          ? getAllIndividualMembers()
-          : getAllOrganizationalMembers();
+      isMember ? getAllIndividualMembers() : getAllOrganizationalMembers();
     } else {
       showErrorToast('Please select fields to filter by');
     }

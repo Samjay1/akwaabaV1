@@ -17,12 +17,17 @@ class MembersAPI {
   static Future<List<Member>> getIndividualMembers({
     required int page,
     required String? branchId,
+    required String? memberCategoryId,
     required String? groupId,
     required String? subGroupId,
     required String? startDate,
     required String? endDate,
     required String? fromAge,
     required String? toAge,
+    required String? status,
+    required String? countryId,
+    required String? regionId,
+    required String? districtId,
     required String? maritalStatus,
     required String? occupationalStatus,
     required String? educationalStatus,
@@ -32,7 +37,7 @@ class MembersAPI {
     List<Member> member = [];
 
     var url = Uri.parse(
-        '${getBaseUrl()}/members/user/location?page=$page&search=$search&groupId=$groupId&subgroupId=$subGroupId&filter_start_date=$startDate&filter_end_date=$endDate&filter_from_age=$fromAge&filter_to_age=$toAge&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+        '${getBaseUrl()}/members/user/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&filter_start_date=$startDate&filter_end_date=$endDate&filter_from_age=$fromAge&filter_to_age=$toAge&filter_status=$status&filter_country=$countryId&filter_region=$regionId&filter_district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
     try {
       http.Response response = await http.get(
         url,
@@ -83,12 +88,17 @@ class MembersAPI {
   static Future<List<Member>> getOrganizationalMembers({
     required int page,
     required String? branchId,
+    required String? memberCategoryId,
     required String? groupId,
     required String? subGroupId,
     required String? startDate,
     required String? endDate,
     required String? fromAge,
     required String? toAge,
+    required String? status,
+    required String? countryId,
+    required String? regionId,
+    required String? districtId,
     required String? maritalStatus,
     required String? occupationalStatus,
     required String? educationalStatus,
@@ -98,8 +108,7 @@ class MembersAPI {
     List<Member> member = [];
 
     var url = Uri.parse(
-      '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&groupId=$groupId&subgroupId=$subGroupId&filter_start_date=$startDate&filter_end_date=$endDate&filter_from_age=$fromAge&filter_to_age=$toAge&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus',
-    );
+        '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&filter_start_date=$startDate&filter_end_date=$endDate&filter_from_age=$fromAge&filter_to_age=$toAge&filter_status=$status&filter_country=$countryId&filter_region=$regionId&filter_district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
 
     try {
       http.Response response = await http.get(

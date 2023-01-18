@@ -21,6 +21,7 @@ import 'package:akwaaba/versionOne/member_account_page.dart';
 import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:akwaaba/versionOne/members_page.dart';
 import 'package:akwaaba/versionOne/my_account_page.dart';
 import 'package:akwaaba/versionOne/post_clocking_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
@@ -31,7 +32,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../components/custom_cached_image_widget.dart';
 import '../utils/shared_prefs.dart';
 import '../versionOne/attendance_report_page.dart';
-import 'members_page.dart';
+import 'members_page_old.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -314,49 +315,41 @@ class _MainPageState extends State<MainPage> {
                             title: "View Members",
                             iconData: Icons.phone_android,
                             function: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      const MembersPage(isMemberuser: false),
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  insetPadding: const EdgeInsets.all(10),
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  content: ConfirmDialog(
+                                    title: 'View all Members/Organisations',
+                                    content:
+                                        'Select the Clients you want to view',
+                                    onConfirmTap: () {
+                                      Navigator.pop(context); //close the popup
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const MembersPage(
+                                              isMemberuser: true),
+                                        ),
+                                      );
+                                    },
+                                    onCancelTap: () {
+                                      Navigator.pop(context); //close the popup
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const MembersPage(
+                                              isMemberuser: false),
+                                        ),
+                                      );
+                                    },
+                                    confirmText: 'Members',
+                                    cancelText: 'Organisations',
+                                  ),
                                 ),
                               );
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (_) => AlertDialog(
-                              //     insetPadding: const EdgeInsets.all(10),
-                              //     backgroundColor: Colors.transparent,
-                              //     elevation: 0,
-                              //     content: ConfirmDialog(
-                              //       title: 'View all Members/Organisations',
-                              //       content:
-                              //           'Select the Clients you want to view',
-                              //       onConfirmTap: () {
-                              //         Navigator.pop(context); //close the popup
-                              //         Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //             builder: (_) => const MembersPage(
-                              //                 isMemberuser: true),
-                              //           ),
-                              //         );
-                              //       },
-                              //       onCancelTap: () {
-                              //         Navigator.pop(context); //close the popup
-                              //         Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //             builder: (_) => const MembersPage(
-                              //                 isMemberuser: false),
-                              //           ),
-                              //         );
-                              //       },
-                              //       confirmText: 'Members',
-                              //       cancelText: 'Organisations',
-                              //     ),
-                              //   ),
-                              // );
                             }),
                         drawerItemView(
                           title: "Create Meetings/Event",
@@ -672,48 +665,41 @@ class _MainPageState extends State<MainPage> {
                             title: "View Members",
                             iconData: Icons.phone_android,
                             function: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      const MembersPage(isMemberuser: false),
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  insetPadding: const EdgeInsets.all(10),
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  content: ConfirmDialog(
+                                    title: 'View all Members/Organisations',
+                                    content:
+                                        'Select the Clients you want to view',
+                                    onConfirmTap: () {
+                                      Navigator.pop(context); //close the popup
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const MembersPage(
+                                              isMemberuser: true),
+                                        ),
+                                      );
+                                    },
+                                    onCancelTap: () {
+                                      Navigator.pop(context); //close the popup
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const MembersPage(
+                                              isMemberuser: false),
+                                        ),
+                                      );
+                                    },
+                                    confirmText: 'Members',
+                                    cancelText: 'Organisations',
+                                  ),
                                 ),
                               );
-
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (_) => AlertDialog(
-                              //     insetPadding: const EdgeInsets.all(10),
-                              //     backgroundColor: Colors.transparent,
-                              //     elevation: 0,
-                              //     content: ConfirmDialog(
-                              //       title: 'View all Members/Organisations',
-                              //       content:
-                              //       'Select the Clients you want to view',
-                              //       onConfirmTap: () {
-                              //         Navigator.pop(context); //close the popup
-                              //         Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //             builder: (_) => const MembersPage(isMemberuser:true),
-                              //           ),
-                              //         );
-                              //       },
-                              //       onCancelTap: () {
-                              //         Navigator.pop(context); //close the popup
-                              //         Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //             builder: (_) => const MembersPage(isMemberuser:false),
-                              //           ),
-                              //         );
-                              //       },
-                              //       confirmText: 'Members',
-                              //       cancelText: 'Organisations',
-                              //     ),
-                              //   ),
-                              // );
                             }),
                         drawerItemView(
                           title: "Update Profile",

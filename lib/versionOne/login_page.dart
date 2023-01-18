@@ -3,7 +3,7 @@ import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/versionOne/forgot_password_page.dart';
-import 'package:akwaaba/screens/member_registration_page_organization.dart';
+import 'package:akwaaba/versionOne/member_registration_page_organization.dart';
 import 'package:akwaaba/versionOne/RegistrationCode.dart';
 import 'package:akwaaba/versionOne/main_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
@@ -326,7 +326,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           );
-
                         })
                 ]),
           ),

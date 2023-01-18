@@ -1,4 +1,4 @@
-import 'package:akwaaba/screens/member_registration_page_organization.dart';
+import 'package:akwaaba/versionOne/member_registration_page_organization.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -32,6 +32,7 @@ class FilterMembersPage extends StatefulWidget {
 class _FilterMembersPageState extends State<FilterMembersPage> {
   bool includeLocationFilter = false;
   bool includeStatusFilter = false;
+  int disabilityOption = -1;
 
   late MembersProvider _membersProvider;
 
@@ -229,94 +230,103 @@ class _FilterMembersPageState extends State<FilterMembersPage> {
                     SizedBox(
                       height: displayHeight(context) * 0.02,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: LabelWidgetContainer(
-                            label: "Start Date",
-                            child: FormButton(
-                              label: _membersProvider.selectedStartDate == null
-                                  ? 'Select Start Date'
-                                  : _membersProvider.selectedStartDate!
-                                      .toIso8601String()
-                                      .substring(0, 10),
-                              function: () {
-                                displayDateSelector(
-                                  initialDate: DateTime.now(),
-                                  maxDate: DateTime.now(),
-                                  context: context,
-                                ).then((value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      _membersProvider.selectedStartDate =
-                                          value;
-                                      debugPrint(
-                                          "Selected Start Date: ${_membersProvider.selectedStartDate!.toIso8601String().substring(0, 10)}");
-                                    });
-                                  }
-                                });
-                              },
+                    LabelWidgetContainer(
+                      label: "Pick Registration Date Range",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: LabelWidgetContainer(
+                              label: "Start Date",
+                              child: FormButton(
+                                label:
+                                    _membersProvider.selectedStartDate == null
+                                        ? 'Select Start Date'
+                                        : _membersProvider.selectedStartDate!
+                                            .toIso8601String()
+                                            .substring(0, 10),
+                                function: () {
+                                  displayDateSelector(
+                                    initialDate: DateTime.now(),
+                                    maxDate: DateTime.now(),
+                                    context: context,
+                                  ).then((value) {
+                                    if (value != null) {
+                                      setState(() {
+                                        _membersProvider.selectedStartDate =
+                                            value;
+                                        debugPrint(
+                                            "Selected Start Date: ${_membersProvider.selectedStartDate!.toIso8601String().substring(0, 10)}");
+                                      });
+                                    }
+                                  });
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: displayWidth(context) * 0.03,
-                        ),
-                        Expanded(
-                          child: LabelWidgetContainer(
-                            label: "End Date",
-                            child: FormButton(
-                              label: _membersProvider.selectedEndDate == null
-                                  ? 'Select End Date'
-                                  : _membersProvider.selectedEndDate!
-                                      .toIso8601String()
-                                      .substring(0, 10),
-                              function: () {
-                                displayDateSelector(
-                                  initialDate: DateTime.now(),
-                                  maxDate: DateTime.now(),
-                                  context: context,
-                                ).then((value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      _membersProvider.selectedEndDate = value;
-                                      debugPrint(
-                                          "Selected Start Date: ${_membersProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
-                                    });
-                                  }
-                                });
-                              },
+                          SizedBox(
+                            width: displayWidth(context) * 0.03,
+                          ),
+                          Expanded(
+                            child: LabelWidgetContainer(
+                              label: "End Date",
+                              child: FormButton(
+                                label: _membersProvider.selectedEndDate == null
+                                    ? 'Select End Date'
+                                    : _membersProvider.selectedEndDate!
+                                        .toIso8601String()
+                                        .substring(0, 10),
+                                function: () {
+                                  displayDateSelector(
+                                    initialDate: DateTime.now(),
+                                    maxDate: DateTime.now(),
+                                    context: context,
+                                  ).then((value) {
+                                    if (value != null) {
+                                      setState(() {
+                                        _membersProvider.selectedEndDate =
+                                            value;
+                                        debugPrint(
+                                            "Selected Start Date: ${_membersProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
+                                      });
+                                    }
+                                  });
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: LabelWidgetContainer(
-                            label: "Minimum Age",
-                            child: FormTextField(
-                              controller: _membersProvider.minAgeTEC,
-                              textInputType: TextInputType.number,
+                    LabelWidgetContainer(
+                      label: "Pick Age Bracket",
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: LabelWidgetContainer(
+                              label: "Minimum Age",
+                              child: FormTextField(
+                                controller: _membersProvider.minAgeTEC,
+                                textInputType: TextInputType.number,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Expanded(
-                          child: LabelWidgetContainer(
-                            label: "Maximum Age",
-                            child: FormTextField(
-                              controller: _membersProvider.maxAgeTEC,
-                              textInputType: TextInputType.number,
-                            ),
+                          const SizedBox(
+                            width: 12,
                           ),
-                        )
-                      ],
+                          Expanded(
+                            child: LabelWidgetContainer(
+                              label: "Maximum Age",
+                              child: FormTextField(
+                                controller: _membersProvider.maxAgeTEC,
+                                textInputType: TextInputType.number,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
+
                     // SizedBox(
                     //   height: displayHeight(context) * 0.02,
                     // ),
@@ -614,8 +624,8 @@ class _FilterMembersPageState extends State<FilterMembersPage> {
                       function: () {
                         _membersProvider.isFilter = true; // update filter flag
                         Navigator.pop(context);
-                        _membersProvider.validateFilterFields(
-                            selectedIndex: widget.selectedIndex);
+                        // _membersProvider.validateFilterFields(
+                        //     selectedIndex: widget.selectedIndex);
                       }),
                 ),
               ],
