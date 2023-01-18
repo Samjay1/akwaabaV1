@@ -103,8 +103,8 @@ openWhatsapp(BuildContext context, String phone, String message) async {
     }
   } else {
     // android , web
-    if (await canLaunchUrl(Uri.parse(whatsappURl_android))) {
-      await launchUrl(Uri.parse(whatsappURl_android));
+    if (await canLaunchUrl(Uri.parse(whatappURL_ios))) {
+      await launchUrl(Uri.parse(whatappURL_ios));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

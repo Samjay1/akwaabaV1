@@ -191,10 +191,10 @@ class PostClockingProvider extends ChangeNotifier {
   Future<void> getGroups() async {
     try {
       _groups = await GroupAPI.getGroups(
-        branchId: selectedBranch == null
-            ? selectedPastMeetingEvent!.branchId!
-            : selectedBranch!.id!,
-      );
+          // branchId: selectedBranch == null
+          //     ? selectedPastMeetingEvent!.branchId!
+          //     : selectedBranch!.id!,
+          );
       debugPrint('Groups: ${_groups.length}');
       // selectedGroup = _groups[0];
 
@@ -221,11 +221,11 @@ class PostClockingProvider extends ChangeNotifier {
     if (selectedMemberCategory != null) {
       try {
         _subGroups = await GroupAPI.getSubGroups(
-          branchId: selectedBranch == null
-              ? selectedPastMeetingEvent!.branchId!
-              : selectedBranch!.id!,
-          memberCategoryId: selectedMemberCategory!.id!,
-        );
+            // branchId: selectedBranch == null
+            //     ? selectedPastMeetingEvent!.branchId!
+            //     : selectedBranch!.id!,
+            // memberCategoryId: selectedMemberCategory!.id!,
+            );
 
         debugPrint('Sub Groups: ${_subGroups.length}');
       } catch (err) {

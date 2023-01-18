@@ -654,7 +654,9 @@ class _MainPageState extends State<MainPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const MemberAccountPage(),
+                                builder: (_) => const MemberAccountPage(
+                                  member: null,
+                                ),
                               ),
                             );
                           },

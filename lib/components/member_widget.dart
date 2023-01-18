@@ -1,3 +1,4 @@
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
@@ -5,12 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../models/admin/clocked_member.dart';
 import '../versionOne/my_account_page.dart';
 import '../utils/widget_utils.dart';
 import '../versionOne/member_account_page.dart';
+import 'custom_cached_image_widget.dart';
 
 class MemberWidget extends StatefulWidget {
-  const MemberWidget({Key? key}) : super(key: key);
+  final Member? member;
+  const MemberWidget({Key? key, this.member}) : super(key: key);
 
   @override
   State<MemberWidget> createState() => _MemberWidgetState();
@@ -22,7 +26,11 @@ class _MemberWidgetState extends State<MemberWidget> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const MemberAccountPage()));
+          context,
+          MaterialPageRoute(
+            builder: (_) => MemberAccountPage(member: widget.member),
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -38,7 +46,14 @@ class _MemberWidgetState extends State<MemberWidget> {
                 borderRadius: BorderRadius.circular(defaultRadius)),
             child: Row(
               children: [
-                defaultProfilePic(height: 50),
+                widget.member!.profilePicture != null
+                    ? Align(
+                        child: CustomCachedImageWidget(
+                          url: widget.member!.profilePicture!,
+                          height: 50,
+                        ),
+                      )
+                    : defaultProfilePic(height: 50),
                 const SizedBox(
                   width: 12,
                 ),
@@ -49,18 +64,17 @@ class _MemberWidgetState extends State<MemberWidget> {
                     Row(
                       children: [
                         Expanded(
-                            child: const Text(
-                          "Frank Cudjoe Asante",
-                          style: TextStyle(fontSize: 18),
+                            child: Text(
+                          "${widget.member!.firstname} ${widget.member!.surname}",
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         )),
                         Row(
                           children: [
                             GestureDetector(
-                              onTap: () {
-                                showNormalToast("Phone icon tapped");
-                              },
+                              onTap: () => makePhoneCall(widget.member!.phone!),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: SvgPicture.asset(
@@ -72,9 +86,8 @@ class _MemberWidgetState extends State<MemberWidget> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                showNormalToast("Whatsapp icon tapped");
-                              },
+                              onTap: () => openWhatsapp(
+                                  context, widget.member!.phone!, "Hello"),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: SvgPicture.asset(
@@ -91,9 +104,9 @@ class _MemberWidgetState extends State<MemberWidget> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: [
                         Text(
-                          "Profession",
+                          widget.member!.identification!,
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -102,11 +115,13 @@ class _MemberWidgetState extends State<MemberWidget> {
                         SizedBox(
                           width: 12,
                         ),
-                        Text("Group/Dept",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: textColorLight))
+                        Text(
+                          "Group/Dept",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: textColorLight),
+                        )
                       ],
                     )
                   ],

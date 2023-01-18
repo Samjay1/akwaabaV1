@@ -38,6 +38,12 @@ class Member extends Equatable {
   bool? archived;
   BranchInfo? branchInfo;
   CategoryInfo? categoryInfo;
+  List<CountryInfo>? countryInfo;
+  RegionInfo? regionInfo;
+  DistrictInfo? districtInfo;
+  ConstituencyInfo? constituencyInfo;
+  ConstituencyInfo? electoralareaInfo;
+  String? identification;
   bool? selected = false;
 
   Member({
@@ -77,6 +83,12 @@ class Member extends Equatable {
     this.archived,
     this.branchInfo,
     this.categoryInfo,
+    this.countryInfo,
+    this.regionInfo,
+    this.districtInfo,
+    this.constituencyInfo,
+    this.electoralareaInfo,
+    this.identification,
     this.selected,
   });
 
@@ -121,6 +133,25 @@ class Member extends Equatable {
     categoryInfo = json['categoryInfo'] != null
         ? CategoryInfo.fromJson(json['categoryInfo'])
         : null;
+    if (json['countryInfo'] != null) {
+      countryInfo = <CountryInfo>[];
+      json['countryInfo'].forEach((v) {
+        countryInfo!.add(CountryInfo.fromJson(v));
+      });
+    }
+    regionInfo = json['regionInfo'] != null
+        ? RegionInfo.fromJson(json['regionInfo'])
+        : null;
+    districtInfo = json['districtInfo'] != null
+        ? DistrictInfo.fromJson(json['districtInfo'])
+        : null;
+    constituencyInfo = json['constituencyInfo'] != null
+        ? ConstituencyInfo.fromJson(json['constituencyInfo'])
+        : null;
+    electoralareaInfo = json['electoralareaInfo'] != null
+        ? ConstituencyInfo.fromJson(json['electoralareaInfo'])
+        : null;
+    identification = json['identification'];
   }
 
   Map<String, dynamic> toJson() {
@@ -165,6 +196,22 @@ class Member extends Equatable {
     if (categoryInfo != null) {
       data['categoryInfo'] = categoryInfo!.toJson();
     }
+    if (countryInfo != null) {
+      data['countryInfo'] = countryInfo!.map((v) => v.toJson()).toList();
+    }
+    if (regionInfo != null) {
+      data['regionInfo'] = regionInfo!.toJson();
+    }
+    if (districtInfo != null) {
+      data['districtInfo'] = districtInfo!.toJson();
+    }
+    if (constituencyInfo != null) {
+      data['constituencyInfo'] = constituencyInfo!.toJson();
+    }
+    if (electoralareaInfo != null) {
+      data['electoralareaInfo'] = electoralareaInfo!.toJson();
+    }
+    data['identification'] = identification;
     return data;
   }
 
@@ -210,5 +257,106 @@ class Member extends Equatable {
       // categoryInfo,
       //selected,
     ];
+  }
+}
+
+class CountryInfo {
+  int? id;
+  String? name;
+  String? short;
+  String? code;
+
+  CountryInfo({this.id, this.name, this.short, this.code});
+
+  CountryInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    short = json['short'];
+    code = json['code'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['short'] = short;
+    data['code'] = code;
+    return data;
+  }
+}
+
+class RegionInfo {
+  int? id;
+  String? location;
+
+  RegionInfo({this.id, this.location});
+
+  RegionInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    location = json['location'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['location'] = location;
+    return data;
+  }
+}
+
+class DistrictInfo {
+  int? id;
+  RegionInfo? regionId;
+  String? location;
+
+  DistrictInfo({this.id, this.regionId, this.location});
+
+  DistrictInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    regionId =
+        json['regionId'] != null ? RegionInfo.fromJson(json['regionId']) : null;
+    location = json['location'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    if (regionId != null) {
+      data['regionId'] = regionId!.toJson();
+    }
+    data['location'] = location;
+    return data;
+  }
+}
+
+class ConstituencyInfo {
+  int? id;
+  RegionInfo? regionId;
+  DistrictInfo? districtId;
+  String? location;
+
+  ConstituencyInfo({this.id, this.regionId, this.districtId, this.location});
+
+  ConstituencyInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    regionId =
+        json['regionId'] != null ? RegionInfo.fromJson(json['regionId']) : null;
+    districtId = json['districtId'] != null
+        ? DistrictInfo.fromJson(json['districtId'])
+        : null;
+    location = json['location'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    if (regionId != null) {
+      data['regionId'] = regionId!.toJson();
+    }
+    if (districtId != null) {
+      data['districtId'] = districtId!.toJson();
+    }
+    data['location'] = location;
+    return data;
   }
 }

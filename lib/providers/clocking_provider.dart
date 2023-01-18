@@ -199,9 +199,7 @@ class ClockingProvider extends ChangeNotifier {
   // get list of groups
   Future<void> getGroups() async {
     try {
-      _groups = await GroupAPI.getGroups(
-        branchId: selectedCurrentMeeting.branchId!,
-      );
+      _groups = await GroupAPI.getGroups();
       debugPrint('Groups: ${_groups.length}');
       // selectedGroup = _groups[0];
       getSubGroups();
@@ -223,10 +221,7 @@ class ClockingProvider extends ChangeNotifier {
   // get list of subgroups
   Future<void> getSubGroups() async {
     try {
-      _subGroups = await GroupAPI.getSubGroups(
-        branchId: selectedCurrentMeeting.branchId!,
-        memberCategoryId: selectedMemberCategory!.id!,
-      );
+      _subGroups = await GroupAPI.getSubGroups();
       debugPrint('Sub Groups: ${_subGroups.length}');
     } catch (err) {
       setLoading(false);

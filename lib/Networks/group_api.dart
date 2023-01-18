@@ -164,11 +164,10 @@ class GroupAPI {
   }
 
   // get list of groups
-  static Future<List<Group>> getGroups({required int branchId}) async {
+  static Future<List<Group>> getGroups() async {
     List<Group> groups = [];
 
-    var url =
-        Uri.parse('${getBaseUrl()}/members/groupings/group?branchId=$branchId');
+    var url = Uri.parse('${getBaseUrl()}/members/groupings/group');
     try {
       http.Response response = await http.get(
         url,
@@ -276,14 +275,10 @@ class GroupAPI {
   }
 
   // Get list of subgroups
-  static Future<List<SubGroup>> getSubGroups({
-    required int branchId,
-    required int memberCategoryId,
-  }) async {
+  static Future<List<SubGroup>> getSubGroups() async {
     List<SubGroup> subGroups = [];
 
-    var url = Uri.parse(
-        '${getBaseUrl()}/members/groupings/sub-group?memberCategoryId=$memberCategoryId&branchId=$branchId');
+    var url = Uri.parse('${getBaseUrl()}/members/groupings/sub-group');
     try {
       http.Response response = await http.get(
         url,

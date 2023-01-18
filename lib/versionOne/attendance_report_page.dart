@@ -63,7 +63,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
   ];
   bool checkAll = false;
   bool itemHasBeenSelected =
-      false; //at least 1 member has been selected, so show options menu
+      false; // at least 1 member has been selected, so show options menu
   List<Map> selectedMembersList = [];
 
   int _selectedIndex = 0;
