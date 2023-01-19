@@ -88,7 +88,8 @@ openEmailApp(BuildContext context) async {
 
 // open whatsapp app
 openWhatsapp(BuildContext context, String phone, String message) async {
-  var whatsappURl_android = "whatsapp://send?phone=$phone&text=$message";
+  //var whatsappURl_android = "whatsapp://send?phone=$phone&text=$message";
+  var whatsappURl_android = Uri.parse("https://wa.me/$phone");
   var whatappURL_ios = "https://wa.me/$phone?text=${Uri.parse(message)}";
   if (Platform.isIOS) {
     // for iOS phone only
@@ -103,8 +104,8 @@ openWhatsapp(BuildContext context, String phone, String message) async {
     }
   } else {
     // android , web
-    if (await canLaunchUrl(Uri.parse(whatappURL_ios))) {
-      await launchUrl(Uri.parse(whatappURL_ios));
+    if (await canLaunchUrl(whatsappURl_android)) {
+      await launchUrl(whatsappURl_android);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

@@ -1,6 +1,7 @@
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/member_widget.dart';
+import 'package:akwaaba/components/organization_widget.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
 import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -30,7 +31,7 @@ class _MembersPageState extends State<MembersPage> {
           ? Provider.of<MembersProvider>(context, listen: false)
               .getAllIndividualMembers()
           : Provider.of<MembersProvider>(context, listen: false)
-              .getAllOrganizationalMembers();
+              .getAllOrganizations();
       setState(() {});
     });
   }
@@ -46,7 +47,7 @@ class _MembersPageState extends State<MembersPage> {
     _membersProvider = context.watch<MembersProvider>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isMemberuser ? "Members" : 'Organisations'),
+        title: Text(widget.isMemberuser ? 'Members' : 'Organisations'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -58,18 +59,20 @@ class _MembersPageState extends State<MembersPage> {
                   child: CupertinoSearchTextField(
                     onChanged: (val) {
                       if (val.isEmpty) {
-                        _membersProvider.isFilter = false; // update filter flag
                         _membersProvider.search = val;
+                        widget.isMemberuser
+                            ? _membersProvider.getAllIndividualMembers()
+                            : _membersProvider.getAllOrganizations();
                       }
                     },
                     onSubmitted: (value) {
                       setState(() {
                         _membersProvider.search = value;
                       });
-                      _membersProvider.isFilter = true; // update filter flag
+
                       widget.isMemberuser
                           ? _membersProvider.getAllIndividualMembers()
-                          : _membersProvider.getAllOrganizationalMembers();
+                          : _membersProvider.getAllOrganizations();
                       debugPrint('Search: ${_membersProvider.search}');
                     },
                   ),
@@ -111,7 +114,8 @@ class _MembersPageState extends State<MembersPage> {
                 : widget.isMemberuser
                     ? Expanded(
                         child: RefreshIndicator(
-                          onRefresh: () => _membersProvider.refreshList(),
+                          onRefresh: () => _membersProvider.refreshList(
+                              isMember: widget.isMemberuser),
                           child: Column(
                             children: [
                               _membersProvider.individualMembers.isEmpty
@@ -145,13 +149,14 @@ class _MembersPageState extends State<MembersPage> {
                       )
                     : Expanded(
                         child: RefreshIndicator(
-                          onRefresh: () => _membersProvider.refreshList(),
+                          onRefresh: () => _membersProvider.refreshList(
+                              isMember: widget.isMemberuser),
                           child: Column(
                             children: [
                               _membersProvider.organizationalMembers.isEmpty
                                   ? const Expanded(
                                       child: EmptyStateWidget(
-                                        text: 'No members found!',
+                                        text: 'No organizations found!',
                                       ),
                                     )
                                   : Expanded(
@@ -162,8 +167,8 @@ class _MembersPageState extends State<MembersPage> {
                                         itemCount: _membersProvider
                                             .organizationalMembers.length,
                                         itemBuilder: (context, index) {
-                                          return MemberWidget(
-                                            member: _membersProvider
+                                          return OrganizationWidget(
+                                            organization: _membersProvider
                                                 .organizationalMembers[index],
                                           );
                                         },
@@ -205,7 +210,11 @@ class _MembersPageState extends State<MembersPage> {
                   "Total",
                   style: TextStyle(fontSize: 12),
                 ),
-                Text("300")
+                Text(
+                  isMemberUsers
+                      ? _membersProvider.totalIndMembers.toString()
+                      : _membersProvider.totalOrgs.toString(),
+                )
               ],
             ),
           ),
@@ -214,9 +223,13 @@ class _MembersPageState extends State<MembersPage> {
               children: [
                 Text(
                   isMemberUsers ? "Males" : 'Registered',
-                  style: TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 12),
                 ),
-                Text("30")
+                Text(
+                  isMemberUsers
+                      ? _membersProvider.totalMaleIndMembers.length.toString()
+                      : _membersProvider.totalRegOrgs.length.toString(),
+                )
               ],
             ),
           ),
@@ -225,9 +238,13 @@ class _MembersPageState extends State<MembersPage> {
               children: [
                 Text(
                   isMemberUsers ? "Females" : 'Unregistered',
-                  style: TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 12),
                 ),
-                Text("30")
+                Text(
+                  isMemberUsers
+                      ? _membersProvider.totalFemaleIndMembers.length.toString()
+                      : _membersProvider.totalUnRegOrgs.length.toString(),
+                )
               ],
             ),
           )

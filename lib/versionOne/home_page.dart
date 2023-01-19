@@ -18,7 +18,6 @@ import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/screens/excuse_input_page.dart';
 import 'package:akwaaba/versionOne/members_page.dart';
-import 'package:akwaaba/versionOne/members_page_old.dart';
 import 'package:akwaaba/screens/update_account_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';

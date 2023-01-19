@@ -4,6 +4,7 @@ import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/models/general/account_type.dart';
 import 'package:akwaaba/models/general/member_status.dart';
+import 'package:akwaaba/models/general/organization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -22,9 +23,6 @@ class MembersAPI {
     required String? subGroupId,
     required String? startDate,
     required String? endDate,
-    required String? fromAge,
-    required String? toAge,
-    required String? status,
     required String? countryId,
     required String? regionId,
     required String? districtId,
@@ -36,8 +34,19 @@ class MembersAPI {
   }) async {
     List<Member> member = [];
 
-    var url = Uri.parse(
-        '${getBaseUrl()}/members/user/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&filter_start_date=$startDate&filter_end_date=$endDate&filter_from_age=$fromAge&filter_to_age=$toAge&filter_status=$status&filter_country=$countryId&filter_region=$regionId&filter_district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+    var url;
+    if (regionId == null || districtId == null) {
+      // remove district and region from url
+      url = Uri.parse(
+          '${getBaseUrl()}/members/user/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+    } else {
+      // add district and region to url
+      url = Uri.parse(
+          '${getBaseUrl()}/members/user/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+    }
+
+    debugPrint("URL: ${url.toString()}");
+
     try {
       http.Response response = await http.get(
         url,
@@ -85,7 +94,7 @@ class MembersAPI {
   }
 
   // get list of organizational members
-  static Future<List<Member>> getOrganizationalMembers({
+  static Future<List<Organization>> getOrganizationalMembers({
     required int page,
     required String? branchId,
     required String? memberCategoryId,
@@ -93,9 +102,6 @@ class MembersAPI {
     required String? subGroupId,
     required String? startDate,
     required String? endDate,
-    required String? fromAge,
-    required String? toAge,
-    required String? status,
     required String? countryId,
     required String? regionId,
     required String? districtId,
@@ -105,10 +111,21 @@ class MembersAPI {
     required String? professionStatus,
     required String? search,
   }) async {
-    List<Member> member = [];
+    List<Organization> organization = [];
 
-    var url = Uri.parse(
-        '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&filter_start_date=$startDate&filter_end_date=$endDate&filter_from_age=$fromAge&filter_to_age=$toAge&filter_status=$status&filter_country=$countryId&filter_region=$regionId&filter_district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+    var url;
+    if (regionId == null || districtId == null) {
+      // remove district and region from url
+      url = Uri.parse(
+          '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+    } else {
+      // add district and region to url
+      url = Uri.parse(
+          '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+    }
+    debugPrint("URL: ${url.toString()}");
+    // var url = Uri.parse(
+    //     '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
 
     try {
       http.Response response = await http.get(
@@ -118,16 +135,16 @@ class MembersAPI {
       debugPrint("Org Members Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['results'] != null) {
-        member = <Member>[];
+        organization = <Organization>[];
         res['results'].forEach((v) {
-          member.add(Member.fromJson(v));
+          organization.add(Organization.fromJson(v));
         });
       }
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return member;
+    return organization;
   }
 
   // get list of marital statuses

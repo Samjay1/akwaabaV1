@@ -1,13 +1,19 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/group_api.dart';
+import 'package:akwaaba/Networks/location_api.dart';
 import 'package:akwaaba/Networks/members_api.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/general/branch.dart';
+import 'package:akwaaba/models/general/country.dart';
+import 'package:akwaaba/models/general/district.dart';
 import 'package:akwaaba/models/general/gender.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/member_status.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/member_category.dart';
+import 'package:akwaaba/models/general/organization.dart';
+import 'package:akwaaba/models/general/region.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -26,9 +32,9 @@ class MembersProvider extends ChangeNotifier {
   List<Gender> _genders = [];
   List<Branch> _branches = [];
 
-  List<dynamic> _countries = [];
-  List<dynamic> _regions = [];
-  List<dynamic> _districts = [];
+  List<Country> _countries = [];
+  List<Region> _regions = [];
+  List<District> _districts = [];
 
   List<MemberStatus> _maritalStatuses = [];
   List<MemberStatus> _occupations = [];
@@ -36,8 +42,17 @@ class MembersProvider extends ChangeNotifier {
   List<MemberStatus> _educations = [];
 
   List<Member?> _individualMembers = [];
+  List<Member?> _tempIndividualMembers = [];
+  List<Organization> _organizationalMembers = [];
+  List<Organization?> _tempOrganizationalMembers = [];
 
-  List<Member?> _organizationalMembers = [];
+  int totalIndMembers = 0;
+  List<Member?> totalMaleIndMembers = [];
+  List<Member?> totalFemaleIndMembers = [];
+
+  int totalOrgs = 0;
+  List<Organization?> totalRegOrgs = [];
+  List<Organization?> totalUnRegOrgs = [];
 
   Group? selectedGroup;
   SubGroup? selectedSubGroup;
@@ -72,12 +87,12 @@ class MembersProvider extends ChangeNotifier {
   List<MemberStatus> get educations => _educations;
   List<MemberStatus> get occupations => _occupations;
 
-  List<dynamic> get countries => _countries;
-  List<dynamic> get regions => _regions;
-  List<dynamic> get districts => _districts;
+  List<Country> get countries => _countries;
+  List<Region> get regions => _regions;
+  List<District> get districts => _districts;
 
   List<Member?> get individualMembers => _individualMembers;
-  List<Member?> get organizationalMembers => _organizationalMembers;
+  List<Organization?> get organizationalMembers => _organizationalMembers;
 
   bool get loading => _loading;
   bool get loadingMore => _loadingMore;
@@ -155,9 +170,9 @@ class MembersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> refreshList() async {
-    clearFilters();
-    getAllIndividualMembers();
+  Future<void> refreshList({required bool isMember}) async {
+    clearFilters(isMember: isMember);
+    isMember ? getAllIndividualMembers() : getAllOrganizations();
   }
 
   // get list of subgroups
@@ -167,11 +182,47 @@ class MembersProvider extends ChangeNotifier {
           // branchId: selectedCurrentMeeting.branchId!,
           // memberCategoryId: selectedMemberCategory!.id!,
           );
-      getMaritalStatuses();
+      getCoutries();
       debugPrint('Sub Groups: ${_subGroups.length}');
     } catch (err) {
       setLoading(false);
       debugPrint('Error SubGroup: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // get list of coutries
+  Future<void> getCoutries() async {
+    try {
+      _countries = await LocationAPI.getCountries();
+      getRegions();
+    } catch (err) {
+      debugPrint('Error C: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // get list of regions
+  Future<void> getRegions() async {
+    try {
+      _regions = await LocationAPI.getRegions();
+      getDistricts();
+    } catch (err) {
+      debugPrint('Error R: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // get list of districts
+  Future<void> getDistricts() async {
+    try {
+      _districts = await LocationAPI.getDistricts();
+      getMaritalStatuses();
+    } catch (err) {
+      debugPrint('Error D: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -246,8 +297,8 @@ class MembersProvider extends ChangeNotifier {
         endDate: selectedEndDate == null
             ? null
             : selectedEndDate!.toIso8601String().substring(0, 10),
-        fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
-        toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+        // fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
+        // toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
         memberCategoryId: selectedMemberCategory == null
             ? null
             : selectedMemberCategory!.id!.toString(),
@@ -257,7 +308,7 @@ class MembersProvider extends ChangeNotifier {
             selectedRegion == null ? null : selectedRegion!.id!.toString(),
         districtId:
             selectedDistrict == null ? null : selectedDistrict!.id!.toString(),
-        status: selectedStatus,
+        //status: selectedStatus,
         maritalStatus: selectedMaritalStatus == null
             ? null
             : selectedMaritalStatus!.id!.toString(),
@@ -271,6 +322,25 @@ class MembersProvider extends ChangeNotifier {
             ? null
             : selectedProfession!.id!.toString(),
       );
+
+      _tempIndividualMembers = _individualMembers;
+
+      totalMaleIndMembers = _tempIndividualMembers;
+
+      totalFemaleIndMembers = _tempIndividualMembers;
+
+      // get total members
+      totalIndMembers = _tempIndividualMembers.length;
+
+      // calc total males
+      totalMaleIndMembers = _tempIndividualMembers
+          .where((member) => member!.gender == AppConstants.male)
+          .toList();
+
+      // calc total females
+      totalFemaleIndMembers = _tempIndividualMembers
+          .where((member) => member!.gender == AppConstants.female)
+          .toList();
 
       debugPrint('Ind Members: ${_individualMembers.length}');
 
@@ -307,8 +377,8 @@ class MembersProvider extends ChangeNotifier {
           endDate: selectedEndDate == null
               ? null
               : selectedEndDate!.toIso8601String().substring(0, 10),
-          fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
-          toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+          // fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
+          // toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
           memberCategoryId: selectedMemberCategory == null
               ? null
               : selectedMemberCategory!.id!.toString(),
@@ -319,7 +389,7 @@ class MembersProvider extends ChangeNotifier {
           districtId: selectedDistrict == null
               ? null
               : selectedDistrict!.id!.toString(),
-          status: selectedStatus,
+          // status: selectedStatus,
           maritalStatus: selectedMaritalStatus == null
               ? null
               : selectedMaritalStatus!.id!.toString(),
@@ -335,6 +405,40 @@ class MembersProvider extends ChangeNotifier {
         );
         if (members.isNotEmpty) {
           _individualMembers.addAll(members);
+
+          _tempIndividualMembers.addAll(_individualMembers);
+
+          // get total members
+          totalIndMembers += _tempIndividualMembers.length;
+
+          totalMaleIndMembers.addAll(_tempIndividualMembers);
+
+          totalFemaleIndMembers.addAll(_tempIndividualMembers);
+
+          // calc rest of the total males
+          totalMaleIndMembers
+              .removeWhere((member) => member!.gender == AppConstants.female);
+          totalFemaleIndMembers
+              .removeWhere((member) => member!.gender == AppConstants.male);
+
+          // for (var member in _tempIndividualMembers) {
+          //   if (member!.gender == AppConstants.male) {
+          //     totalMaleIndMembers.add(member);
+          //   }
+          // }
+
+          debugPrint("Total members: $totalIndMembers");
+
+          debugPrint("Total males: ${totalMaleIndMembers.length}");
+
+          // calc rest of the total females
+          // for (var member in _tempIndividualMembers) {
+          //   if (member!.gender == AppConstants.female) {
+          //     totalFemaleIndMembers.add(member);
+          //   }
+          // }
+
+          debugPrint("Total females: ${totalFemaleIndMembers.length}");
         } else {
           hasNextPage = false;
         }
@@ -348,7 +452,7 @@ class MembersProvider extends ChangeNotifier {
   }
 
   // initial loading of organizational members
-  Future<void> getAllOrganizationalMembers() async {
+  Future<void> getAllOrganizations() async {
     _organizationalMembers.clear();
     try {
       setLoading(true);
@@ -367,8 +471,8 @@ class MembersProvider extends ChangeNotifier {
         endDate: selectedEndDate == null
             ? null
             : selectedEndDate!.toIso8601String().substring(0, 10),
-        fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
-        toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+        // fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
+        // toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
         memberCategoryId: selectedMemberCategory == null
             ? null
             : selectedMemberCategory!.id!.toString(),
@@ -378,7 +482,7 @@ class MembersProvider extends ChangeNotifier {
             selectedRegion == null ? null : selectedRegion!.id!.toString(),
         districtId:
             selectedDistrict == null ? null : selectedDistrict!.id!.toString(),
-        status: selectedStatus,
+        // status: selectedStatus,
         maritalStatus: selectedMaritalStatus == null
             ? null
             : selectedMaritalStatus!.id!.toString(),
@@ -393,7 +497,30 @@ class MembersProvider extends ChangeNotifier {
             : selectedProfession!.id!.toString(),
       );
 
+      _tempOrganizationalMembers = _organizationalMembers;
+
+      totalRegOrgs = _tempOrganizationalMembers;
+
+      totalUnRegOrgs = _tempOrganizationalMembers;
+
+      // get total organizations
+      totalOrgs = _tempOrganizationalMembers.length;
+
+      // calc total registered organizations
+      totalRegOrgs = _tempOrganizationalMembers
+          .where((org) => org!.businessRegistered!)
+          .toList();
+
+      // calc total unregistered organizations
+      totalUnRegOrgs = _tempOrganizationalMembers
+          .where((org) => !org!.businessRegistered!)
+          .toList();
+
       debugPrint('Org Members: ${_organizationalMembers.length}');
+
+      debugPrint("Total reg: ${totalRegOrgs.length}");
+
+      debugPrint("Total unreg: ${totalUnRegOrgs.length}");
 
       setLoading(false);
     } catch (err) {
@@ -409,7 +536,7 @@ class MembersProvider extends ChangeNotifier {
     if (hasNextPage == true &&
         loading == false &&
         _loadingMore == false &&
-        indMembersScrollController.position.extentAfter < 300) {
+        orgMembersScrollController.position.extentAfter < 300) {
       setLoadingMore(true); // show loading indicator
       _orgPage += 1; // increase page by 1
       try {
@@ -428,8 +555,8 @@ class MembersProvider extends ChangeNotifier {
           endDate: selectedEndDate == null
               ? null
               : selectedEndDate!.toIso8601String().substring(0, 10),
-          fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
-          toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+          // fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
+          // toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
           memberCategoryId: selectedMemberCategory == null
               ? null
               : selectedMemberCategory!.id!.toString(),
@@ -440,7 +567,7 @@ class MembersProvider extends ChangeNotifier {
           districtId: selectedDistrict == null
               ? null
               : selectedDistrict!.id!.toString(),
-          status: selectedStatus,
+          // status: selectedStatus,
           maritalStatus: selectedMaritalStatus == null
               ? null
               : selectedMaritalStatus!.id!.toString(),
@@ -456,6 +583,39 @@ class MembersProvider extends ChangeNotifier {
         );
         if (members.isNotEmpty) {
           _organizationalMembers.addAll(members);
+
+          _tempOrganizationalMembers.addAll(_organizationalMembers);
+
+          // get total organizations
+          totalOrgs += _tempOrganizationalMembers.length;
+
+          totalRegOrgs.addAll(_tempOrganizationalMembers);
+
+          totalUnRegOrgs.addAll(_tempOrganizationalMembers);
+
+          // calc rest of the total registered organizations
+          totalRegOrgs.removeWhere((org) => org!.businessRegistered!);
+
+          // calc rest of the total unregistered organizations
+          totalUnRegOrgs.removeWhere((org) => !org!.businessRegistered!);
+
+          // calc rest of the total males
+          // for (var member in _tempOrganizationalMembers) {
+          //   if (member!.gender == AppConstants.male) {
+          //     totalMaleOrgMembers.add(member);
+          //   }
+          // }
+
+          debugPrint("Total reg: ${totalRegOrgs.length}");
+
+          // calc rest of the total females
+          // for (var member in _tempOrganizationalMembers) {
+          //   if (member!.gender == AppConstants.female) {
+          //     totalFemaleOrgMembers.add(member);
+          //   }
+          // }
+
+          debugPrint("Total unreg: ${totalUnRegOrgs.length}");
         } else {
           hasNextPage = false;
         }
@@ -468,7 +628,7 @@ class MembersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearFilters() {
+  void clearFilters({required bool isMember}) {
     selectedGroup = null;
     selectedSubGroup = null;
     selectedStartDate = null;
@@ -485,7 +645,7 @@ class MembersProvider extends ChangeNotifier {
     minAgeTEC.clear();
     maxAgeTEC.clear();
     isFilter = false;
-    getAllIndividualMembers();
+    isMember ? getAllIndividualMembers() : getAllOrganizations();
     notifyListeners();
   }
 
@@ -505,15 +665,15 @@ class MembersProvider extends ChangeNotifier {
         selectedEducation != null ||
         minAgeTEC.text.isNotEmpty ||
         maxAgeTEC.text.isNotEmpty) {
-      isMember ? getAllIndividualMembers() : getAllOrganizationalMembers();
+      isMember ? getAllIndividualMembers() : getAllOrganizations();
     } else {
       showErrorToast('Please select fields to filter by');
     }
   }
 
   void clearData() {
-    clearFilters();
-    isFilter = false;
+    clearFilters(isMember: true);
+
     _individualMembers.clear();
     _organizationalMembers.clear();
   }

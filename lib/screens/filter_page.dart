@@ -4,9 +4,12 @@ import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/models/general/branch.dart';
+import 'package:akwaaba/models/general/country.dart';
+import 'package:akwaaba/models/general/district.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/member_status.dart';
+import 'package:akwaaba/models/general/region.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/members_provider.dart';
@@ -407,40 +410,41 @@ class _FilterPageState extends State<FilterPage> {
                       ),
                     ),
                     //
-                    LabelWidgetContainer(
-                        label: "Pick Age Bracket",
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: FormButton(
-                                label: _membersProvider.minAgeTEC.text,
-                                function: () {
-                                  selectAge(isSelectingMaxAge: false);
-                                },
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            const Text(
-                              "To",
-                              //textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            Expanded(
-                              child: FormButton(
-                                label: _membersProvider.maxAgeTEC.text,
-                                function: () {
-                                  selectAge(isSelectingMaxAge: true);
-                                },
-                              ),
-                            ),
-                          ],
-                        )),
+                    // LabelWidgetContainer(
+                    //   label: "Pick Age Bracket",
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     crossAxisAlignment: CrossAxisAlignment.center,
+                    //     children: [
+                    //       Expanded(
+                    //         child: FormButton(
+                    //           label: _membersProvider.minAgeTEC.text,
+                    //           function: () {
+                    //             selectAge(isSelectingMaxAge: false);
+                    //           },
+                    //         ),
+                    //       ),
+                    //       const SizedBox(
+                    //         width: 16,
+                    //       ),
+                    //       const Text(
+                    //         "To",
+                    //         //textAlign: TextAlign.center,
+                    //       ),
+                    //       const SizedBox(
+                    //         width: 16,
+                    //       ),
+                    //       Expanded(
+                    //         child: FormButton(
+                    //           label: _membersProvider.maxAgeTEC.text,
+                    //           function: () {
+                    //             selectAge(isSelectingMaxAge: true);
+                    //           },
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
 
                     Row(
                       children: [
@@ -467,31 +471,157 @@ class _FilterPageState extends State<FilterPage> {
                               const SizedBox(
                                 height: 16,
                               ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
                               LabelWidgetContainer(
                                 label: "Country",
-                                child: FormButton(
-                                  label: "Select Country",
-                                  function: () {},
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        width: 0.0,
+                                        color: Colors.grey.shade400),
+                                  ),
+                                  child: DropdownButtonFormField<Country>(
+                                    isExpanded: true,
+                                    style: const TextStyle(
+                                      color: textColorPrimary,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    hint: const Text('Select Country'),
+                                    decoration: const InputDecoration(
+                                        border: InputBorder.none),
+                                    value: _membersProvider.selectedCountry,
+                                    icon: Icon(
+                                      CupertinoIcons.chevron_up_chevron_down,
+                                      color: Colors.grey.shade500,
+                                      size: 16,
+                                    ),
+                                    // Array list of items
+                                    items: _membersProvider.countries
+                                        .map((Country country) {
+                                      return DropdownMenuItem(
+                                        value: country,
+                                        child: Text(country.name!),
+                                      );
+                                    }).toList(),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _membersProvider.selectedCountry =
+                                            val as Country;
+                                      });
+                                    },
+                                  ),
                                 ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
                               ),
                               LabelWidgetContainer(
                                 label: "Region",
-                                child: FormButton(
-                                  label: "Select Region",
-                                  function: () {},
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        width: 0.0,
+                                        color: Colors.grey.shade400),
+                                  ),
+                                  child: DropdownButtonFormField<Region>(
+                                    isExpanded: true,
+                                    style: const TextStyle(
+                                      color: textColorPrimary,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    hint: const Text('Select Region'),
+                                    decoration: const InputDecoration(
+                                        border: InputBorder.none),
+                                    value: _membersProvider.selectedRegion,
+                                    icon: Icon(
+                                      CupertinoIcons.chevron_up_chevron_down,
+                                      color: Colors.grey.shade500,
+                                      size: 16,
+                                    ),
+                                    // Array list of items
+                                    items: _membersProvider.regions
+                                        .map((Region region) {
+                                      return DropdownMenuItem(
+                                        value: region,
+                                        child: Text(region.location!),
+                                      );
+                                    }).toList(),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _membersProvider.selectedRegion =
+                                            val as Region;
+                                      });
+                                    },
+                                  ),
                                 ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
                               ),
                               LabelWidgetContainer(
                                 label: "District",
-                                child: FormButton(
-                                  label: "Select District",
-                                  function: () {},
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        width: 0.0,
+                                        color: Colors.grey.shade400),
+                                  ),
+                                  child: DropdownButtonFormField<District>(
+                                    isExpanded: true,
+                                    style: const TextStyle(
+                                      color: textColorPrimary,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    hint: const Text('Select District'),
+                                    decoration: const InputDecoration(
+                                        border: InputBorder.none),
+                                    value: _membersProvider.selectedDistrict,
+                                    icon: Icon(
+                                      CupertinoIcons.chevron_up_chevron_down,
+                                      color: Colors.grey.shade500,
+                                      size: 16,
+                                    ),
+                                    // Array list of items
+                                    items: _membersProvider.districts
+                                        .map((District district) {
+                                      return DropdownMenuItem(
+                                        value: district,
+                                        child: Text(district.location!),
+                                      );
+                                    }).toList(),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _membersProvider.selectedDistrict =
+                                            val as District;
+                                      });
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
                           )
                         : Container(),
 
+                    SizedBox(
+                      height: displayHeight(context) * 0.01,
+                    ),
                     Row(
                       children: [
                         CupertinoSwitch(
@@ -517,70 +647,70 @@ class _FilterPageState extends State<FilterPage> {
                               const SizedBox(
                                 height: 18,
                               ),
-                              widget.isMemberUser
-                                  ? Row(
-                                      children: [
-                                        const Expanded(
-                                            child: Text(
-                                                "Do you have a disability?")),
-                                        Row(
-                                          children: List.generate(2, (index) {
-                                            return Row(
-                                              children: [
-                                                Radio(
-                                                    activeColor: primaryColor,
-                                                    value: index,
-                                                    groupValue:
-                                                        disabilityOption,
-                                                    onChanged: (int? value) {
-                                                      setState(() {
-                                                        disabilityOption =
-                                                            value!;
-                                                        _membersProvider
-                                                                .selectedStatus =
-                                                            value.toString();
-                                                      });
-                                                    }),
-                                                Text(index == 0 ? "Yes" : "No")
-                                              ],
-                                            );
-                                          }),
-                                        )
-                                      ],
-                                    )
-                                  : Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                            "Select Registration Status?"),
-                                        Row(
-                                          children: List.generate(2, (index) {
-                                            return Row(
-                                              children: [
-                                                Radio(
-                                                    activeColor: primaryColor,
-                                                    value: index,
-                                                    groupValue:
-                                                        disabilityOption,
-                                                    onChanged: (int? value) {
-                                                      setState(() {
-                                                        disabilityOption =
-                                                            value!;
-                                                        _membersProvider
-                                                                .selectedStatus =
-                                                            value.toString();
-                                                      });
-                                                    }),
-                                                Text(index == 0
-                                                    ? "Register"
-                                                    : "Unregistered")
-                                              ],
-                                            );
-                                          }),
-                                        )
-                                      ],
-                                    ),
+                              // widget.isMemberUser
+                              //     ? Row(
+                              //         children: [
+                              //           const Expanded(
+                              //               child: Text(
+                              //                   "Do you have a disability?")),
+                              //           Row(
+                              //             children: List.generate(2, (index) {
+                              //               return Row(
+                              //                 children: [
+                              //                   Radio(
+                              //                       activeColor: primaryColor,
+                              //                       value: index,
+                              //                       groupValue:
+                              //                           disabilityOption,
+                              //                       onChanged: (int? value) {
+                              //                         setState(() {
+                              //                           disabilityOption =
+                              //                               value!;
+                              //                           _membersProvider
+                              //                                   .selectedStatus =
+                              //                               value.toString();
+                              //                         });
+                              //                       }),
+                              //                   Text(index == 0 ? "Yes" : "No")
+                              //                 ],
+                              //               );
+                              //             }),
+                              //           )
+                              //         ],
+                              //       )
+                              //     : Column(
+                              //         crossAxisAlignment:
+                              //             CrossAxisAlignment.start,
+                              //         children: [
+                              //           const Text(
+                              //               "Select Registration Status?"),
+                              //           Row(
+                              //             children: List.generate(2, (index) {
+                              //               return Row(
+                              //                 children: [
+                              //                   Radio(
+                              //                       activeColor: primaryColor,
+                              //                       value: index,
+                              //                       groupValue:
+                              //                           disabilityOption,
+                              //                       onChanged: (int? value) {
+                              //                         setState(() {
+                              //                           disabilityOption =
+                              //                               value!;
+                              //                           _membersProvider
+                              //                                   .selectedStatus =
+                              //                               value.toString();
+                              //                         });
+                              //                       }),
+                              //                   Text(index == 0
+                              //                       ? "Register"
+                              //                       : "Unregistered")
+                              //                 ],
+                              //               );
+                              //             }),
+                              //           )
+                              //         ],
+                              //       ),
                               const SizedBox(
                                 height: 16,
                               ),
@@ -800,7 +930,9 @@ class _FilterPageState extends State<FilterPage> {
                   child: InkWell(
                       onTap: () {
                         Navigator.pop(context);
-                        _membersProvider.clearFilters();
+                        _membersProvider.clearFilters(
+                          isMember: widget.isMemberUser,
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(

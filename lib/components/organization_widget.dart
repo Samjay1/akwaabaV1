@@ -1,26 +1,24 @@
+import 'package:akwaaba/models/general/organization.dart';
 import 'package:akwaaba/utils/general_utils.dart';
-import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
+import 'package:akwaaba/versionOne/organization_account_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../models/admin/clocked_member.dart';
-import '../versionOne/my_account_page.dart';
 import '../utils/widget_utils.dart';
-import '../versionOne/member_account_page.dart';
 import 'custom_cached_image_widget.dart';
 
-class MemberWidget extends StatefulWidget {
-  final Member? member;
-  const MemberWidget({Key? key, this.member}) : super(key: key);
+class OrganizationWidget extends StatefulWidget {
+  final Organization? organization;
+  const OrganizationWidget({Key? key, this.organization}) : super(key: key);
 
   @override
-  State<MemberWidget> createState() => _MemberWidgetState();
+  State<OrganizationWidget> createState() => _OrganizationWidgetState();
 }
 
-class _MemberWidgetState extends State<MemberWidget> {
+class _OrganizationWidgetState extends State<OrganizationWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -28,7 +26,8 @@ class _MemberWidgetState extends State<MemberWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => MemberAccountPage(member: widget.member),
+            builder: (_) =>
+                OrganizationAccountPage(organization: widget.organization),
           ),
         );
       },
@@ -46,10 +45,10 @@ class _MemberWidgetState extends State<MemberWidget> {
                 borderRadius: BorderRadius.circular(defaultRadius)),
             child: Row(
               children: [
-                widget.member!.profilePicture != null
+                widget.organization!.logo != null
                     ? Align(
                         child: CustomCachedImageWidget(
-                          url: widget.member!.profilePicture!,
+                          url: widget.organization!.logo!,
                           height: 50,
                         ),
                       )
@@ -65,7 +64,7 @@ class _MemberWidgetState extends State<MemberWidget> {
                       children: [
                         Expanded(
                             child: Text(
-                          "${widget.member!.firstname} ${widget.member!.surname}",
+                          widget.organization!.organizationName!,
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w600),
                           maxLines: 2,
@@ -74,7 +73,8 @@ class _MemberWidgetState extends State<MemberWidget> {
                         Row(
                           children: [
                             GestureDetector(
-                              onTap: () => makePhoneCall(widget.member!.phone!),
+                              onTap: () => makePhoneCall(
+                                  widget.organization!.organizationPhone!),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: SvgPicture.asset(
@@ -87,7 +87,9 @@ class _MemberWidgetState extends State<MemberWidget> {
                             ),
                             GestureDetector(
                               onTap: () => openWhatsapp(
-                                  context, widget.member!.phone!, "Hello"),
+                                  context,
+                                  widget.organization!.organizationPhone!,
+                                  "Hello"),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: SvgPicture.asset(
@@ -106,7 +108,7 @@ class _MemberWidgetState extends State<MemberWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          widget.member!.identification!,
+                          widget.organization!.identification!,
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -116,7 +118,7 @@ class _MemberWidgetState extends State<MemberWidget> {
                           width: 12,
                         ),
                         Text(
-                          widget.member!.categoryInfo!.category!,
+                          widget.organization!.organizationType!.type!,
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
