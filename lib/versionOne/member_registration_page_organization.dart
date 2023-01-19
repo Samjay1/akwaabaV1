@@ -894,8 +894,8 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
                     if (value == 'non_field_errors') {
                       showErrorToast("Please fill all required fields");
                     } else if (value == 'successful') {
-                      // Navigator.pop(context);
-                      // Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
+                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
                       }
                       });
                     }
