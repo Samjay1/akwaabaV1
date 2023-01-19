@@ -305,9 +305,11 @@ class _MainPageState extends State<MainPage> {
                           function: () {
                             Navigator.pop(context);
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const MyAccountPage()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const MyAccountPage(),
+                              ),
+                            );
                           },
                         ),
                         drawerItemView(

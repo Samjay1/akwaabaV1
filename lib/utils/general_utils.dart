@@ -88,8 +88,9 @@ openEmailApp(BuildContext context) async {
 
 // open whatsapp app
 openWhatsapp(BuildContext context, String phone, String message) async {
-  //var whatsappURl_android = "whatsapp://send?phone=$phone&text=$message";
-  var whatsappURl_android = Uri.parse("https://wa.me/$phone");
+  var whatsappURl_android =
+      Uri.parse("whatsapp://send?phone=$phone&text=$message");
+  //var whatsappURl_android = Uri.parse("https://wa.me/$phone");
   var whatappURL_ios = "https://wa.me/$phone?text=${Uri.parse(message)}";
   if (Platform.isIOS) {
     // for iOS phone only

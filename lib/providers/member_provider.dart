@@ -160,7 +160,6 @@ class MemberProvider with ChangeNotifier {
           context: context,
           branchId: _clientAccountInfo!.applicantDesignationRole!,
         );
-
         debugPrint('Client name ${value.applicantFirstname}');
         debugPrint('Client id ${value.id}');
       }
@@ -256,7 +255,7 @@ class MemberProvider with ChangeNotifier {
     return null;
   }
 
-  void callDeviceRequestList(
+  Future<void> callDeviceRequestList(
       {required var memberToken,
       required var memberID,
       required BuildContext context}) async {
