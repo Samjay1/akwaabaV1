@@ -28,6 +28,7 @@ import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../components/custom_cached_image_widget.dart';
 import '../utils/shared_prefs.dart';
@@ -76,6 +77,8 @@ class _MainPageState extends State<MainPage> {
 
   String userType = "";
 
+  String? token;
+
   @override
   void initState() {
     super.initState();
@@ -93,6 +96,9 @@ class _MainPageState extends State<MainPage> {
     //will call the login api to get the current user profile info
 
     //userType =(await SharedPrefs().getUserType())!;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
 
     SharedPrefs().getUserType().then((value) {
       debugPrint("User type from main page $value");
@@ -355,27 +361,39 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "Create Meetings/Event",
                           iconData: Icons.phone_android,
-                          function: () {
+                          function: () async {
+                            var url =
+                                await AppConstants.createMeetingRedirectUrl();
+                            if (!mounted) return;
                             Navigator.pop(context);
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const WebViewPage(
-                                        url: AppConstants.createMeetingUrl,
-                                        title: 'Create Meetings')));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'Create Meetings',
+                                ),
+                              ),
+                            );
                           },
                         ),
                         drawerItemView(
                           title: "Update Meetings/Event",
                           iconData: Icons.phone_android,
-                          function: () {
+                          function: () async {
+                            var url =
+                                await AppConstants.updateMeetingRedirectUrl();
+                            if (!mounted) return;
                             Navigator.pop(context);
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const WebViewPage(
-                                        url: AppConstants.updateMeetingUrl,
-                                        title: 'Update Meetings')));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'Update Meetings',
+                                ),
+                              ),
+                            );
                           },
                         ),
                         drawerItemView(
@@ -408,14 +426,18 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "Assign Leave/Excuse",
                           iconData: Icons.phone_android,
-                          function: () {
+                          function: () async {
+                            var url =
+                                await AppConstants.assignLeaveRedirectUrl();
+                            if (!mounted) return;
                             Navigator.pop(context);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const WebViewPage(
-                                    url: AppConstants.assignLeaveUrl,
-                                    title: 'Assign Leave/Excuse'),
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'Assign Leave/Excuse',
+                                ),
                               ),
                             );
                           },
@@ -423,14 +445,17 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "View Assigned Leave/Excuse",
                           iconData: Icons.phone_android,
-                          function: () {
+                          function: () async {
+                            var url = await AppConstants.viewLeaveRedirectUrl();
+                            if (!mounted) return;
                             Navigator.pop(context);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const WebViewPage(
-                                    url: AppConstants.viewLeaveUrl,
-                                    title: 'View Assigned Leave/Excuse'),
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'View Assigned Leave/Excuse',
+                                ),
                               ),
                             );
                           },
@@ -438,34 +463,41 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "Approve Device Request",
                           iconData: Icons.phone_android,
-                          function: () {
+                          function: () async {
+                            var url = await AppConstants
+                                .approveDeviceRequestRedirectUrl();
+                            if (!mounted) return;
                             Navigator.pop(context);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const WebViewPage(
-                                    url: AppConstants.deviceRequestUrl,
-                                    title: 'Approve Device Request'),
-                              ),
-                            );
-                          },
-                        ),
-                        drawerItemView(
-                          title: "Follow-Up Report",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const WebViewPage(
-                                  url: AppConstants.followUpReportUrl,
-                                  title: 'Follow-Up Report',
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'Approve Device Request',
                                 ),
                               ),
                             );
                           },
                         ),
+                        // drawerItemView(
+                        //   title: "Follow-Up Report",
+                        //   iconData: Icons.phone_android,
+                        //   function: () async {
+                        //     var url =
+                        //         await AppConstants.followUpReportRedirectUrl();
+                        //     if (!mounted) return;
+                        //     Navigator.pop(context);
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (_) => WebViewPage(
+                        //           url: url,
+                        //           title: 'Follow-Up Report',
+                        //         ),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                         Container(
                           decoration: const BoxDecoration(
                             border: Border(
@@ -720,13 +752,16 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "Apply Leave/Excuse",
                           iconData: Icons.phone_android,
-                          function: () {
+                          function: () async {
+                            var url =
+                                await AppConstants.applyLeaveRedirectUrl();
+                            if (!mounted) return;
                             Navigator.pop(context);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const WebViewPage(
-                                  url: AppConstants.applyLeaveUrl,
+                                builder: (_) => WebViewPage(
+                                  url: url,
                                   title: 'Apply Leave/Excuse',
                                 ),
                               ),
@@ -736,13 +771,15 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "View Leave/Absent Status ",
                           iconData: Icons.phone_android,
-                          function: () {
+                          function: () async {
+                            var url = await AppConstants.viewLeaveRedirectUrl();
+                            if (!mounted) return;
                             Navigator.pop(context);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const WebViewPage(
-                                  url: AppConstants.viewLeaveStatusUrl,
+                                builder: (_) => WebViewPage(
+                                  url: url,
                                   title: 'View Leave/Absent Status',
                                 ),
                               ),
@@ -755,10 +792,11 @@ class _MainPageState extends State<MainPage> {
                           function: () {
                             Navigator.pop(context);
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const AttendanceReportPage()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AttendanceReportPage(),
+                              ),
+                            );
                           },
                         ),
                         drawerItemView(
@@ -798,8 +836,9 @@ class _MainPageState extends State<MainPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const WebViewPage(
-                                    url: AppConstants.akwaabaMessengerUrl,
-                                    title: 'Akwaaba Messenger'),
+                                  url: AppConstants.akwaabaMessengerUrl,
+                                  title: 'Akwaaba Messenger',
+                                ),
                               ),
                             );
                           },
@@ -813,8 +852,9 @@ class _MainPageState extends State<MainPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const WebViewPage(
-                                    url: AppConstants.akwaabaPaymentUrl,
-                                    title: 'Make Payment'),
+                                  url: AppConstants.akwaabaPaymentUrl,
+                                  title: 'Make Payment',
+                                ),
                               ),
                             );
                           },
@@ -828,8 +868,9 @@ class _MainPageState extends State<MainPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const WebViewPage(
-                                    url: AppConstants.akwaabaEduUrl,
-                                    title: 'Student Account'),
+                                  url: AppConstants.akwaabaEduUrl,
+                                  title: 'Student Account',
+                                ),
                               ),
                             );
                           },

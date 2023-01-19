@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:open_mail_app/open_mail_app.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /*
@@ -84,6 +86,12 @@ openEmailApp(BuildContext context) async {
       },
     );
   }
+}
+
+// convert token to base64 encoded
+String base64TokenEncoding(String token) {
+  var encoded = base64.encode(utf8.encode(token));
+  return encoded;
 }
 
 // open whatsapp app
