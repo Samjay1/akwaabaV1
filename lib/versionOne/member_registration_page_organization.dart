@@ -5,6 +5,7 @@ import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -80,6 +81,7 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
   bool loadingLocation = false;
   bool ifGhanaSelected = false;
 
+  String? selectedGender;
 
   //--------------------------------------------------------------------------
   //GROUPING - BRANCH
@@ -199,6 +201,7 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
   void selectLogo() async{
     final getImage = await picker.pickImage(source: ImageSource.gallery);
 
+
     setState(() {
       if(getImage!=null){
         imageFile = File(getImage.path);
@@ -206,13 +209,18 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
     });
   }
   void selectRegCert() async{
-    final getImage = await picker.pickImage(source: ImageSource.gallery);
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-    setState(() {
-      if(getImage!=null){
-        imageRegCert = File(getImage.path);
-      }
-    });
+    if (result != null) {
+      File file = File(result.files.single.path.toString());
+
+      setState(() {
+        imageRegCert = file;
+      });
+
+    }
+
+
   }
 
   nextButtonTapped({required  pageId}){
@@ -734,6 +742,16 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
                 controller: _controllerContactEmail,
               )),
 
+          LabelWidgetContainer(
+              label: "Gender",
+              setCompulsory: true,
+              child: FormButton(
+                label: selectedGender ?? "Select Gender",
+                function: () {
+                  selectGender();
+                },
+              )),
+
           LabelWidgetContainer(label: "Phone",
               setCompulsory: true,
               child: FormTextField(
@@ -790,17 +808,19 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
                 ' logo $imageFile'
                 ' orgDate $orgDate'
                 ' imageRegCert $imageRegCert'
-                '_controllerOrgName ${_controllerOrgName.text}'
+                ' _controllerOrgName ${_controllerOrgName.text}'
+                '_controllerEmail ${_controllerEmail.text}'
                 ' _controllerPhone ${_controllerPhone.text}'
                 ' _controllerWebsite ${_controllerWebsite.text}'
                 ' _controllerPostalAddress ${_controllerPostalAddress.text}'
                 ' _controllerCoreAreas ${_controllerCoreAreas.text}'
                 'selectedBranch $selectedBranch,'
-                ' selectedCategory $selectedCategory,'
+                ' selectedCategory $selectedCategory $selectedCategoryID,'
+                'contactPersonGender $selectedGender'
                 ' selectedGroup $selectedGroup'
                 ' selectedSubGroup $selectedSubGroup'
-                ''
-                ' selectedCountry $selectedCountry'
+                '=== organizationLegalRegistration $organizationLegalRegistration'
+                ' selectedCountry $selectedCountry $selectedCountryID'
                 ' selectedRegion $selectedRegion'
                 ' selectedDistrict $selectedDistrict'
                 ' selectedConstituency $selectedConstituency'
@@ -812,7 +832,9 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
                 ' _controllerContactPhone ${_controllerContactPhone.text}'
                 ' _controllerContactEmail ${_controllerContactEmail.text}'
                 ' _controllerContactName ${_controllerContactName.text}'
-                ' community $selectedCommunity');
+                ' community $selectedCommunity'
+                '  clientId: ${widget.clientID}'
+               ' branchId:$selectedBranchID');
 
 
                 var password = _controllerPassword.text.trim();
@@ -830,51 +852,52 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
                   loading = true;
                 });
 
-                //   MemberAPI.registerOrg(context,
-                //       clientId: '${widget.clientID}',
-                //       branchId:'${selectedBranchID}',
-                //       organizationName: _controllerOrgName.text,
-                //       contactPersonName: _controllerContactName.text,
-                //       // contactPersonGender: selectedGender == 'Male' ? 1:0 ,
-                //       organizationType: selectedCategory,
-                //       // businessRegistered: businessRegistered == 0? false: true,
-                //       organizationEmail: _controllerEmail.text,
-                //       organizationPhone: _controllerPhone.text,
-                //       contactPersonEmail:_controllerContactEmail.text ,
-                //       contactPersonPhone: _controllerContactPhone.text,
-                //       contactPersonWhatsapp: _controllerContactWhatsapp.text,
-                //       // occupation,
-                //       memberType: selectedCategoryID,
-                //       // referenceId: _controllerIDNumber.text,
-                //       countryOfBusiness: selectedCountryID,
-                //       stateProvince: _controllerStateProvince.text.trim(),
-                //       region: selectedRegionID,
-                //       district: selectedDistrictID,
-                //       constituency: selectedConstituencyID,
-                //       electoralArea: selectedCommunityID,
-                //       community: '$selectedCommunityID',
-                //
-                //       // digitalAddress,
-                //       // password,
-                //       // confirm_password,
-                //       // groupIds,
-                //       // subgroupIds,
-                //       // website,
-                //       // businessDescription,
-                //       // logo,
-                //       // certificates
-                //   )
-                // .then((value) {
-                //     setState(() {
-                //       loading = false;
-                //     });
-                //     if (value == 'non_field_errors') {
-                //       showErrorToast("Please fill all required fields");
-                //     } else if (value == 'successful') {
-                //       // Navigator.pop(context);
-                //       Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
-                //       }
-                //       });
+                  MemberAPI.registerOrg(context,
+                      clientId: '${widget.clientID}',
+                      branchId:'${selectedBranchID}',
+                      organizationName: _controllerOrgName.text.trim(),
+                      contactPersonName: _controllerContactName.text.trim(),
+                      contactPersonGender: selectedGender == 'Male' ? 1:0 ,
+                      organizationType: selectedCategoryID,
+                      organizationEmail: _controllerEmail.text.trim(),
+                      organizationPhone: _controllerPhone.text.trim(),
+                      contactPersonEmail:_controllerContactEmail.text.trim() ,
+                      contactPersonPhone: _controllerContactPhone.text.trim(),
+                      contactPersonWhatsapp: _controllerContactWhatsapp.text.trim(),
+                      // occupation,
+                      memberType: selectedCategoryID,
+                      // referenceId: _controllerIDNumber.text,
+                      countryOfBusiness: selectedCountryID,
+                      stateProvince: _controllerStateProvince.text.trim(),
+                      region: selectedRegionID,
+                      district: selectedDistrictID,
+                      constituency: selectedConstituencyID,
+                      electoralArea: selectedCommunityID,
+                      community: _controllerCommunity.text.trim(),
+
+                      digitalAddress: '-',
+                      businessRegistered: organizationLegalRegistration == 0? true: false,
+                      businessDescription: _controllerCoreAreas.text.trim(),
+                      website: _controllerWebsite.text.trim(),
+                      groupIds: [selectedGroupID],
+                      subgroupIds: [selectedSubGroupID],
+                      password: _controllerPassword.text.trim(),
+                      confirm_password: _controllerConfirmPassword.text.trim(),
+                      logo: imageFile?.path,
+                      // certificates: imageRegCert?.path,
+
+                  )
+                .then((value) {
+                    setState(() {
+                      loading = false;
+                    });
+                    if (value == 'non_field_errors') {
+                      showErrorToast("Please fill all required fields");
+                    } else if (value == 'successful') {
+                      // Navigator.pop(context);
+                      // Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
+                      }
+                      });
                     }
 
 
@@ -885,6 +908,18 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
     );
   }
 
+  List<String> genders = ["Male", "Female"];
+  selectGender() {
+    displayCustomDropDown(
+        options: genders, context: context, listItemsIsMap: false)
+        .then((value) {
+      if (value != null) {
+        setState(() {
+          selectedGender = value;
+        });
+      }
+    });
+  }
 
 
   selectOrgDate() {
