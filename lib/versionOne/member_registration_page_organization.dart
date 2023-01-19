@@ -224,12 +224,23 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
   }
 
   nextButtonTapped({required  pageId}){
-    if (!formGlobalKey.currentState!.validate()) {
-      return;
-    }
+
 
     switch(pageId){
       case 0:
+        if (!formGlobalKey.currentState!.validate()) {
+          return;
+        }
+        if(organizationLegalRegistration==0){
+          if (orgDate == null) {
+            showErrorSnackBar(context, "select Date");
+            return;
+          }
+          if (imageRegCert == null) {
+            showErrorSnackBar(context, "Upload Registration certificate");
+            return;
+          }
+        }
       //currently on bio data page,
       //check these inputs -> first name, last name, DOB, gender, email, phone
         pageViewController.animateToPage(1, duration: const Duration(milliseconds: 100),
@@ -237,14 +248,60 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
         break;
       case 1:
       //currenty on
+        if (selectedBranchID == null) {
+          showErrorSnackBar(context, "select date of Branch");
+          return;
+        }
+        if (selectedCategoryID == null) {
+          showErrorSnackBar(context, "select your Category");
+          return;
+        }
         pageViewController.animateToPage(2, duration: const Duration(milliseconds: 100),
             curve: Curves.easeIn);
         break;
       case 2:
+
+        if (selectedCountryID == null) {
+          showErrorSnackBar(context, "select your Country");
+          return;
+        }
+        if (!formGlobalKeyStateProvince.currentState!.validate()) {
+          return;
+        }
+        if(ifGhanaSelected){
+          if (selectedRegionID == null) {
+            showErrorSnackBar(context, "select your Region");
+            return;
+          }
+          if (selectedDistrictID == null) {
+            showErrorSnackBar(context, "select your District");
+            return;
+          }
+          if (selectedConstituencyID == null) {
+            showErrorSnackBar(context, "select your Constituency");
+            return;
+          }
+
+          if (selectedCommunityID == null) {
+            showErrorSnackBar(context, "select your Community");
+            return;
+          }
+        }else{
+          if (!formGlobalKeyStateProvince.currentState!.validate()) {
+            return;
+          }
+        }
         pageViewController.animateToPage(3, duration: const Duration(milliseconds: 100),
             curve: Curves.easeIn);
         break;
       case 3:
+        if (!formGlobalKeyContactPerson.currentState!.validate()) {
+          return;
+        }
+        if (selectedGender == null) {
+          showErrorSnackBar(context, "select your Gender");
+          return;
+        }
         pageViewController.animateToPage(4, duration: const Duration(milliseconds: 100),
             curve: Curves.easeIn);
         break;
@@ -535,9 +592,10 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
               maxLength: 10,)
           ),
           LabelWidgetContainer(label: "Website",
+              setCompulsory: true,
               child:
               FormTextField(controller: _controllerWebsite,
-              textInputType: TextInputType.url,applyValidation: false,
+              textInputType: TextInputType.url,applyValidation: true,
               hint: "https://mywebsiteurl.com",)
           ),
           LabelWidgetContainer(label: "Postal Address",
@@ -552,7 +610,7 @@ class _MemberRegistrationPageOrganizationState extends State<MemberRegistrationP
                 maxLength: 500,
                 minLines: 6,maxLines: 12,
                 showMaxLength: true,
-                applyValidation: false,
+                applyValidation: true,
               ))
         ],
       ),

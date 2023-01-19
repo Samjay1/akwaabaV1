@@ -889,16 +889,28 @@ class MemberAPI {
       Map<String, String> headers =  {'Content-Type': 'application/json'};
 
       // multipart that takes file
-      var profPicture = await http.MultipartFile.fromPath('profilePicture', profilePicture);
-      var profResume = await http.MultipartFile.fromPath('profileResume', profileResume);
-      var profIdentification = await http.MultipartFile.fromPath('profileIdentification', profileIdentification);
+      if(profilePicture!=null) {
+        var profPicture = await http.MultipartFile.fromPath('profilePicture', profilePicture);
+        request.files.add(profPicture);
+      }
+      if(profileResume!=null) {
+        var profResume = await http.MultipartFile.fromPath('profileResume', profileResume);
+        request.files.add(profResume);
+      }
+      if(profileIdentification!=null) {
+        var profIdentification = await http.MultipartFile.fromPath('profileIdentification', profileIdentification);
+        request.files.add(profIdentification);
+      }
+
+
+
 
       request.headers.addAll(headers);
 
       // add file to multipart
-      request.files.add(profPicture);
-      request.files.add(profResume);
-      request.files.add(profIdentification);
+
+
+
       request.fields["clientId"]= clientId;
       request.fields["branchId"]= branchId;
       request.fields["firstname"]= firstname;
@@ -914,14 +926,19 @@ class MemberAPI {
       request.fields["nationality"]= nationality.toString();
       request.fields["countryOfResidence"]= countryOfResidence.toString();
       request.fields["stateProvince"]= stateProvince.toString().isNotEmpty?stateProvince.toString():'-';
-      // request.fields["region"]= '-'.toString() ;//region.toString().isNotEmpty?region.toString(): '0';
-      region.toString().isNotEmpty??{request.fields["region"]=region.toString()};
-      // request.fields["district"]= district.toString().isNotEmpty?district.toString():'-';
-      district.toString().isNotEmpty??{request.fields["district"]= district.toString()};
-      // request.fields["constituency"]= constituency.toString().isNotEmpty?constituency.toString():'-';
-      constituency.toString().isNotEmpty??{request.fields["constituency"]= constituency.toString()};
-      // request.fields["electoralArea"]= electoralArea.toString().isNotEmpty?electoralArea.toString():'-';
-      electoralArea.toString().isNotEmpty??{request.fields["electoralArea"]= electoralArea.toString()};
+      if(region!=null){
+        request.fields["region"]= region.toString();
+      }
+      if(district!=null){
+        request.fields["district"]= district.toString();
+      }
+      if(constituency!=null){
+        request.fields["constituency"]= constituency.toString();
+      }
+      if(electoralArea!=null){
+        request.fields["electoralArea"]= electoralArea.toString();
+      }
+
       request.fields["community"]= community.toString().isNotEmpty?community.toString():'-';
       request.fields["digitalAddress"]= digitalAddress.toString();
       request.fields["hometown"]= hometown.toString();
@@ -931,16 +948,20 @@ class MemberAPI {
       request.fields["occupationalStatus"]= occupationalStatus.toString();
       request.fields["professionStatus"]= professionStatus.toString();
       request.fields["educationalStatus"]= educationalStatus.toString();
-      request.fields["groupIds"]= groupIds.toString();
-      request.fields["subgroupIds"]= subgroupIds.toString();
+      if(groupIds!=null){
+        request.fields["groupIds"]= groupIds.toString();
+      }
+      if(subgroupIds!=null){
+        request.fields["subgroupIds"]= subgroupIds.toString();
+      }
+
+
       request.fields["password"]= password;
       request.fields["confirm_password"]= confirm_password;
 
 
       // send
       var response = await request.send();
-
-
       // listen for response
       print('response.statusCode ${response.statusCode}');
 
@@ -1058,8 +1079,12 @@ class MemberAPI {
       request.fields["digitalAddress"]= digitalAddress.toString();
       request.fields["website"]= website;
       request.fields["businessDescription"]= businessDescription;
-      request.fields["groupIds"]= groupIds.toString();
-      request.fields["subgroupIds"]= subgroupIds.toString();
+      if(groupIds!=null){
+        request.fields["groupIds"]= groupIds.toString();
+      }
+      if(subgroupIds!=null){
+        request.fields["subgroupIds"]= subgroupIds.toString();
+      }
       request.fields["password"]= password;
       request.fields["confirm_password"]= confirm_password;
 
