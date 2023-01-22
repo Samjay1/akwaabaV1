@@ -108,18 +108,18 @@ class _OrganizationWidgetState extends State<OrganizationWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          widget.organization!.identification!,
-                          style: TextStyle(
+                          widget.organization!.organizationType!.type!,
+                          style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: textColorLight),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 12,
                         ),
                         Text(
-                          widget.organization!.organizationType!.type!,
-                          style: TextStyle(
+                          widget.organization!.categoryInfo!.category!,
+                          style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: textColorLight),

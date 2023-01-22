@@ -1,3 +1,5 @@
+import 'package:akwaaba/models/subscription/subscription.dart';
+
 class ClientAccountInfo {
   int? id;
   String? name;
@@ -26,38 +28,39 @@ class ClientAccountInfo {
   String? creationDate;
   int? updatedBy;
   String? updateDate;
-  dynamic? subscriptionInfo;
+  Subscription? subscriptionInfo;
   List<CountryInfo>? countryInfo;
 
-  ClientAccountInfo(
-      {this.id,
-      this.name,
-      this.accountType,
-      this.country,
-      this.stateProvince,
-      this.applicantFirstname,
-      this.applicantSurname,
-      this.applicantGender,
-      this.applicantPhone,
-      this.applicantEmail,
-      this.applicantDesignationRole,
-      this.region,
-      this.district,
-      this.constituency,
-      this.community,
-      this.subscriptionDuration,
-      this.subscriptionDate,
-      this.subscriptionFee,
-      this.logo,
-      this.status,
-      this.archive,
-      this.accountCategory,
-      this.website,
-      this.creationDate,
-      this.updatedBy,
-      this.updateDate,
-      this.subscriptionInfo,
-      this.countryInfo});
+  ClientAccountInfo({
+    this.id,
+    this.name,
+    this.accountType,
+    this.country,
+    this.stateProvince,
+    this.applicantFirstname,
+    this.applicantSurname,
+    this.applicantGender,
+    this.applicantPhone,
+    this.applicantEmail,
+    this.applicantDesignationRole,
+    this.region,
+    this.district,
+    this.constituency,
+    this.community,
+    this.subscriptionDuration,
+    this.subscriptionDate,
+    this.subscriptionFee,
+    this.logo,
+    this.status,
+    this.archive,
+    this.accountCategory,
+    this.website,
+    this.creationDate,
+    this.updatedBy,
+    this.updateDate,
+    this.subscriptionInfo,
+    this.countryInfo,
+  });
 
   ClientAccountInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -88,7 +91,9 @@ class ClientAccountInfo {
     creationDate = json['creationDate'];
     updatedBy = json['updatedBy'];
     updateDate = json['updateDate'];
-    subscriptionInfo = json['subscriptionInfo'];
+    subscriptionInfo = json['subscriptionInfo'] != null
+        ? Subscription.fromJson(json['subscriptionInfo'])
+        : null;
     if (json['countryInfo'] != null) {
       countryInfo = <CountryInfo>[];
       json['countryInfo'].forEach((v) {
@@ -127,7 +132,9 @@ class ClientAccountInfo {
     data['creationDate'] = creationDate;
     data['updatedBy'] = updatedBy;
     data['updateDate'] = updateDate;
-    data['subscriptionInfo'] = subscriptionInfo;
+    if (subscriptionInfo != null) {
+      data['subscriptionInfo'] = subscriptionInfo!.toJson();
+    }
     if (countryInfo != null) {
       data['countryInfo'] = countryInfo!.map((v) => v.toJson()).toList();
     }

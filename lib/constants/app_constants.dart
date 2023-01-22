@@ -60,6 +60,12 @@ class AppConstants {
     return "$attendanceBaseUrl/app-reroute?permission-key=${base64TokenEncoding(token)}&access-page-key=${base64TokenEncoding('absent-leave/assign-al-status')}";
   }
 
+  // redirection url to renew client account
+  static renewAccountRedirectUrl() async {
+    var token = await getToken();
+    return "$attendanceBaseUrl/app-reroute?permission-key=${base64TokenEncoding(token)}&access-page-key=${base64TokenEncoding('absent-leave/assign-al-status')}";
+  }
+
   static const String akwaabaEduUrl = 'https://edu.akwaabasoftware.com/';
   static const String akwaabaMessengerUrl =
       'https://messenger.akwaabasoftware.com';

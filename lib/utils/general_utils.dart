@@ -88,6 +88,12 @@ openEmailApp(BuildContext context) async {
   }
 }
 
+// checks if account is active or has expired
+bool isActive(DateTime expiryDate) {
+  var currentDate = DateTime.now();
+  return expiryDate.isAfter(currentDate) ? true : false;
+}
+
 // convert token to base64 encoded
 String base64TokenEncoding(String token) {
   var encoded = base64.encode(utf8.encode(token));

@@ -21,6 +21,7 @@ const blackColor = Colors.black;
 const fillColor = Color(0xFFEBECEE);
 const tealColor = Colors.teal;
 const greenColor = Colors.green;
+const redColor = Colors.red;
 
 class AppTheme {
   static final ThemeData defaultTheme = _buildMyTheme();

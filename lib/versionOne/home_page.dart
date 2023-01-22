@@ -638,9 +638,11 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => const MembersPage(isMemberuser: false)));
+          context,
+          MaterialPageRoute(
+            builder: (_) => const MembersPage(isMemberuser: false),
+          ),
+        );
       },
       child: Card(
         elevation: 4,

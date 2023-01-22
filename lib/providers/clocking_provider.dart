@@ -280,7 +280,7 @@ class ClockingProvider extends ChangeNotifier {
         meetingEventModel: meetingEventModel,
       );
 
-      setLoading(false);
+      //setLoading(false);
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');
@@ -382,8 +382,8 @@ class ClockingProvider extends ChangeNotifier {
 
         _tempAttendees = _attendees;
       }
-      debugPrint('Atendees: ${_attendees.length}');
       setLoading(false);
+      debugPrint('Atendees: ${_attendees.length}');
     } catch (err) {
       setLoading(false);
       debugPrint('Error Attendees: ${err.toString()}');

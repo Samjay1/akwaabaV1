@@ -12,6 +12,7 @@ import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/providers/schoolManager_provider.dart';
+import 'package:akwaaba/providers/subscription_provider.dart';
 import 'package:akwaaba/versionOne/splash_screen.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ClockingProvider()),
         ChangeNotifierProvider(create: (_) => PostClockingProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => MembersProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
       ],
       child: MaterialApp(
         key: scaffoldMessengerKey,

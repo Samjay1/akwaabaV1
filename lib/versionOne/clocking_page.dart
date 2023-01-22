@@ -154,7 +154,7 @@ class _ClockingPageState extends State<ClockingPage> {
             children: [
               isShowTopView
                   ? SizedBox(
-                      height: displayHeight(context) * 0.40,
+                      height: displayHeight(context) * 0.46,
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Column(
@@ -318,6 +318,16 @@ class _ClockingPageState extends State<ClockingPage> {
                                 ],
                               ),
                             ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.025,
+                            ),
+                            const Divider(
+                              height: 2,
+                              color: primaryColor,
+                            ),
+                            // SizedBox(
+                            //   height: displayHeight(context) * 0.01,
+                            // ),
                             widget.meetingEventModel.hasBreakTime!
                                 ? LabelWidgetContainer(
                                     label: "",
@@ -630,7 +640,7 @@ class _ClockingPageState extends State<ClockingPage> {
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemBuilder: (_, __) => const EventShimmerItem(),
-                          itemCount: 6,
+                          itemCount: 10,
                         ),
                       ),
                     )

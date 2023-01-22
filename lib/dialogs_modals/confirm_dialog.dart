@@ -23,7 +23,9 @@ class ConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: displayHeight(context) * 0.35,
+      height: content.isEmpty
+          ? displayHeight(context) * 0.20
+          : displayHeight(context) * 0.35,
       width: displayWidth(context),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -37,7 +39,7 @@ class ConfirmDialog extends StatelessWidget {
           SizedBox(height: displayHeight(context) * 0.02),
           // dialog title
           Align(
-            alignment: Alignment.center,
+            alignment: content.isEmpty ? Alignment.topLeft : Alignment.center,
             child: Text(
               title,
               style: const TextStyle(
@@ -50,13 +52,15 @@ class ConfirmDialog extends StatelessWidget {
 
           SizedBox(height: displayHeight(context) * 0.03),
 
-          Text(
-            content,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: blackColor, fontSize: 16),
-          ),
+          content.isEmpty
+              ? const SizedBox()
+              : Text(
+                  content,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: blackColor, fontSize: 16),
+                ),
 
-          const Spacer(),
+          content.isEmpty ? const SizedBox() : const Spacer(),
 
           // action buttons
           Row(

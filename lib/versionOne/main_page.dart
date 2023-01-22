@@ -1,12 +1,14 @@
+import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
-import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/dialogs_modals/contact_admin_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
+import 'package:akwaaba/providers/subscription_provider.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/versionOne/alerts_page.dart';
@@ -18,7 +20,6 @@ import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/screens/akwaaba_modules.dart';
 import 'package:akwaaba/screens/web_admin_setup_page.dart';
 import 'package:akwaaba/versionOne/member_account_page.dart';
-import 'package:akwaaba/versionOne/member_registration_page_individual.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/members_page.dart';
@@ -27,9 +28,9 @@ import 'package:akwaaba/versionOne/post_clocking_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../components/custom_cached_image_widget.dart';
 import '../utils/shared_prefs.dart';
 import '../versionOne/attendance_report_page.dart';
@@ -78,6 +79,8 @@ class _MainPageState extends State<MainPage> {
   String userType = "";
 
   String? token;
+
+  late SubscriptionProvider _subscriptionProvider;
 
   @override
   void initState() {
@@ -178,6 +181,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    _subscriptionProvider =
+        Provider.of<SubscriptionProvider>(context, listen: false);
     Provider.of<MemberProvider>(context, listen: false).gettingDeviceInfo();
     return Scaffold(
       appBar: AppBar(
@@ -200,7 +205,7 @@ class _MainPageState extends State<MainPage> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const AlertsPage()));
                 },
-                icon: Icon(Icons.notifications),
+                icon: const Icon(Icons.notifications),
                 tooltip: 'hello',
                 isSelected: true,
               ),
@@ -208,19 +213,19 @@ class _MainPageState extends State<MainPage> {
                   right: 5,
                   top: 5,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
                         color: Colors.black,
                         border: Border.all(color: Colors.orange),
                         borderRadius: BorderRadius.circular(100)),
-                    child: Text(
+                    child: const Text(
                       '3',
                       style: TextStyle(fontSize: 14),
                     ),
                   ))
             ],
           ),
-          SizedBox(
+          const SizedBox(
             width: 5,
           ),
         ],
@@ -254,17 +259,20 @@ class _MainPageState extends State<MainPage> {
 
   Widget adminDrawerView({var logo, var name, var id, var branch}) {
     return Drawer(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: whiteColor,
       child: Column(
         children: [
           const SizedBox(
             height: 40,
           ),
           SizedBox(
-            height: 180,
+            height: 185,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(
+                  height: 8,
+                ),
                 Align(
                   alignment: Alignment.center,
                   child: ClipRRect(
@@ -276,7 +284,7 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 8,
+                  height: 10,
                 ),
                 Text(
                   "${name ?? ""}",
@@ -297,6 +305,48 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
           ),
+
+          Consumer<ClientProvider>(
+            builder: (context, data, child) {
+              String date = '';
+              DateTime? expiryDate;
+              if (data.getUser.subscriptionInfo != null) {
+                date = data.getUser.subscriptionInfo!.subscribedModules!
+                    .module3!.expiresOn!;
+                expiryDate = DateFormat('dd-MM-yyyy').parse(date);
+              }
+              return data.getUser.subscriptionInfo != null
+                  ? Container(
+                      margin: const EdgeInsets.all(AppPadding.p8),
+                      padding: const EdgeInsets.all(AppPadding.p12),
+                      decoration: BoxDecoration(
+                          color: fillColor.withOpacity(0.6),
+                          borderRadius:
+                              BorderRadius.circular(AppRadius.borderRadius8)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Account Expiring In:  ${(data.getUser.subscriptionInfo.subscribedModules == null && data.getUser.subscriptionInfo.subscribedModules.module3 != null) ? 'N/A' : DateUtil.formatStringDate(DateFormat.yMMMEd(), date: expiryDate!)}",
+                            style: const TextStyle(fontSize: AppSize.s14),
+                            textAlign: TextAlign.start,
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.01,
+                          ),
+                          TagWidget(
+                            text: isActive(expiryDate!) ? 'Active' : 'Expired',
+                            color: isActive(expiryDate) ? greenColor : redColor,
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox();
+            },
+          ),
+          // subscription info
+
           Expanded(
             child: Container(
                 color: Colors.white,
@@ -305,19 +355,6 @@ class _MainPageState extends State<MainPage> {
                     return ListView(
                       physics: const BouncingScrollPhysics(),
                       children: [
-                        drawerItemView(
-                          title: "Profile Page",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const MyAccountPage(),
-                              ),
-                            );
-                          },
-                        ),
                         drawerItemView(
                             title: "View Members",
                             iconData: Icons.phone_android,
@@ -329,9 +366,8 @@ class _MainPageState extends State<MainPage> {
                                   backgroundColor: Colors.transparent,
                                   elevation: 0,
                                   content: ConfirmDialog(
-                                    title: 'View all Members/Organisations',
-                                    content:
-                                        'Select the Clients you want to view',
+                                    title: 'Select an option:',
+                                    content: '',
                                     onConfirmTap: () {
                                       Navigator.pop(context); //close the popup
                                       Navigator.push(
@@ -599,6 +635,38 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                         drawerItemView(
+                          title: "Renew My Account",
+                          iconData: Icons.phone_android,
+                          function: () async {
+                            var url =
+                                await AppConstants.renewAccountRedirectUrl();
+                            if (!mounted) return;
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'Renew My Account',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "My Account",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const MyAccountPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
                             title: "Log out",
                             iconData: Icons.logout_rounded,
                             function: () {
@@ -642,19 +710,29 @@ class _MainPageState extends State<MainPage> {
         ? formattedPhone('+233', clientAccountInfo.applicantPhone!)
         : formattedPhone(clientAccountInfo.countryInfo![0].code!,
             clientAccountInfo.applicantPhone!);
+    String date = '';
+    DateTime? expiryDate;
+    if (clientAccountInfo.subscriptionInfo != null) {
+      date = clientAccountInfo
+          .subscriptionInfo!.subscribedModules!.module3!.expiresOn!;
+      expiryDate = DateFormat('dd-MM-yyyy').parse(date);
+    }
     debugPrint("Phone: $phone");
     return Drawer(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: whiteColor,
       child: Column(
         children: [
           const SizedBox(
             height: 40,
           ),
           SizedBox(
-            height: 180,
+            height: 185,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(
+                  height: 8,
+                ),
                 Align(
                   alignment: Alignment.center,
                   child: CustomCachedImageWidget(
@@ -662,8 +740,8 @@ class _MainPageState extends State<MainPage> {
                     height: 100,
                   ),
                 ),
-                const SizedBox(
-                  height: 8,
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
                 ),
                 Text(
                   clientAccountInfo.name ?? "",
@@ -674,7 +752,7 @@ class _MainPageState extends State<MainPage> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
-                  height: displayHeight(context) * 0.01,
+                  height: displayHeight(context) * 0.008,
                 ),
                 Text(
                   "($branch)",
@@ -686,6 +764,47 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
           ),
+          // subscription info
+          clientAccountInfo.subscriptionInfo == null
+              ? const SizedBox()
+              : Container(
+                  margin: const EdgeInsets.all(AppPadding.p8),
+                  padding: const EdgeInsets.all(AppPadding.p12),
+                  decoration: BoxDecoration(
+                      color: fillColor.withOpacity(0.6),
+                      borderRadius:
+                          BorderRadius.circular(AppRadius.borderRadius8)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Account Expiring In:  ${clientAccountInfo.subscriptionInfo == null ? 'N/A' : DateUtil.formatStringDate(DateFormat.yMMMEd(), date: expiryDate!)}",
+                        style: const TextStyle(
+                          fontSize: AppSize.s14,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.01,
+                      ),
+                      TagWidget(
+                        text: isActive(expiryDate!) ? 'Active' : 'Expired',
+                        color: isActive(expiryDate) ? greenColor : redColor,
+                      ),
+                      // TagWidget(
+                      //   text: _subscriptionProvider.isActive(_subscriptionProvider
+                      //           .clientSubscription![0].expiryDate!)
+                      //       ? 'Active'
+                      //       : 'Expired',
+                      //   color: _subscriptionProvider.isActive(_subscriptionProvider
+                      //           .clientSubscription![0].expiryDate!)
+                      //       ? greenColor
+                      //       : redColor,
+                      // ),
+                    ],
+                  ),
+                ),
           Expanded(
             child: Container(
                 color: Colors.white,
@@ -705,9 +824,8 @@ class _MainPageState extends State<MainPage> {
                                   backgroundColor: Colors.transparent,
                                   elevation: 0,
                                   content: ConfirmDialog(
-                                    title: 'View all Members/Organisations',
-                                    content:
-                                        'Select the Clients you want to view',
+                                    title: 'Select an option:',
+                                    content: '',
                                     onConfirmTap: () {
                                       Navigator.pop(context); //close the popup
                                       Navigator.push(
