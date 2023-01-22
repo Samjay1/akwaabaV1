@@ -412,89 +412,6 @@ class MemberAPI {
     }
   }
 
-  static void registerOrganisation(
-      {clientId,
-      branchId,
-      organizationName,
-      contactPersonName,
-      contactPersonGender,
-      organizationType,
-      businessRegistered,
-      organizationEmail,
-      organizationPhone,
-      contactPersonEmail,
-      contactPersonPhone,
-      contactPersonWhatsapp,
-      occupation,
-      memberType,
-      referenceId,
-      countryOfBusiness,
-      stateProvince,
-      region,
-      district,
-      constituency,
-      electoralArea,
-      community,
-      digitalAddress,
-      password,
-      confirm_password,
-      groupIds,
-      subgroupIds,
-      website,
-      businessDescription,
-      logo}) async {
-    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
-    try {
-      var data = {
-        'clientId': clientId,
-        'branchId': branchId,
-        'organizationName': organizationName,
-        'contactPersonName': contactPersonName,
-        'contactPersonGender': contactPersonGender,
-        'organizationType': organizationType,
-        'businessRegistered': businessRegistered,
-        'organizationEmail': organizationEmail,
-        'organizationPhone': organizationPhone,
-        'contactPersonEmail': contactPersonEmail,
-        'contactPersonPhone': contactPersonPhone,
-        'contactPersonWhatsapp': contactPersonWhatsapp,
-        'occupation': occupation,
-        'accountType': 2,
-        'memberType': memberType,
-        'referenceId': referenceId,
-        'countryOfBusiness': countryOfBusiness,
-        'stateProvince': stateProvince,
-        'region': region,
-        'district': district,
-        'constituency': constituency,
-        'electoralArea': electoralArea,
-        'community': community,
-        'digitalAddress': digitalAddress,
-        'password': password,
-        'confirm_password': confirm_password,
-        'groupIds[]': groupIds,
-        'subgroupIds[]': subgroupIds,
-        'website': website,
-        'businessDescription': businessDescription,
-        'logo': logo
-      };
-
-      http.Response response = await http.post(
-          Uri.parse('$regBaseUrl/members/user-organization/app-register'),
-          body: json.encode(data),
-          headers: {'Content-Type': 'application/json'});
-      var decodedResponse = jsonDecode(response.body);
-      if (response.statusCode == 201) {
-        debugPrint('REGISTRATION ORGANISATION -------------- $decodedResponse');
-        showErrorToast("Registration Successful, Proceed to Login.");
-      } else {
-        debugPrint("error>>>. ${response.body}");
-        showErrorToast("Login Error");
-      }
-    } on SocketException catch (_) {
-      showErrorToast("Network Error");
-    }
-  }
 
 
 //  LOCATION REQUESTS
@@ -972,16 +889,28 @@ class MemberAPI {
       Map<String, String> headers =  {'Content-Type': 'application/json'};
 
       // multipart that takes file
-      var profPicture = await http.MultipartFile.fromPath('profilePicture', profilePicture);
-      var profResume = await http.MultipartFile.fromPath('profileResume', profileResume);
-      var profIdentification = await http.MultipartFile.fromPath('profileIdentification', profileIdentification);
+      if(profilePicture!=null) {
+        var profPicture = await http.MultipartFile.fromPath('profilePicture', profilePicture);
+        request.files.add(profPicture);
+      }
+      if(profileResume!=null) {
+        var profResume = await http.MultipartFile.fromPath('profileResume', profileResume);
+        request.files.add(profResume);
+      }
+      if(profileIdentification!=null) {
+        var profIdentification = await http.MultipartFile.fromPath('profileIdentification', profileIdentification);
+        request.files.add(profIdentification);
+      }
+
+
+
 
       request.headers.addAll(headers);
 
       // add file to multipart
-      request.files.add(profPicture);
-      request.files.add(profResume);
-      request.files.add(profIdentification);
+
+
+
       request.fields["clientId"]= clientId;
       request.fields["branchId"]= branchId;
       request.fields["firstname"]= firstname;
@@ -997,14 +926,19 @@ class MemberAPI {
       request.fields["nationality"]= nationality.toString();
       request.fields["countryOfResidence"]= countryOfResidence.toString();
       request.fields["stateProvince"]= stateProvince.toString().isNotEmpty?stateProvince.toString():'-';
-      // request.fields["region"]= '-'.toString() ;//region.toString().isNotEmpty?region.toString(): '0';
-      region.toString().isNotEmpty??{request.fields["region"]=region.toString()};
-      // request.fields["district"]= district.toString().isNotEmpty?district.toString():'-';
-      district.toString().isNotEmpty??{request.fields["district"]= district.toString()};
-      // request.fields["constituency"]= constituency.toString().isNotEmpty?constituency.toString():'-';
-      constituency.toString().isNotEmpty??{request.fields["constituency"]= constituency.toString()};
-      // request.fields["electoralArea"]= electoralArea.toString().isNotEmpty?electoralArea.toString():'-';
-      electoralArea.toString().isNotEmpty??{request.fields["electoralArea"]= electoralArea.toString()};
+      if(region!=null){
+        request.fields["region"]= region.toString();
+      }
+      if(district!=null){
+        request.fields["district"]= district.toString();
+      }
+      if(constituency!=null){
+        request.fields["constituency"]= constituency.toString();
+      }
+      if(electoralArea!=null){
+        request.fields["electoralArea"]= electoralArea.toString();
+      }
+
       request.fields["community"]= community.toString().isNotEmpty?community.toString():'-';
       request.fields["digitalAddress"]= digitalAddress.toString();
       request.fields["hometown"]= hometown.toString();
@@ -1014,16 +948,20 @@ class MemberAPI {
       request.fields["occupationalStatus"]= occupationalStatus.toString();
       request.fields["professionStatus"]= professionStatus.toString();
       request.fields["educationalStatus"]= educationalStatus.toString();
-      request.fields["groupIds"]= groupIds.toString();
-      request.fields["subgroupIds"]= subgroupIds.toString();
+      if(groupIds!=null){
+        request.fields["groupIds"]= groupIds.toString();
+      }
+      if(subgroupIds!=null){
+        request.fields["subgroupIds"]= subgroupIds.toString();
+      }
+
+
       request.fields["password"]= password;
       request.fields["confirm_password"]= confirm_password;
 
 
       // send
       var response = await request.send();
-
-
       // listen for response
       print('response.statusCode ${response.statusCode}');
 
@@ -1090,47 +1028,63 @@ class MemberAPI {
           Uri.parse('$regBaseUrl/members/user-organization/app-register'));
 
       Map<String, String> headers =  {'Content-Type': 'application/json'};
-
-      // multipart that takes file
-      var orgLogo = await http.MultipartFile.fromPath('logo', logo);
-      var orgCertificates = await http.MultipartFile.fromPath('certificates', certificates);
-
       request.headers.addAll(headers);
 
+      // multipart that takes file
+      if(logo!=null) {
+        var orgLogo = await http.MultipartFile.fromPath('logo', logo);
+        request.files.add(orgLogo);
+      }
+      if(certificates!=null) {
+        var orgCertificates = await http.MultipartFile.fromPath(
+            'certificates', certificates);
+        request.files.add(orgCertificates);
+      }
+
       // add file to multipart
-      request.files.add(orgLogo);
-      request.files.add(orgCertificates);
+
       request.fields["clientId"]= clientId;
       request.fields["branchId"]= branchId;
       request.fields["organizationName"]= organizationName;
-      request.fields["contactPersonName"]= contactPersonName;
-      request.fields["contactPersonGender"]= contactPersonGender;
-      request.fields["organizationType"]= organizationType;
-      request.fields["businessRegistered"]= businessRegistered;
+      request.fields["organizationType"]= organizationType.toString();
       request.fields["organizationEmail"]= organizationEmail;
       request.fields["organizationPhone"]= organizationPhone;
-      request.fields["contactPersonWhatsapp"]= contactPersonWhatsapp;
+      request.fields["contactPersonName"]= contactPersonName;
+      request.fields["contactPersonGender"]= contactPersonGender.toString();
       request.fields["contactPersonEmail"]= contactPersonEmail;
       request.fields["contactPersonPhone"]= contactPersonPhone;
-      request.fields["accountType"]= '2';
-      request.fields["memberType"]= memberType.toString();
-      request.fields["referenceId"]= referenceId;
       request.fields["countryOfBusiness"]= countryOfBusiness.toString();
+      request.fields["memberType"]= memberType.toString();
       request.fields["stateProvince"]= stateProvince.toString().isNotEmpty?stateProvince.toString():'-';
-      // request.fields["region"]= '-'.toString() ;//region.toString().isNotEmpty?region.toString(): '0';
-      region.toString().isNotEmpty??{request.fields["region"]=region.toString()};
-      // request.fields["district"]= district.toString().isNotEmpty?district.toString():'-';
-      district.toString().isNotEmpty??{request.fields["district"]= district.toString()};
-      // request.fields["constituency"]= constituency.toString().isNotEmpty?constituency.toString():'-';
-      constituency.toString().isNotEmpty??{request.fields["constituency"]= constituency.toString()};
-      // request.fields["electoralArea"]= electoralArea.toString().isNotEmpty?electoralArea.toString():'-';
-      electoralArea.toString().isNotEmpty??{request.fields["electoralArea"]= electoralArea.toString()};
+      request.fields["businessRegistered"]= businessRegistered.toString();
+
+
+      request.fields["contactPersonWhatsapp"]= contactPersonWhatsapp;
+
+      request.fields["accountType"]= '2';
+      // request.fields["referenceId"]= referenceId;
+      if(region!=null){
+        request.fields["region"]= region.toString();
+      }
+      if(district!=null){
+        request.fields["district"]= district.toString();
+      }
+      if(constituency!=null){
+        request.fields["constituency"]= constituency.toString();
+      }
+      if(electoralArea!=null){
+        request.fields["electoralArea"]= electoralArea.toString();
+      }
       request.fields["community"]= community.toString().isNotEmpty?community.toString():'-';
       request.fields["digitalAddress"]= digitalAddress.toString();
       request.fields["website"]= website;
       request.fields["businessDescription"]= businessDescription;
-      request.fields["groupIds"]= groupIds.toString();
-      request.fields["subgroupIds"]= subgroupIds.toString();
+      if(groupIds!=null){
+        request.fields["groupIds"]= groupIds.toString();
+      }
+      if(subgroupIds!=null){
+        request.fields["subgroupIds"]= subgroupIds.toString();
+      }
       request.fields["password"]= password;
       request.fields["confirm_password"]= confirm_password;
 
@@ -1141,17 +1095,40 @@ class MemberAPI {
       // listen for response
       print('response.statusCode ${response.statusCode}');
 
+      // print('response.============> ${response}');
+
 
       if (response.statusCode == 201) {
         debugPrint('REGISTRATION MEMBER -------------- $response');
-        showNormalToast("Registration Successful, Proceed to Login.");
-        return 'successful';
-      } else {
         response.stream.transform(utf8.decoder).listen((value) {
           var data = json.decode(value);
           // var message = data['non_field_errors'][0];
-          print('RESPONSE: $data');
+          print('RESPONSE: $data' );
           // showNormalToast('$message');
+        });
+
+
+        showNormalToast("Registration Successful, Proceed to Login.");
+        return 'successful';
+      } else if(response.statusCode == 400) {
+        response.stream.transform(utf8.decoder).listen((value) {
+          var data = json.decode(value);
+          print('RESPONSE: $data' );
+          if(data==null){
+            showErrorToast('Failed, Try again');
+          }else{
+            if(data['non_field_errors']==null){
+              var res = data.keys.toList().first;
+              print(res);
+              var message = '$res: ${data[res][0]}';
+              showErrorToast('$message');
+            }else{
+              var message = data['non_field_errors'][0];
+              showErrorToast('$message');
+            }
+
+          }
+
         });
       }
     } on SocketException catch (_) {
