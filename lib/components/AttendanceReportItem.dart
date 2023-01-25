@@ -4,6 +4,7 @@ import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -171,7 +172,9 @@ class AttendanceReportItem extends StatelessWidget {
                                   ),
                                   TagWidget(
                                     color: isLate ? Colors.red : primaryColor,
-                                    text: isLate ? "Late" : "Early",
+                                    text: isLate
+                                        ? AppString.lateText
+                                        : AppString.earlyText,
                                   ),
                                 ],
                               ),

@@ -10,6 +10,7 @@ import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/gender.dart';
@@ -123,14 +124,14 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
 
     Future.delayed(Duration.zero, () {
       // check if admin is main branch admin or not
-      if (Provider.of<ClientProvider>(context, listen: false).branch.id ==
-          AppConstants.mainAdmin) {
+      if (userType == AppConstants.admin &&
+          Provider.of<ClientProvider>(context, listen: false).branch.id ==
+              AppConstants.mainAdmin) {
         Provider.of<AttendanceProvider>(context, listen: false).getBranches();
-      } else {
-        Provider.of<AttendanceProvider>(context, listen: false).getGenders();
       }
-
-      setState(() {});
+      Provider.of<AttendanceProvider>(context, listen: false)
+          .getPastMeetingEvents();
+      //setState(() {});
     });
     super.initState();
   }
@@ -409,6 +410,36 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     )
                   : const SizedBox(),
 
+              if (absentees.isNotEmpty || absentees.isNotEmpty)
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: blackColor,
+                      elevation: 0.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(AppRadius.borderRadius8),
+                      ),
+                    ),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16.0),
+                            topRight: Radius.circular(16.0),
+                          ),
+                        ),
+                        builder: (context) => AgendaDialog(
+                          meetingEventModel:
+                              attendanceProvider.selectedPastMeetingEvent,
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "View Meeting/Event Agenda",
+                      style: TextStyle(color: Colors.white),
+                    )),
+
               attendanceProvider.loading
                   ? Expanded(
                       child: Shimmer.fromColors(
@@ -504,6 +535,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                                 child:
                                                     AttendanceReportAttendeeItem(
                                                   attendee: attendees[index]!,
+                                                  userType: userType,
                                                 ),
                                               );
                                             }),
@@ -670,12 +702,11 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                           "Selected DateTime: ${attendanceProvider.selectedDate!.toIso8601String().substring(0, 10)}");
                     });
                     // if admin is main branch admin
-                    if (context.read<ClientProvider>().branch != null &&
-                        context.read<ClientProvider>().branch.id == 1) {
-                      attendanceProvider.getBranches();
-                    }
-                    // admin is just a branch admin
-                    attendanceProvider.getPastMeetingEvents();
+                    // if (userType == AppConstants.admin &&
+                    //     (context.read<ClientProvider>().branch != null &&
+                    //         context.read<ClientProvider>().branch.id == 1)) {
+                    //   attendanceProvider.getBranches();
+                    // }
                   }
                 });
               },
@@ -725,7 +756,6 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                             setState(() {
                               attendanceProvider.selectedBranch = val as Branch;
                             });
-                            attendanceProvider.getPastMeetingEvents();
                           },
                         ),
                       ),
@@ -777,7 +807,6 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     attendanceProvider.selectedPastMeetingEvent =
                         val as MeetingEventModel;
                   });
-                  attendanceProvider.getMemberCategories();
                 },
               ),
             ),
@@ -822,7 +851,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     attendanceProvider.selectedMemberCategory =
                         val as MemberCategory;
                   });
-                  attendanceProvider.getMemberCategories();
+                  attendanceProvider.getGroups();
                 },
               ),
             ),
@@ -865,6 +894,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                   setState(() {
                     attendanceProvider.selectedGroup = val as Group;
                   });
+                  attendanceProvider.getSubGroups();
                 },
               ),
             ),

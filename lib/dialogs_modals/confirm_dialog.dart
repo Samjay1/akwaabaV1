@@ -25,7 +25,7 @@ class ConfirmDialog extends StatelessWidget {
     return Container(
       height: content.isEmpty
           ? displayHeight(context) * 0.20
-          : displayHeight(context) * 0.35,
+          : displayHeight(context) * 0.40,
       width: displayWidth(context),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(

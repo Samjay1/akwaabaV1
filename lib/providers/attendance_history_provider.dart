@@ -65,9 +65,13 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   List<AttendanceHistory?> get attendanceRecords => _attendanceHistory;
 
-  String selectedStatus = 'Active';
+  String selectedStatus = 'Both';
 
-  List<String> statuses = ['Active', 'Inactive', 'Both'];
+  List<String> statuses = [
+    'Both',
+    'Active',
+    'Inactive',
+  ];
 
   bool get loading => _loading;
   bool get loadingMore => _loadingMore;
@@ -113,7 +117,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
-      getSubGroups();
+      getGenders();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -130,8 +134,6 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       if (_branches.isNotEmpty) {
         selectedBranch = _branches[0];
       }
-      getGroups();
-      // getGenders();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Branch: ${err.toString()}');
@@ -201,13 +203,14 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   // get meetins from date specified
   Future<void> getPastMeetingEvents() async {
     try {
-      _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
+      var userBranch = await getUserBranch(currentContext);
+      debugPrint("BID: ${userBranch.name}");
+      _pastMeetingEvents = await EventAPI.getAllMeetings(
         page: 1,
-        date: selectedStartDate!.toIso8601String().substring(0, 10),
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
       );
       if (_pastMeetingEvents.isNotEmpty) {
         selectedPastMeetingEvent = _pastMeetingEvents[0];
-        getMemberCategories();
       } else {
         showInfoDialog(
           'ok',
@@ -218,8 +221,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
           onTap: () => Navigator.pop(_context!),
         );
       }
-      //getGenders();
-      //getGroups();
+      getMemberCategories();
     } catch (err) {
       debugPrint('Error PMs: ${err.toString()}');
       showErrorToast(err.toString());
@@ -267,7 +269,11 @@ class AttendanceHistoryProvider extends ChangeNotifier {
         startDate: selectedStartDate!.toIso8601String().substring(0, 10),
         endDate: selectedEndDate!.toIso8601String().substring(0, 10),
         search: search!,
-        status: selectedStatus == 'Both' ? '' : selectedStatus,
+        status: selectedStatus == 'Both'
+            ? ''
+            : selectedStatus == 'Active'
+                ? 1.toString()
+                : 0.toString(),
         memberCategoryId: selectedMemberCategory == null
             ? null
             : selectedMemberCategory!.id!.toString(),
@@ -317,7 +323,11 @@ class AttendanceHistoryProvider extends ChangeNotifier {
           startDate: selectedStartDate!.toIso8601String().substring(0, 10),
           endDate: selectedEndDate!.toIso8601String().substring(0, 10),
           search: search!,
-          status: selectedStatus == 'Both' ? '' : selectedStatus,
+          status: selectedStatus == 'Both'
+              ? ''
+              : selectedStatus == 'Active'
+                  ? 1.toString()
+                  : 0.toString(),
           memberCategoryId: selectedMemberCategory == null
               ? null
               : selectedMemberCategory!.id!.toString(),

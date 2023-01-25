@@ -9,6 +9,7 @@ import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -26,9 +27,9 @@ class _MembersPageState extends State<MembersPage> {
   late MembersProvider _membersProvider;
 
   void loadAllMembers() async {
-    Provider.of<MembersProvider>(context, listen: false)
-        .setCurrentContext(context);
     Future.delayed(Duration.zero, () {
+      Provider.of<MembersProvider>(context, listen: false)
+          .setCurrentContext(context);
       // load individual or organization members
       widget.isMemberuser
           ? Provider.of<MembersProvider>(context, listen: false)
@@ -43,6 +44,14 @@ class _MembersPageState extends State<MembersPage> {
   initState() {
     super.initState();
     loadAllMembers();
+  }
+
+  @override
+  void dispose() {
+    if (mounted) {
+      _membersProvider.clearData();
+    }
+    super.dispose();
   }
 
   @override
@@ -236,7 +245,7 @@ class _MembersPageState extends State<MembersPage> {
                 ),
                 Text(
                   isMemberUsers
-                      ? _membersProvider.totalMaleIndMembers.length.toString()
+                      ? _membersProvider.totalMaleIndMembers.toString()
                       : _membersProvider.totalRegOrgs.length.toString(),
                 )
               ],
@@ -254,7 +263,7 @@ class _MembersPageState extends State<MembersPage> {
                 ),
                 Text(
                   isMemberUsers
-                      ? _membersProvider.totalFemaleIndMembers.length.toString()
+                      ? _membersProvider.totalFemaleIndMembers.toString()
                       : _membersProvider.totalUnRegOrgs.length.toString(),
                 ),
               ],

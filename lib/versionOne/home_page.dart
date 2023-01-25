@@ -720,6 +720,11 @@ class _HomePageState extends State<HomePage> {
       date: DateTime.now(),
     );
 
+    var startTime =
+        DateUtil.convertTimeToDatetime(myTime: meetingEventModel.startTime!);
+
+    var currentTime = DateTime.now();
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -971,43 +976,58 @@ class _HomePageState extends State<HomePage> {
                         Provider.of<HomeProvider>(context, listen: false)
                             .setSelectedMeeting(meetingEventModel);
 
-                        if (meetingEventModel.outTime != null) {
+                        if (currentTime.isAtSameMomentAs(startTime) ||
+                            currentTime.isAfter(startTime)) {
+                          debugPrint("Meeting time is up");
+                          if (meetingEventModel.outTime != null) {
+                            showInfoDialog(
+                              'ok',
+                              context: context,
+                              title: 'Hey there!',
+                              content:
+                                  'You\'ve already clocked out. \nGood Bye!',
+                              onTap: () => Navigator.pop(context),
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                insetPadding: const EdgeInsets.all(10),
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                content: ConfirmDialog(
+                                  title: meetingEventModel.inOrOut!
+                                      ? 'Clock Out'
+                                      : 'Clock In',
+                                  content:
+                                      '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you are within the meeting premises to continue.',
+                                  onConfirmTap: () {
+                                    Navigator.pop(context);
+                                    Provider.of<HomeProvider>(context,
+                                            listen: false)
+                                        .getMeetingCoordinates(
+                                      context: context,
+                                      isBreak: false,
+                                      meetingEventModel: meetingEventModel,
+                                      time: null,
+                                    );
+                                  },
+                                  onCancelTap: () => Navigator.pop(context),
+                                  confirmText: 'Yes',
+                                  cancelText: 'Cancel',
+                                ),
+                              ),
+                            );
+                          }
+                        } else {
+                          debugPrint("Meeting time is not up");
                           showInfoDialog(
                             'ok',
                             context: context,
                             title: 'Hey there!',
-                            content: 'You\'ve already clocked out. \nGood Bye!',
+                            content:
+                                'Meeting time is not up for clocking. \nPlease try again when it\'s time!',
                             onTap: () => Navigator.pop(context),
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              insetPadding: const EdgeInsets.all(10),
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                              content: ConfirmDialog(
-                                title: meetingEventModel.inOrOut!
-                                    ? 'Clock Out'
-                                    : 'Clock In',
-                                content:
-                                    '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you are within the meeting premises to continue.',
-                                onConfirmTap: () {
-                                  Navigator.pop(context);
-                                  Provider.of<HomeProvider>(context,
-                                          listen: false)
-                                      .getMeetingCoordinates(
-                                    context: context,
-                                    isBreak: false,
-                                    meetingEventModel: meetingEventModel,
-                                    time: null,
-                                  );
-                                },
-                                onCancelTap: () => Navigator.pop(context),
-                                confirmText: 'Yes',
-                                cancelText: 'Cancel',
-                              ),
-                            ),
                           );
                         }
                       },
@@ -1127,7 +1147,9 @@ class _HomePageState extends State<HomePage> {
                                   topRight: Radius.circular(16.0),
                                 ),
                               ),
-                              builder: (context) => const AgendaDialog(),
+                              builder: (context) => AgendaDialog(
+                                meetingEventModel: meetingEventModel,
+                              ),
                             );
                           },
                           child: const Text(

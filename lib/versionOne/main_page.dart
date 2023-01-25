@@ -82,6 +82,8 @@ class _MainPageState extends State<MainPage> {
 
   late SubscriptionProvider _subscriptionProvider;
 
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -90,6 +92,14 @@ class _MainPageState extends State<MainPage> {
         initFunctions();
       },
     );
+  }
+
+  toggleDrawer() async {
+    if (_scaffoldKey.currentState!.isDrawerOpen) {
+      _scaffoldKey.currentState!.openEndDrawer();
+    } else {
+      _scaffoldKey.currentState!.openDrawer();
+    }
   }
 
   initFunctions() async {
@@ -185,6 +195,7 @@ class _MainPageState extends State<MainPage> {
         Provider.of<SubscriptionProvider>(context, listen: false);
     Provider.of<MemberProvider>(context, listen: false).gettingDeviceInfo();
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: primaryColor,
         title: Text(
@@ -234,6 +245,7 @@ class _MainPageState extends State<MainPage> {
           ? Consumer<ClientProvider>(
               builder: (context, data, child) {
                 return adminDrawerView(
+                  context: context,
                   logo: data.getUser?.logo,
                   name: data.getUser?.name,
                   branch: data.branch?.name,
@@ -257,7 +269,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget adminDrawerView({var logo, var name, var id, var branch}) {
+  Widget adminDrawerView({context, var logo, var name, var id, var branch}) {
     return Drawer(
       backgroundColor: whiteColor,
       child: Column(
@@ -393,6 +405,7 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                 ),
                               );
+                              //toggleDrawer();
                             }),
                         drawerItemView(
                           title: "Create Meetings/Event",
@@ -401,7 +414,7 @@ class _MainPageState extends State<MainPage> {
                             var url =
                                 await AppConstants.createMeetingRedirectUrl();
                             if (!mounted) return;
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -420,7 +433,7 @@ class _MainPageState extends State<MainPage> {
                             var url =
                                 await AppConstants.updateMeetingRedirectUrl();
                             if (!mounted) return;
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -436,7 +449,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Attendance History",
                           iconData: Icons.history,
                           function: () {
-                            Navigator.pop(context); //close the drawer
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -450,7 +463,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Attendance Report",
                           iconData: Icons.bar_chart,
                           function: () {
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -466,7 +479,7 @@ class _MainPageState extends State<MainPage> {
                             var url =
                                 await AppConstants.assignLeaveRedirectUrl();
                             if (!mounted) return;
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -484,7 +497,7 @@ class _MainPageState extends State<MainPage> {
                           function: () async {
                             var url = await AppConstants.viewLeaveRedirectUrl();
                             if (!mounted) return;
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -503,7 +516,7 @@ class _MainPageState extends State<MainPage> {
                             var url = await AppConstants
                                 .approveDeviceRequestRedirectUrl();
                             if (!mounted) return;
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -555,7 +568,7 @@ class _MainPageState extends State<MainPage> {
                                 title: "Database Manager",
                                 iconData: Icons.phone_android,
                                 function: () {
-                                  Navigator.pop(context);
+                                  toggleDrawer();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -571,7 +584,7 @@ class _MainPageState extends State<MainPage> {
                                 title: "Attendance Manager",
                                 iconData: Icons.phone_android,
                                 function: () {
-                                  Navigator.pop(context);
+                                  toggleDrawer();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -587,7 +600,7 @@ class _MainPageState extends State<MainPage> {
                                 title: "Cash Manager",
                                 iconData: Icons.phone_android,
                                 function: () {
-                                  Navigator.pop(context);
+                                  toggleDrawer();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -603,7 +616,7 @@ class _MainPageState extends State<MainPage> {
                                 title: "Akwaaba Messenger",
                                 iconData: Icons.phone_android,
                                 function: () {
-                                  Navigator.pop(context);
+                                  toggleDrawer();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -619,7 +632,7 @@ class _MainPageState extends State<MainPage> {
                                 title: "School Manager",
                                 iconData: Icons.phone_android,
                                 function: () {
-                                  Navigator.pop(context);
+                                  toggleDrawer();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -657,7 +670,7 @@ class _MainPageState extends State<MainPage> {
                           title: "My Account",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -856,7 +869,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Update Profile",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -875,7 +888,7 @@ class _MainPageState extends State<MainPage> {
                             var url =
                                 await AppConstants.applyLeaveRedirectUrl();
                             if (!mounted) return;
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -893,7 +906,7 @@ class _MainPageState extends State<MainPage> {
                           function: () async {
                             var url = await AppConstants.viewLeaveRedirectUrl();
                             if (!mounted) return;
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -909,7 +922,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Attendance Report",
                           iconData: Icons.bar_chart,
                           function: () {
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -922,7 +935,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Attendance History",
                           iconData: Icons.history,
                           function: () {
-                            Navigator.pop(context); //close the drawer
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -936,7 +949,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Request Device Activation",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -950,7 +963,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Akwaaba Messenger",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -966,7 +979,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Make Payment",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -982,7 +995,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Student Account",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context);
+                            toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -998,7 +1011,7 @@ class _MainPageState extends State<MainPage> {
                           title: "Contact Admin",
                           iconData: Icons.phone_android,
                           function: () {
-                            Navigator.pop(context);
+                            toggleDrawer();
                             //TODO: show popup with call and whatsapp buttons
                             showModalBottomSheet(
                                 shape: const RoundedRectangleBorder(

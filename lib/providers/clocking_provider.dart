@@ -188,7 +188,7 @@ class ClockingProvider extends ChangeNotifier {
       _genders = await GroupAPI.getGenders();
       debugPrint('Genders: ${_genders.length}');
       //selectedGender = _genders[0];
-      // getMemberCategories();
+      getMemberCategories();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Gender: ${err.toString()}');
@@ -206,8 +206,6 @@ class ClockingProvider extends ChangeNotifier {
         memberCategoryId: selectedMemberCategory!.id!,
       );
       debugPrint('Groups: ${_groups.length}');
-      // selectedGroup = _groups[0];
-      getSubGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');

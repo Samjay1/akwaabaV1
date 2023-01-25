@@ -2,7 +2,9 @@ import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
+import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/providers/member_provider.dart';
+import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/material.dart';
@@ -74,13 +76,34 @@ class _DeviceActivationRequestPageState
                 ),
                 CustomElevatedButton(
                   label: "Request Activation",
+                  textColor: whiteColor,
                   function: () {
-                    MemberAPI api = MemberAPI();
-                    api.requestDeviceActivation(
-                        memberId: memberId,
-                        systemDevice: deviceInfo?.systemDevice,
-                        deviceType: deviceInfo?.deviceType,
-                        deviceId: deviceInfo?.deviceId);
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        insetPadding: const EdgeInsets.all(10),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        content: ConfirmDialog(
+                          title: 'Request Device Activation',
+                          content:
+                              "Are you sure you want to request activation for this device? \nPlease note that your device information will be sent for verification. This information will not be shared with any other third parties or applications.",
+                          onConfirmTap: () {
+                            Navigator.pop(context);
+                            MemberAPI api = MemberAPI();
+                            api.requestDeviceActivation(
+                              memberId: memberId,
+                              systemDevice: deviceInfo?.systemDevice,
+                              deviceType: deviceInfo?.deviceType,
+                              deviceId: deviceInfo?.deviceId,
+                            );
+                          },
+                          onCancelTap: () => Navigator.pop(context),
+                          confirmText: 'Yes',
+                          cancelText: 'Cancel',
+                        ),
+                      ),
+                    );
                   },
                 ),
               ],

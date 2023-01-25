@@ -253,4 +253,10 @@ class OrganizationType {
     data['date'] = date;
     return data;
   }
+
+  bool operator ==(dynamic other) =>
+      other != null && other is OrganizationType && id == other.id;
+
+  @override
+  int get hashCode => super.hashCode;
 }

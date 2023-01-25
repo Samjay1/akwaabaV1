@@ -10,6 +10,7 @@ import 'package:akwaaba/models/general/district.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/member_status.dart';
+import 'package:akwaaba/models/general/organization.dart';
 import 'package:akwaaba/models/general/region.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
@@ -104,13 +105,18 @@ class _FilterPageState extends State<FilterPage> {
     });
     Future.delayed(Duration.zero, () {
       // load all data for filters
-      if (Provider.of<MembersProvider>(context, listen: false).groups.isEmpty) {
-        if (userType == AppConstants.admin) {
-          Provider.of<MembersProvider>(context, listen: false).getBranches();
-        }
-        Provider.of<MembersProvider>(context, listen: false)
-            .getMemberCategories();
+      if (userType == AppConstants.admin) {
+        Provider.of<MembersProvider>(context, listen: false).getBranches();
       }
+      if (!widget.isMemberUser) {
+        Provider.of<MembersProvider>(context, listen: false)
+            .getOrganizationTypes();
+      }
+      if (widget.isMemberUser) {
+        Provider.of<MembersProvider>(context, listen: false).getCoutries();
+      }
+      Provider.of<MembersProvider>(context, listen: false)
+          .getMemberCategories();
       setState(() {});
     });
   }
@@ -241,6 +247,7 @@ class _FilterPageState extends State<FilterPage> {
                               _membersProvider.selectedMemberCategory =
                                   val as MemberCategory;
                             });
+                            _membersProvider.getGroups();
                           },
                         ),
                       ),
@@ -286,6 +293,7 @@ class _FilterPageState extends State<FilterPage> {
                             setState(() {
                               _membersProvider.selectedGroup = val as Group;
                             });
+                            _membersProvider.getSubGroups();
                           },
                         ),
                       ),
@@ -447,6 +455,100 @@ class _FilterPageState extends State<FilterPage> {
                     //     ],
                     //   ),
                     // ),
+
+                    !widget.isMemberUser
+                        ? Column(
+                            children: [
+                              LabelWidgetContainer(
+                                label: "Organization Type",
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        width: 0.0,
+                                        color: Colors.grey.shade400),
+                                  ),
+                                  child:
+                                      DropdownButtonFormField<OrganizationType>(
+                                    isExpanded: true,
+                                    style: const TextStyle(
+                                      color: textColorPrimary,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    hint:
+                                        const Text('Select Organization Type'),
+                                    decoration: const InputDecoration(
+                                        border: InputBorder.none),
+                                    value:
+                                        _membersProvider.selectOrganizationType,
+                                    icon: Icon(
+                                      CupertinoIcons.chevron_up_chevron_down,
+                                      color: Colors.grey.shade500,
+                                      size: 16,
+                                    ),
+                                    // Array list of items
+                                    items: _membersProvider.organizationTypes
+                                        .map((OrganizationType orgType) {
+                                      return DropdownMenuItem(
+                                        value: orgType,
+                                        child: Text(orgType.type!),
+                                      );
+                                    }).toList(),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _membersProvider
+                                                .selectOrganizationType =
+                                            val as OrganizationType;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("Select Registration Status?"),
+                                  Row(
+                                    children: List.generate(2, (index) {
+                                      return Row(
+                                        children: [
+                                          Radio(
+                                              activeColor: primaryColor,
+                                              value: index,
+                                              groupValue: disabilityOption,
+                                              onChanged: (int? value) {
+                                                setState(() {
+                                                  if (value == 0) {
+                                                    _membersProvider
+                                                            .businessRegistered =
+                                                        true;
+                                                  } else {
+                                                    _membersProvider
+                                                            .businessRegistered =
+                                                        false;
+                                                  }
+                                                  disabilityOption = value!;
+                                                });
+                                              }),
+                                          Text(index == 0
+                                              ? "Register"
+                                              : "Unregistered")
+                                        ],
+                                      );
+                                    }),
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
 
                     Row(
                       children: [

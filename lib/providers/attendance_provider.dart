@@ -158,7 +158,7 @@ class AttendanceProvider extends ChangeNotifier {
       );
       Navigator.of(_context!).pop();
       showNormalToast(response.message!);
-      getAllAbsentees(
+      getAllAttendees(
         meetingEventModel: selectedPastMeetingEvent!,
       );
     } catch (err) {
@@ -258,7 +258,7 @@ class AttendanceProvider extends ChangeNotifier {
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
-      getSubGroups();
+      getGenders();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -275,8 +275,6 @@ class AttendanceProvider extends ChangeNotifier {
       if (_branches.isNotEmpty) {
         selectedBranch = _branches[0];
       }
-      getGroups();
-      // getGenders();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Branch: ${err.toString()}');
@@ -290,8 +288,6 @@ class AttendanceProvider extends ChangeNotifier {
     try {
       _genders = await GroupAPI.getGenders();
       debugPrint('Genders: ${_genders.length}');
-      //selectedGender = _genders[0];
-      // getMemberCategories();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Gender: ${err.toString()}');
@@ -333,7 +329,6 @@ class AttendanceProvider extends ChangeNotifier {
     if (selectedMemberCategory != null) {
       try {
         _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
-
         debugPrint('Sub Groups: ${_subGroups.length}');
       } catch (err) {
         setLoading(false);
@@ -347,9 +342,14 @@ class AttendanceProvider extends ChangeNotifier {
   // get meetins from date specified
   Future<void> getPastMeetingEvents() async {
     try {
-      _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
+      // _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
+      //   page: 1,
+      //   date: selectedDate!.toIso8601String().substring(0, 10),
+      // );
+      var userBranch = await getUserBranch(currentContext);
+      _pastMeetingEvents = await EventAPI.getAllMeetings(
         page: 1,
-        date: selectedDate!.toIso8601String().substring(0, 10),
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
       );
       if (_pastMeetingEvents.isNotEmpty) {
         selectedPastMeetingEvent = _pastMeetingEvents[0];
@@ -363,8 +363,7 @@ class AttendanceProvider extends ChangeNotifier {
           onTap: () => Navigator.pop(_context!),
         );
       }
-      getGenders();
-      getGroups();
+      getMemberCategories();
     } catch (err) {
       debugPrint('Error PMs: ${err.toString()}');
       showErrorToast(err.toString());

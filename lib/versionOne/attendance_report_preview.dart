@@ -190,12 +190,13 @@ class _AttendanceReportDetailsPageState
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                 child: Text(
-                  isLate ? "Late" : "Early",
+                  isLate ? AppString.lateText : AppString.earlyText,
                   style: TextStyle(color: Colors.white, fontSize: 15),
                 ),
                 decoration: BoxDecoration(
-                    color: isLate ? Colors.red : Colors.green,
-                    borderRadius: BorderRadius.circular(24)),
+                  color: isLate ? Colors.red : Colors.green,
+                  borderRadius: BorderRadius.circular(24),
+                ),
               ),
 
               const SizedBox(

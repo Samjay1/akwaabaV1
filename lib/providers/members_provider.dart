@@ -4,6 +4,8 @@ import 'package:akwaaba/Networks/group_api.dart';
 import 'package:akwaaba/Networks/location_api.dart';
 import 'package:akwaaba/Networks/members_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_strings.dart';
+import 'package:akwaaba/models/general/OrganisationType.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/country.dart';
 import 'package:akwaaba/models/general/district.dart';
@@ -17,6 +19,7 @@ import 'package:akwaaba/models/general/region.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +36,7 @@ class MembersProvider extends ChangeNotifier {
   List<MemberCategory> _memberCategories = [];
   List<Gender> _genders = [];
   List<Branch> _branches = [];
+  List<OrganizationType> _organizationTypes = [];
 
   List<Country> _countries = [];
   List<Region> _regions = [];
@@ -49,8 +53,8 @@ class MembersProvider extends ChangeNotifier {
   List<Organization?> _tempOrganizationalMembers = [];
 
   int totalIndMembers = 0;
-  List<Member?> totalMaleIndMembers = [];
-  List<Member?> totalFemaleIndMembers = [];
+  int totalMaleIndMembers = 0;
+  int totalFemaleIndMembers = 0;
 
   int totalOrgs = 0;
   List<Organization?> totalRegOrgs = [];
@@ -69,6 +73,8 @@ class MembersProvider extends ChangeNotifier {
   Region? selectedRegion;
   District? selectedDistrict;
 
+  OrganizationType? selectOrganizationType;
+
   final TextEditingController minAgeTEC = TextEditingController();
   final TextEditingController maxAgeTEC = TextEditingController();
 
@@ -76,6 +82,8 @@ class MembersProvider extends ChangeNotifier {
   DateTime? selectedEndDate;
 
   String? selectedStatus;
+
+  bool? businessRegistered;
 
   BuildContext? _context;
 
@@ -91,6 +99,7 @@ class MembersProvider extends ChangeNotifier {
   List<MemberStatus> get educations => _educations;
   List<MemberStatus> get occupations => _occupations;
 
+  List<OrganizationType> get organizationTypes => _organizationTypes;
   List<Country> get countries => _countries;
   List<Region> get regions => _regions;
   List<District> get districts => _districts;
@@ -156,7 +165,6 @@ class MembersProvider extends ChangeNotifier {
       if (_memberCategories.isNotEmpty) {
         selectedMemberCategory = _memberCategories[0];
       }
-      getGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -177,7 +185,6 @@ class MembersProvider extends ChangeNotifier {
         selectedGroup = _groups[0];
       }
       debugPrint('Groups: ${_groups.length}');
-      getSubGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');
@@ -197,11 +204,23 @@ class MembersProvider extends ChangeNotifier {
       _subGroups = await GroupAPI.getSubGroups(
         groupId: selectedGroup!.id!,
       );
-      getCoutries();
       debugPrint('Sub Groups: ${_subGroups.length}');
     } catch (err) {
       setLoading(false);
       debugPrint('Error SubGroup: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // get organization types
+  Future<void> getOrganizationTypes() async {
+    try {
+      _organizationTypes = await MembersAPI.getOrganizationTypes();
+      debugPrint('Org Types: ${_branches.length}');
+    } catch (err) {
+      setLoading(false);
+      debugPrint('Error Branch: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -292,6 +311,52 @@ class MembersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<String?> userType() async {
+    return await SharedPrefs().getUserType();
+  }
+
+  // get list of profession
+  Future<void> getClientStatistics() async {
+    try {
+      var userBranch = await getUserBranch(currentContext);
+      var response = await MembersAPI.getClientStatistics(
+        currentBranchId:
+            selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+      );
+      // get individual members stats
+      totalIndMembers = response.statistics!.allMembers!;
+      totalMaleIndMembers = response.statistics!.allMales!;
+      totalFemaleIndMembers = response.statistics!.allFemales!;
+      // get organization members stats
+      totalOrgs = response.statistics!.allOrganizations!;
+    } catch (err) {
+      debugPrint('Error Client Stats: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // get list of profession
+  Future<void> getMembersStatistics(String accountType) async {
+    try {
+      var userBranch = await getUserBranch(currentContext);
+      var response = await MembersAPI.getMemberStatistics(
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+        accountType: accountType,
+      );
+      // get individual members stats
+      totalIndMembers = response.totalIndividualMembers!;
+      totalMaleIndMembers = response.totalIndividualMale!;
+      totalFemaleIndMembers = response.totalIndividualFemale!;
+      // get organization members stats
+      totalOrgs = response.totalOrganizationMembers!;
+    } catch (err) {
+      debugPrint('Error Member Stats: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
   // initial loading of individual members
   Future<void> getAllIndividualMembers() async {
     _individualMembers.clear();
@@ -340,22 +405,29 @@ class MembersProvider extends ChangeNotifier {
 
       _tempIndividualMembers = _individualMembers;
 
-      totalMaleIndMembers = _tempIndividualMembers;
+      // totalMaleIndMembers = _tempIndividualMembers;
 
-      totalFemaleIndMembers = _tempIndividualMembers;
+      // totalFemaleIndMembers = _tempIndividualMembers;
 
-      // get total members
-      totalIndMembers = _tempIndividualMembers.length;
+      // // get total members
+      // totalIndMembers = _tempIndividualMembers.length;
 
-      // calc total males
-      totalMaleIndMembers = _tempIndividualMembers
-          .where((member) => member!.gender == AppConstants.male)
-          .toList();
+      // // calc total males
+      // totalMaleIndMembers = _tempIndividualMembers
+      //     .where((member) => member!.gender == AppConstants.male)
+      //     .toList();
 
-      // calc total females
-      totalFemaleIndMembers = _tempIndividualMembers
-          .where((member) => member!.gender == AppConstants.female)
-          .toList();
+      // // calc total females
+      // totalFemaleIndMembers = _tempIndividualMembers
+      //     .where((member) => member!.gender == AppConstants.female)
+      //     .toList();
+
+      // check user type ('admin', 'member')
+      if (await userType() == AppConstants.admin) {
+        getClientStatistics();
+      } else {
+        getMembersStatistics(AppString.acountTypeInd);
+      }
 
       debugPrint('Ind Members: ${_individualMembers.length}');
 
@@ -424,17 +496,17 @@ class MembersProvider extends ChangeNotifier {
           _tempIndividualMembers.addAll(_individualMembers);
 
           // get total members
-          totalIndMembers += _tempIndividualMembers.length;
+          //totalIndMembers += _tempIndividualMembers.length;
 
-          totalMaleIndMembers.addAll(_tempIndividualMembers);
+          // totalMaleIndMembers.addAll(_tempIndividualMembers);
 
-          totalFemaleIndMembers.addAll(_tempIndividualMembers);
+          // totalFemaleIndMembers.addAll(_tempIndividualMembers);
 
-          // calc rest of the total males
-          totalMaleIndMembers
-              .removeWhere((member) => member!.gender == AppConstants.female);
-          totalFemaleIndMembers
-              .removeWhere((member) => member!.gender == AppConstants.male);
+          // // calc rest of the total males
+          // totalMaleIndMembers
+          //     .removeWhere((member) => member!.gender == AppConstants.female);
+          // totalFemaleIndMembers
+          //     .removeWhere((member) => member!.gender == AppConstants.male);
 
           // for (var member in _tempIndividualMembers) {
           //   if (member!.gender == AppConstants.male) {
@@ -442,18 +514,11 @@ class MembersProvider extends ChangeNotifier {
           //   }
           // }
 
-          debugPrint("Total members: $totalIndMembers");
+          // debugPrint("Total members: $totalIndMembers");
 
-          debugPrint("Total males: ${totalMaleIndMembers.length}");
+          // debugPrint("Total males: $totalMaleIndMembers");
 
-          // calc rest of the total females
-          // for (var member in _tempIndividualMembers) {
-          //   if (member!.gender == AppConstants.female) {
-          //     totalFemaleIndMembers.add(member);
-          //   }
-          // }
-
-          debugPrint("Total females: ${totalFemaleIndMembers.length}");
+          // debugPrint("Total females: $totalFemaleIndMembers");
         } else {
           hasNextPage = false;
         }
@@ -510,16 +575,24 @@ class MembersProvider extends ChangeNotifier {
         professionStatus: selectedProfession == null
             ? null
             : selectedProfession!.id!.toString(),
+        organizationType: selectOrganizationType == null
+            ? null
+            : selectOrganizationType!.id!.toString(),
+        businessRegistered: businessRegistered,
       );
 
       _tempOrganizationalMembers = _organizationalMembers;
 
+      // check user type ('admin', 'member')
+      if (await userType() == AppConstants.admin) {
+        getClientStatistics();
+      } else {
+        getMembersStatistics(AppString.acountTypeInd);
+      }
+
       totalRegOrgs = _tempOrganizationalMembers;
 
       totalUnRegOrgs = _tempOrganizationalMembers;
-
-      // get total organizations
-      totalOrgs = _tempOrganizationalMembers.length;
 
       // calc total registered organizations
       totalRegOrgs = _tempOrganizationalMembers
@@ -595,6 +668,10 @@ class MembersProvider extends ChangeNotifier {
           professionStatus: selectedProfession == null
               ? null
               : selectedProfession!.id!.toString(),
+          organizationType: selectOrganizationType == null
+              ? null
+              : selectOrganizationType!.id!.toString(),
+          businessRegistered: businessRegistered,
         );
         if (members.isNotEmpty) {
           _organizationalMembers.addAll(members);
@@ -614,21 +691,7 @@ class MembersProvider extends ChangeNotifier {
           // calc rest of the total unregistered organizations
           totalUnRegOrgs.removeWhere((org) => !org!.businessRegistered!);
 
-          // calc rest of the total males
-          // for (var member in _tempOrganizationalMembers) {
-          //   if (member!.gender == AppConstants.male) {
-          //     totalMaleOrgMembers.add(member);
-          //   }
-          // }
-
           debugPrint("Total reg: ${totalRegOrgs.length}");
-
-          // calc rest of the total females
-          // for (var member in _tempOrganizationalMembers) {
-          //   if (member!.gender == AppConstants.female) {
-          //     totalFemaleOrgMembers.add(member);
-          //   }
-          // }
 
           debugPrint("Total unreg: ${totalUnRegOrgs.length}");
         } else {
@@ -660,6 +723,8 @@ class MembersProvider extends ChangeNotifier {
     minAgeTEC.clear();
     maxAgeTEC.clear();
     isFilter = false;
+    businessRegistered = null;
+    selectOrganizationType = null;
     isMember ? getAllIndividualMembers() : getAllOrganizations();
     notifyListeners();
   }
@@ -687,8 +752,7 @@ class MembersProvider extends ChangeNotifier {
   }
 
   void clearData() {
-    clearFilters(isMember: true);
-
+    //clearFilters(isMember: true);
     _individualMembers.clear();
     _organizationalMembers.clear();
   }

@@ -3,6 +3,7 @@ import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -26,6 +27,25 @@ class _AttendanceHistoryItemPreviewPageState
   @override
   Widget build(BuildContext context) {
     attendanceHistoryProvider = context.watch<AttendanceHistoryProvider>();
+    var overtime = DateUtil.getTimeStringFromDouble(
+      double.parse(
+          widget.attendanceHistory!.attendanceRecord!.meetings![0].overtime!),
+    );
+
+    var onTime = DateUtil.getHourStringFromDouble(
+      double.parse(
+          widget.attendanceHistory!.attendanceRecord!.meetings![0].onTime!),
+    );
+
+    var undertime = DateUtil.getTimeStringFromDouble(
+      double.parse(
+          widget.attendanceHistory!.attendanceRecord!.meetings![0].undertime!),
+    );
+
+    var lateness = DateUtil.getHourStringFromDouble(
+      double.parse(
+          widget.attendanceHistory!.attendanceRecord!.meetings![0].lateness!),
+    );
     var attendeeName =
         "${widget.attendanceHistory!.attendanceRecord!.member!.firstname!} ${widget.attendanceHistory!.attendanceRecord!.member!.surname!}";
     return Scaffold(
@@ -38,11 +58,11 @@ class _AttendanceHistoryItemPreviewPageState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              headerWidget(attendeeName),
+              headerWidget(attendeeName, undertime, overtime),
               const SizedBox(
                 height: 12,
               ),
-              meetingRecords(),
+              meetingRecords(onTime, lateness),
             ],
           ),
         ),
@@ -50,7 +70,7 @@ class _AttendanceHistoryItemPreviewPageState
     );
   }
 
-  Widget headerWidget(String name) {
+  Widget headerWidget(String name, var undertime, var overtime) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(8)),
@@ -96,6 +116,31 @@ class _AttendanceHistoryItemPreviewPageState
           const SizedBox(
             height: 4,
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.meeting_room,
+                size: 16,
+                color: textColorLight,
+              ),
+              SizedBox(
+                width: displayWidth(context) * 0.01,
+              ),
+              Text(
+                widget.attendanceHistory!.attendanceRecord!.meetings![0]
+                    .meeting!.name!,
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: textColorLight,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 4,
+          ),
           Text(
               "Meeting Type : ${widget.attendanceHistory!.attendanceRecord!.meetings![0].meeting!.type! == 1 ? 'Meeting' : 'Event'}",
               style: TextStyle(fontSize: 15, color: textColorLight)),
@@ -103,21 +148,32 @@ class _AttendanceHistoryItemPreviewPageState
             height: 4,
           ),
           Text(
-              "Under time:   ${widget.attendanceHistory!.attendanceRecord!.meetings![0].undertime} hrs",
-              style: TextStyle(fontSize: 15, color: textColorLight)),
+            "Under time:   $undertime hrs",
+            style: TextStyle(
+              fontSize: 15,
+              color: textColorLight,
+            ),
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          Text(
+            "Overtime time:   $overtime hrs",
+            style: const TextStyle(
+              fontSize: 15,
+              color: textColorLight,
+            ),
+          ),
           const SizedBox(
             height: 12,
           ),
           Align(
             alignment: Alignment.center,
             child: TagWidget(
-              text: widget.attendanceHistory!.attendanceRecord!.meetings![0]
-                  .status!.name!,
-              color: widget.attendanceHistory!.attendanceRecord!.meetings![0]
-                          .status!.name ==
-                      'Inactive'
-                  ? Colors.red
-                  : Colors.green,
+              text: widget.attendanceHistory!.status!.name!,
+              color: widget.attendanceHistory!.status!.name == 'Active'
+                  ? Colors.green
+                  : Colors.red,
             ),
           ),
         ],
@@ -125,7 +181,7 @@ class _AttendanceHistoryItemPreviewPageState
     );
   }
 
-  Widget meetingRecords() {
+  Widget meetingRecords(var onTime, var lateness) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(8)),
@@ -143,10 +199,8 @@ class _AttendanceHistoryItemPreviewPageState
           attendanceRecordItemView(
               title: "Total Attendance",
               info: widget.attendanceHistory!.totalAttendance!),
-          attendanceRecordItemView(
-              title: "On Time", info: widget.attendanceHistory!.onTime!),
-          attendanceRecordItemView(
-              title: "Lateness ", info: widget.attendanceHistory!.lateness!)
+          attendanceRecordItemView(title: "On Time", info: '$onTime times'),
+          attendanceRecordItemView(title: "Lateness ", info: '$lateness times')
         ],
       ),
     );

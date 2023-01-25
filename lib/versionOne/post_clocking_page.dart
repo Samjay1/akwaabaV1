@@ -62,6 +62,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
     Future.delayed(Duration.zero, () {
       Provider.of<PostClockingProvider>(context, listen: false)
           .setCurrentContext(context);
+      Provider.of<PostClockingProvider>(context, listen: false)
+          .getAllMeetingEvents();
+      if (context.read<ClientProvider>().branch.id == 1) {
+        Provider.of<PostClockingProvider>(context, listen: false).getBranches();
+      }
+      Provider.of<PostClockingProvider>(context, listen: false)
+          .getMemberCategories();
       setState(() {});
     });
     super.initState();
@@ -906,6 +913,52 @@ class _PostClockingPageState extends State<PostClockingPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LabelWidgetContainer(
+            label: "Meeting/Event",
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 0.0, color: Colors.grey.shade400),
+              ),
+              child: DropdownButtonFormField<MeetingEventModel>(
+                isExpanded: true,
+                style: const TextStyle(
+                  color: textColorPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+                hint: const Text(
+                  'Select Meeting',
+                ),
+                decoration: const InputDecoration(border: InputBorder.none),
+                value: postClockingProvider.selectedPastMeetingEvent,
+                icon: Icon(
+                  CupertinoIcons.chevron_up_chevron_down,
+                  color: Colors.grey.shade500,
+                  size: 16,
+                ),
+                // Array list of items
+                items: postClockingProvider.pastMeetingEvents
+                    .map((MeetingEventModel mc) {
+                  return DropdownMenuItem(
+                    value: mc,
+                    child: Text(mc.name!),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    postClockingProvider.selectedPastMeetingEvent =
+                        val as MeetingEventModel;
+                  });
+                },
+              ),
+            ),
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.02,
+          ),
+          LabelWidgetContainer(
             label: "Date",
             child: FormButton(
               label: postClockingProvider.selectedDate == null
@@ -926,11 +979,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           "Selected DateTime: ${postClockingProvider.selectedDate!.toIso8601String().substring(0, 10)}");
                     });
                     // if admin is main branch admin
-                    if (context.read<ClientProvider>().branch.id == 1) {
-                      postClockingProvider.getBranches();
-                    }
-                    // admin is just a branch admin
-                    postClockingProvider.getPastMeetingEvents();
+                    // if (context.read<ClientProvider>().branch.id == 1) {
+                    //   postClockingProvider.getBranches();
+                    // }
+
                   }
                 });
               },
@@ -979,59 +1031,12 @@ class _PostClockingPageState extends State<PostClockingPage> {
                               postClockingProvider.selectedBranch =
                                   val as Branch;
                             });
-                            postClockingProvider.getPastMeetingEvents();
                           },
                         ),
                       ),
                     )
                   : const SizedBox();
             },
-          ),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
-          LabelWidgetContainer(
-            label: "Meeting/Event",
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(width: 0.0, color: Colors.grey.shade400),
-              ),
-              child: DropdownButtonFormField<MeetingEventModel>(
-                isExpanded: true,
-                style: const TextStyle(
-                  color: textColorPrimary,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
-                hint: const Text(
-                  'Select Meeting',
-                ),
-                decoration: const InputDecoration(border: InputBorder.none),
-                value: postClockingProvider.selectedPastMeetingEvent,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
-                // Array list of items
-                items: postClockingProvider.pastMeetingEvents
-                    .map((MeetingEventModel mc) {
-                  return DropdownMenuItem(
-                    value: mc,
-                    child: Text(mc.name!),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  setState(() {
-                    postClockingProvider.selectedPastMeetingEvent =
-                        val as MeetingEventModel;
-                  });
-                },
-              ),
-            ),
           ),
           SizedBox(
             height: displayHeight(context) * 0.02,
@@ -1265,24 +1270,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                     radius: AppRadius.borderRadius8,
                     function: () {
                       postClockingProvider.validateFilterFields(context);
-                      // if (postClockingProvider.loading) {
-                      //   // scroll to bottom of the screen to show the loading progress
-                      //   clockingListState
-                      //       ? postClockingProvider.absenteesScrollController
-                      //           .animateTo(
-                      //           postClockingProvider.absenteesScrollController
-                      //               .position.maxScrollExtent,
-                      //           duration: const Duration(seconds: 3),
-                      //           curve: Curves.ease,
-                      //         )
-                      //       : postClockingProvider.attendeesScrollController
-                      //           .animateTo(
-                      //           postClockingProvider.attendeesScrollController
-                      //               .position.maxScrollExtent,
-                      //           duration: const Duration(seconds: 3),
-                      //           curve: Curves.ease,
-                      //         );
-                      // }
                     }),
               ),
             ],

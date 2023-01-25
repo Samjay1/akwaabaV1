@@ -6,6 +6,7 @@ import 'package:akwaaba/models/attendance_history_item.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/versionOne/attendance_history_item_preview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
@@ -25,6 +26,19 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     attendanceHistoryProvider = context.watch<AttendanceHistoryProvider>();
+
+    var overtime = DateUtil.getTimeStringFromDouble(
+      double.parse(attendanceHistory!.attendanceRecord!.meetings![0].overtime!),
+    );
+
+    var undertime = DateUtil.getTimeStringFromDouble(
+      double.parse(
+          attendanceHistory!.attendanceRecord!.meetings![0].undertime!),
+    );
+
+    var lateness = DateUtil.getHourStringFromDouble(
+      double.parse(attendanceHistory!.attendanceRecord!.meetings![0].lateness!),
+    );
 
     var attendeeName =
         "${attendanceHistory!.attendanceRecord!.member!.firstname!} ${attendanceHistory!.attendanceRecord!.member!.surname!}";
@@ -96,28 +110,67 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                     const SizedBox(
                       height: 4,
                     ),
-                    Text(
-                        "Meeting Type : ${attendanceHistory!.attendanceRecord!.meetings![0].meeting!.type! == 1 ? 'Meeting' : 'Event'}",
-                        style: const TextStyle(
-                            fontSize: 14, color: textColorLight)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.meeting_room,
+                              size: 16,
+                              color: textColorLight,
+                            ),
+                            SizedBox(
+                              width: displayWidth(context) * 0.01,
+                            ),
+                            Text(
+                              attendanceHistory!.attendanceRecord!.meetings![0]
+                                  .meeting!.name!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: textColorLight,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          "Late: $lateness times",
+                          style: const TextStyle(
+                              fontSize: 14, color: primaryColor),
+                        ),
+                      ],
+                    ),
                     const SizedBox(
                       height: 4,
                     ),
                     Text(
-                      "Under time: ${attendanceHistory!.attendanceRecord!.meetings![0].undertime} hrs",
+                      "Overtime: $overtime hrs",
+                      style:
+                          const TextStyle(fontSize: 14, color: textColorLight),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "Undertime: $undertime hrs",
+                      style:
+                          const TextStyle(fontSize: 14, color: textColorLight),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "Total Attendance: ${attendanceHistory!.attendanceRecord!.meetings![0].totalAttendance}",
                       style:
                           const TextStyle(fontSize: 14, color: textColorLight),
                     ),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TagWidget(
-                        text: attendanceHistory!
-                            .attendanceRecord!.meetings![0].status!.name!,
-                        color: attendanceHistory!.attendanceRecord!.meetings![0]
-                                    .status!.name ==
-                                'Inactive'
-                            ? Colors.red
-                            : Colors.green,
+                        text: attendanceHistory!.status!.name!,
+                        color: attendanceHistory!.status!.name == 'Active'
+                            ? Colors.green
+                            : Colors.red,
                       ),
                     ),
                   ],

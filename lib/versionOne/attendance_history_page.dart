@@ -48,9 +48,6 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
 
   @override
   void initState() {
-    Provider.of<AttendanceHistoryProvider>(context, listen: false)
-        .setCurrentContext(context);
-
     SharedPrefs().getUserType().then((value) {
       setState(() {
         userType = value!;
@@ -58,14 +55,17 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
     });
 
     Future.delayed(Duration.zero, () {
+      Provider.of<AttendanceHistoryProvider>(context, listen: false)
+          .setCurrentContext(context);
       // check if admin is main branch admin or not
-      if (userType == AppConstants.admin) {
+      if (userType == AppConstants.admin &&
+          Provider.of<ClientProvider>(context, listen: false).branch.id ==
+              AppConstants.mainAdmin) {
         Provider.of<AttendanceHistoryProvider>(context, listen: false)
             .getBranches();
-      } else {
-        Provider.of<AttendanceHistoryProvider>(context, listen: false)
-            .getGenders();
       }
+      Provider.of<AttendanceHistoryProvider>(context, listen: false)
+          .getPastMeetingEvents();
 
       setState(() {});
     });
@@ -191,8 +191,6 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                               context.read<ClientProvider>().branch.id == 1) {
                             attendanceHistoryProvider.getBranches();
                           }
-                          // admin is just a branch admin
-                          attendanceHistoryProvider.getPastMeetingEvents();
                         }
                       });
                     },
@@ -223,7 +221,6 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                             debugPrint(
                                 "Selected Start Date: ${attendanceHistoryProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
                           });
-                          attendanceHistoryProvider.getGenders();
                         }
                       });
                     },
@@ -277,7 +274,6 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                               attendanceHistoryProvider.selectedBranch =
                                   val as Branch;
                             });
-                            attendanceHistoryProvider.getPastMeetingEvents();
                           },
                         ),
                       ),
@@ -380,7 +376,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                           attendanceHistoryProvider.selectedMemberCategory =
                               val as MemberCategory;
                         });
-                        attendanceHistoryProvider.getMemberCategories();
+                        attendanceHistoryProvider.getGroups();
                       },
                     ),
                   ),
@@ -432,6 +428,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                           attendanceHistoryProvider.selectedGroup =
                               val as Group;
                         });
+                        attendanceHistoryProvider.getSubGroups();
                       },
                     ),
                   ),

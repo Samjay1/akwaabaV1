@@ -146,6 +146,7 @@ class PostClockingProvider extends ChangeNotifier {
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
+      getGenders();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -159,7 +160,6 @@ class PostClockingProvider extends ChangeNotifier {
     try {
       _branches = await GroupAPI.getBranches();
       debugPrint('Branches: ${_branches.length}');
-      // getGenders();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Branch: ${err.toString()}');
@@ -173,8 +173,6 @@ class PostClockingProvider extends ChangeNotifier {
     try {
       _genders = await GroupAPI.getGenders();
       debugPrint('Genders: ${_genders.length}');
-      //selectedGender = _genders[0];
-      // getMemberCategories();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Gender: ${err.toString()}');
@@ -227,7 +225,7 @@ class PostClockingProvider extends ChangeNotifier {
   }
 
   // get meetings from date specified
-  Future<void> getPastMeetingEvents() async {
+  Future<void> getAllMeetingEvents() async {
     try {
       // _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
       //   page: 1,

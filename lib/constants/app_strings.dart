@@ -8,4 +8,8 @@ class AppString {
   static const String callText = 'Call';
   static const String whatsappText = 'Whatsapp';
   static const String countryGH = 'Ghana';
+  static const String earlyText = 'In Time';
+  static const String lateText = 'Late';
+  static const String acountTypeInd = 'Individual Members';
+  static const String acountTypeOrg = 'Organization Members';
 }

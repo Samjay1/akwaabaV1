@@ -2,9 +2,9 @@ import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
-import 'package:akwaaba/providers/client_provider.dart';
-import 'package:akwaaba/providers/clocking_provider.dart';
+import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -14,12 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'custom_elevated_button.dart';
-import 'custom_outlined_button.dart';
-
 class AttendanceReportAttendeeItem extends StatelessWidget {
   final Attendee? attendee;
-  const AttendanceReportAttendeeItem({Key? key, this.attendee})
+  final String? userType;
+  const AttendanceReportAttendeeItem({Key? key, this.attendee, this.userType})
       : super(key: key);
 
   @override
@@ -51,6 +49,10 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
               date: DateTime.parse(attendee!.attendance!.endBreak!))
           .toLowerCase();
     }
+
+    var lastSeenDate = DateUtil.convertToAgo(
+      date: DateTime.parse(attendee!.lastSeen!),
+    );
 
     var attendeeName =
         "${attendee!.additionalInfo!.memberInfo!.firstname!} ${attendee!.additionalInfo!.memberInfo!.surname!}";
@@ -103,11 +105,11 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.01,
+                      height: displayHeight(context) * 0.008,
                     ),
                     Text(
                       'ID: ${attendee!.identification}',
-                      style: const TextStyle(fontSize: 16, color: primaryColor),
+                      style: const TextStyle(fontSize: 16, color: blackColor),
                     ),
                     SizedBox(
                       height: displayHeight(context) * 0.008,
@@ -146,6 +148,112 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                             ],
                           )
                         : const SizedBox(),
+                    SizedBox(
+                      height: displayHeight(context) * 0.01,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.calendar_month_outlined,
+                              size: 20,
+                              color: primaryColor,
+                            ),
+                            SizedBox(
+                              width: displayWidth(context) * 0.01,
+                            ),
+                            Text(
+                              attendee!.attendance!.meetingEventId!.name!,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: blackColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          DateUtil.formatStringDate(DateFormat.yMMMEd(),
+                              date: Provider.of<AttendanceProvider>(context,
+                                      listen: false)
+                                  .selectedDate!),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: blackColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.01,
+                    ),
+                    Text(
+                      "Last seen: $lastSeenDate",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: blackColor,
+                      ),
+                    ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.01,
+                    ),
+                    if (attendee!.attendance!.inTime != null &&
+                        userType == AppConstants.admin)
+                      attendee!.attendance!.validate! == 1
+                          ? const SizedBox(
+                              width: double.infinity,
+                              child: Expanded(
+                                child: TagWidget(
+                                  color: Colors.green,
+                                  text: "Validated",
+                                ),
+                              ),
+                            )
+                          : InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    insetPadding: const EdgeInsets.all(10),
+                                    backgroundColor: Colors.transparent,
+                                    elevation: 0,
+                                    content: ConfirmDialog(
+                                      title: 'Validate',
+                                      content:
+                                          'Are you sure you want to validate $attendeeName?',
+                                      onConfirmTap: () {
+                                        Navigator.pop(context);
+                                        Provider.of<AttendanceProvider>(context,
+                                                listen: false)
+                                            .validateMemberAttendance(
+                                          clockingId: attendee!.attendance!.id!,
+                                        );
+                                      },
+                                      onCancelTap: () => Navigator.pop(context),
+                                      confirmText: 'Yes',
+                                      cancelText: 'Cancel',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14.0, vertical: 7.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      AppRadius.borderRadius8),
+                                  color: Colors.green,
+                                ),
+                                child: const Text(
+                                  "Validate",
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.white),
+                                ),
+                              ),
+                            ),
                     SizedBox(
                       height: displayHeight(context) * 0.01,
                     ),

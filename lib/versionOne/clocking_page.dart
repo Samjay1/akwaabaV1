@@ -76,10 +76,9 @@ class _ClockingPageState extends State<ClockingPage> {
 
   @override
   void initState() {
-    Provider.of<ClockingProvider>(context, listen: false)
-        .setCurrentContext(context);
-
     Future.delayed(Duration.zero, () {
+      Provider.of<ClockingProvider>(context, listen: false)
+          .setCurrentContext(context);
       // load attendance list for meeting
       Provider.of<ClockingProvider>(context, listen: false).getAllAbsentees(
         meetingEventModel: widget.meetingEventModel,
@@ -93,6 +92,7 @@ class _ClockingPageState extends State<ClockingPage> {
       }
       setState(() {});
     });
+    // setState(() {});
     super.initState();
   }
 

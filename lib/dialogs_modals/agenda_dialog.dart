@@ -1,5 +1,6 @@
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
@@ -9,13 +10,14 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AgendaDialog extends StatelessWidget {
+  final MeetingEventModel? meetingEventModel;
   const AgendaDialog({
     super.key,
+    this.meetingEventModel,
   });
 
   @override
   Widget build(BuildContext context) {
-    var attendanceProvider = context.watch<HomeProvider>();
     return Container(
       padding: const EdgeInsets.all((AppPadding.p20)),
       decoration: BoxDecoration(
@@ -38,7 +40,7 @@ class AgendaDialog extends StatelessWidget {
           Align(
             alignment: Alignment.topLeft,
             child: Text(
-              attendanceProvider.selectedMeeting.name!,
+              meetingEventModel!.name!,
               style: const TextStyle(
                 color: blackColor,
                 fontWeight: FontWeight.bold,
@@ -55,7 +57,7 @@ class AgendaDialog extends StatelessWidget {
               DateUtil.formatStringDate(
                 DateFormat.yMMMEd(),
                 date: DateTime.parse(
-                  attendanceProvider.selectedMeeting.updateDate!,
+                  meetingEventModel!.updateDate!,
                 ),
               ),
               style: TextStyle(
@@ -72,12 +74,12 @@ class AgendaDialog extends StatelessWidget {
               child: SingleChildScrollView(
             child: Column(
               children: [
-                attendanceProvider.selectedMeeting.agendaFile != ""
+                meetingEventModel!.agendaFile != ""
                     ? SizedBox(
                         width: displayWidth(context),
                         height: 200,
                         child: CustomCachedImageWidget(
-                          url: attendanceProvider.selectedMeeting.agendaFile!,
+                          url: meetingEventModel!.agendaFile!,
                           height: 130,
                         ),
                       )
@@ -97,7 +99,7 @@ class AgendaDialog extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    attendanceProvider.selectedMeeting.agenda!,
+                    meetingEventModel!.agenda!,
                     style: const TextStyle(
                       color: blackColor,
                       fontWeight: FontWeight.w500,
