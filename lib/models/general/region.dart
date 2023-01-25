@@ -15,4 +15,10 @@ class Region {
 
     return data;
   }
+
+  bool operator ==(dynamic other) =>
+      other != null && other is Region && id == other.id;
+
+  @override
+  int get hashCode => super.hashCode;
 }

@@ -7,4 +7,5 @@ class AppString {
       'Are you experiencing issues? \nYou can reach out to your admin \non';
   static const String callText = 'Call';
   static const String whatsappText = 'Whatsapp';
+  static const String countryGH = 'Ghana';
 }

@@ -12,6 +12,7 @@ import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/messaging_type.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -302,14 +303,13 @@ class AttendanceProvider extends ChangeNotifier {
   // get list of groups
   Future<void> getGroups() async {
     try {
+      var userBranch = await getUserBranch(currentContext);
       _groups = await GroupAPI.getGroups(
-          // branchId: selectedBranch == null
-          //     ? selectedPastMeetingEvent!.branchId!
-          //     : selectedBranch!.id!,
-          );
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+        memberCategoryId: selectedMemberCategory!.id!,
+      );
       debugPrint('Groups: ${_groups.length}');
       // selectedGroup = _groups[0];
-
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');
@@ -332,12 +332,7 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getSubGroups() async {
     if (selectedMemberCategory != null) {
       try {
-        _subGroups = await GroupAPI.getSubGroups(
-            // branchId: selectedBranch == null
-            //     ? selectedPastMeetingEvent!.branchId!
-            //     : selectedBranch!.id!,
-            // memberCategoryId: selectedMemberCategory!.id!,
-            );
+        _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
 
         debugPrint('Sub Groups: ${_subGroups.length}');
       } catch (err) {

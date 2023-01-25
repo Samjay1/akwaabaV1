@@ -2,9 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/models/general/branch.dart';
+import 'package:akwaaba/providers/client_provider.dart';
+import 'package:akwaaba/providers/member_provider.dart';
+import 'package:akwaaba/providers/members_provider.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:open_mail_app/open_mail_app.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -86,6 +93,18 @@ openEmailApp(BuildContext context) async {
       },
     );
   }
+}
+
+// get branch based on user type
+Future<Branch> getUserBranch(BuildContext context) async {
+  // get selected branch
+  Branch? branch;
+  if (await SharedPrefs().getUserType() == AppConstants.admin) {
+    branch = Provider.of<ClientProvider>(context, listen: false).branch;
+  } else {
+    branch = Provider.of<MemberProvider>(context, listen: false).branch;
+  }
+  return branch!;
 }
 
 // checks if account is active or has expired

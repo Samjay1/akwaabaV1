@@ -44,6 +44,33 @@ class EventAPI {
     return todayMeetings;
   }
 
+  static Future<List<MeetingEventModel>> getAllMeetings({
+    required int page,
+    required int branchId,
+  }) async {
+    List<MeetingEventModel> meetings = [];
+    var url = Uri.parse(
+        '${getBaseUrl()}/attendance/meeting-event/schedule?filter_recuring=both&branchId=$branchId&page=$page&length=50');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      var decodedresponse = jsonDecode(response.body);
+      debugPrint("TODAY MeetingEventModel success: $decodedresponse");
+      Iterable meetingList = decodedresponse['results'];
+      meetings = meetingList
+          .map(
+            (data) => MeetingEventModel.fromJson(data),
+          )
+          .toList();
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return meetings;
+  }
+
   static Future<List<MeetingEventModel>> getMeetingsFromDate({
     required int page,
     required String date,

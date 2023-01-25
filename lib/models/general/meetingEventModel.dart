@@ -5,9 +5,9 @@ class MeetingEventModel {
   int? type;
   int? memberType;
   String? name;
-  int? clientId;
-  int? branchId;
-  int? memberCategoryId;
+  dynamic clientId;
+  dynamic branchId;
+  dynamic memberCategoryId;
   int? meetingSpan;
   String? startTime;
   String? closeTime;

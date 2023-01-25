@@ -3,6 +3,7 @@ import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/member_widget.dart';
 import 'package:akwaaba/components/organization_widget.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../screens/filter_page.dart';
+import 'filter_page.dart';
 
 class MembersPage extends StatefulWidget {
   final bool isMemberuser;
@@ -25,6 +26,8 @@ class _MembersPageState extends State<MembersPage> {
   late MembersProvider _membersProvider;
 
   void loadAllMembers() async {
+    Provider.of<MembersProvider>(context, listen: false)
+        .setCurrentContext(context);
     Future.delayed(Duration.zero, () {
       // load individual or organization members
       widget.isMemberuser
@@ -206,9 +209,12 @@ class _MembersPageState extends State<MembersPage> {
           Expanded(
             child: Column(
               children: [
-                Text(
+                const Text(
                   "Total",
-                  style: TextStyle(fontSize: 12),
+                  style: TextStyle(
+                    fontSize: AppSize.s14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   isMemberUsers
@@ -222,8 +228,11 @@ class _MembersPageState extends State<MembersPage> {
             child: Column(
               children: [
                 Text(
-                  isMemberUsers ? "Males" : 'Registered',
-                  style: const TextStyle(fontSize: 12),
+                  isMemberUsers ? 'Males' : 'Registered',
+                  style: const TextStyle(
+                    fontSize: AppSize.s14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   isMemberUsers
@@ -238,13 +247,16 @@ class _MembersPageState extends State<MembersPage> {
               children: [
                 Text(
                   isMemberUsers ? "Females" : 'Unregistered',
-                  style: const TextStyle(fontSize: 12),
+                  style: const TextStyle(
+                    fontSize: AppSize.s14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   isMemberUsers
                       ? _membersProvider.totalFemaleIndMembers.length.toString()
                       : _membersProvider.totalUnRegOrgs.length.toString(),
-                )
+                ),
               ],
             ),
           )

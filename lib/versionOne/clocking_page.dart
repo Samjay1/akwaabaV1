@@ -56,8 +56,6 @@ class _ClockingPageState extends State<ClockingPage> {
   //   {"status": false},
   // ];
 
-  late ScrollController _controller;
-
   bool itemHasBeenSelected =
       false; //at least 1 member has been selected, so show options menu
   List<Map> selectedMembersList = [];
@@ -74,16 +72,10 @@ class _ClockingPageState extends State<ClockingPage> {
 
   bool isShowTopView = true;
 
-  //late ScrollController _absenteeScrollController;
+  bool clockingListState = true;
 
   @override
   void initState() {
-    _controller = ScrollController();
-
-    // _absenteeScrollController = ScrollController()
-    //   ..addListener(
-    //       Provider.of<ClockingProvider>(context, listen: false).loadMore);
-
     Provider.of<ClockingProvider>(context, listen: false)
         .setCurrentContext(context);
 
@@ -99,7 +91,6 @@ class _ClockingPageState extends State<ClockingPage> {
       } else {
         Provider.of<ClockingProvider>(context, listen: false).getGenders();
       }
-
       setState(() {});
     });
     super.initState();
@@ -114,7 +105,6 @@ class _ClockingPageState extends State<ClockingPage> {
             setState(() {
               isShowTopView = true;
             });
-
             break;
           case ScrollDirection.reverse:
             setState(() {
@@ -154,7 +144,7 @@ class _ClockingPageState extends State<ClockingPage> {
             children: [
               isShowTopView
                   ? SizedBox(
-                      height: displayHeight(context) * 0.46,
+                      height: displayHeight(context) * 0.35,
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Column(
@@ -318,13 +308,17 @@ class _ClockingPageState extends State<ClockingPage> {
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: displayHeight(context) * 0.025,
-                            ),
-                            const Divider(
-                              height: 2,
-                              color: primaryColor,
-                            ),
+                            widget.meetingEventModel.hasBreakTime!
+                                ? SizedBox(
+                                    height: displayHeight(context) * 0.025,
+                                  )
+                                : const SizedBox(),
+                            widget.meetingEventModel.hasBreakTime!
+                                ? const Divider(
+                                    height: 2,
+                                    color: primaryColor,
+                                  )
+                                : const SizedBox(),
                             // SizedBox(
                             //   height: displayHeight(context) * 0.01,
                             // ),
@@ -453,9 +447,7 @@ class _ClockingPageState extends State<ClockingPage> {
                                     ),
                                   )
                                 : const SizedBox(),
-                            const SizedBox(
-                              height: 4,
-                            ),
+
                             SizedBox(
                               height: displayHeight(context) * 0.02,
                             ),
@@ -471,6 +463,7 @@ class _ClockingPageState extends State<ClockingPage> {
                       ),
                     )
                   : const SizedBox(),
+
               CustomTabWidget(
                 selectedIndex: _selectedIndex,
                 tabTitles: const [
@@ -483,7 +476,7 @@ class _ClockingPageState extends State<ClockingPage> {
                       _selectedIndex = 0;
                       checkAll = false;
                       clockingProvider.selectedAttendees.clear();
-                      debugPrint('     clockingListState = $_selectedIndex');
+                      debugPrint('clockingListState = $_selectedIndex');
                     });
                   },
                   () {
@@ -632,13 +625,13 @@ class _ClockingPageState extends State<ClockingPage> {
               const SizedBox(
                 height: 12,
               ),
+              // list of absentees and attendees
               clockingProvider.loading
                   ? Expanded(
                       child: Shimmer.fromColors(
                         baseColor: greyColorShade300,
                         highlightColor: greyColorShade100,
                         child: ListView.builder(
-                          shrinkWrap: true,
                           itemBuilder: (_, __) => const EventShimmerItem(),
                           itemCount: 10,
                         ),
@@ -646,7 +639,7 @@ class _ClockingPageState extends State<ClockingPage> {
                     )
                   : _selectedIndex == 0
                       ? Expanded(
-                          child: absentees.isEmpty
+                          child: clockingProvider.absentees.isEmpty
                               ? const EmptyStateWidget(
                                   text: 'No absentees found!',
                                 )
@@ -660,33 +653,39 @@ class _ClockingPageState extends State<ClockingPage> {
                                         child: ListView.builder(
                                             controller: clockingProvider
                                                 .absenteesScrollController,
-                                            itemCount: absentees.length,
-                                            shrinkWrap: true,
+                                            itemCount: clockingProvider
+                                                .absentees.length,
                                             itemBuilder: (context, index) {
-                                              if (absentees.isEmpty) {
-                                                return const EmptyStateWidget(
-                                                  text: 'No absentees found!',
-                                                );
-                                              }
+                                              // if (clockingProvider.absentees.isEmpty) {
+                                              //   return const EmptyStateWidget(
+                                              //     text: 'No absentees found!',
+                                              //   );
+                                              // }
                                               return GestureDetector(
                                                 onTap: () {
                                                   setState(() {
-                                                    if (absentees[index]!
+                                                    if (clockingProvider
+                                                        .absentees[index]!
                                                         .selected!) {
                                                       //remove it
-                                                      absentees[index]!
+                                                      clockingProvider
+                                                          .absentees[index]!
                                                           .selected = false;
                                                       clockingProvider
                                                           .selectedAbsentees
                                                           .remove(
-                                                              absentees[index]);
+                                                              clockingProvider
+                                                                      .absentees[
+                                                                  index]);
                                                     } else {
-                                                      absentees[index]!
+                                                      clockingProvider
+                                                          .absentees[index]!
                                                           .selected = true;
                                                       clockingProvider
                                                           .selectedAbsentees
-                                                          .add(
-                                                              absentees[index]);
+                                                          .add(clockingProvider
+                                                                  .absentees[
+                                                              index]);
                                                     }
                                                     if (clockingProvider
                                                         .selectedAbsentees
@@ -702,7 +701,8 @@ class _ClockingPageState extends State<ClockingPage> {
                                                       "Select Absentees: ${clockingProvider.selectedAbsentees.length}");
                                                 },
                                                 child: ClockingMemberItem(
-                                                  absentee: absentees[index],
+                                                  absentee: clockingProvider
+                                                      .absentees[index],
                                                 ),
                                               );
                                             }),
@@ -716,7 +716,7 @@ class _ClockingPageState extends State<ClockingPage> {
                                 ),
                         )
                       : Expanded(
-                          child: attendees.isEmpty
+                          child: clockingProvider.attendees.isEmpty
                               ? const EmptyStateWidget(
                                   text: 'No attendees found!',
                                 )
@@ -730,34 +730,40 @@ class _ClockingPageState extends State<ClockingPage> {
                                         child: ListView.builder(
                                             controller: clockingProvider
                                                 .attendeesScrollController,
-                                            shrinkWrap: true,
-                                            itemCount: attendees.length,
+                                            itemCount: clockingProvider
+                                                .attendees.length,
                                             itemBuilder: (context, index) {
-                                              if (attendees.isEmpty) {
-                                                return const EmptyStateWidget(
-                                                  text: 'No attendees found!',
-                                                );
-                                              }
+                                              // if (clockingProvider.attendees.isEmpty) {
+                                              //   return const EmptyStateWidget(
+                                              //     text: 'No attendees found!',
+                                              //   );
+                                              // }
                                               return GestureDetector(
                                                 onTap: () {
                                                   setState(
                                                     () {
-                                                      if (attendees[index]!
+                                                      if (clockingProvider
+                                                          .attendees[index]!
                                                           .selected!) {
                                                         //remove it
-                                                        attendees[index]!
+                                                        clockingProvider
+                                                            .attendees[index]!
                                                             .selected = false;
 
                                                         clockingProvider
                                                             .selectedAttendees
-                                                            .remove(attendees[
-                                                                index]!);
+                                                            .remove(
+                                                                clockingProvider
+                                                                        .attendees[
+                                                                    index]!);
                                                       } else {
-                                                        attendees[index]!
+                                                        clockingProvider
+                                                            .attendees[index]!
                                                             .selected = true;
                                                         clockingProvider
                                                             .selectedAttendees
-                                                            .add(attendees[
+                                                            .add(clockingProvider
+                                                                    .attendees[
                                                                 index]!);
                                                       }
                                                       if (clockingProvider
@@ -775,7 +781,8 @@ class _ClockingPageState extends State<ClockingPage> {
                                                   );
                                                 },
                                                 child: ClockedMemberItem(
-                                                  attendee: attendees[index]!,
+                                                  attendee: clockingProvider
+                                                      .attendees[index]!,
                                                 ),
                                               );
                                             }),

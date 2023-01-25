@@ -13,6 +13,7 @@ import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -145,7 +146,6 @@ class PostClockingProvider extends ChangeNotifier {
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
-      getSubGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -159,10 +159,6 @@ class PostClockingProvider extends ChangeNotifier {
     try {
       _branches = await GroupAPI.getBranches();
       debugPrint('Branches: ${_branches.length}');
-      if (_branches.isNotEmpty) {
-        selectedBranch = _branches[0];
-      }
-      getGroups();
       // getGenders();
     } catch (err) {
       setLoading(false);
@@ -190,14 +186,13 @@ class PostClockingProvider extends ChangeNotifier {
   // get list of groups
   Future<void> getGroups() async {
     try {
+      var userBranch = await getUserBranch(currentContext);
       _groups = await GroupAPI.getGroups(
-          // branchId: selectedBranch == null
-          //     ? selectedPastMeetingEvent!.branchId!
-          //     : selectedBranch!.id!,
-          );
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+        memberCategoryId: selectedMemberCategory!.id!,
+      );
       debugPrint('Groups: ${_groups.length}');
       // selectedGroup = _groups[0];
-
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');
@@ -218,32 +213,32 @@ class PostClockingProvider extends ChangeNotifier {
 
   // get list of subgroups
   Future<void> getSubGroups() async {
-    if (selectedMemberCategory != null) {
-      try {
-        _subGroups = await GroupAPI.getSubGroups(
-            // branchId: selectedBranch == null
-            //     ? selectedPastMeetingEvent!.branchId!
-            //     : selectedBranch!.id!,
-            // memberCategoryId: selectedMemberCategory!.id!,
-            );
-
-        debugPrint('Sub Groups: ${_subGroups.length}');
-      } catch (err) {
-        setLoading(false);
-        debugPrint('Error SubGroup: ${err.toString()}');
-        showErrorToast(err.toString());
-      }
+    try {
+      _subGroups = await GroupAPI.getSubGroups(
+        groupId: selectedGroup!.id!,
+      );
+      debugPrint('Sub Groups: ${_subGroups.length}');
+    } catch (err) {
+      setLoading(false);
+      debugPrint('Error SubGroup: ${err.toString()}');
+      showErrorToast(err.toString());
     }
     notifyListeners();
   }
 
-  // get meetins from date specified
+  // get meetings from date specified
   Future<void> getPastMeetingEvents() async {
     try {
-      _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
+      // _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
+      //   page: 1,
+      //   date: selectedDate!.toIso8601String().substring(0, 10),
+      // );
+      var userBranch = await getUserBranch(currentContext);
+      _pastMeetingEvents = await EventAPI.getAllMeetings(
         page: 1,
-        date: selectedDate!.toIso8601String().substring(0, 10),
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
       );
+
       if (_pastMeetingEvents.isNotEmpty) {
         selectedPastMeetingEvent = _pastMeetingEvents[0];
       } else {
@@ -256,8 +251,8 @@ class PostClockingProvider extends ChangeNotifier {
           onTap: () => Navigator.pop(_context!),
         );
       }
+      getMemberCategories();
       getGenders();
-      getGroups();
     } catch (err) {
       debugPrint('Error PMs: ${err.toString()}');
       showErrorToast(err.toString());

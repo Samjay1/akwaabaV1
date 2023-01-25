@@ -120,101 +120,96 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(
-                height: 24,
-              ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(
+              height: 24,
+            ),
 
-              eventProvider.loading
-                  ? Shimmer.fromColors(
-                      baseColor: greyColorShade300,
-                      highlightColor: greyColorShade100,
-                      child: const ProfileShimmerItem(),
-                    )
-                  : userType.compareTo(AppConstants.member) == 0
-                      ? Consumer<MemberProvider>(
-                          builder: (context, data, child) {
-                            return memberHeaderView(
-                              firstName: data.memberProfile.user.firstname,
-                              surName: data.memberProfile.user.surname,
-                              userId: data.identityNumber,
-                              profileImage:
-                                  data.memberProfile.user.profilePicture,
+            eventProvider.loading
+                ? Shimmer.fromColors(
+                    baseColor: greyColorShade300,
+                    highlightColor: greyColorShade100,
+                    child: const ProfileShimmerItem(),
+                  )
+                : userType.compareTo(AppConstants.member) == 0
+                    ? Consumer<MemberProvider>(
+                        builder: (context, data, child) {
+                          return memberHeaderView(
+                            firstName: data.memberProfile.user.firstname,
+                            surName: data.memberProfile.user.surname,
+                            userId: data.identityNumber,
+                            profileImage:
+                                data.memberProfile.user.profilePicture,
+                          );
+                        },
+                      )
+                    : userType.compareTo(AppConstants.admin) == 0
+                        ? Consumer<ClientProvider>(
+                            builder: (context, data, child) {
+                            return adminHeaderView(
+                              firstName: data.getUser?.applicantFirstname,
+                              surName: data.getUser?.applicantSurname,
+                              userId: data.getUser?.applicantEmail,
+                              profileImage: data.adminProfile?.profilePicture,
                             );
-                          },
-                        )
-                      : userType.compareTo(AppConstants.admin) == 0
-                          ? Consumer<ClientProvider>(
-                              builder: (context, data, child) {
-                              return adminHeaderView(
-                                firstName: data.getUser?.applicantFirstname,
-                                surName: data.getUser?.applicantSurname,
-                                userId: data.getUser?.applicantEmail,
-                                profileImage: data.adminProfile?.profilePicture,
-                              );
-                            })
-                          : const Text("Unknown User type"),
-              // TODO: Uncomment it when recent clocking API is available
-              // userType.compareTo("member") == 0
-              //     ? Consumer<MemberProvider>(
-              //         builder: (context, data, child) {
-              //           return headerView(
-              //               firstName: data.memberProfile.firstname,
-              //               surName: data.memberProfile.surname,
-              //               profileImage: data.memberProfile.profilePicture);
-              //         },
-              //       )
-              //     : userType.compareTo("admin") == 0
-              //         ? Consumer<ClientProvider>(
-              //             builder: (context, data, child) {
-              //             return adminHeaderView(
-              //                 firstName: data.getUser?.firstName,
-              //                 surName: data.getUser?.surName,
-              //                 profileImage: data.getUser?.profilePicture);
-              //           })
-              //         : const Text("Unknown User type"),
+                          })
+                        : const Text("Unknown User type"),
+            // TODO: Uncomment it when recent clocking API is available
+            // userType.compareTo("member") == 0
+            //     ? Consumer<MemberProvider>(
+            //         builder: (context, data, child) {
+            //           return headerView(
+            //               firstName: data.memberProfile.firstname,
+            //               surName: data.memberProfile.surname,
+            //               profileImage: data.memberProfile.profilePicture);
+            //         },
+            //       )
+            //     : userType.compareTo("admin") == 0
+            //         ? Consumer<ClientProvider>(
+            //             builder: (context, data, child) {
+            //             return adminHeaderView(
+            //                 firstName: data.getUser?.firstName,
+            //                 surName: data.getUser?.surName,
+            //                 profileImage: data.getUser?.profilePicture);
+            //           })
+            //         : const Text("Unknown User type"),
 
-              const SizedBox(
-                height: 36,
-              ),
+            const SizedBox(
+              height: 36,
+            ),
 
-              const SizedBox(
-                height: 36,
-              ),
+            eventProvider.loading
+                ? Shimmer.fromColors(
+                    baseColor: greyColorShade300,
+                    highlightColor: greyColorShade100,
+                    child: const TextShimmerItem(),
+                  )
+                : const Text(
+                    "Today's Meetings",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
 
-              eventProvider.loading
-                  ? Shimmer.fromColors(
-                      baseColor: greyColorShade300,
-                      highlightColor: greyColorShade100,
-                      child: const TextShimmerItem(),
-                    )
-                  : const Text(
-                      "Today's Meetings",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                    ),
+            const SizedBox(
+              height: 12,
+            ),
 
-              const SizedBox(
-                height: 12,
-              ),
+            //----------------------------------------------------------------------
 
-              //----------------------------------------------------------------------
-
-              eventProvider.loading
-                  ? Shimmer.fromColors(
+            eventProvider.loading
+                ? Expanded(
+                    child: Shimmer.fromColors(
                       baseColor: greyColorShade300,
                       highlightColor: greyColorShade100,
                       child: ListView.builder(
-                        shrinkWrap: true,
                         itemBuilder: (_, __) => const EventShimmerItem(),
                         itemCount: 10,
                       ),
-                    )
-                  : RefreshIndicator(
+                    ),
+                  )
+                : Expanded(
+                    child: RefreshIndicator(
                       onRefresh: () async =>
                           await eventProvider.getTodayMeetingEvents(),
                       child: Consumer<HomeProvider>(
@@ -227,7 +222,6 @@ class _HomePageState extends State<HomePage> {
                           if (userType == AppConstants.member) {
                             return ListView.builder(
                                 itemCount: data.todayMeetings.length,
-                                shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   final item = data.todayMeetings[index];
                                   return todaysEvents(
@@ -237,10 +231,8 @@ class _HomePageState extends State<HomePage> {
                           }
                           return ListView.builder(
                               itemCount: data.todayMeetings.length,
-                              shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 final item = data.todayMeetings[index];
-
                                 return InkWell(
                                   onTap: () {
                                     // set meeting as selected
@@ -266,59 +258,59 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-              //----------------------------------------------------------------------
-              // const SizedBox(
-              //   height: 12,
-              // ),
-              // ClipRRect(
-              //   borderRadius: BorderRadius.circular(defaultRadius),
-              //   child: Theme(
-              //     data: Theme.of(context)
-              //         .copyWith(dividerColor: Colors.transparent),
-              //     child: ExpansionTile(
-              //       tilePadding: EdgeInsets.zero,
-              //       backgroundColor: backgroundColor,
-              //       collapsedBackgroundColor: backgroundColor,
-              //       initiallyExpanded: true,
-              //       title: const Text(
-              //         "Upcoming",
-              //         style: TextStyle(
-              //           color: textColorPrimary,
-              //           fontWeight: FontWeight.w600,
-              //           fontSize: 19,
-              //           fontFamily: "Lato",
-              //         ),
-              //       ),
-              //       children: <Widget>[
-              //         SizedBox(
-              //           height: MediaQuery.of(context).size.height * 0.3,
-              //           width: MediaQuery.of(context).size.width,
-              //           child: Consumer<AttendanceProvider>(
-              //             builder: (context, data, child) {
-              //               if (data.upcomingMeetings.isEmpty) {
-              //                 return const EmptyStateWidget(
-              //                   text:
-              //                       'You currently have no upcoming \nmeetings at the moment!',
-              //                 );
-              //               }
-              //               return ListView.builder(
-              //                   itemCount: data.upcomingMeetings.length,
-              //                   shrinkWrap: true,
-              //                   itemBuilder: (context, index) {
-              //                     var item = data.upcomingMeetings[index];
-              //                     return upcomingEvents(
-              //                       meetingEvent: item,
-              //                     );
-              //                   });
-              //             },
-              //           ),
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
+                  ),
+            //----------------------------------------------------------------------
+            // const SizedBox(
+            //   height: 12,
+            // ),
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(defaultRadius),
+            //   child: Theme(
+            //     data: Theme.of(context)
+            //         .copyWith(dividerColor: Colors.transparent),
+            //     child: ExpansionTile(
+            //       tilePadding: EdgeInsets.zero,
+            //       backgroundColor: backgroundColor,
+            //       collapsedBackgroundColor: backgroundColor,
+            //       initiallyExpanded: true,
+            //       title: const Text(
+            //         "Upcoming",
+            //         style: TextStyle(
+            //           color: textColorPrimary,
+            //           fontWeight: FontWeight.w600,
+            //           fontSize: 19,
+            //           fontFamily: "Lato",
+            //         ),
+            //       ),
+            //       children: <Widget>[
+            //         SizedBox(
+            //           height: MediaQuery.of(context).size.height * 0.3,
+            //           width: MediaQuery.of(context).size.width,
+            //           child: Consumer<AttendanceProvider>(
+            //             builder: (context, data, child) {
+            //               if (data.upcomingMeetings.isEmpty) {
+            //                 return const EmptyStateWidget(
+            //                   text:
+            //                       'You currently have no upcoming \nmeetings at the moment!',
+            //                 );
+            //               }
+            //               return ListView.builder(
+            //                   itemCount: data.upcomingMeetings.length,
+            //                   shrinkWrap: true,
+            //                   itemBuilder: (context, index) {
+            //                     var item = data.upcomingMeetings[index];
+            //                     return upcomingEvents(
+            //                       meetingEvent: item,
+            //                     );
+            //                   });
+            //             },
+            //           ),
+            //         )
+            //       ],
+            //     ),
+            //   ),
+            // ),
+          ],
         ),
       ),
     );

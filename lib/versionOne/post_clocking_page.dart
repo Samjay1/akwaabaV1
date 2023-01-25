@@ -43,8 +43,6 @@ class PostClockingPage extends StatefulWidget {
 }
 
 class _PostClockingPageState extends State<PostClockingPage> {
-  late ScrollController _controller;
-
   bool itemHasBeenSelected =
       false; //at least 1 member has been selected, so show options menu
   List<Map> selectedMembersList = [];
@@ -61,19 +59,11 @@ class _PostClockingPageState extends State<PostClockingPage> {
 
   @override
   void initState() {
-    _controller = ScrollController();
-    Provider.of<PostClockingProvider>(context, listen: false)
-        .setCurrentContext(context);
-    // Future.delayed(Duration.zero, () {
-    //   // load attendance list for meeting
-    //   Provider.of<ClockingProvider>(context, listen: false).getAttendanceList(
-    //     meetingEventModel: widget.meetingEventModel,
-    //   );
-    //   // loading member group for filtering
-    //   Provider.of<ClockingProvider>(context, listen: false)
-    //       .getMemberCategories();
-    //   setState(() {});
-    // });
+    Future.delayed(Duration.zero, () {
+      Provider.of<PostClockingProvider>(context, listen: false)
+          .setCurrentContext(context);
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -208,7 +198,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10, horizontal: 10),
                                         decoration: BoxDecoration(
-                                            color: primaryColor,
+                                            color: blackColor,
                                             borderRadius:
                                                 BorderRadius.circular(5)),
                                         child: Text(
@@ -648,7 +638,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 height: 2,
                 color: Colors.orange,
               ),
-
               const SizedBox(
                 height: 12,
               ),
@@ -660,7 +649,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemBuilder: (_, __) => const EventShimmerItem(),
-                          itemCount: 6,
+                          itemCount: 10,
                         ),
                       ),
                     )
@@ -1040,7 +1029,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                     postClockingProvider.selectedPastMeetingEvent =
                         val as MeetingEventModel;
                   });
-                  postClockingProvider.getMemberCategories();
                 },
               ),
             ),
@@ -1085,7 +1073,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                     postClockingProvider.selectedMemberCategory =
                         val as MemberCategory;
                   });
-                  postClockingProvider.getMemberCategories();
+                  postClockingProvider.getGroups();
                 },
               ),
             ),
@@ -1128,6 +1116,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                   setState(() {
                     postClockingProvider.selectedGroup = val as Group;
                   });
+                  postClockingProvider.getSubGroups();
                 },
               ),
             ),

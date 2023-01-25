@@ -74,6 +74,7 @@ class HomeProvider extends ChangeNotifier {
   }
 
   Future<void> getTodayMeetingEvents() async {
+    setLoading(true);
     _todayMeetingEventList.clear();
     try {
       _todayMeetingEventList = await EventAPI.getTodayMeetingEventList();

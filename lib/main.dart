@@ -46,7 +46,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ClockingProvider()),
         ChangeNotifierProvider(create: (_) => PostClockingProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => MembersProvider()),
         ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
       ],
       child: MaterialApp(

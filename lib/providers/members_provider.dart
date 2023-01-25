@@ -16,9 +16,11 @@ import 'package:akwaaba/models/general/organization.dart';
 import 'package:akwaaba/models/general/region.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/admin/clocked_member.dart';
 
@@ -63,9 +65,9 @@ class MembersProvider extends ChangeNotifier {
   MemberStatus? selectedOccupation;
   MemberStatus? selectedProfession;
   MemberStatus? selectedEducation;
-  dynamic selectedCountry;
-  dynamic selectedRegion;
-  dynamic selectedDistrict;
+  Country? selectedCountry;
+  Region? selectedRegion;
+  District? selectedDistrict;
 
   final TextEditingController minAgeTEC = TextEditingController();
   final TextEditingController maxAgeTEC = TextEditingController();
@@ -74,6 +76,8 @@ class MembersProvider extends ChangeNotifier {
   DateTime? selectedEndDate;
 
   String? selectedStatus;
+
+  BuildContext? _context;
 
   // Retrieve all meetings
   List<Group> get groups => _groups;
@@ -97,6 +101,8 @@ class MembersProvider extends ChangeNotifier {
   bool get loading => _loading;
   bool get loadingMore => _loadingMore;
 
+  BuildContext get currentContext => _context!;
+
   String? search = '';
 
   // pagination variables
@@ -116,6 +122,11 @@ class MembersProvider extends ChangeNotifier {
 
   setLoading(bool loading) {
     _loading = loading;
+    notifyListeners();
+  }
+
+  setCurrentContext(BuildContext context) {
+    _context = context;
     notifyListeners();
   }
 
@@ -157,9 +168,14 @@ class MembersProvider extends ChangeNotifier {
   // get list of groups
   Future<void> getGroups() async {
     try {
+      var userBranch = await getUserBranch(currentContext);
       _groups = await GroupAPI.getGroups(
-          // branchId: selectedCurrentMeeting.branchId!,
-          );
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+        memberCategoryId: selectedMemberCategory!.id!,
+      );
+      if (_groups.isNotEmpty) {
+        selectedGroup = _groups[0];
+      }
       debugPrint('Groups: ${_groups.length}');
       getSubGroups();
     } catch (err) {
@@ -179,9 +195,8 @@ class MembersProvider extends ChangeNotifier {
   Future<void> getSubGroups() async {
     try {
       _subGroups = await GroupAPI.getSubGroups(
-          // branchId: selectedCurrentMeeting.branchId!,
-          // memberCategoryId: selectedMemberCategory!.id!,
-          );
+        groupId: selectedGroup!.id!,
+      );
       getCoutries();
       debugPrint('Sub Groups: ${_subGroups.length}');
     } catch (err) {

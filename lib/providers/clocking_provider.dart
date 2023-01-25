@@ -12,6 +12,7 @@ import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -199,7 +200,11 @@ class ClockingProvider extends ChangeNotifier {
   // get list of groups
   Future<void> getGroups() async {
     try {
-      _groups = await GroupAPI.getGroups();
+      var userBranch = await getUserBranch(currentContext);
+      _groups = await GroupAPI.getGroups(
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+        memberCategoryId: selectedMemberCategory!.id!,
+      );
       debugPrint('Groups: ${_groups.length}');
       // selectedGroup = _groups[0];
       getSubGroups();
@@ -221,7 +226,7 @@ class ClockingProvider extends ChangeNotifier {
   // get list of subgroups
   Future<void> getSubGroups() async {
     try {
-      _subGroups = await GroupAPI.getSubGroups();
+      _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
       debugPrint('Sub Groups: ${_subGroups.length}');
     } catch (err) {
       setLoading(false);
@@ -255,8 +260,9 @@ class ClockingProvider extends ChangeNotifier {
         fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
         toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
       );
-      _absentees.clear();
+
       _selectedAbsentees.clear();
+
       if (response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
@@ -279,8 +285,7 @@ class ClockingProvider extends ChangeNotifier {
       getAllAttendees(
         meetingEventModel: meetingEventModel,
       );
-
-      //setLoading(false);
+      setLoading(false);
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');
@@ -364,7 +369,6 @@ class ClockingProvider extends ChangeNotifier {
         toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
       );
       _selectedAttendees.clear();
-      _attendees.clear();
 
       if (response.results!.isNotEmpty) {
         // filter list for only members excluding
@@ -379,7 +383,6 @@ class ClockingProvider extends ChangeNotifier {
                         .getUser!
                         .applicantPhone))
             .toList();
-
         _tempAttendees = _attendees;
       }
       setLoading(false);

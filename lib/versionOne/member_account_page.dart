@@ -1,7 +1,10 @@
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/screens/update_account_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/dimens.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +15,10 @@ import '../models/admin/clocked_member.dart';
 
 class MemberAccountPage extends StatefulWidget {
   final Member? member;
-  const MemberAccountPage({Key? key, required this.member}) : super(key: key);
+  final String? userType;
+  const MemberAccountPage(
+      {Key? key, required this.member, required this.userType})
+      : super(key: key);
 
   @override
   State<MemberAccountPage> createState() => _MemberAccountPageState();
@@ -209,6 +215,27 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
             height: 6,
           ),
           Text("Status: ${widget.member!.status == 1 ? 'Active' : 'Inactive'}"),
+          SizedBox(
+            height: displayHeight(context) * 0.01,
+          ),
+          widget.userType == AppConstants.admin
+              ? OutlinedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const UpdateAccountPage(),
+                      ),
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                      primary: primaryColor,
+                      side: const BorderSide(color: primaryColor, width: 1),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(defaultRadius))),
+                  child: const Text("Update Account"),
+                )
+              : const SizedBox(),
         ],
       ),
     );

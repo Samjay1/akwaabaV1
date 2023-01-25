@@ -3,6 +3,7 @@ import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/country.dart';
 import 'package:akwaaba/models/general/district.dart';
@@ -12,6 +13,7 @@ import 'package:akwaaba/models/general/member_status.dart';
 import 'package:akwaaba/models/general/region.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
+import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -514,209 +516,31 @@ class _FilterPageState extends State<FilterPage> {
                                       setState(() {
                                         _membersProvider.selectedCountry =
                                             val as Country;
+                                        if (_membersProvider
+                                                .selectedCountry!.name !=
+                                            AppString.countryGH) {
+                                          _membersProvider.selectedRegion =
+                                              null;
+                                          _membersProvider.selectedDistrict =
+                                              null;
+                                        }
                                       });
                                     },
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
-                              ),
-                              LabelWidgetContainer(
-                                label: "Region",
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: whiteColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        width: 0.0,
-                                        color: Colors.grey.shade400),
-                                  ),
-                                  child: DropdownButtonFormField<Region>(
-                                    isExpanded: true,
-                                    style: const TextStyle(
-                                      color: textColorPrimary,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    hint: const Text('Select Region'),
-                                    decoration: const InputDecoration(
-                                        border: InputBorder.none),
-                                    value: _membersProvider.selectedRegion,
-                                    icon: Icon(
-                                      CupertinoIcons.chevron_up_chevron_down,
-                                      color: Colors.grey.shade500,
-                                      size: 16,
-                                    ),
-                                    // Array list of items
-                                    items: _membersProvider.regions
-                                        .map((Region region) {
-                                      return DropdownMenuItem(
-                                        value: region,
-                                        child: Text(region.location!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _membersProvider.selectedRegion =
-                                            val as Region;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
-                              ),
-                              LabelWidgetContainer(
-                                label: "District",
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: whiteColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        width: 0.0,
-                                        color: Colors.grey.shade400),
-                                  ),
-                                  child: DropdownButtonFormField<District>(
-                                    isExpanded: true,
-                                    style: const TextStyle(
-                                      color: textColorPrimary,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    hint: const Text('Select District'),
-                                    decoration: const InputDecoration(
-                                        border: InputBorder.none),
-                                    value: _membersProvider.selectedDistrict,
-                                    icon: Icon(
-                                      CupertinoIcons.chevron_up_chevron_down,
-                                      color: Colors.grey.shade500,
-                                      size: 16,
-                                    ),
-                                    // Array list of items
-                                    items: _membersProvider.districts
-                                        .map((District district) {
-                                      return DropdownMenuItem(
-                                        value: district,
-                                        child: Text(district.location!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _membersProvider.selectedDistrict =
-                                            val as District;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Container(),
-
-                    SizedBox(
-                      height: displayHeight(context) * 0.01,
-                    ),
-                    Row(
-                      children: [
-                        CupertinoSwitch(
-                            value: includeStatusFilter,
-                            onChanged: (bool val) {
-                              setState(() {
-                                includeStatusFilter = val;
-                              });
-                            }),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Text(includeStatusFilter
-                            ? "Exclude Status Filters"
-                            : "Add Status Filters")
-                      ],
-                    ),
-
-                    includeStatusFilter
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const SizedBox(
-                                height: 18,
-                              ),
-                              // widget.isMemberUser
-                              //     ? Row(
-                              //         children: [
-                              //           const Expanded(
-                              //               child: Text(
-                              //                   "Do you have a disability?")),
-                              //           Row(
-                              //             children: List.generate(2, (index) {
-                              //               return Row(
-                              //                 children: [
-                              //                   Radio(
-                              //                       activeColor: primaryColor,
-                              //                       value: index,
-                              //                       groupValue:
-                              //                           disabilityOption,
-                              //                       onChanged: (int? value) {
-                              //                         setState(() {
-                              //                           disabilityOption =
-                              //                               value!;
-                              //                           _membersProvider
-                              //                                   .selectedStatus =
-                              //                               value.toString();
-                              //                         });
-                              //                       }),
-                              //                   Text(index == 0 ? "Yes" : "No")
-                              //                 ],
-                              //               );
-                              //             }),
-                              //           )
-                              //         ],
-                              //       )
-                              //     : Column(
-                              //         crossAxisAlignment:
-                              //             CrossAxisAlignment.start,
-                              //         children: [
-                              //           const Text(
-                              //               "Select Registration Status?"),
-                              //           Row(
-                              //             children: List.generate(2, (index) {
-                              //               return Row(
-                              //                 children: [
-                              //                   Radio(
-                              //                       activeColor: primaryColor,
-                              //                       value: index,
-                              //                       groupValue:
-                              //                           disabilityOption,
-                              //                       onChanged: (int? value) {
-                              //                         setState(() {
-                              //                           disabilityOption =
-                              //                               value!;
-                              //                           _membersProvider
-                              //                                   .selectedStatus =
-                              //                               value.toString();
-                              //                         });
-                              //                       }),
-                              //                   Text(index == 0
-                              //                       ? "Register"
-                              //                       : "Unregistered")
-                              //                 ],
-                              //               );
-                              //             }),
-                              //           )
-                              //         ],
-                              //       ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              widget.isMemberUser
+                              (_membersProvider.selectedCountry != null &&
+                                      _membersProvider.selectedCountry!.name ==
+                                          AppString.countryGH)
+                                  ? SizedBox(
+                                      height: displayHeight(context) * 0.02,
+                                    )
+                                  : const SizedBox(),
+                              (_membersProvider.selectedCountry != null &&
+                                      _membersProvider.selectedCountry!.name ==
+                                          AppString.countryGH)
                                   ? LabelWidgetContainer(
-                                      label: "Marital Status",
+                                      label: "Region",
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 8, vertical: 3),
@@ -728,20 +552,18 @@ class _FilterPageState extends State<FilterPage> {
                                               width: 0.0,
                                               color: Colors.grey.shade400),
                                         ),
-                                        child: DropdownButtonFormField<
-                                            MemberStatus>(
+                                        child: DropdownButtonFormField<Region>(
                                           isExpanded: true,
                                           style: const TextStyle(
                                             color: textColorPrimary,
                                             fontSize: 15,
                                             fontWeight: FontWeight.w400,
                                           ),
-                                          hint: const Text(
-                                              'Select Marital Status'),
+                                          hint: const Text('Select Region'),
                                           decoration: const InputDecoration(
                                               border: InputBorder.none),
-                                          value: _membersProvider
-                                              .selectedMaritalStatus,
+                                          value:
+                                              _membersProvider.selectedRegion,
                                           icon: Icon(
                                             CupertinoIcons
                                                 .chevron_up_chevron_down,
@@ -749,174 +571,400 @@ class _FilterPageState extends State<FilterPage> {
                                             size: 16,
                                           ),
                                           // Array list of items
-                                          items: _membersProvider
-                                              .maritalStatuses
-                                              .map((MemberStatus ms) {
+                                          items: _membersProvider.regions
+                                              .map((Region region) {
                                             return DropdownMenuItem(
-                                              value: ms,
-                                              child: Text(ms.name!),
+                                              value: region,
+                                              child: Text(region.location!),
+                                            );
+                                          }).toList(),
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _membersProvider.selectedRegion =
+                                                  val as Region;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              (_membersProvider.selectedCountry != null &&
+                                      _membersProvider.selectedCountry!.name ==
+                                          AppString.countryGH)
+                                  ? SizedBox(
+                                      height: displayHeight(context) * 0.02,
+                                    )
+                                  : const SizedBox(),
+                              (_membersProvider.selectedCountry != null &&
+                                      _membersProvider.selectedCountry!.name ==
+                                          AppString.countryGH)
+                                  ? LabelWidgetContainer(
+                                      label: "District",
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          color: whiteColor,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          border: Border.all(
+                                              width: 0.0,
+                                              color: Colors.grey.shade400),
+                                        ),
+                                        child:
+                                            DropdownButtonFormField<District>(
+                                          isExpanded: true,
+                                          style: const TextStyle(
+                                            color: textColorPrimary,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          hint: const Text('Select District'),
+                                          decoration: const InputDecoration(
+                                              border: InputBorder.none),
+                                          value:
+                                              _membersProvider.selectedDistrict,
+                                          icon: Icon(
+                                            CupertinoIcons
+                                                .chevron_up_chevron_down,
+                                            color: Colors.grey.shade500,
+                                            size: 16,
+                                          ),
+                                          // Array list of items
+                                          items: _membersProvider.districts
+                                              .map((District district) {
+                                            return DropdownMenuItem(
+                                              value: district,
+                                              child: Text(district.location!),
                                             );
                                           }).toList(),
                                           onChanged: (val) {
                                             setState(() {
                                               _membersProvider
-                                                      .selectedMaritalStatus =
-                                                  val as MemberStatus;
+                                                      .selectedDistrict =
+                                                  val as District;
                                             });
-                                            // _memberProvider.getMemberCategories();
                                           },
                                         ),
                                       ),
                                     )
-                                  : Container(),
-                              LabelWidgetContainer(
-                                label: "Occupation",
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: whiteColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        width: 0.0,
-                                        color: Colors.grey.shade400),
-                                  ),
-                                  child: DropdownButtonFormField<MemberStatus>(
-                                    isExpanded: true,
-                                    style: const TextStyle(
-                                      color: textColorPrimary,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    hint: const Text('Select Occupation'),
-                                    decoration: const InputDecoration(
-                                        border: InputBorder.none),
-                                    value: _membersProvider.selectedOccupation,
-                                    icon: Icon(
-                                      CupertinoIcons.chevron_up_chevron_down,
-                                      color: Colors.grey.shade500,
-                                      size: 16,
-                                    ),
-                                    // Array list of items
-                                    items: _membersProvider.occupations
-                                        .map((MemberStatus ms) {
-                                      return DropdownMenuItem(
-                                        value: ms,
-                                        child: Text(ms.name!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _membersProvider.selectedOccupation =
-                                            val as MemberStatus;
-                                      });
-                                      // _memberProvider.getMemberCategories();
-                                    },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
-                              ),
-                              LabelWidgetContainer(
-                                label: "Profession",
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: whiteColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        width: 0.0,
-                                        color: Colors.grey.shade400),
-                                  ),
-                                  child: DropdownButtonFormField<MemberStatus>(
-                                    isExpanded: true,
-                                    style: const TextStyle(
-                                      color: textColorPrimary,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    hint: const Text('Select Profession'),
-                                    decoration: const InputDecoration(
-                                        border: InputBorder.none),
-                                    value: _membersProvider.selectedProfession,
-                                    icon: Icon(
-                                      CupertinoIcons.chevron_up_chevron_down,
-                                      color: Colors.grey.shade500,
-                                      size: 16,
-                                    ),
-                                    // Array list of items
-                                    items: _membersProvider.professions
-                                        .map((MemberStatus ms) {
-                                      return DropdownMenuItem(
-                                        value: ms,
-                                        child: Text(ms.name!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _membersProvider.selectedProfession =
-                                            val as MemberStatus;
-                                      });
-                                      // _memberProvider.getMemberCategories();
-                                    },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
-                              ),
-                              LabelWidgetContainer(
-                                label: "Educational Level",
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: whiteColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        width: 0.0,
-                                        color: Colors.grey.shade400),
-                                  ),
-                                  child: DropdownButtonFormField<MemberStatus>(
-                                    isExpanded: true,
-                                    style: const TextStyle(
-                                      color: textColorPrimary,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    hint:
-                                        const Text('Select Educational Level'),
-                                    decoration: const InputDecoration(
-                                        border: InputBorder.none),
-                                    value: _membersProvider.selectedEducation,
-                                    icon: Icon(
-                                      CupertinoIcons.chevron_up_chevron_down,
-                                      color: Colors.grey.shade500,
-                                      size: 16,
-                                    ),
-                                    // Array list of items
-                                    items: _membersProvider.educations
-                                        .map((MemberStatus ms) {
-                                      return DropdownMenuItem(
-                                        value: ms,
-                                        child: Text(ms.name!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _membersProvider.selectedEducation =
-                                            val as MemberStatus;
-                                      });
-                                      // _memberProvider.getMemberCategories();
-                                    },
-                                  ),
-                                ),
-                              ),
+                                  : const SizedBox(),
                             ],
                           )
                         : Container(),
+
+                    SizedBox(
+                      height: displayHeight(context) * 0.01,
+                    ),
+                    widget.isMemberUser
+                        ? Row(
+                            children: [
+                              CupertinoSwitch(
+                                  value: includeStatusFilter,
+                                  onChanged: (bool val) {
+                                    setState(() {
+                                      includeStatusFilter = val;
+                                    });
+                                  }),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(includeStatusFilter
+                                  ? "Exclude Status Filters"
+                                  : "Add Status Filters")
+                            ],
+                          )
+                        : const SizedBox(),
+
+                    !widget.isMemberUser
+                        ? const SizedBox()
+                        : includeStatusFilter
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  const SizedBox(
+                                    height: 18,
+                                  ),
+                                  // widget.isMemberUser
+                                  //     ? Row(
+                                  //         children: [
+                                  //           const Expanded(
+                                  //               child: Text(
+                                  //                   "Do you have a disability?")),
+                                  //           Row(
+                                  //             children: List.generate(2, (index) {
+                                  //               return Row(
+                                  //                 children: [
+                                  //                   Radio(
+                                  //                       activeColor: primaryColor,
+                                  //                       value: index,
+                                  //                       groupValue:
+                                  //                           disabilityOption,
+                                  //                       onChanged: (int? value) {
+                                  //                         setState(() {
+                                  //                           disabilityOption =
+                                  //                               value!;
+                                  //                           _membersProvider
+                                  //                                   .selectedStatus =
+                                  //                               value.toString();
+                                  //                         });
+                                  //                       }),
+                                  //                   Text(index == 0 ? "Yes" : "No")
+                                  //                 ],
+                                  //               );
+                                  //             }),
+                                  //           )
+                                  //         ],
+                                  //       )
+                                  //     : Column(
+                                  //         crossAxisAlignment:
+                                  //             CrossAxisAlignment.start,
+                                  //         children: [
+                                  //           const Text(
+                                  //               "Select Registration Status?"),
+                                  //           Row(
+                                  //             children: List.generate(2, (index) {
+                                  //               return Row(
+                                  //                 children: [
+                                  //                   Radio(
+                                  //                       activeColor: primaryColor,
+                                  //                       value: index,
+                                  //                       groupValue:
+                                  //                           disabilityOption,
+                                  //                       onChanged: (int? value) {
+                                  //                         setState(() {
+                                  //                           disabilityOption =
+                                  //                               value!;
+                                  //                           _membersProvider
+                                  //                                   .selectedStatus =
+                                  //                               value.toString();
+                                  //                         });
+                                  //                       }),
+                                  //                   Text(index == 0
+                                  //                       ? "Register"
+                                  //                       : "Unregistered")
+                                  //                 ],
+                                  //               );
+                                  //             }),
+                                  //           )
+                                  //         ],
+                                  //       ),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  LabelWidgetContainer(
+                                    label: "Marital Status",
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: whiteColor,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            width: 0.0,
+                                            color: Colors.grey.shade400),
+                                      ),
+                                      child:
+                                          DropdownButtonFormField<MemberStatus>(
+                                        isExpanded: true,
+                                        style: const TextStyle(
+                                          color: textColorPrimary,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        hint:
+                                            const Text('Select Marital Status'),
+                                        decoration: const InputDecoration(
+                                            border: InputBorder.none),
+                                        value: _membersProvider
+                                            .selectedMaritalStatus,
+                                        icon: Icon(
+                                          CupertinoIcons
+                                              .chevron_up_chevron_down,
+                                          color: Colors.grey.shade500,
+                                          size: 16,
+                                        ),
+                                        // Array list of items
+                                        items: _membersProvider.maritalStatuses
+                                            .map((MemberStatus ms) {
+                                          return DropdownMenuItem(
+                                            value: ms,
+                                            child: Text(ms.name!),
+                                          );
+                                        }).toList(),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _membersProvider
+                                                    .selectedMaritalStatus =
+                                                val as MemberStatus;
+                                          });
+                                          // _memberProvider.getMemberCategories();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.02,
+                                  ),
+                                  LabelWidgetContainer(
+                                    label: "Occupation",
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: whiteColor,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            width: 0.0,
+                                            color: Colors.grey.shade400),
+                                      ),
+                                      child:
+                                          DropdownButtonFormField<MemberStatus>(
+                                        isExpanded: true,
+                                        style: const TextStyle(
+                                          color: textColorPrimary,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        hint: const Text('Select Occupation'),
+                                        decoration: const InputDecoration(
+                                            border: InputBorder.none),
+                                        value:
+                                            _membersProvider.selectedOccupation,
+                                        icon: Icon(
+                                          CupertinoIcons
+                                              .chevron_up_chevron_down,
+                                          color: Colors.grey.shade500,
+                                          size: 16,
+                                        ),
+                                        // Array list of items
+                                        items: _membersProvider.occupations
+                                            .map((MemberStatus ms) {
+                                          return DropdownMenuItem(
+                                            value: ms,
+                                            child: Text(ms.name!),
+                                          );
+                                        }).toList(),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _membersProvider
+                                                    .selectedOccupation =
+                                                val as MemberStatus;
+                                          });
+                                          // _memberProvider.getMemberCategories();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.02,
+                                  ),
+                                  LabelWidgetContainer(
+                                    label: "Profession",
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: whiteColor,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            width: 0.0,
+                                            color: Colors.grey.shade400),
+                                      ),
+                                      child:
+                                          DropdownButtonFormField<MemberStatus>(
+                                        isExpanded: true,
+                                        style: const TextStyle(
+                                          color: textColorPrimary,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        hint: const Text('Select Profession'),
+                                        decoration: const InputDecoration(
+                                            border: InputBorder.none),
+                                        value:
+                                            _membersProvider.selectedProfession,
+                                        icon: Icon(
+                                          CupertinoIcons
+                                              .chevron_up_chevron_down,
+                                          color: Colors.grey.shade500,
+                                          size: 16,
+                                        ),
+                                        // Array list of items
+                                        items: _membersProvider.professions
+                                            .map((MemberStatus ms) {
+                                          return DropdownMenuItem(
+                                            value: ms,
+                                            child: Text(ms.name!),
+                                          );
+                                        }).toList(),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _membersProvider
+                                                    .selectedProfession =
+                                                val as MemberStatus;
+                                          });
+                                          // _memberProvider.getMemberCategories();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.02,
+                                  ),
+                                  LabelWidgetContainer(
+                                    label: "Educational Level",
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: whiteColor,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            width: 0.0,
+                                            color: Colors.grey.shade400),
+                                      ),
+                                      child:
+                                          DropdownButtonFormField<MemberStatus>(
+                                        isExpanded: true,
+                                        style: const TextStyle(
+                                          color: textColorPrimary,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        hint: const Text(
+                                            'Select Educational Level'),
+                                        decoration: const InputDecoration(
+                                            border: InputBorder.none),
+                                        value:
+                                            _membersProvider.selectedEducation,
+                                        icon: Icon(
+                                          CupertinoIcons
+                                              .chevron_up_chevron_down,
+                                          color: Colors.grey.shade500,
+                                          size: 16,
+                                        ),
+                                        // Array list of items
+                                        items: _membersProvider.educations
+                                            .map((MemberStatus ms) {
+                                          return DropdownMenuItem(
+                                            value: ms,
+                                            child: Text(ms.name!),
+                                          );
+                                        }).toList(),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _membersProvider.selectedEducation =
+                                                val as MemberStatus;
+                                          });
+                                          // _memberProvider.getMemberCategories();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
                   ],
                 ),
               ),

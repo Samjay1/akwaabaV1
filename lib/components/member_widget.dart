@@ -1,4 +1,5 @@
 import 'package:akwaaba/utils/general_utils.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
@@ -21,6 +22,18 @@ class MemberWidget extends StatefulWidget {
 }
 
 class _MemberWidgetState extends State<MemberWidget> {
+  String? userType;
+
+  @override
+  void initState() {
+    getUserType();
+    super.initState();
+  }
+
+  void getUserType() async {
+    userType = await SharedPrefs().getUserType();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -28,7 +41,10 @@ class _MemberWidgetState extends State<MemberWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => MemberAccountPage(member: widget.member),
+            builder: (_) => MemberAccountPage(
+              member: widget.member,
+              userType: userType,
+            ),
           ),
         );
       },
