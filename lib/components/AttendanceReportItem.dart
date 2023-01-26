@@ -212,22 +212,23 @@ class AttendanceReportItem extends StatelessWidget {
                                     height: displayHeight(context) * 0.005,
                                   ),
                                   InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                AttendanceReportDetailsPage(
-                                              attendee: attendee,
-                                            ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              AttendanceReportDetailsPage(
+                                            attendee: attendee,
                                           ),
-                                        );
-                                      },
-                                      child: const Icon(
-                                        Icons.chevron_right,
-                                        size: 20,
-                                        color: primaryColor,
-                                      ))
+                                        ),
+                                      );
+                                    },
+                                    child: const Icon(
+                                      Icons.chevron_right,
+                                      size: 20,
+                                      color: primaryColor,
+                                    ),
+                                  )
                                 ],
                               ),
                               SizedBox(

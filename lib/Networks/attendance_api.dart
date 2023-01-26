@@ -44,7 +44,7 @@ class AttendanceAPI {
   // get list of attendees for a meeting or event
   static Future<AttendanceHistoryResponse> getAttendanceHistory({
     required int page,
-    required MeetingEventModel meetingEventModel,
+    required List<int> meetingIds,
     required String startDate,
     required String endDate,
     required String search,
@@ -59,15 +59,20 @@ class AttendanceAPI {
   }) async {
     AttendanceHistoryResponse membersResponse;
 
-    var url = Uri.parse(
-      '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&meetingEventId=${meetingEventModel.id}&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_activeStatus=$status&filter_from_age=$fromAge&filter_to_age=$toAge',
-    );
+    var url =
+        '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_activeStatus=$status&filter_from_age=$fromAge&filter_to_age=$toAge';
+    // loop through meeting Ids
+    // and append them to url for query
+    for (var id in meetingIds) {
+      url += '&filter_meetingIds=$id';
+    }
 
     try {
       debugPrint("URL: ${url.toString()}");
       debugPrint("page: $page");
-      debugPrint("Meeting ID: ${meetingEventModel.id}");
+      debugPrint("Meeting IDs: ${meetingIds.toString()}");
       debugPrint("Search: $search");
+      debugPrint("Status: $status");
       debugPrint("Start Date: $startDate");
       debugPrint("End Date: $endDate");
       debugPrint("Branch ID: $branchId");
@@ -78,7 +83,7 @@ class AttendanceAPI {
       debugPrint("fromAge: $fromAge");
       debugPrint("toAge: $toAge");
       http.Response response = await http.get(
-        url,
+        Uri.parse(url),
         headers: await getAllHeaders(),
       );
       debugPrint(

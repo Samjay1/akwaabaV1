@@ -36,114 +36,142 @@ class _MemberWidgetState extends State<MemberWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => MemberAccountPage(
-              member: widget.member,
-              userType: userType,
-            ),
-          ),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Card(
-          elevation: 3,
-          shape: RoundedRectangleBorder(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Card(
+        elevation: widget.member!.selected! ? 3 : 0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(defaultRadius)),
+        child: Container(
+          padding: const EdgeInsets.all(8.0),
+          // margin: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+              color: widget.member!.selected!
+                  ? Colors.orange.shade100
+                  : Colors.white,
               borderRadius: BorderRadius.circular(defaultRadius)),
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            // margin: const EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(defaultRadius)),
-            child: Row(
-              children: [
-                widget.member!.profilePicture != null
-                    ? Align(
-                        child: CustomCachedImageWidget(
-                          url: widget.member!.profilePicture!,
-                          height: 50,
-                        ),
-                      )
-                    : defaultProfilePic(height: 50),
-                const SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Text(
-                          "${widget.member!.firstname} ${widget.member!.surname}",
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        )),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () => makePhoneCall(widget.member!.phone!),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SvgPicture.asset(
-                                  "images/icons/phone_ic.svg",
-                                  width: 20,
-                                  height: 20,
-                                  color: Colors.blueAccent,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () => openWhatsapp(
-                                  context, widget.member!.phone!, "Hello"),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SvgPicture.asset(
-                                  "images/icons/whatsapp_ic.svg",
-                                  width: 20,
-                                  height: 20,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          widget.member!.identification!,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: textColorLight),
-                        ),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        Text(
-                          widget.member!.categoryInfo!.category!,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: textColorLight),
-                        )
-                      ],
+          child: Row(
+            children: [
+              Icon(
+                widget.member!.selected!
+                    ? CupertinoIcons.check_mark_circled_solid
+                    : CupertinoIcons.checkmark_alt_circle,
+                color: widget.member!.selected! ? primaryColor : Colors.grey,
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              widget.member!.profilePicture != null
+                  ? Align(
+                      child: CustomCachedImageWidget(
+                        url: widget.member!.profilePicture!,
+                        height: 50,
+                      ),
                     )
-                  ],
-                )),
-              ],
-            ),
+                  : defaultProfilePic(height: 50),
+              const SizedBox(
+                width: 12,
+              ),
+              Expanded(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                          child: Text(
+                        "${widget.member!.firstname} ${widget.member!.surname}",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => openEmailApp(context),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SvgPicture.asset(
+                                "images/icons/email_ic.svg",
+                                width: 20,
+                                height: 20,
+                                color: primaryColor,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => makePhoneCall(widget.member!.phone!),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SvgPicture.asset(
+                                "images/icons/phone_ic.svg",
+                                width: 20,
+                                height: 20,
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => openWhatsapp(
+                                context, widget.member!.phone!, "Hello"),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SvgPicture.asset(
+                                "images/icons/whatsapp_ic.svg",
+                                width: 20,
+                                height: 20,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.member!.identification!,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: textColorLight),
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Text(
+                        widget.member!.categoryInfo!.category!,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: textColorLight),
+                      )
+                    ],
+                  )
+                ],
+              )),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => MemberAccountPage(
+                        member: widget.member,
+                        userType: userType,
+                      ),
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: primaryColor,
+                ),
+              )
+            ],
           ),
         ),
       ),

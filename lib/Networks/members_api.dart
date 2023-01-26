@@ -123,12 +123,11 @@ class MembersAPI {
   // get individual and organization memebers stats
   static Future<MemberStat> getMemberStatistics({
     required int branchId,
-    required String accountType,
   }) async {
     MemberStat stats;
 
-    var url = Uri.parse(
-        '${getBaseUrl()}/members/statistics?branchId=$branchId&accountType=$accountType');
+    var url =
+        Uri.parse('${getBaseUrl()}/members/statistics?branchId=$branchId');
     try {
       http.Response response = await http.get(
         url,

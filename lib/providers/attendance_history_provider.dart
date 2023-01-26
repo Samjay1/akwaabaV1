@@ -29,6 +29,10 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   List<MessagingType> _messagingTypes = [];
   List<Gender> _genders = [];
   List<Branch> _branches = [];
+  List<int> _selectedMeetingEventIndexes = [];
+
+  List<Map<String, dynamic>> _tempMeetingEventMap =
+      []; // store key -value pair with the index of meeting and meeting id
 
   final TextEditingController minAgeTEC = TextEditingController();
   final TextEditingController maxAgeTEC = TextEditingController();
@@ -40,6 +44,10 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   List<MeetingEventModel> _pastMeetingEvents = [];
 
   List<MeetingEventModel> get pastMeetingEvents => _pastMeetingEvents;
+
+  List<int> get selectedMeetingEventIndexes => _selectedMeetingEventIndexes;
+
+  List<Map<String, dynamic>> get tempMeetingEventMap => _tempMeetingEventMap;
 
   MeetingEventModel? selectedPastMeetingEvent;
 
@@ -100,6 +108,11 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   setCurrentContext(BuildContext context) {
     _context = context;
+    notifyListeners();
+  }
+
+  setSelectedMeetingEventIndexes(List<int> indexes) {
+    _selectedMeetingEventIndexes = indexes;
     notifyListeners();
   }
 
@@ -201,7 +214,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   }
 
   // get meetins from date specified
-  Future<void> getPastMeetingEvents() async {
+  Future<void> getAllMeetingEvents() async {
     try {
       var userBranch = await getUserBranch(currentContext);
       debugPrint("BID: ${userBranch.name}");
@@ -209,8 +222,16 @@ class AttendanceHistoryProvider extends ChangeNotifier {
         page: 1,
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
       );
+
       if (_pastMeetingEvents.isNotEmpty) {
-        selectedPastMeetingEvent = _pastMeetingEvents[0];
+        for (int i = 0; i < _pastMeetingEvents.length; i++) {
+          // create a new map with meeting index and id
+          final Map<String, int> map = {
+            'index': i,
+            'meetingId': _pastMeetingEvents[i].id!,
+          };
+          _tempMeetingEventMap.add(map);
+        }
       } else {
         showInfoDialog(
           'ok',
@@ -248,6 +269,19 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     }
   }
 
+// get meeting ids from meeting map
+  List<int> selectedMeetingIds() {
+    List<int> ids = [];
+    if (tempMeetingEventMap.isNotEmpty) {
+      for (var map in tempMeetingEventMap) {
+        if (selectedMeetingEventIndexes.contains(map['index'])) {
+          ids.add(map['meetingId']);
+        }
+      }
+    }
+    return ids;
+  }
+
   // get attendance history for a meeting
   Future<void> getAttendanceHistory() async {
     setLoading(true);
@@ -262,7 +296,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       _page = 1;
       var response = await AttendanceAPI.getAttendanceHistory(
         page: _page,
-        meetingEventModel: selectedPastMeetingEvent!,
+        meetingIds: selectedMeetingIds(),
         branchId: selectedBranch == null
             ? selectedPastMeetingEvent!.branchId!
             : selectedBranch!.id!,
@@ -286,15 +320,13 @@ class AttendanceHistoryProvider extends ChangeNotifier {
         toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
       );
 
-      if (response.results!.isNotEmpty) {
-        // filter list for only members excluding
-        // admin if he is also a member
-        _attendanceHistory = response.results!;
+      // filter list for only members excluding
+      // admin if he is also a member
+      _attendanceHistory = response.results!;
 
-        _tempAttendanceHistory = _attendanceHistory;
+      _tempAttendanceHistory = _attendanceHistory;
 
-        debugPrint('Attendance History: ${_attendanceHistory.length}');
-      }
+      debugPrint('Attendance History: ${_attendanceHistory.length}');
 
       setLoading(false);
     } catch (err) {
@@ -316,7 +348,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       try {
         var response = await AttendanceAPI.getAttendanceHistory(
           page: _page,
-          meetingEventModel: selectedPastMeetingEvent!,
+          meetingIds: selectedMeetingIds(),
           branchId: selectedBranch == null
               ? selectedPastMeetingEvent!.branchId!
               : selectedBranch!.id!,

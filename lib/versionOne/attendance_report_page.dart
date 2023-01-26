@@ -231,7 +231,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
               CustomTabWidget(
                 selectedIndex: _selectedIndex,
                 tabTitles: const [
-                  'Atendees',
+                  'Attendees',
                   'Absentees',
                 ],
                 onTaps: [

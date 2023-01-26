@@ -15,7 +15,6 @@ import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
-import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
@@ -23,11 +22,10 @@ import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../models/attendance_history_item.dart';
 import '../utils/widget_utils.dart';
 
 class AttendanceHistoryPage extends StatefulWidget {
@@ -65,7 +63,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
             .getBranches();
       }
       Provider.of<AttendanceHistoryProvider>(context, listen: false)
-          .getPastMeetingEvents();
+          .getAllMeetingEvents();
 
       setState(() {});
     });
@@ -286,50 +284,104 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   height: displayHeight(context) * 0.02,
                 )
               : const SizedBox(),
+
           LabelWidgetContainer(
             label: "Meeting/Event",
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(width: 0.0, color: Colors.grey.shade400),
+            child: GFMultiSelect<MeetingEventModel>(
+              //items: attendanceHistoryProvider.pastMeetingEvents,
+              items: attendanceHistoryProvider.pastMeetingEvents
+                  .map((mc) => mc.name)
+                  .toList(),
+              onSelect: (value) {
+                setState(() {
+                  attendanceHistoryProvider
+                      .setSelectedMeetingEventIndexes(value.cast<int>());
+                });
+                print(
+                    'Selected ${attendanceHistoryProvider.selectedMeetingEventIndexes}');
+              },
+
+              dropdownTitleTileText: 'Select Meeting',
+              dropdownTitleTileMargin: const EdgeInsets.all(0),
+              dropdownTitleTilePadding: const EdgeInsets.symmetric(
+                  vertical: AppPadding.p16, horizontal: AppPadding.p8),
+              dropdownUnderlineBorder:
+                  const BorderSide(color: Colors.transparent, width: 2),
+              dropdownTitleTileBorder:
+                  Border.all(color: Colors.grey[300]!, width: 1),
+              dropdownTitleTileBorderRadius: BorderRadius.circular(10),
+              expandedIcon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
               ),
-              child: DropdownButtonFormField<MeetingEventModel>(
-                isExpanded: true,
-                style: const TextStyle(
-                  color: textColorPrimary,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
-                hint: const Text(
-                  'Select Meeting',
-                ),
-                decoration: const InputDecoration(border: InputBorder.none),
-                value: attendanceHistoryProvider.selectedPastMeetingEvent,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
-                // Array list of items
-                items: attendanceHistoryProvider.pastMeetingEvents
-                    .map((MeetingEventModel mc) {
-                  return DropdownMenuItem(
-                    value: mc,
-                    child: Text(mc.name!),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  setState(() {
-                    attendanceHistoryProvider.selectedPastMeetingEvent =
-                        val as MeetingEventModel;
-                  });
-                  attendanceHistoryProvider.getMemberCategories();
-                },
+              collapsedIcon: Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey.shade500,
+                size: 16,
               ),
+              size: GFSize.SMALL,
+              submitButton: const Text('OK'),
+              cancelButton: const Text('Cancel'),
+              buttonColor: primaryColor,
+              dropdownTitleTileTextStyle: const TextStyle(
+                color: textColorPrimary,
+                fontSize: AppSize.s15,
+                fontWeight: FontWeight.w400,
+              ),
+              padding: const EdgeInsets.all(6),
+              margin: const EdgeInsets.all(6),
+              type: GFCheckboxType.circle,
+              activeBgColor: GFColors.SUCCESS,
+              activeBorderColor: GFColors.SUCCESS,
+              inactiveBorderColor: Colors.grey[300]!,
             ),
           ),
+
+          // LabelWidgetContainer(
+          //   label: "Meeting/Event",
+          //   child: Container(
+          //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          //     decoration: BoxDecoration(
+          //       color: whiteColor,
+          //       borderRadius: BorderRadius.circular(8),
+          //       border: Border.all(width: 0.0, color: Colors.grey.shade400),
+          //     ),
+          //     child: DropdownButtonFormField<MeetingEventModel>(
+          //       isExpanded: true,
+          //       style: const TextStyle(
+          //         color: textColorPrimary,
+          //         fontSize: 15,
+          //         fontWeight: FontWeight.w400,
+          //       ),
+          //       hint: const Text(
+          //         'Select Meeting',
+          //       ),
+          //       decoration: const InputDecoration(border: InputBorder.none),
+          //       value: attendanceHistoryProvider.selectedPastMeetingEvent,
+          //       icon: Icon(
+          //         CupertinoIcons.chevron_up_chevron_down,
+          //         color: Colors.grey.shade500,
+          //         size: 16,
+          //       ),
+          //       // Array list of items
+          //       items: attendanceHistoryProvider.pastMeetingEvents
+          //           .map((MeetingEventModel mc) {
+          //         return DropdownMenuItem(
+          //           value: mc,
+          //           child: Text(mc.name!),
+          //         );
+          //       }).toList(),
+          //       onChanged: (val) {
+          //         setState(() {
+          //           attendanceHistoryProvider.selectedPastMeetingEvent =
+          //               val as MeetingEventModel;
+          //         });
+          //         attendanceHistoryProvider.getMemberCategories();
+          //       },
+          //     ),
+          //   ),
+          // ),
           userType == AppConstants.admin
               ? SizedBox(
                   height: displayHeight(context) * 0.02,

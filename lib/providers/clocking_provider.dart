@@ -262,8 +262,6 @@ class ClockingProvider extends ChangeNotifier {
       _selectedAbsentees.clear();
 
       if (response.results!.isNotEmpty) {
-        // filter list for only members excluding
-        // admin if he is also a member
         _absentees = response.results!
             .where((absentee) => (absentee.attendance!.memberId!.email !=
                     Provider.of<ClientProvider>(_context!, listen: false)
@@ -275,6 +273,9 @@ class ClockingProvider extends ChangeNotifier {
                         .applicantPhone))
             .toList();
 
+        _tempAbsentees = _absentees;
+      } else {
+        _absentees = [];
         _tempAbsentees = _absentees;
       }
 
@@ -381,6 +382,9 @@ class ClockingProvider extends ChangeNotifier {
                         .getUser!
                         .applicantPhone))
             .toList();
+        _tempAttendees = _attendees;
+      } else {
+        _attendees = [];
         _tempAttendees = _attendees;
       }
       setLoading(false);

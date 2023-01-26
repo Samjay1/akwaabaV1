@@ -57,7 +57,7 @@ class EventAPI {
         headers: await getAllHeaders(),
       );
       var decodedresponse = jsonDecode(response.body);
-      debugPrint("TODAY MeetingEventModel success: $decodedresponse");
+      debugPrint("All MeetingEventModel success: $decodedresponse");
       Iterable meetingList = decodedresponse['results'];
       meetings = meetingList
           .map(

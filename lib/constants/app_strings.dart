@@ -10,6 +10,6 @@ class AppString {
   static const String countryGH = 'Ghana';
   static const String earlyText = 'In Time';
   static const String lateText = 'Late';
-  static const String acountTypeInd = 'Individual Members';
-  static const String acountTypeOrg = 'Organization Members';
+  static const String acountTypeInd = '1';
+  static const String acountTypeOrg = '2';
 }

@@ -410,29 +410,26 @@ class AttendanceProvider extends ChangeNotifier {
 
       resetStatsData();
 
-      if (response.results!.isNotEmpty) {
-        // get total number of attendees
-        totalAttendees = response.count!;
-        // filter list for only members excluding
-        // admin if he is also a member
-        _attendees = response.results!;
+      // get total number of attendees
+      totalAttendees = response.count!;
 
-        _tempAttendees = _attendees;
+      _attendees = response.results!;
 
-        // calc total males
-        totalMaleAttendees = _tempAttendees
-            .where((attendee) =>
-                attendee!.attendance!.memberId!.gender == AppConstants.male)
-            .toList();
+      _tempAttendees = _attendees;
 
-        // calc total females
-        totalFemaleAttendees = _tempAttendees
-            .where((attendee) =>
-                attendee!.attendance!.memberId!.gender == AppConstants.female)
-            .toList();
+      // calc total males
+      totalMaleAttendees = _tempAttendees
+          .where((attendee) =>
+              attendee!.attendance!.memberId!.gender == AppConstants.male)
+          .toList();
 
-        debugPrint('Atendees: ${_attendees.length}');
-      }
+      // calc total females
+      totalFemaleAttendees = _tempAttendees
+          .where((attendee) =>
+              attendee!.attendance!.memberId!.gender == AppConstants.female)
+          .toList();
+
+      debugPrint('Atendees: ${_attendees.length}');
 
       getAllAbsentees(
         meetingEventModel: meetingEventModel,
@@ -533,31 +530,29 @@ class AttendanceProvider extends ChangeNotifier {
       );
       selectedAbsentees.clear();
 
-      if (response.results!.isNotEmpty) {
-        // get total number of absentees
-        totalAbsentees = response.count!;
-        // filter list for only members excluding
-        // admin if he is also a member
-        _absentees = response.results!;
+      // get total number of absentees
+      totalAbsentees = response.count!;
+      // filter list for only members excluding
+      // admin if he is also a member
+      _absentees = response.results!;
 
-        _tempAbsentees = _absentees;
+      _tempAbsentees = _absentees;
 
-        // calc total males
-        for (var absentee in _tempAbsentees) {
-          if (absentee!.attendance!.memberId!.gender == AppConstants.male) {
-            totalMaleAbsentees.add(absentee);
-          }
+      // calc total males
+      for (var absentee in _tempAbsentees) {
+        if (absentee!.attendance!.memberId!.gender == AppConstants.male) {
+          totalMaleAbsentees.add(absentee);
         }
-
-        // calc total females
-        for (var absentee in _tempAbsentees) {
-          if (absentee!.attendance!.memberId!.gender == AppConstants.female) {
-            totalFemaleAbsentees.add(absentee);
-          }
-        }
-
-        debugPrint('Absentees: ${_absentees.length}');
       }
+
+      // calc total females
+      for (var absentee in _tempAbsentees) {
+        if (absentee!.attendance!.memberId!.gender == AppConstants.female) {
+          totalFemaleAbsentees.add(absentee);
+        }
+      }
+
+      debugPrint('Absentees: ${_absentees.length}');
 
       setLoading(false);
     } catch (err) {

@@ -31,6 +31,7 @@ dependencies:
   shimmer: ^2.0.0
   flutter_launcher_icons: ^0.11.0
   open_mail_app: ^0.4.5
+  getwidget: ^3.0.1
 
 dev_dependencies:
   flutter_test:

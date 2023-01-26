@@ -7,7 +7,7 @@ import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
-import 'package:akwaaba/providers/subscription_provider.dart';
+import 'package:akwaaba/providers/profile_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -80,9 +80,7 @@ class _MainPageState extends State<MainPage> {
 
   String? token;
 
-  late SubscriptionProvider _subscriptionProvider;
-
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -191,8 +189,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    _subscriptionProvider =
-        Provider.of<SubscriptionProvider>(context, listen: false);
     Provider.of<MemberProvider>(context, listen: false).gettingDeviceInfo();
     return Scaffold(
       key: _scaffoldKey,

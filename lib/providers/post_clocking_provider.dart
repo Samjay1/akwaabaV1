@@ -301,6 +301,9 @@ class PostClockingProvider extends ChangeNotifier {
         _tempAbsentees = _absentees;
 
         debugPrint('Absentees: ${_absentees.length}');
+      } else {
+        _absentees = [];
+        _tempAbsentees = _absentees;
       }
 
       getAllAtendees(
@@ -407,7 +410,10 @@ class PostClockingProvider extends ChangeNotifier {
 
         _tempAttendees = _attendees;
 
-        debugPrint('Atendees: ${_attendees.length}');
+        debugPrint('Attendees: ${_attendees.length}');
+      } else {
+        _attendees = [];
+        _tempAttendees = _attendees;
       }
 
       setLoading(false);

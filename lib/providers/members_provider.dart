@@ -3,6 +3,7 @@ import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/group_api.dart';
 import 'package:akwaaba/Networks/location_api.dart';
 import 'package:akwaaba/Networks/members_api.dart';
+import 'package:akwaaba/Networks/profile_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/models/general/OrganisationType.dart';
@@ -48,6 +49,7 @@ class MembersProvider extends ChangeNotifier {
   List<MemberStatus> _educations = [];
 
   List<Member?> _individualMembers = [];
+  List<int?> _selectedMemberIds = [];
   List<Member?> _tempIndividualMembers = [];
   List<Organization> _organizationalMembers = [];
   List<Organization?> _tempOrganizationalMembers = [];
@@ -105,6 +107,7 @@ class MembersProvider extends ChangeNotifier {
   List<District> get districts => _districts;
 
   List<Member?> get individualMembers => _individualMembers;
+  List<int?> get selectedMemberIds => _selectedMemberIds;
   List<Organization?> get organizationalMembers => _organizationalMembers;
 
   bool get loading => _loading;
@@ -162,9 +165,6 @@ class MembersProvider extends ChangeNotifier {
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
-      if (_memberCategories.isNotEmpty) {
-        selectedMemberCategory = _memberCategories[0];
-      }
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -315,6 +315,71 @@ class MembersProvider extends ChangeNotifier {
     return await SharedPrefs().getUserType();
   }
 
+  // enable single profile editing
+  Future<void> enableSingleProfileEditing({required int memberId}) async {
+    try {
+      var message = await ProfileAPI.enableProfileEditing(memberId: memberId);
+      debugPrint('Message: $message');
+      showNormalToast('Profile editing enabled');
+      debugPrint('Message: $message');
+    } catch (err) {
+      debugPrint('Error ESPE: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // disable single profile editing
+  Future<void> disableSingleProfileEditing({required int memberId}) async {
+    try {
+      var message = await ProfileAPI.disableProfileEditing(memberId: memberId);
+      debugPrint('Message: $message');
+      showNormalToast('Profile editing disabled');
+    } catch (err) {
+      debugPrint('Error DSPE: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // enable bulk profile editing
+  Future<void> enableBulkProfileEditing() async {
+    try {
+      showLoadingDialog(currentContext);
+      var message = await ProfileAPI.enableBulkProfileEditing(
+        memberIds: _selectedMemberIds,
+      );
+      _selectedMemberIds.clear();
+      Navigator.pop(currentContext);
+      showNormalToast('Profile editing enabled');
+      getAllIndividualMembers();
+    } catch (err) {
+      Navigator.pop(currentContext);
+      debugPrint('Error DBPE: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // disable bulk profile editing
+  Future<void> disableBulkProfileEditing() async {
+    try {
+      showLoadingDialog(currentContext);
+      var message = await ProfileAPI.disableBulkProfileEditing(
+        memberIds: _selectedMemberIds,
+      );
+      _selectedMemberIds.clear();
+      Navigator.pop(currentContext);
+      showNormalToast('Profile editing disabled');
+      getAllIndividualMembers();
+    } catch (err) {
+      Navigator.pop(currentContext);
+      debugPrint('Error DBPE: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
   // get list of profession
   Future<void> getClientStatistics() async {
     try {
@@ -337,12 +402,11 @@ class MembersProvider extends ChangeNotifier {
   }
 
   // get list of profession
-  Future<void> getMembersStatistics(String accountType) async {
+  Future<void> getMembersStatistics() async {
     try {
       var userBranch = await getUserBranch(currentContext);
       var response = await MembersAPI.getMemberStatistics(
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
-        accountType: accountType,
       );
       // get individual members stats
       totalIndMembers = response.totalIndividualMembers!;
@@ -426,7 +490,7 @@ class MembersProvider extends ChangeNotifier {
       if (await userType() == AppConstants.admin) {
         getClientStatistics();
       } else {
-        getMembersStatistics(AppString.acountTypeInd);
+        getMembersStatistics();
       }
 
       debugPrint('Ind Members: ${_individualMembers.length}');
@@ -587,7 +651,7 @@ class MembersProvider extends ChangeNotifier {
       if (await userType() == AppConstants.admin) {
         getClientStatistics();
       } else {
-        getMembersStatistics(AppString.acountTypeInd);
+        getMembersStatistics();
       }
 
       totalRegOrgs = _tempOrganizationalMembers;
@@ -743,6 +807,8 @@ class MembersProvider extends ChangeNotifier {
         selectedOccupation != null ||
         selectedProfession != null ||
         selectedEducation != null ||
+        selectedStatus != null ||
+        businessRegistered != null ||
         minAgeTEC.text.isNotEmpty ||
         maxAgeTEC.text.isNotEmpty) {
       isMember ? getAllIndividualMembers() : getAllOrganizations();
