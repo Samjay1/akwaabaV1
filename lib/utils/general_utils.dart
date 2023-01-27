@@ -73,25 +73,30 @@ openEmailApp(BuildContext context) async {
 
   // If no mail apps found, show error
   if (!result.didOpen && !result.canOpen) {
-    showInfoDialog(
-      'ok',
-      context: context,
-      title: 'Open Mail App',
-      content: 'No mail apps installed',
-      onTap: () => Navigator.pop(context),
-    );
+    if (context.mounted) {
+      showInfoDialog(
+        'ok',
+        context: context,
+        title: 'Open Mail App',
+        content: 'No mail apps installed',
+        onTap: () => Navigator.pop(context),
+      );
+    }
+
     // iOS: if multiple mail apps found, show dialog to select.
     // There is no native intent/default app system in iOS so
     // you have to do it yourself.
   } else if (!result.didOpen && result.canOpen) {
-    showDialog(
-      context: context,
-      builder: (_) {
-        return MailAppPickerDialog(
-          mailApps: result.options,
-        );
-      },
-    );
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        builder: (_) {
+          return MailAppPickerDialog(
+            mailApps: result.options,
+          );
+        },
+      );
+    }
   }
 }
 
@@ -100,9 +105,13 @@ Future<Branch> getUserBranch(BuildContext context) async {
   // get selected branch
   Branch? branch;
   if (await SharedPrefs().getUserType() == AppConstants.admin) {
-    branch = Provider.of<ClientProvider>(context, listen: false).branch;
+    if (context.mounted) {
+      branch = Provider.of<ClientProvider>(context, listen: false).branch;
+    }
   } else {
-    branch = Provider.of<MemberProvider>(context, listen: false).branch;
+    if (context.mounted) {
+      branch = Provider.of<MemberProvider>(context, listen: false).branch;
+    }
   }
   return branch!;
 }
@@ -130,22 +139,26 @@ openWhatsapp(BuildContext context, String phone, String message) async {
     if (await canLaunchUrl(Uri.parse(whatappURL_ios))) {
       await launch(whatappURL_ios, forceSafariVC: false);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("whatsapp not installed"),
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("whatsapp not installed"),
+          ),
+        );
+      }
     }
   } else {
     // android , web
     if (await canLaunchUrl(whatsappURl_android)) {
       await launchUrl(whatsappURl_android);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("whatsapp not installed"),
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("whatsapp not installed"),
+          ),
+        );
+      }
     }
   }
 }
