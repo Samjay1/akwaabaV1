@@ -1,16 +1,11 @@
-import 'dart:math';
-
 import 'package:akwaaba/Networks/event_api.dart';
-import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/location/location_services.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
 
 class HomeProvider extends ChangeNotifier {
   String? _memberToken;
@@ -127,57 +122,78 @@ class HomeProvider extends ChangeNotifier {
     required String? time,
   }) async {
     //setClocking(true);
-    showLoadingDialog(context);
-    getCurrentUserLocation();
+    try {
+      showLoadingDialog(context);
+      getCurrentUserLocation();
 
-    var response = await EventAPI.getMeetingCoordinates(
-      meetingEventModel: meetingEventModel,
-    );
-    debugPrint("Latitude: ${response.results![0].latitude}");
-    debugPrint("Longitude: ${response.results![0].longitude}");
-
-    if (response.results == null) {
-      Navigator.of(context).pop();
-      debugPrint('You\'re not within the radius of the premise');
-      showInfoDialog(
-        'ok',
-        context: context,
-        title: 'Hey there!',
-        content:
-            'Sorry, we were unable to get your meeting location. Please contact your admin and try again.',
-        onTap: () => Navigator.pop(context),
-      );
-      return;
-    }
-    double totalDistance = calculateDistance(
-      currentUserLocation.latitude,
-      currentUserLocation.longitude,
-      double.parse(response.results![0].latitude!),
-      double.parse(response.results![0].longitude!),
-    );
-
-    if (totalDistance <= response.results![0].radius!) {
-      await getAttendanceList(
-        context: context,
+      var response = await EventAPI.getMeetingCoordinates(
         meetingEventModel: meetingEventModel,
-        time: null,
-        isBreak: isBreak,
       );
-      debugPrint('You\'re within the radius of the premise');
-    } else {
+      // debugPrint("Latitude: ${response.results![0].latitude}");
+      // debugPrint("Longitude: ${response.results![0].longitude}");
+
+      if (response.results == null) {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          showInfoDialog(
+            'ok',
+            context: context,
+            title: 'Hey there!',
+            content:
+                'Sorry, we were unable to get your meeting location. Please contact your admin and try again.',
+            onTap: () => Navigator.pop(context),
+          );
+        }
+        return;
+      }
+
+      double totalDistance = calculateDistance(
+        currentUserLocation.latitude,
+        currentUserLocation.longitude,
+        double.parse(response.results![0].latitude!),
+        double.parse(response.results![0].longitude!),
+      );
+
+      if (totalDistance <= response.results![0].radius!) {
+        if (context.mounted) {
+          await getAttendanceList(
+            context: context,
+            meetingEventModel: meetingEventModel,
+            time: null,
+            isBreak: isBreak,
+          );
+        }
+        debugPrint('Meeting Lat: ${response.results![0].latitude!}');
+        debugPrint('Meeting Lng: ${response.results![0].longitude!}');
+      } else {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          debugPrint('You\'re not within the radius of the premise');
+          showInfoDialog(
+            'ok',
+            context: context,
+            title: 'Hey there!',
+            content:
+                'Sorry, it looks like you\'re not within the specified location radius. Please get closer and try again.',
+            onTap: () => Navigator.pop(context),
+          );
+        }
+      }
+    } catch (err) {
       Navigator.of(context).pop();
-      debugPrint('You\'re not within the radius of the premise');
+      debugPrint('Error MC: ${err.toString()}');
       showInfoDialog(
         'ok',
         context: context,
         title: 'Hey there!',
         content:
-            'Sorry, it looks like you\'re not within the specified location radius. Please get closer and try again.',
+            'Sorry, an unexpected error occurred when getting meeting or event coordinates. Please try again!',
         onTap: () => Navigator.pop(context),
       );
+      //showErrorToast('An unexpected error occurred. Please try again!');
     }
-    debugPrint('Calculated Radius: ${totalDistance.toString()}');
-    debugPrint('Premise Radius: ${response.results![0].radius!}');
+
+    notifyListeners();
   }
 
 // get current date and format for filtering
@@ -222,26 +238,31 @@ class HomeProvider extends ChangeNotifier {
       if (isBreak) {
         if (response.results!.isNotEmpty) {
           var clockingId = response.results![0].id!;
-          debugPrint("ClockingId: $clockingId");
           if (response.results![0].inOrOut!) {
             if (response.results![0].startBreak == null &&
                 response.results![0].endBreak == null) {
               // user has not started a break
               // so start break
-              startMeetingBreak(
+              if (context.mounted) {
+                startMeetingBreak(
                   context: context,
                   clockingId: clockingId,
                   meetingEventModel: meetingEventModel,
-                  time: null);
+                  time: null,
+                );
+              }
             } else if (response.results![0].startBreak != null &&
                 response.results![0].endBreak == null) {
               // user has started a break
               // so end break
-              endMeetingBreak(
+              if (context.mounted) {
+                endMeetingBreak(
                   context: context,
                   clockingId: clockingId,
                   meetingEventModel: meetingEventModel,
-                  time: null);
+                  time: null,
+                );
+              }
             } else if (response.results![0].startBreak != null &&
                 response.results![0].endBreak != null) {
               // user has started and ended a break
@@ -254,21 +275,23 @@ class HomeProvider extends ChangeNotifier {
             showNormalToast(
                 'Hi there, you\'ve not clocked in. \nPlease clock-in before you can start your break.');
           }
-          debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
+          //debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
         }
       } else {
         if (response.results!.isNotEmpty) {
           var clockingId = response.results![0].id!;
-          debugPrint("ClockingId: $clockingId");
           if (response.results![0].inOrOut!) {
             if (response.results![0].outTime == null) {
               // user has not clocked out
               // so clock user out of meeting
-              clockMemberOut(
+              if (context.mounted) {
+                clockMemberOut(
                   context: context,
                   clockingId: clockingId,
                   meetingEventModel: meetingEventModel,
-                  time: null);
+                  time: null,
+                );
+              }
             } else {
               // user has already clocked out
               // hide loading widget
@@ -277,17 +300,21 @@ class HomeProvider extends ChangeNotifier {
               showNormalToast('You\'ve already clocked out. Good Bye!');
             }
           } else {
-            clockMemberIn(
+            if (context.mounted) {
+              clockMemberIn(
                 context: context,
                 clockingId: clockingId,
                 meetingEventModel: meetingEventModel,
-                time: null);
+                time: null,
+              );
+            }
           }
-          debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
+          //debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
         }
       }
     } catch (err) {
-      debugPrint('Error ${err.toString()}');
+      Navigator.pop(context);
+      debugPrint('Error ATL: ${err.toString()}');
       showErrorToast(err.toString());
     }
   }
@@ -308,12 +335,11 @@ class HomeProvider extends ChangeNotifier {
       meetingEventModel.endBreak = response.endBreak;
       meetingEventModel.inTime = response.inTime;
       meetingEventModel.outTime = response.outTime;
-      debugPrint("SUCCESS ${response.message}");
       showNormalToast('You\'re Welcome');
-      Navigator.pop(context);
+      if (context.mounted) Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);
-      debugPrint('Error ${err.toString()}');
+      debugPrint('Error: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -334,9 +360,8 @@ class HomeProvider extends ChangeNotifier {
       meetingEventModel.endBreak = response.endBreak;
       meetingEventModel.inTime = response.inTime;
       meetingEventModel.outTime = response.outTime;
-      debugPrint("SUCCESS ${response.message}");
       showNormalToast('Good Bye!');
-      Navigator.pop(context);
+      if (context.mounted) Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -368,8 +393,7 @@ class HomeProvider extends ChangeNotifier {
         meetingEventModel.outTime = response.outTime;
         showNormalToast('Enjoy Break Time!');
       }
-      debugPrint("SUCCESS ${response.message}");
-      Navigator.pop(context);
+      if (context.mounted) Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -401,7 +425,7 @@ class HomeProvider extends ChangeNotifier {
         meetingEventModel.outTime = response.outTime;
         showNormalToast('Welcome Back!');
       }
-      Navigator.pop(context);
+      if (context.mounted) Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -452,12 +476,14 @@ class HomeProvider extends ChangeNotifier {
     int clockingId = await getClockingId(
       meetingEventModel: selectedMeeting,
     ); // retrieve clocking id
-    await submitExcuse(
-      context: context,
-      meetingId: selectedMeeting.id!,
-      clockingId: clockingId,
-      excuse: excuseTEC.text.trim(),
-    ); // s
+    if (context.mounted) {
+      await submitExcuse(
+        context: context,
+        meetingId: selectedMeeting.id!,
+        clockingId: clockingId,
+        excuse: excuseTEC.text.trim(),
+      );
+    }
   }
 
   Future<void> submitExcuse({
@@ -473,7 +499,7 @@ class HomeProvider extends ChangeNotifier {
         excuse: excuse,
       );
       setSubmitting(false);
-      Navigator.of(context).pop();
+      if (context.mounted) Navigator.of(context).pop();
       showErrorToast(
           'You\'ve already submitted an excuse for this meeting. Thank you');
       excuseTEC.clear();

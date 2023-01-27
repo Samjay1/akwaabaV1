@@ -651,16 +651,13 @@ class _ClockingPageState extends State<ClockingPage> {
                                         onNotification:
                                             _handleScrollNotification,
                                         child: ListView.builder(
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             controller: clockingProvider
                                                 .absenteesScrollController,
                                             itemCount: clockingProvider
                                                 .absentees.length,
                                             itemBuilder: (context, index) {
-                                              // if (clockingProvider.absentees.isEmpty) {
-                                              //   return const EmptyStateWidget(
-                                              //     text: 'No absentees found!',
-                                              //   );
-                                              // }
                                               return GestureDetector(
                                                 onTap: () {
                                                   setState(() {
@@ -728,16 +725,13 @@ class _ClockingPageState extends State<ClockingPage> {
                                         onNotification:
                                             _handleScrollNotification,
                                         child: ListView.builder(
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             controller: clockingProvider
                                                 .attendeesScrollController,
                                             itemCount: clockingProvider
                                                 .attendees.length,
                                             itemBuilder: (context, index) {
-                                              // if (clockingProvider.attendees.isEmpty) {
-                                              //   return const EmptyStateWidget(
-                                              //     text: 'No attendees found!',
-                                              //   );
-                                              // }
                                               return GestureDetector(
                                                 onTap: () {
                                                   setState(

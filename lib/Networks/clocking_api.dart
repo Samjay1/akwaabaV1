@@ -183,6 +183,34 @@ class ClockingAPI {
     return clockInResponse;
   }
 
+  // clock-in data source
+  static Future<ClockingResponse> bulkClocking({
+    required List<int> clockingIds,
+    required MeetingEventModel meetingEventModel,
+  }) async {
+    ClockingResponse clockInResponse;
+    try {
+      var url = Uri.parse(
+          '${getBaseUrl()}/attendance/meeting-event/attendance/clock-in/${meetingEventModel.id}');
+      Map<String, dynamic> map = {};
+      for (var id in clockingIds) {
+        map['clockingIds'] = id;
+      }
+      http.Response response = await http.patch(
+        url,
+        body: json.encode(map),
+        headers: await getAllHeaders(),
+      );
+      clockInResponse = ClockingResponse.fromJson(
+        await returnResponse(response),
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return clockInResponse;
+  }
+
   // clock-out data source
   static Future<dynamic> clockOut({
     required int clockingId,

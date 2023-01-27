@@ -254,46 +254,6 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 ],
               ),
 
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: CupertinoButton(
-              //           color: selectedTabIndex == 1
-              //               ? primaryColor
-              //               : Colors.transparent,
-              //           padding: EdgeInsets.zero,
-              //           child: const Text(
-              //             "Absentees",
-              //             style: TextStyle(color: textColorPrimary),
-              //           ),
-              //           onPressed: () {
-              //             setState(() {
-              //               selectedTabIndex = 0;
-              //             });
-              //           }),
-              //     ),
-              //     const SizedBox(
-              //       width: 12,
-              //     ),
-              //     Expanded(
-              //       child: CupertinoButton(
-              //           color: selectedTabIndex == 0
-              //               ? primaryColor
-              //               : Colors.transparent,
-              //           padding: EdgeInsets.zero,
-              //           child: const Text(
-              //             "Attendees",
-              //             style: TextStyle(color: textColorPrimary),
-              //           ),
-              //           onPressed: () {
-              //             setState(() {
-              //               selectedTabIndex = 1;
-              //             });
-              //           }),
-              //     ),
-              //   ],
-              // ),
-
               const SizedBox(
                 height: 12,
               ),
@@ -466,9 +426,10 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                         onNotification:
                                             _handleScrollNotification,
                                         child: ListView.builder(
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             controller: attendanceProvider
                                                 .attendeesScrollController,
-                                            shrinkWrap: true,
                                             itemCount: attendees.length,
                                             itemBuilder: (context, index) {
                                               if (attendees.isEmpty) {
@@ -559,10 +520,11 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                       onNotification: _handleScrollNotification,
                                       child: Expanded(
                                         child: ListView.builder(
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             controller: attendanceProvider
                                                 .absenteesScrollController,
                                             itemCount: absentees.length,
-                                            shrinkWrap: true,
                                             itemBuilder: (context, index) {
                                               if (absentees.isEmpty) {
                                                 return const EmptyStateWidget(

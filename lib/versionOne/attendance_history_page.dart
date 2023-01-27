@@ -133,16 +133,20 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               SizedBox(
                 height: displayHeight(context) * 0.02,
               ),
-              userType == AppConstants.admin
-                  ? CupertinoSearchTextField(
-                      onSubmitted: (val) {
-                        setState(() {
-                          attendanceHistoryProvider.search = val;
-                        });
-                        attendanceHistoryProvider.getAttendanceHistory();
-                      },
-                    )
-                  : const SizedBox(),
+              CupertinoSearchTextField(
+                onChanged: (val) {
+                  setState(() {
+                    attendanceHistoryProvider.search = val;
+                  });
+                  attendanceHistoryProvider.getAttendanceHistory();
+                },
+                onSubmitted: (val) {
+                  setState(() {
+                    attendanceHistoryProvider.search = val;
+                  });
+                  attendanceHistoryProvider.getAttendanceHistory();
+                },
+              ),
               SizedBox(
                 height: displayHeight(context) * 0.02,
               ),
@@ -284,11 +288,9 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   height: displayHeight(context) * 0.02,
                 )
               : const SizedBox(),
-
           LabelWidgetContainer(
             label: "Meeting/Event",
             child: GFMultiSelect<MeetingEventModel>(
-              //items: attendanceHistoryProvider.pastMeetingEvents,
               items: attendanceHistoryProvider.pastMeetingEvents
                   .map((mc) => mc.name)
                   .toList(),
@@ -297,10 +299,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   attendanceHistoryProvider
                       .setSelectedMeetingEventIndexes(value.cast<int>());
                 });
-                print(
-                    'Selected ${attendanceHistoryProvider.selectedMeetingEventIndexes}');
               },
-
               dropdownTitleTileText: 'Select Meeting',
               dropdownTitleTileMargin: const EdgeInsets.all(0),
               dropdownTitleTilePadding: const EdgeInsets.symmetric(
@@ -337,51 +336,6 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               inactiveBorderColor: Colors.grey[300]!,
             ),
           ),
-
-          // LabelWidgetContainer(
-          //   label: "Meeting/Event",
-          //   child: Container(
-          //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          //     decoration: BoxDecoration(
-          //       color: whiteColor,
-          //       borderRadius: BorderRadius.circular(8),
-          //       border: Border.all(width: 0.0, color: Colors.grey.shade400),
-          //     ),
-          //     child: DropdownButtonFormField<MeetingEventModel>(
-          //       isExpanded: true,
-          //       style: const TextStyle(
-          //         color: textColorPrimary,
-          //         fontSize: 15,
-          //         fontWeight: FontWeight.w400,
-          //       ),
-          //       hint: const Text(
-          //         'Select Meeting',
-          //       ),
-          //       decoration: const InputDecoration(border: InputBorder.none),
-          //       value: attendanceHistoryProvider.selectedPastMeetingEvent,
-          //       icon: Icon(
-          //         CupertinoIcons.chevron_up_chevron_down,
-          //         color: Colors.grey.shade500,
-          //         size: 16,
-          //       ),
-          //       // Array list of items
-          //       items: attendanceHistoryProvider.pastMeetingEvents
-          //           .map((MeetingEventModel mc) {
-          //         return DropdownMenuItem(
-          //           value: mc,
-          //           child: Text(mc.name!),
-          //         );
-          //       }).toList(),
-          //       onChanged: (val) {
-          //         setState(() {
-          //           attendanceHistoryProvider.selectedPastMeetingEvent =
-          //               val as MeetingEventModel;
-          //         });
-          //         attendanceHistoryProvider.getMemberCategories();
-          //       },
-          //     ),
-          //   ),
-          // ),
           userType == AppConstants.admin
               ? SizedBox(
                   height: displayHeight(context) * 0.02,
@@ -750,7 +704,6 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   onNotification: _handleScrollNotification,
                   child: Expanded(
                     child: ListView(
-                      shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       controller:
                           attendanceHistoryProvider.historyScrollController,

@@ -1,5 +1,6 @@
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
@@ -80,11 +81,11 @@ class _MemberWidgetState extends State<MemberWidget> {
                     children: [
                       Expanded(
                           child: Text(
-                        "${widget.member!.firstname} ${widget.member!.surname}",
+                        "${widget.member!.firstname!.capitalize()} ${widget.member!.surname!.capitalize()}",
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600),
                         maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        //overflow: TextOverflow.ellipsis,
                       )),
                       Row(
                         children: [

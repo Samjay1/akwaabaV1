@@ -672,9 +672,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                       onNotification: _handleScrollNotification,
                                       child: Expanded(
                                         child: ListView.builder(
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             controller: postClockingProvider
                                                 .absenteesScrollController,
-                                            shrinkWrap: true,
                                             itemCount: absentees.length,
                                             itemBuilder: (context, index) {
                                               return GestureDetector(
@@ -776,9 +777,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                         onNotification:
                                             _handleScrollNotification,
                                         child: ListView.builder(
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             controller: postClockingProvider
                                                 .attendeesScrollController,
-                                            shrinkWrap: true,
                                             itemCount: attendees.length,
                                             itemBuilder: (context, index) {
                                               return GestureDetector(
@@ -982,7 +984,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                     // if (context.read<ClientProvider>().branch.id == 1) {
                     //   postClockingProvider.getBranches();
                     // }
-
                   }
                 });
               },

@@ -498,7 +498,7 @@ class ClockingProvider extends ChangeNotifier {
       // refresh list when there is bulk operation
       getAllAbsentees(meetingEventModel: selectedCurrentMeeting);
       showNormalToast(response.message!);
-      Navigator.pop(context);
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -542,7 +542,7 @@ class ClockingProvider extends ChangeNotifier {
         meetingEventModel: selectedCurrentMeeting,
       );
       showNormalToast(response.message);
-      Navigator.pop(context);
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -586,7 +586,7 @@ class ClockingProvider extends ChangeNotifier {
       } else {
         showNormalToast(response.message!);
       }
-      Navigator.pop(context);
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -632,7 +632,7 @@ class ClockingProvider extends ChangeNotifier {
         showNormalToast(response.message);
         debugPrint("SUCCESS ${response.message}");
       }
-      Navigator.pop(context);
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -678,7 +678,7 @@ class ClockingProvider extends ChangeNotifier {
         showNormalToast(response.message);
         debugPrint("SUCCESS ${response.message}");
       }
-      Navigator.pop(context);
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');

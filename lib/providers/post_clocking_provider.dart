@@ -568,7 +568,7 @@ class PostClockingProvider extends ChangeNotifier {
         }
         _selectedAttendees.clear();
       }
-      Navigator.of(context).pop();
+      if (context.mounted) Navigator.of(context).pop();
       // refresh list when there is bulk operation
       getAllAbsentees(
         meetingEventModel: selectedPastMeetingEvent!,
@@ -609,7 +609,7 @@ class PostClockingProvider extends ChangeNotifier {
         }
         _selectedAttendees.clear();
       }
-      Navigator.of(context).pop();
+      if (context.mounted) Navigator.of(context).pop();
       // refresh list when there is bulk operation
       getAllAbsentees(
         meetingEventModel: selectedPastMeetingEvent!,
@@ -655,7 +655,7 @@ class PostClockingProvider extends ChangeNotifier {
         }
         _selectedAttendees.clear();
       }
-      Navigator.of(context).pop();
+      if (context.mounted) Navigator.of(context).pop();
       // refresh list when there is bulk operation
       getAllAbsentees(
         meetingEventModel: selectedPastMeetingEvent!,
@@ -710,7 +710,7 @@ class PostClockingProvider extends ChangeNotifier {
         showNormalToast(response.message);
         debugPrint("SUCCESS ${response.message}");
       }
-      Navigator.pop(context);
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
