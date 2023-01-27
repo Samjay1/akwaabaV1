@@ -135,17 +135,17 @@ class _MemberWidgetState extends State<MemberWidget> {
                     children: [
                       Text(
                         widget.member!.identification!,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: textColorLight),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Text(
                         widget.member!.categoryInfo!.category!,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: textColorLight),

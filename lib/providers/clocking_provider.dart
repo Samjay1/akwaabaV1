@@ -388,7 +388,7 @@ class ClockingProvider extends ChangeNotifier {
         _tempAttendees = _attendees;
       }
       setLoading(false);
-      debugPrint('Atendees: ${_attendees.length}');
+      debugPrint('Attendees: ${_attendees.length}');
     } catch (err) {
       setLoading(false);
       debugPrint('Error Attendees: ${err.toString()}');
