@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/dialogs_modals/info_dialog.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -71,9 +72,10 @@ Future displayCustomDropDown(
                         },
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Text(listItemsIsMap
-                              ? "${e.values.elementAt(0)}"
-                              : "$e", style: TextStyle(color: Colors.black),),
+                          child: Text(
+                            listItemsIsMap ? "${e.values.elementAt(0)}" : "$e",
+                            style: TextStyle(color: Colors.black),
+                          ),
                         )))
                     .toList(),
             cancelButton: CupertinoActionSheetAction(
@@ -110,6 +112,7 @@ Future<DateTime?> displayDateSelector({
   DateTime? maxDate,
 }) async {
   DateTime? selectedDate;
+
   await DatePicker.showDatePicker(
     context,
     showTitleActions: true,

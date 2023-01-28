@@ -1,3 +1,4 @@
+import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/meeting_event_widget.dart';
@@ -233,31 +234,26 @@ class _AllEventsPageState extends State<AllEventsPage> {
         children: [
           LabelWidgetContainer(
             label: "Date",
-            child: FormButton(
-              label: _eventsProvider.selectedDate == null
-                  ? 'Select Date'
-                  : _eventsProvider.selectedDate!
-                      .toIso8601String()
-                      .substring(0, 10),
-              function: () {
-                displayDateSelector(
-                  initialDate: DateTime.now(),
-                  //maxDate: DateTime.now(),
-                  context: context,
-                ).then((value) {
-                  if (value != null) {
-                    setState(() {
-                      _eventsProvider.selectedDate = value;
-                      debugPrint(
-                          "Selected DateTime: ${_eventsProvider.selectedDate!.toIso8601String().substring(0, 10)}");
-                    });
-                  }
+            child: CustomDatePicker(
+              hintText: 'Select Date',
+              firstDate: DateTime(1970),
+              lastDate: DateTime(2050),
+              onChanged: (dateString) {
+                setState(() {
+                  _eventsProvider.selectedDate = DateTime.parse(dateString);
                 });
+              },
+              onSaved: (dateString) {
+                setState(() {
+                  _eventsProvider.selectedDate = DateTime.parse(dateString!);
+                });
+                debugPrint(
+                    "Selected DateTime: ${_eventsProvider.selectedDate!.toIso8601String().substring(0, 10)}");
               },
             ),
           ),
           SizedBox(
-            height: displayHeight(context) * 0.008,
+            height: displayHeight(context) * 0.02,
           ),
           Row(
             children: [

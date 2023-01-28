@@ -52,7 +52,7 @@ class PostClockingProvider extends ChangeNotifier {
 
   MeetingEventModel? selectedPastMeetingEvent;
   DateTime? selectedDate;
-  DateTime? postClockTime;
+  String? postClockTime;
 
   MeetingEventModel? _meetingEventModel;
 
@@ -262,15 +262,15 @@ class PostClockingProvider extends ChangeNotifier {
   Future<void> getAllAbsentees({
     required MeetingEventModel meetingEventModel,
   }) async {
+    var userBranch =
+        await getUserBranch(currentContext); // get current user branch
     try {
       setLoading(true);
       _absenteesPage = 1;
       var response = await ClockingAPI.getAbsenteesList(
         page: _absenteesPage,
         meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null
-            ? selectedPastMeetingEvent!.branchId!
-            : selectedBranch!.id!,
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
@@ -306,8 +306,9 @@ class PostClockingProvider extends ChangeNotifier {
         _tempAbsentees = _absentees;
       }
 
-      getAllAtendees(
+      getAllAttendees(
         meetingEventModel: meetingEventModel,
+        branchId: userBranch.id!,
       );
 
       setLoading(false);
@@ -370,17 +371,16 @@ class PostClockingProvider extends ChangeNotifier {
   }
 
   // get clocked members for a meeting
-  Future<void> getAllAtendees({
+  Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
+    required int branchId,
   }) async {
     try {
       _attendeesPage = 1;
       var response = await ClockingAPI.getAttendeesList(
         page: _attendeesPage,
         meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null
-            ? selectedPastMeetingEvent!.branchId!
-            : selectedBranch!.id!,
+        branchId: selectedBranch == null ? branchId : selectedBranch!.id!,
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
@@ -529,7 +529,7 @@ class PostClockingProvider extends ChangeNotifier {
         meetingEventModel: selectedPastMeetingEvent!,
       );
       showNormalToast(response.message);
-      Navigator.of(context).pop();
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error Clocking In: ${err.toString()}');
@@ -574,6 +574,7 @@ class PostClockingProvider extends ChangeNotifier {
         meetingEventModel: selectedPastMeetingEvent!,
       );
       showNormalToast(response.message);
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -620,6 +621,7 @@ class PostClockingProvider extends ChangeNotifier {
       } else {
         showNormalToast(response.message);
       }
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -665,6 +667,7 @@ class PostClockingProvider extends ChangeNotifier {
       } else {
         showNormalToast(response.message);
       }
+      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -818,8 +821,7 @@ class PostClockingProvider extends ChangeNotifier {
 
   String getPostClockDateTime() {
     var date = selectedDate!.toIso8601String().substring(0, 11);
-    var time = postClockTime!.toIso8601String().substring(11, 19);
-
+    var time = '$postClockTime:00';
     return '$date$time';
   }
 

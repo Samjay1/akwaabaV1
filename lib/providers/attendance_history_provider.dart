@@ -251,22 +251,15 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   }
 
   void validateFilterFields(context) {
-    if ((selectedStartDate != null && selectedEndDate != null) ||
-        selectedPastMeetingEvent != null ||
-        selectedBranch != null ||
-        selectedMemberCategory != null ||
-        selectedGender != null ||
-        selectedGroup != null ||
-        selectedSubGroup != null ||
-        selectedStatus.isNotEmpty ||
-        minAgeTEC.text.isNotEmpty ||
-        maxAgeTEC.text.isNotEmpty) {
-      getAttendanceHistory();
-    } else if (selectedPastMeetingEvent == null) {
-      showErrorToast('Please select a meeting or event to contitue');
-    } else {
+    if (selectedStartDate == null || selectedEndDate == null) {
       showErrorToast('Please select start and end date to proceed');
+      return;
     }
+    if (selectedMeetingIds().isEmpty) {
+      showErrorToast('Please select a meeting or event to contitue');
+      return;
+    }
+    getAttendanceHistory();
   }
 
 // get meeting ids from meeting map
@@ -285,6 +278,8 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   // get attendance history for a meeting
   Future<void> getAttendanceHistory() async {
     setLoading(true);
+    var userBranch =
+        await getUserBranch(currentContext); // get current user branch
     String? userType = await SharedPrefs().getUserType();
     // search with member name if account type is member else
     search = userType == AppConstants.member
@@ -297,9 +292,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       var response = await AttendanceAPI.getAttendanceHistory(
         page: _page,
         meetingIds: selectedMeetingIds(),
-        branchId: selectedBranch == null
-            ? selectedPastMeetingEvent!.branchId!
-            : selectedBranch!.id!,
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
         startDate: selectedStartDate!.toIso8601String().substring(0, 10),
         endDate: selectedEndDate!.toIso8601String().substring(0, 10),
         search: search!,

@@ -238,15 +238,15 @@ class ClockingProvider extends ChangeNotifier {
   Future<void> getAllAbsentees({
     required MeetingEventModel meetingEventModel,
   }) async {
+    var userBranch =
+        await getUserBranch(currentContext); // get current user branch
     try {
       setLoading(true);
       _absenteesPage = 1;
       var response = await ClockingAPI.getAbsenteesList(
         page: _absenteesPage,
         meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null
-            ? meetingEventModel.branchId!
-            : selectedBranch!.id!,
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
@@ -283,6 +283,7 @@ class ClockingProvider extends ChangeNotifier {
 
       getAllAttendees(
         meetingEventModel: meetingEventModel,
+        branchId: userBranch.id!,
       );
       setLoading(false);
     } catch (err) {
@@ -347,15 +348,14 @@ class ClockingProvider extends ChangeNotifier {
   // get clocked members for a meeting
   Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
+    required branchId,
   }) async {
     try {
       _attendeesPage = 1;
       var response = await ClockingAPI.getAttendeesList(
         page: _attendeesPage,
         meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null
-            ? meetingEventModel.branchId!
-            : selectedBranch!.id!,
+        branchId: selectedBranch == null ? branchId : selectedBranch!.id!,
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),

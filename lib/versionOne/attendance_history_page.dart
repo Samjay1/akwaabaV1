@@ -1,4 +1,5 @@
 import 'package:akwaaba/components/attendance_history_item_widget.dart';
+import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
@@ -170,31 +171,26 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               Expanded(
                 child: LabelWidgetContainer(
                   label: "Start Date",
-                  child: FormButton(
-                    label: attendanceHistoryProvider.selectedStartDate == null
-                        ? 'Select Start Date'
-                        : attendanceHistoryProvider.selectedStartDate!
-                            .toIso8601String()
-                            .substring(0, 10),
-                    function: () {
-                      displayDateSelector(
-                        initialDate: DateTime.now(),
-                        maxDate: DateTime.now(),
-                        context: context,
-                      ).then((value) {
-                        if (value != null) {
-                          setState(() {
-                            attendanceHistoryProvider.selectedStartDate = value;
-                            debugPrint(
-                                "Selected Start Date: ${attendanceHistoryProvider.selectedStartDate!.toIso8601String().substring(0, 10)}");
-                          });
-                          // if admin is main branch admin
-                          if (context.read<ClientProvider>().branch != null &&
-                              context.read<ClientProvider>().branch.id == 1) {
-                            attendanceHistoryProvider.getBranches();
-                          }
-                        }
+                  child: CustomDatePicker(
+                    hintText: 'Select Start Date',
+                    firstDate: DateTime(1970),
+                    lastDate: DateTime.now(),
+                    onChanged: (dateString) {
+                      setState(() {
+                        attendanceHistoryProvider.selectedStartDate =
+                            DateTime.parse(dateString);
                       });
+                      debugPrint(
+                          "Selected Start Date: ${attendanceHistoryProvider.selectedStartDate!.toIso8601String().substring(0, 10)}");
+                      // if admin is main branch admin
+                      if (context.read<ClientProvider>().branch != null &&
+                          context.read<ClientProvider>().branch.id == 1) {
+                        attendanceHistoryProvider.getBranches();
+                      }
+                    },
+                    onSaved: (dateString) {
+                      attendanceHistoryProvider.selectedStartDate =
+                          DateTime.parse(dateString!);
                     },
                   ),
                 ),
@@ -205,31 +201,29 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               Expanded(
                 child: LabelWidgetContainer(
                   label: "End Date",
-                  child: FormButton(
-                    label: attendanceHistoryProvider.selectedEndDate == null
-                        ? 'Select End Date'
-                        : attendanceHistoryProvider.selectedEndDate!
-                            .toIso8601String()
-                            .substring(0, 10),
-                    function: () {
-                      displayDateSelector(
-                        initialDate: DateTime.now(),
-                        maxDate: DateTime.now(),
-                        context: context,
-                      ).then((value) {
-                        if (value != null) {
-                          setState(() {
-                            attendanceHistoryProvider.selectedEndDate = value;
-                            debugPrint(
-                                "Selected Start Date: ${attendanceHistoryProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
-                          });
-                        }
+                  child: CustomDatePicker(
+                    hintText: 'Select End Date',
+                    firstDate: DateTime(1970),
+                    lastDate: DateTime.now(),
+                    onChanged: (dateString) {
+                      setState(() {
+                        attendanceHistoryProvider.selectedEndDate =
+                            DateTime.parse(dateString);
                       });
+                      debugPrint(
+                          "Selected End Date: ${attendanceHistoryProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
+                    },
+                    onSaved: (dateString) {
+                      attendanceHistoryProvider.selectedStartDate =
+                          DateTime.parse(dateString!);
                     },
                   ),
                 ),
               ),
             ],
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.02,
           ),
           Consumer<ClientProvider>(
             builder: (context, data, child) {

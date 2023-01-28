@@ -1,6 +1,7 @@
 import 'package:akwaaba/Networks/api_responses/attendance_history_response.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/tag_widget.dart';
+import 'package:akwaaba/components/tag_widget_solid.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -149,7 +150,7 @@ class _AttendanceHistoryItemPreviewPageState
           ),
           Text(
             "Under time:   $undertime hrs",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15,
               color: textColorLight,
             ),
@@ -169,7 +170,7 @@ class _AttendanceHistoryItemPreviewPageState
           ),
           Align(
             alignment: Alignment.center,
-            child: TagWidget(
+            child: TagWidgetSolid(
               text: widget.attendanceHistory!.status!.name!,
               color: widget.attendanceHistory!.status!.name == 'Active'
                   ? Colors.green

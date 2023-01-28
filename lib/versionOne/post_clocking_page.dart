@@ -1,7 +1,9 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
+import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_outlined_button.dart';
 import 'package:akwaaba/components/custom_progress_indicator.dart';
+import 'package:akwaaba/components/custom_time_picker.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/form_button.dart';
@@ -182,46 +184,30 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                //POST CLOCK TIME BUTTON
                                 Expanded(
-                                  child: InkWell(
-                                      onTap: () {
-                                        displayTimeSelector(
-                                          initialDate: DateTime.now(),
-                                          context: context,
-                                        ).then((value) {
-                                          if (value != null) {
-                                            setState(() {
-                                              postClockingProvider
-                                                  .postClockTime = value;
-                                              debugPrint(
-                                                "Selected PostClock Time: ${postClockingProvider.postClockTime!.toIso8601String().substring(11, 19)}",
-                                              );
-                                            });
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 10),
-                                        decoration: BoxDecoration(
-                                            color: blackColor,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Text(
-                                          postClockingProvider.postClockTime ==
-                                                  null
-                                              ? 'Select Post Clock Time'
-                                              : DateFormat.jm().format(
-                                                  postClockingProvider
-                                                      .postClockTime!),
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15),
-                                        ),
-                                      )),
-                                )
+                                  child: CustomTimePicker(
+                                    hintText: 'Select Post Clock Time',
+                                    fillColor: blackColor,
+                                    textColor: whiteColor,
+                                    firstDate: DateTime(1970),
+                                    lastDate: DateTime.now(),
+                                    onChanged: (dateString) {
+                                      setState(() {
+                                        postClockingProvider.postClockTime =
+                                            dateString;
+                                      });
+                                      debugPrint(
+                                        "Selected PostClock Time: $dateString",
+                                      );
+                                    },
+                                    onSaved: (dateString) {
+                                      setState(() {
+                                        postClockingProvider.postClockTime =
+                                            dateString!;
+                                      });
+                                    },
+                                  ),
+                                ),
                               ],
                             ),
                             //// CustomElevatedButton(label: "Filter", function: (){}),\
@@ -962,32 +948,26 @@ class _PostClockingPageState extends State<PostClockingPage> {
           ),
           LabelWidgetContainer(
             label: "Date",
-            child: FormButton(
-              label: postClockingProvider.selectedDate == null
-                  ? 'Select Date'
-                  : postClockingProvider.selectedDate!
-                      .toIso8601String()
-                      .substring(0, 10),
-              function: () {
-                displayDateSelector(
-                  initialDate: DateTime.now(),
-                  maxDate: DateTime.now(),
-                  context: context,
-                ).then((value) {
-                  if (value != null) {
-                    setState(() {
-                      postClockingProvider.selectedDate = value;
-                      debugPrint(
-                          "Selected DateTime: ${postClockingProvider.selectedDate!.toIso8601String().substring(0, 10)}");
-                    });
-                    // if admin is main branch admin
-                    // if (context.read<ClientProvider>().branch.id == 1) {
-                    //   postClockingProvider.getBranches();
-                    // }
-                  }
+            child: CustomDatePicker(
+              hintText: 'Select Date',
+              firstDate: DateTime(1970),
+              lastDate: DateTime.now(),
+              onChanged: (dateString) {
+                setState(() {
+                  postClockingProvider.selectedDate =
+                      DateTime.parse(dateString);
+                });
+              },
+              onSaved: (dateString) {
+                setState(() {
+                  postClockingProvider.selectedDate =
+                      DateTime.parse(dateString!);
                 });
               },
             ),
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.02,
           ),
           Consumer<ClientProvider>(
             builder: (context, data, child) {

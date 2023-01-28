@@ -1,3 +1,4 @@
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -35,6 +36,18 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(primary: Colors.white),
       ),
+      // dialogTheme: DialogTheme(
+      //   titleTextStyle: TextStyle(
+      //     color: textColorDark,
+      //     fontWeight: FontWeight.w600,
+      //     fontSize: AppSize.s18,
+      //   ),
+      //   contentTextStyle: TextStyle(
+      //     color: textColorDark,
+      //     fontWeight: FontWeight.w400,
+      //     fontSize: AppSize.s16,
+      //   ),
+      // ),
       buttonTheme: base.buttonTheme.copyWith(
         buttonColor: primaryColor,
         textTheme: ButtonTextTheme.primary,
@@ -48,7 +61,7 @@ class AppTheme {
           caption: base.textTheme.caption!.copyWith(
               color: textColorDark,
               fontSize: 12,
-              fontWeight: FontWeight.w200,
+              fontWeight: FontWeight.w400,
               fontFamily: "Lato"),
           headline4: base.textTheme.headline4!.copyWith(
               color: textColorLight,
@@ -88,7 +101,10 @@ class AppTheme {
           color: Colors.black, //change your color here
         ),
         titleTextStyle: TextStyle(
-            color: Colors.black, fontWeight: FontWeight.w600, fontSize: 19),
+          color: Colors.black,
+          fontWeight: FontWeight.w600,
+          fontSize: 19,
+        ),
       ),
     );
   }

@@ -722,6 +722,8 @@ class _HomePageState extends State<HomePage> {
 
     var startTime =
         DateUtil.convertTimeToDatetime(myTime: meetingEventModel.startTime!);
+    var closeTime =
+        DateUtil.convertTimeToDatetime(myTime: meetingEventModel.closeTime!);
 
     var currentTime = DateTime.now();
 
@@ -989,6 +991,21 @@ class _HomePageState extends State<HomePage> {
                               onTap: () => Navigator.pop(context),
                             );
                           } else {
+                            if ((!currentTime.isAtSameMomentAs(closeTime) ||
+                                    !currentTime.isAfter(closeTime
+                                        .add(const Duration(minutes: 30)))) &&
+                                (meetingEventModel.inTime != null &&
+                                    meetingEventModel.outTime == null)) {
+                              showInfoDialog(
+                                'ok',
+                                context: context,
+                                title: 'Hey there!',
+                                content:
+                                    'Time is not up for clocking out. \nGood Bye!',
+                                onTap: () => Navigator.pop(context),
+                              );
+                              return;
+                            }
                             showDialog(
                               context: context,
                               builder: (_) => AlertDialog(

@@ -2,6 +2,7 @@ import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/attendance_history_item_widget.dart';
 import 'package:akwaaba/components/attendance_record_attendee_item.dart';
 import 'package:akwaaba/components/attendance_report_item_widget.dart';
+import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_tab_widget.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
@@ -24,6 +25,7 @@ import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/versionOne/attendance_report_filter_page.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -645,34 +647,24 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
         children: [
           LabelWidgetContainer(
             label: "Date",
-            child: FormButton(
-              label: attendanceProvider.selectedDate == null
-                  ? 'Select Date'
-                  : attendanceProvider.selectedDate!
-                      .toIso8601String()
-                      .substring(0, 10),
-              function: () {
-                displayDateSelector(
-                  initialDate: DateTime.now(),
-                  maxDate: DateTime.now(),
-                  context: context,
-                ).then((value) {
-                  if (value != null) {
-                    setState(() {
-                      attendanceProvider.selectedDate = value;
-                      debugPrint(
-                          "Selected DateTime: ${attendanceProvider.selectedDate!.toIso8601String().substring(0, 10)}");
-                    });
-                    // if admin is main branch admin
-                    // if (userType == AppConstants.admin &&
-                    //     (context.read<ClientProvider>().branch != null &&
-                    //         context.read<ClientProvider>().branch.id == 1)) {
-                    //   attendanceProvider.getBranches();
-                    // }
-                  }
+            child: CustomDatePicker(
+              hintText: 'Select Date',
+              firstDate: DateTime(1970),
+              lastDate: DateTime.now(),
+              onChanged: (dateString) {
+                setState(() {
+                  attendanceProvider.selectedDate = DateTime.parse(dateString);
+                });
+              },
+              onSaved: (dateString) {
+                setState(() {
+                  attendanceProvider.selectedDate = DateTime.parse(dateString!);
                 });
               },
             ),
+          ),
+          SizedBox(
+            height: displayHeight(context) * 0.02,
           ),
           Consumer<ClientProvider>(
             builder: (context, data, child) {

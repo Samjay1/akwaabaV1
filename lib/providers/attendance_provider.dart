@@ -385,16 +385,16 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
   }) async {
-    userType = await SharedPrefs().getUserType();
+    var userBranch =
+        await getUserBranch(currentContext); // get current user branch
+    userType = await SharedPrefs().getUserType(); // get current user type
     setLoading(true);
     try {
       _attendeesPage = 1;
       var response = await ClockingAPI.getAttendeesList(
         page: _attendeesPage,
         meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null
-            ? selectedPastMeetingEvent!.branchId!
-            : selectedBranch!.id!,
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
@@ -406,11 +406,12 @@ class AttendanceProvider extends ChangeNotifier {
         fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
         toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
       );
+
       selectedAttendees.clear();
 
       resetStatsData();
 
-      // get total number of attendees
+      /// get total number of attendees
       totalAttendees = response.count!;
 
       _attendees = response.results!;
@@ -429,11 +430,11 @@ class AttendanceProvider extends ChangeNotifier {
               attendee!.attendance!.memberId!.gender == AppConstants.female)
           .toList();
 
-      debugPrint('Atendees: ${_attendees.length}');
+      //debugPrint('Atendees: ${_attendees.length}');
 
-      getAllAbsentees(
-        meetingEventModel: meetingEventModel,
-      );
+      // getAllAbsentees(
+      //   meetingEventModel: meetingEventModel,
+      // );
 
       setLoading(false);
     } catch (err) {

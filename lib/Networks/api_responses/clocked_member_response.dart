@@ -1,9 +1,8 @@
 import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/models/attendance/attendance.dart';
-import 'package:equatable/equatable.dart';
 
 class ClockedMembersResponse {
-  int? count;
+  dynamic count;
   String? next;
   String? previous;
   List<Attendee>? results;

@@ -1,6 +1,7 @@
 import 'package:akwaaba/Networks/api_responses/attendance_history_response.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/tag_widget.dart';
+import 'package:akwaaba/components/tag_widget_solid.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/attendance_history_item.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
@@ -152,7 +153,7 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                       height: 4,
                     ),
                     Text(
-                      "Undertime: $undertime hrs",
+                      "Lateness: $undertime hrs",
                       style:
                           const TextStyle(fontSize: 14, color: textColorLight),
                     ),
@@ -161,12 +162,14 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                     ),
                     Text(
                       "Total Attendance: ${attendanceHistory!.attendanceRecord!.meetings![0].totalAttendance}",
-                      style:
-                          const TextStyle(fontSize: 14, color: textColorLight),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: textColorLight,
+                      ),
                     ),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: TagWidget(
+                      child: TagWidgetSolid(
                         text: attendanceHistory!.status!.name!,
                         color: attendanceHistory!.status!.name == 'Active'
                             ? Colors.green

@@ -1,3 +1,4 @@
+import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
@@ -357,30 +358,22 @@ class _FilterPageState extends State<FilterPage> {
                           Expanded(
                             child: LabelWidgetContainer(
                               label: "Start Period",
-                              child: FormButton(
-                                label:
-                                    _membersProvider.selectedStartDate == null
-                                        ? 'Start Period'
-                                        : _membersProvider.selectedStartDate!
-                                            .toIso8601String()
-                                            .substring(0, 10),
-                                function: () {
-                                  displayDateSelector(
-                                    initialDate: DateTime.now(),
-                                    maxDate: DateTime.now(),
-                                    context: context,
-                                  ).then((value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        _membersProvider.selectedStartDate =
-                                            value;
-                                        debugPrint(
-                                            "Selected Start Date: ${_membersProvider.selectedStartDate!.toIso8601String().substring(0, 10)}");
-                                      });
-                                    }
+                              child: CustomDatePicker(
+                                hintText: 'Start Period',
+                                firstDate: DateTime(1970),
+                                lastDate: DateTime.now(),
+                                onChanged: (dateString) {
+                                  setState(() {
+                                    _membersProvider.selectedStartDate =
+                                        DateTime.parse(dateString);
                                   });
                                 },
-                                iconData: Icons.calendar_month_outlined,
+                                onSaved: (dateString) {
+                                  setState(() {
+                                    _membersProvider.selectedStartDate =
+                                        DateTime.parse(dateString!);
+                                  });
+                                },
                               ),
                             ),
                           ),
@@ -390,34 +383,30 @@ class _FilterPageState extends State<FilterPage> {
                           Expanded(
                             child: LabelWidgetContainer(
                               label: "End Period",
-                              child: FormButton(
-                                label: _membersProvider.selectedEndDate == null
-                                    ? 'End Period'
-                                    : _membersProvider.selectedEndDate!
-                                        .toIso8601String()
-                                        .substring(0, 10),
-                                function: () {
-                                  displayDateSelector(
-                                    initialDate: DateTime.now(),
-                                    maxDate: DateTime.now(),
-                                    context: context,
-                                  ).then((value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        _membersProvider.selectedEndDate =
-                                            value;
-                                        debugPrint(
-                                            "Selected Start Date: ${_membersProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
-                                      });
-                                    }
+                              child: CustomDatePicker(
+                                hintText: 'End Period',
+                                firstDate: DateTime(1970),
+                                lastDate: DateTime.now(),
+                                onChanged: (dateString) {
+                                  setState(() {
+                                    _membersProvider.selectedEndDate =
+                                        DateTime.parse(dateString);
                                   });
                                 },
-                                iconData: Icons.calendar_month_outlined,
+                                onSaved: (dateString) {
+                                  setState(() {
+                                    _membersProvider.selectedEndDate =
+                                        DateTime.parse(dateString!);
+                                  });
+                                },
                               ),
                             ),
                           ),
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.02,
                     ),
                     //
                     // LabelWidgetContainer(

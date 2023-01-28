@@ -71,7 +71,8 @@ class ClockingAPI {
   }) async {
     ClockedMembersResponse membersResponse;
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
+      '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge',
+    );
     try {
       debugPrint("URL: ${url.toString()}");
       debugPrint("Meeting ID: ${meetingEventModel.id}");
