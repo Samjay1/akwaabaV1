@@ -1005,6 +1005,7 @@ class _MemberRegistrationPageIndividualState
     '');
     final DateTime? now = birthDate;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    // final DateFormat formattedr = formatter.format(new DateTime. )
     String? formatted;
     if(birthDate!=null){
       setState((){

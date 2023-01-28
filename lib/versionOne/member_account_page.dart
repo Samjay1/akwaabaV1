@@ -144,27 +144,13 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
           const Text("ID : Sample ID"),
           const SizedBox(height: 6,),
           const Text("Status: Active"),
-          OutlinedButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_)=>const UpdateAccountPage()));
-            },
-            style: OutlinedButton.styleFrom(
-                primary: primaryColor,
-                side: const BorderSide(color: primaryColor, width: 1),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(defaultRadius)
-                )
-            ),
-            child: const Text("Update Account"),
-          ),
+
         ],
       ),
     );
   }
 
-
-  Widget profileItemView({required String title, required String label,
-    bool display=false }){
+  Widget profileItemView({required String title, required String label, bool display=false }){
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 12),
         decoration: const BoxDecoration(
