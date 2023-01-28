@@ -51,22 +51,22 @@ class AgendaDialog extends StatelessWidget {
           SizedBox(
             height: displayHeight(context) * 0.01,
           ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              DateUtil.formatStringDate(
-                DateFormat.yMMMEd(),
-                date: DateTime.parse(
-                  meetingEventModel!.updateDate!,
-                ),
-              ),
-              style: TextStyle(
-                color: blackColor.withOpacity(0.4),
-                fontWeight: FontWeight.w500,
-                fontSize: 18,
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.topLeft,
+          //   child: Text(
+          //     DateUtil.formatStringDate(
+          //       DateFormat.yMMMEd(),
+          //       date: DateTime.parse(
+          //         meetingEventModel!.updateDate!,
+          //       ),
+          //     ),
+          //     style: TextStyle(
+          //       color: blackColor.withOpacity(0.4),
+          //       fontWeight: FontWeight.w500,
+          //       fontSize: 18,
+          //     ),
+          //   ),
+          // ),
           SizedBox(
             height: displayHeight(context) * 0.02,
           ),

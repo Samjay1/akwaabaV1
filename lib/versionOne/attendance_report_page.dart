@@ -372,7 +372,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     )
                   : const SizedBox(),
 
-              if (absentees.isNotEmpty || absentees.isNotEmpty)
+              if (attendees.isNotEmpty || absentees.isNotEmpty)
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: blackColor,
@@ -397,9 +397,9 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                         ),
                       );
                     },
-                    child: const Text(
-                      "View Meeting/Event Agenda",
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      "Agenda for ${attendanceProvider.selectedPastMeetingEvent!.name!}",
+                      style: const TextStyle(color: Colors.white),
                     )),
 
               attendanceProvider.loading

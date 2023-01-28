@@ -21,8 +21,12 @@ import '../utils/app_theme.dart';
 
 class AttendanceReportDetailsPage extends StatefulWidget {
   final Attendee? attendee;
-  const AttendanceReportDetailsPage({Key? key, this.attendee})
-      : super(key: key);
+  final bool isAttendee;
+  const AttendanceReportDetailsPage({
+    Key? key,
+    this.attendee,
+    required this.isAttendee,
+  }) : super(key: key);
 
   @override
   State<AttendanceReportDetailsPage> createState() =>
@@ -104,12 +108,12 @@ class _AttendanceReportDetailsPageState
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text("Attendance Report Details"),
+        title: const Text("Attendance Report Details"),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -129,7 +133,8 @@ class _AttendanceReportDetailsPageState
               ),
               Text(
                 attendeeName,
-                style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
+                style:
+                    const TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
               ),
 
               const SizedBox(
@@ -150,13 +155,6 @@ class _AttendanceReportDetailsPageState
                             attendeePhone,
                             'Hello, \n\nI\'m experiencing an issue and I need an assistance.',
                           );
-                          // var whatsappUrl =
-                          //     "whatsapp://send?phone=${'+2332034549084'}";
-                          // if (await launchUrl(Uri.parse(whatsappUrl))) {
-                          //   //dialer opened
-                          // } else {
-                          //   //dailer is not opened
-                          // }
                         },
                         icon: Image.asset(
                           "images/icons/whatsapp_icon.png",
@@ -164,21 +162,18 @@ class _AttendanceReportDetailsPageState
                           height: 19,
                         ),
                       ),
-
                       const SizedBox(
                         width: 30,
                       ),
                       IconButton(
-                          onPressed: () async {
-                            makePhoneCall(attendeePhone);
-                          },
-                          icon: const Icon(
-                            Icons.phone,
-                            color: Colors.green,
-                          )),
-                      // const Text("0205287979",style: TextStyle(
-                      //     fontWeight: FontWeight.w400,fontSize: 14,color: textColorLight
-                      // ),),
+                        onPressed: () async {
+                          makePhoneCall(attendeePhone);
+                        },
+                        icon: const Icon(
+                          Icons.phone,
+                          color: Colors.green,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -187,17 +182,21 @@ class _AttendanceReportDetailsPageState
               const SizedBox(
                 height: 8,
               ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                child: Text(
-                  isLate ? AppString.lateText : AppString.earlyText,
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                ),
-                decoration: BoxDecoration(
-                  color: isLate ? Colors.red : Colors.green,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-              ),
+              widget.isAttendee
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 6, horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: isLate ? Colors.red : Colors.green,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Text(
+                        isLate ? AppString.lateText : AppString.earlyText,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 15),
+                      ),
+                    )
+                  : const SizedBox(),
 
               const SizedBox(
                 height: 24,
@@ -205,7 +204,7 @@ class _AttendanceReportDetailsPageState
 
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.event,
                     size: 30,
                     color: primaryColor,
@@ -219,7 +218,7 @@ class _AttendanceReportDetailsPageState
                       children: [
                         Text(
                           widget.attendee!.attendance!.meetingEventId!.name!,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(
@@ -230,14 +229,14 @@ class _AttendanceReportDetailsPageState
                           children: [
                             Text(
                               "Date : ${widget.attendee!.attendance!.date == null ? "N/A" : DateUtil.formatStringDate(DateFormat.yMMMEd(), date: DateTime.parse(widget.attendee!.attendance!.date!))}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                   color: textColorLight,
                                   fontSize: 14),
                             ),
                             Text(
                               "Span: ${widget.attendee!.attendance!.meetingEventId!.meetingSpan} Day(s)",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                   color: textColorLight,
                                   fontSize: 14),
@@ -249,7 +248,7 @@ class _AttendanceReportDetailsPageState
                         ),
                         Text(
                           "Time : $startTime  to  $closeTime",
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               color: textColorLight,
                               fontSize: 14),

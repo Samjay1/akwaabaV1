@@ -315,7 +315,7 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
   Future<void> refreshList() async {
-    if (selectedPastMeetingEvent == null) {
+    if (selectedDate == null || selectedPastMeetingEvent == null) {
       showErrorToast('Please select a date and meeting or event to proceed');
       return;
     }
@@ -430,11 +430,11 @@ class AttendanceProvider extends ChangeNotifier {
               attendee!.attendance!.memberId!.gender == AppConstants.female)
           .toList();
 
-      //debugPrint('Atendees: ${_attendees.length}');
+      debugPrint('Atendees: ${_attendees.length}');
 
-      // getAllAbsentees(
-      //   meetingEventModel: meetingEventModel,
-      // );
+      getAllAbsentees(
+        meetingEventModel: meetingEventModel,
+      );
 
       setLoading(false);
     } catch (err) {
@@ -510,14 +510,14 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getAllAbsentees({
     required MeetingEventModel meetingEventModel,
   }) async {
+    var userBranch =
+        await getUserBranch(currentContext); // get current user branch
     try {
       _absenteesPage = 1;
       var response = await ClockingAPI.getAbsenteesList(
         page: _absenteesPage,
         meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null
-            ? selectedPastMeetingEvent!.branchId!
-            : selectedBranch!.id!,
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
