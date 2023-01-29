@@ -138,6 +138,24 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
     super.initState();
   }
 
+// reset selected state after validation
+  void resetSelectAllState() {
+    setState(() {
+      checkAll = false;
+    });
+    for (Attendee? attendee in attendanceProvider.attendees) {
+      attendee!.selected = checkAll;
+      if (attendee.selected!) {
+        attendanceProvider.selectedAttendees.add(attendee);
+        attendanceProvider.selectedClockingIds.add(attendee.attendance!.id!);
+      }
+      if (!attendee.selected!) {
+        attendanceProvider.selectedAttendees.remove(attendee);
+        attendanceProvider.selectedClockingIds.remove(attendee.attendance!.id!);
+      }
+    }
+  }
+
   @override
   void dispose() {
     attendanceProvider.clearData();
@@ -346,10 +364,11 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                     title: 'Validate',
                                     content:
                                         'Are you sure you want to perform \nthis bulk operation?',
-                                    onConfirmTap: () {
+                                    onConfirmTap: () async {
                                       Navigator.pop(context);
-                                      attendanceProvider
+                                      await attendanceProvider
                                           .validateMemberAttendances();
+                                      resetSelectAllState();
                                     },
                                     onCancelTap: () => Navigator.pop(context),
                                     confirmText: 'Yes',

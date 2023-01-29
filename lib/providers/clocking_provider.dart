@@ -152,11 +152,6 @@ class ClockingProvider extends ChangeNotifier {
   Future<void> getMemberCategories() async {
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
-      debugPrint('Member Categories: ${_memberCategories.length}');
-      if (_memberCategories.isNotEmpty) {
-        selectedMemberCategory = _memberCategories[0];
-      }
-      getGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MC: ${err.toString()}');
@@ -279,12 +274,11 @@ class ClockingProvider extends ChangeNotifier {
         _tempAbsentees = _absentees;
       }
 
-      debugPrint('Absentees: ${_absentees.length}');
-
       getAllAttendees(
         meetingEventModel: meetingEventModel,
         branchId: userBranch.id!,
       );
+
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -302,13 +296,14 @@ class ClockingProvider extends ChangeNotifier {
         absenteesScrollController.position.extentAfter < 300) {
       setLoadingMore(true); // show loading indicator
       _absenteesPage += 1; // increase page by 1
+      var userBranch =
+          await getUserBranch(currentContext); // get current user branch
       try {
         var response = await ClockingAPI.getAbsenteesList(
           page: _absenteesPage,
           meetingEventModel: selectedCurrentMeeting,
-          branchId: selectedBranch == null
-              ? selectedCurrentMeeting.branchId!
-              : selectedBranch!.id!,
+          branchId:
+              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
@@ -388,7 +383,6 @@ class ClockingProvider extends ChangeNotifier {
         _tempAttendees = _attendees;
       }
       setLoading(false);
-      debugPrint('Attendees: ${_attendees.length}');
     } catch (err) {
       setLoading(false);
       debugPrint('Error Attendees: ${err.toString()}');
@@ -405,13 +399,14 @@ class ClockingProvider extends ChangeNotifier {
         attendeesScrollController.position.extentAfter < 300) {
       setLoadingMore(true); // show loading indicator
       _attendeesPage += 1; // increase page by 1
+      var userBranch =
+          await getUserBranch(currentContext); // get current user branch
       try {
         var response = await ClockingAPI.getAttendeesList(
           page: _attendeesPage,
           meetingEventModel: selectedCurrentMeeting,
-          branchId: selectedBranch == null
-              ? selectedCurrentMeeting.branchId!
-              : selectedBranch!.id!,
+          branchId:
+              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),

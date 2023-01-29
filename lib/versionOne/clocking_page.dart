@@ -87,12 +87,11 @@ class _ClockingPageState extends State<ClockingPage> {
       if (Provider.of<ClientProvider>(context, listen: false).branch.id ==
           AppConstants.mainAdmin) {
         Provider.of<ClockingProvider>(context, listen: false).getBranches();
-      } else {
-        Provider.of<ClockingProvider>(context, listen: false).getGenders();
       }
+      Provider.of<ClockingProvider>(context, listen: false).getGenders();
       setState(() {});
     });
-    // setState(() {});
+
     super.initState();
   }
 
@@ -912,6 +911,7 @@ class _ClockingPageState extends State<ClockingPage> {
                     clockingProvider.selectedMemberCategory =
                         val as MemberCategory;
                   });
+                  //clockingProvider.subGroups.clear();
                   clockingProvider
                       .getGroups(); // call method to fetch all groups
                 },

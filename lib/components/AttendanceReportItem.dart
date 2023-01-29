@@ -99,15 +99,25 @@ class AttendanceReportItem extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Text(
-                                  attendeeName,
-                                  style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: displayHeight(context) * 0.003,
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        attendeeName,
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: displayWidth(context) * 0.02,
+                                    ),
+                                    TagWidget(
+                                      color: primaryColor,
+                                      text: attendee!.status!,
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   attendee!.attendance!.meetingEventId!.name!,

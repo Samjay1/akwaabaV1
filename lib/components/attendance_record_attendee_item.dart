@@ -155,7 +155,7 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                           width: displayWidth(context) * 0.02,
                         ),
                         TagWidget(
-                          color: isLate ? Colors.red : Colors.green,
+                          color: isLate ? Colors.red : primaryColor,
                           text:
                               isLate ? AppString.lateText : AppString.earlyText,
                         ),

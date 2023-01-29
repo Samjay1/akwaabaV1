@@ -180,7 +180,7 @@ class AttendanceProvider extends ChangeNotifier {
       );
       Navigator.of(_context!).pop();
       showNormalToast(message);
-      getAllAbsentees(
+      getAllAttendees(
         meetingEventModel: selectedPastMeetingEvent!,
       );
     } catch (err) {
@@ -381,7 +381,7 @@ class AttendanceProvider extends ChangeNotifier {
     totalFemaleAbsentees.clear();
   }
 
-  // get all attendees members for a meeting
+  // get all attendees for a meeting
   Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
   }) async {
@@ -506,7 +506,7 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // get clocked members for a meeting
+  // get all absentees for a meeting
   Future<void> getAllAbsentees({
     required MeetingEventModel meetingEventModel,
   }) async {

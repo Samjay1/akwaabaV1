@@ -187,7 +187,7 @@ class _AttendanceReportDetailsPageState
                       padding: const EdgeInsets.symmetric(
                           vertical: 6, horizontal: 12),
                       decoration: BoxDecoration(
-                        color: isLate ? Colors.red : Colors.green,
+                        color: isLate ? Colors.red : primaryColor,
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Text(

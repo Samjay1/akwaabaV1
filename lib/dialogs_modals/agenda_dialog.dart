@@ -1,4 +1,5 @@
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
+import 'package:akwaaba/components/custom_rect_cached_image_widget.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/home_provider.dart';
@@ -78,7 +79,7 @@ class AgendaDialog extends StatelessWidget {
                     ? SizedBox(
                         width: displayWidth(context),
                         height: 200,
-                        child: CustomCachedImageWidget(
+                        child: CustomRectCachedImageWidget(
                           url: meetingEventModel!.agendaFile!,
                           height: 130,
                         ),
