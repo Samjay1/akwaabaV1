@@ -1,4 +1,5 @@
 import 'package:akwaaba/components/tag_widget.dart';
+import 'package:akwaaba/components/tag_widget_solid.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
@@ -181,7 +182,6 @@ class _MainPageState extends State<MainPage> {
           //     children.removeAt(2);
           //   }
           // }
-
         } else {}
       });
     });
@@ -336,14 +336,14 @@ class _MainPageState extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Account Expiring In:  ${(data.getUser.subscriptionInfo.subscribedModules == null && data.getUser.subscriptionInfo.subscribedModules.module3 != null) ? 'N/A' : DateUtil.formatStringDate(DateFormat.yMMMEd(), date: expiryDate!)}",
-                            style: const TextStyle(fontSize: AppSize.s14),
+                            "Your Account Expires In:  ${(data.getUser.subscriptionInfo.subscribedModules == null && data.getUser.subscriptionInfo.subscribedModules.module3 != null) ? 'N/A' : DateUtil.convertToFutureTimeAgo(date: expiryDate!)}",
+                            style: const TextStyle(fontSize: AppSize.s15),
                             textAlign: TextAlign.start,
                           ),
                           SizedBox(
                             height: displayHeight(context) * 0.01,
                           ),
-                          TagWidget(
+                          TagWidgetSolid(
                             text: isActive(expiryDate!) ? 'Active' : 'Expired',
                             color: isActive(expiryDate) ? greenColor : redColor,
                           ),
@@ -442,6 +442,19 @@ class _MainPageState extends State<MainPage> {
                           },
                         ),
                         drawerItemView(
+                          title: "Attendance Report",
+                          iconData: Icons.bar_chart,
+                          function: () {
+                            toggleDrawer();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AttendanceReportPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
                           title: "Attendance History",
                           iconData: Icons.history,
                           function: () {
@@ -454,19 +467,6 @@ class _MainPageState extends State<MainPage> {
                             );
                           },
                           index: 8,
-                        ),
-                        drawerItemView(
-                          title: "Attendance Report",
-                          iconData: Icons.bar_chart,
-                          function: () {
-                            toggleDrawer();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const AttendanceReportPage(),
-                              ),
-                            );
-                          },
                         ),
                         drawerItemView(
                           title: "Assign Leave/Excuse",
@@ -788,29 +788,19 @@ class _MainPageState extends State<MainPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Account Expiring In:  ${clientAccountInfo.subscriptionInfo == null ? 'N/A' : DateUtil.formatStringDate(DateFormat.yMMMEd(), date: expiryDate!)}",
+                        "Your Account Expires In:  ${clientAccountInfo.subscriptionInfo == null ? 'N/A' : DateUtil.convertToFutureTimeAgo(date: expiryDate!)}",
                         style: const TextStyle(
-                          fontSize: AppSize.s14,
+                          fontSize: AppSize.s15,
                         ),
                         textAlign: TextAlign.start,
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.01,
                       ),
-                      TagWidget(
+                      TagWidgetSolid(
                         text: isActive(expiryDate!) ? 'Active' : 'Expired',
                         color: isActive(expiryDate) ? greenColor : redColor,
                       ),
-                      // TagWidget(
-                      //   text: _subscriptionProvider.isActive(_subscriptionProvider
-                      //           .clientSubscription![0].expiryDate!)
-                      //       ? 'Active'
-                      //       : 'Expired',
-                      //   color: _subscriptionProvider.isActive(_subscriptionProvider
-                      //           .clientSubscription![0].expiryDate!)
-                      //       ? greenColor
-                      //       : redColor,
-                      // ),
                     ],
                   ),
                 ),

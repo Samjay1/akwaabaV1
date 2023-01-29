@@ -94,4 +94,28 @@ class DateUtil {
       return 'just now';
     }
   }
+
+  static String convertToFutureTimeAgo({required DateTime date}) {
+    Duration diff = date.difference(DateTime.now());
+
+    if (diff.inDays == 1) {
+      return '${diff.inDays} Day';
+    } else if (diff.inDays >= 1) {
+      return '${diff.inDays} Days';
+    } else if (diff.inHours == 1) {
+      return '${diff.inHours} Hour';
+    } else if (diff.inHours >= 1) {
+      return '${diff.inHours} Hours';
+    } else if (diff.inMinutes == 1) {
+      return '${diff.inMinutes} Minute';
+    } else if (diff.inMinutes >= 1) {
+      return '${diff.inMinutes} Minutes';
+    } else if (diff.inSeconds == 1) {
+      return '${diff.inSeconds} Seconds';
+    } else if (diff.inSeconds >= 1) {
+      return '${diff.inSeconds} Seconds';
+    } else {
+      return 'just now';
+    }
+  }
 }

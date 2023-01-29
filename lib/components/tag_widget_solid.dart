@@ -18,7 +18,7 @@ class TagWidgetSolid extends StatelessWidget {
         text!,
         textAlign: TextAlign.center,
         style: const TextStyle(
-          fontSize: 12,
+          fontSize: AppSize.s14,
           color: Colors.white,
         ),
       ),
