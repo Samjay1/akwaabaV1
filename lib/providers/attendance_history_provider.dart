@@ -113,6 +113,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   setSelectedMeetingEventIndexes(List<int> indexes) {
     _selectedMeetingEventIndexes = indexes;
+    debugPrint(indexes.toString());
     notifyListeners();
   }
 
@@ -159,9 +160,6 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   Future<void> getGenders() async {
     try {
       _genders = await GroupAPI.getGenders();
-      debugPrint('Genders: ${_genders.length}');
-      //selectedGender = _genders[0];
-      // getMemberCategories();
     } catch (err) {
       setLoading(false);
       debugPrint('Error Gender: ${err.toString()}');
@@ -178,8 +176,6 @@ class AttendanceHistoryProvider extends ChangeNotifier {
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
         memberCategoryId: selectedMemberCategory!.id!,
       );
-      debugPrint('Groups: ${_groups.length}');
-      // selectedGroup = _groups[0];
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');
@@ -224,6 +220,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       );
 
       if (_pastMeetingEvents.isNotEmpty) {
+        _tempMeetingEventMap.clear();
         for (int i = 0; i < _pastMeetingEvents.length; i++) {
           // create a new map with meeting index and id
           final Map<String, int> map = {
@@ -232,15 +229,6 @@ class AttendanceHistoryProvider extends ChangeNotifier {
           };
           _tempMeetingEventMap.add(map);
         }
-      } else {
-        showInfoDialog(
-          'ok',
-          context: _context!,
-          title: 'Sorry!',
-          content:
-              'No meetings/events were held on this date. \nPlease try again with another date.',
-          onTap: () => Navigator.pop(_context!),
-        );
       }
       getMemberCategories();
     } catch (err) {
@@ -256,7 +244,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       return;
     }
     if (selectedMeetingIds().isEmpty) {
-      showErrorToast('Please select a meeting or event to contitue');
+      showErrorToast('Please select a meeting or event to continue');
       return;
     }
     getAttendanceHistory();
@@ -265,8 +253,8 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 // get meeting ids from meeting map
   List<int> selectedMeetingIds() {
     List<int> ids = [];
-    if (tempMeetingEventMap.isNotEmpty) {
-      for (var map in tempMeetingEventMap) {
+    if (_tempMeetingEventMap.isNotEmpty) {
+      for (var map in _tempMeetingEventMap) {
         if (selectedMeetingEventIndexes.contains(map['index'])) {
           ids.add(map['meetingId']);
         }
@@ -319,7 +307,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
       _tempAttendanceHistory = _attendanceHistory;
 
-      debugPrint('Attendance History: ${_attendanceHistory.length}');
+      // debugPrint('Attendance History: ${_attendanceHistory.length}');
 
       setLoading(false);
     } catch (err) {
@@ -373,7 +361,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
           _tempAttendanceHistory.addAll(_attendanceHistory);
 
-          debugPrint('Attendance History: ${_attendanceHistory.length}');
+          //debugPrint('Attendance History: ${_attendanceHistory.length}');
         } else {
           hasNextPage = false;
         }
@@ -396,16 +384,19 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     selectedGroup = null;
     selectedSubGroup = null;
     selectedMemberCategory = null;
-    selectedPastMeetingEvent = null;
+    selectedStatus = 'Both';
     search = '';
     minAgeTEC.clear();
     maxAgeTEC.clear();
+    _attendanceHistory.clear();
+    _selectedMeetingEventIndexes.clear();
     notifyListeners();
   }
 
   Future<void> clearData() async {
     clearFilters();
-    search = '';
+    _tempMeetingEventMap.clear();
+    _pastMeetingEvents.clear();
     _attendanceHistory.clear();
     _tempAttendanceHistory.clear();
   }

@@ -987,13 +987,27 @@ class _HomePageState extends State<HomePage> {
                               context: context,
                               title: 'Hey there!',
                               content:
-                                  'You\'ve already clocked out. \nGood Bye!',
+                                  'You have already clocked out. \nGood Bye!',
                               onTap: () => Navigator.pop(context),
                             );
                           } else {
-                            if ((!currentTime.isAtSameMomentAs(closeTime) ||
-                                    !currentTime.isAfter(closeTime
-                                        .add(const Duration(minutes: 30)))) &&
+                            // if ((!currentTime.isAtSameMomentAs(closeTime) ||
+                            //         !currentTime.isAfter(closeTime
+                            //             .add(const Duration(minutes: 30)))) &&
+                            //     (meetingEventModel.inTime != null &&
+                            //         meetingEventModel.outTime == null)) {
+                            //   showInfoDialog(
+                            //     'ok',
+                            //     context: context,
+                            //     title: 'Hey there!',
+                            //     content:
+                            //         'Time is not up for clocking out. \nGood Bye!',
+                            //     onTap: () => Navigator.pop(context),
+                            //   );
+                            //   return;
+                            // }
+                            if ((!currentTime.isAtSameMomentAs(closeTime) &&
+                                    meetingEventModel.hasOvertime!) &&
                                 (meetingEventModel.inTime != null &&
                                     meetingEventModel.outTime == null)) {
                               showInfoDialog(
@@ -1001,7 +1015,21 @@ class _HomePageState extends State<HomePage> {
                                 context: context,
                                 title: 'Hey there!',
                                 content:
-                                    'Time is not up for clocking out. \nGood Bye!',
+                                    'Sorry time is not up for clocking out. \nPlease clockout when meeting ends.',
+                                onTap: () => Navigator.pop(context),
+                              );
+                              return;
+                            }
+                            if ((currentTime.isAfter(closeTime) &&
+                                    !meetingEventModel.hasOvertime!) &&
+                                (meetingEventModel.inTime != null &&
+                                    meetingEventModel.outTime == null)) {
+                              showInfoDialog(
+                                'ok',
+                                context: context,
+                                title: 'Hey there!',
+                                content:
+                                    'Sorry meeting has ended, contact admin to clock you out.',
                                 onTap: () => Navigator.pop(context),
                               );
                               return;
@@ -1075,7 +1103,7 @@ class _HomePageState extends State<HomePage> {
                                   context: context,
                                   title: 'Hey there!',
                                   content:
-                                      'You\'ve already ended your break. \nGood Bye!',
+                                      'You have already ended your break. \nGood Bye!',
                                   onTap: () => Navigator.pop(context),
                                 );
                               } else if (meetingEventModel.inTime == null) {
@@ -1084,7 +1112,7 @@ class _HomePageState extends State<HomePage> {
                                   context: context,
                                   title: 'Hey there!',
                                   content:
-                                      'You\'ve to clock-in before starting your break. \nThank you!',
+                                      'You have to clock-in before starting your break. \nThank you!',
                                   onTap: () => Navigator.pop(context),
                                 );
                               } else {
@@ -1145,34 +1173,35 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.grey,
-                            elevation: 0.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  AppRadius.borderRadius16),
-                            ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.grey,
+                          elevation: 0.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppRadius.borderRadius16),
                           ),
-                          onPressed: () {
-                            Provider.of<HomeProvider>(context, listen: false)
-                                .setSelectedMeeting(meetingEventModel);
-                            showModalBottomSheet(
-                              context: context,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(16.0),
-                                  topRight: Radius.circular(16.0),
-                                ),
+                        ),
+                        onPressed: () {
+                          Provider.of<HomeProvider>(context, listen: false)
+                              .setSelectedMeeting(meetingEventModel);
+                          showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16.0),
+                                topRight: Radius.circular(16.0),
                               ),
-                              builder: (context) => AgendaDialog(
-                                meetingEventModel: meetingEventModel,
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            "Agenda",
-                            style: TextStyle(color: Colors.white),
-                          )),
+                            ),
+                            builder: (context) => AgendaDialog(
+                              meetingEventModel: meetingEventModel,
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Agenda",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ),
                     // ElevatedButton(
                     //   style: ElevatedButton.styleFrom(

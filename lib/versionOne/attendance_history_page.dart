@@ -615,10 +615,12 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
             children: [
               Expanded(
                 child: InkWell(
-                    onTap: () => attendanceHistoryProvider.clearData(),
+                    onTap: () => attendanceHistoryProvider.clearFilters(),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 10),
+                        vertical: 12,
+                        horizontal: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: fillColor,
                         borderRadius:

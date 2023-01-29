@@ -16,44 +16,56 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class AttendanceHistoryItemWidget extends StatelessWidget {
+class AttendanceHistoryItemWidget extends StatefulWidget {
   final AttendanceHistory? attendanceHistory;
   final String? userType;
-  AttendanceHistoryItemWidget({Key? key, this.attendanceHistory, this.userType})
+  const AttendanceHistoryItemWidget(
+      {Key? key, this.attendanceHistory, this.userType})
       : super(key: key);
 
+  @override
+  State<AttendanceHistoryItemWidget> createState() =>
+      _AttendanceHistoryItemWidgetState();
+}
+
+class _AttendanceHistoryItemWidgetState
+    extends State<AttendanceHistoryItemWidget> {
   late AttendanceHistoryProvider attendanceHistoryProvider;
+
+  bool reveal = false;
 
   @override
   Widget build(BuildContext context) {
     attendanceHistoryProvider = context.watch<AttendanceHistoryProvider>();
 
     var overtime = DateUtil.getTimeStringFromDouble(
-      double.parse(attendanceHistory!.attendanceRecord!.meetings![0].overtime!),
+      double.parse(
+          widget.attendanceHistory!.attendanceRecord!.meetings![0].overtime!),
     );
 
     var undertime = DateUtil.getTimeStringFromDouble(
       double.parse(
-          attendanceHistory!.attendanceRecord!.meetings![0].undertime!),
+          widget.attendanceHistory!.attendanceRecord!.meetings![0].undertime!),
     );
 
     var lateness = DateUtil.getHourStringFromDouble(
-      double.parse(attendanceHistory!.attendanceRecord!.meetings![0].lateness!),
+      double.parse(
+          widget.attendanceHistory!.attendanceRecord!.meetings![0].lateness!),
     );
 
     var attendeeName =
-        "${attendanceHistory!.attendanceRecord!.member!.firstname!} ${attendanceHistory!.attendanceRecord!.member!.surname!}";
+        "${widget.attendanceHistory!.attendanceRecord!.member!.firstname!} ${widget.attendanceHistory!.attendanceRecord!.member!.surname!}";
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: GestureDetector(
-        onTap: userType == AppConstants.member
+        onTap: widget.userType == AppConstants.member
             ? null
             : () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => AttendanceHistoryItemPreviewPage(
-                      attendanceHistory: attendanceHistory,
+                      attendanceHistory: widget.attendanceHistory,
                     ),
                   ),
                 );
@@ -67,12 +79,13 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
             child: Row(
               //  crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                attendanceHistory!.attendanceRecord!.member!.profilePicture !=
+                widget.attendanceHistory!.attendanceRecord!.member!
+                            .profilePicture !=
                         null
                     ? Align(
                         child: CustomCachedImageWidget(
-                          url: attendanceHistory!
-                              .attendanceRecord!.member!.profilePicture!,
+                          url: widget.attendanceHistory!.attendanceRecord!
+                              .member!.profilePicture!,
                           height: 50,
                         ),
                       )
@@ -94,6 +107,88 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                     Row(
                       children: [
                         const Icon(
+                          Icons.meeting_room,
+                          size: 16,
+                          color: textColorLight,
+                        ),
+                        SizedBox(
+                          width: displayWidth(context) * 0.01,
+                        ),
+                        widget.attendanceHistory!.attendanceRecord!.meetings!
+                                    .length ==
+                                1
+                            ? Text(
+                                widget.attendanceHistory!.attendanceRecord!
+                                    .meetings![0].meeting!.name!,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: textColorLight,
+                                ),
+                              )
+                            : Text(
+                                '${widget.attendanceHistory!.attendanceRecord!.meetings!.length} meetings',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: textColorLight,
+                                ),
+                              ),
+                        // Row(
+                        //   children: [
+                        //     Row(
+                        //       children: List.generate(
+                        //         reveal
+                        //             ? widget.attendanceHistory!
+                        //                 .attendanceRecord!.meetings!.length
+                        //             : (widget
+                        //                     .attendanceHistory!
+                        //                     .attendanceRecord!
+                        //                     .meetings!
+                        //                     .length -
+                        //                 (widget
+                        //                         .attendanceHistory!
+                        //                         .attendanceRecord!
+                        //                         .meetings!
+                        //                         .length -
+                        //                     1)),
+                        //         (index) => Padding(
+                        //           padding: const EdgeInsets.only(left: 5.0),
+                        //           child: Text(
+                        //             widget.attendanceHistory!.attendanceRecord!
+                        //                 .meetings![index].meeting!.name!,
+                        //             style: const TextStyle(
+                        //               fontSize: 14,
+                        //               color: textColorLight,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     SizedBox(
+                        //       width: displayWidth(context) * 0.01,
+                        //     ),
+                        //     InkWell(
+                        //       onTap: () => setState(
+                        //         () => reveal = !reveal,
+                        //       ),
+                        //       child: Text(
+                        //         reveal ? 'view less...' : 'view more...',
+                        //         style: const TextStyle(
+                        //           fontSize: 14,
+                        //           fontWeight: FontWeight.w400,
+                        //           color: Colors.blue,
+                        //         ),
+                        //       ),
+                        //     )
+                        //   ],
+                        // )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      children: [
+                        const Icon(
                           Icons.calendar_month,
                           size: 16,
                           color: textColorLight,
@@ -102,42 +197,14 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                           width: 8,
                         ),
                         Text(
-                          "${DateUtil.formatStringDate(DateFormat.MMMEd(), date: attendanceHistoryProvider.selectedStartDate!)} -  ${DateUtil.formatStringDate(DateFormat.yMMMEd(), date: attendanceHistoryProvider.selectedEndDate!)}",
+                          (attendanceHistoryProvider.selectedStartDate ==
+                                      null &&
+                                  attendanceHistoryProvider.selectedEndDate ==
+                                      null)
+                              ? 'N/A'
+                              : "${DateUtil.formatStringDate(DateFormat.MMMEd(), date: attendanceHistoryProvider.selectedStartDate!)} -  ${DateUtil.formatStringDate(DateFormat.yMMMEd(), date: attendanceHistoryProvider.selectedEndDate!)}",
                           style: const TextStyle(
                               fontSize: 14, color: textColorLight),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.meeting_room,
-                              size: 16,
-                              color: textColorLight,
-                            ),
-                            SizedBox(
-                              width: displayWidth(context) * 0.01,
-                            ),
-                            Text(
-                              attendanceHistory!.attendanceRecord!.meetings![0]
-                                  .meeting!.name!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: textColorLight,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          "Late: $lateness times",
-                          style: const TextStyle(
-                              fontSize: 14, color: primaryColor),
                         ),
                       ],
                     ),
@@ -161,24 +228,40 @@ class AttendanceHistoryItemWidget extends StatelessWidget {
                       height: 4,
                     ),
                     Text(
-                      "Total Attendance: ${attendanceHistory!.attendanceRecord!.meetings![0].totalAttendance}",
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: textColorLight,
-                      ),
+                      "Late: $lateness times",
+                      style:
+                          const TextStyle(fontSize: 14, color: textColorLight),
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TagWidgetSolid(
-                        text: attendanceHistory!.status!.name!,
-                        color: attendanceHistory!.status!.name == 'Active'
-                            ? Colors.green
-                            : Colors.red,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Total Attendance: ${widget.attendanceHistory!.totalAttendance}",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: textColorLight,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: displayWidth(context) * 0.02,
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TagWidgetSolid(
+                            text: widget.attendanceHistory!.status!.name!,
+                            color: widget.attendanceHistory!.status!.name ==
+                                    'Active'
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 )),
-                userType == AppConstants.member
+                widget.userType == AppConstants.member
                     ? const SizedBox()
                     : const Align(
                         alignment: Alignment.center,

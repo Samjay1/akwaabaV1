@@ -51,10 +51,10 @@ class _AttendanceHistoryItemPreviewPageState
         "${widget.attendanceHistory!.attendanceRecord!.member!.firstname!} ${widget.attendanceHistory!.attendanceRecord!.member!.surname!}";
     return Scaffold(
       appBar: AppBar(
-        title: Text("Attendance Records"),
+        title: const Text("Attendance Records"),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -64,6 +64,14 @@ class _AttendanceHistoryItemPreviewPageState
                 height: 12,
               ),
               meetingRecords(onTime, lateness),
+              widget.attendanceHistory!.attendanceRecord!.meetings!.length > 1
+                  ? const SizedBox(
+                      height: 12,
+                    )
+                  : const SizedBox(),
+              widget.attendanceHistory!.attendanceRecord!.meetings!.length > 1
+                  ? meetings(onTime, lateness)
+                  : const SizedBox(),
             ],
           ),
         ),
@@ -75,7 +83,7 @@ class _AttendanceHistoryItemPreviewPageState
     return Container(
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(8)),
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -92,7 +100,7 @@ class _AttendanceHistoryItemPreviewPageState
           Text(
             name,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
           ),
           const SizedBox(
             height: 6,
@@ -100,7 +108,7 @@ class _AttendanceHistoryItemPreviewPageState
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.calendar_month,
                 size: 16,
                 color: textColorLight,
@@ -110,7 +118,7 @@ class _AttendanceHistoryItemPreviewPageState
               ),
               Text(
                 "${DateUtil.formatStringDate(DateFormat.MMMEd(), date: attendanceHistoryProvider.selectedStartDate!)} -  ${DateUtil.formatStringDate(DateFormat.yMMMEd(), date: attendanceHistoryProvider.selectedEndDate!)}",
-                style: TextStyle(fontSize: 15, color: textColorLight),
+                style: const TextStyle(fontSize: 15, color: textColorLight),
               ),
             ],
           ),
@@ -144,7 +152,7 @@ class _AttendanceHistoryItemPreviewPageState
           ),
           Text(
               "Meeting Type : ${widget.attendanceHistory!.attendanceRecord!.meetings![0].meeting!.type! == 1 ? 'Meeting' : 'Event'}",
-              style: TextStyle(fontSize: 15, color: textColorLight)),
+              style: const TextStyle(fontSize: 15, color: textColorLight)),
           const SizedBox(
             height: 4,
           ),
@@ -186,11 +194,11 @@ class _AttendanceHistoryItemPreviewPageState
     return Container(
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(8)),
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
+          const Text(
             "Meeting Records",
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
           ),
@@ -207,12 +215,51 @@ class _AttendanceHistoryItemPreviewPageState
     );
   }
 
+  Widget meetings(var onTime, var lateness) {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(8)),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            "Other Meetings",
+            style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(
+              widget.attendanceHistory!.attendanceRecord!.meetings!.length,
+              (index) {
+                if (index > 0) {
+                  return Text(
+                    widget.attendanceHistory!.attendanceRecord!.meetings![index]
+                        .meeting!.name!,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: textColorLight,
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget attendanceRecordItemView({
     required String title,
     required String info,
   }) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       child: Column(
         children: [
           Row(
@@ -222,7 +269,7 @@ class _AttendanceHistoryItemPreviewPageState
               Text("$info"),
             ],
           ),
-          Divider(
+          const Divider(
             height: 0,
             color: textColorLight,
           ),
