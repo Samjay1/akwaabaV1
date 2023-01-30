@@ -175,7 +175,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
       body: RefreshIndicator(
         onRefresh: () => attendanceProvider.refreshList(),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(AppPadding.p16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

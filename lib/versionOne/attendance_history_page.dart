@@ -214,7 +214,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                           "Selected End Date: ${attendanceHistoryProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
                     },
                     onSaved: (dateString) {
-                      attendanceHistoryProvider.selectedStartDate =
+                      attendanceHistoryProvider.selectedEndDate =
                           DateTime.parse(dateString!);
                     },
                   ),

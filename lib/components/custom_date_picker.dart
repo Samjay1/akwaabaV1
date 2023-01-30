@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class CustomDatePicker extends StatelessWidget {
   final String? hintText;
+  final String? initialValue;
   final Color? fillColor;
   final Function(String?)? onSaved;
   final Function(String)? onChanged;
@@ -19,12 +20,13 @@ class CustomDatePicker extends StatelessWidget {
     this.lastDate,
     this.hintText = 'Select Date',
     this.fillColor = whiteColor,
+    this.initialValue = '',
   });
 
   @override
   Widget build(BuildContext context) {
     return DateTimePicker(
-      initialValue: '',
+      initialValue: initialValue,
       type: DateTimePickerType.date,
       dateMask: 'yyyy-MM-dd',
       firstDate: firstDate ?? DateTime(1970),

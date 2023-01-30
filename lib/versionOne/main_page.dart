@@ -13,6 +13,7 @@ import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/versionOne/alerts_page.dart';
+import 'package:akwaaba/versionOne/apply_leave_page.dart';
 import 'package:akwaaba/versionOne/attendance_history_page.dart';
 import 'package:akwaaba/versionOne/device_activation_request_page.dart';
 import 'package:akwaaba/versionOne/home_page.dart';
@@ -26,6 +27,7 @@ import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/members_page.dart';
 import 'package:akwaaba/versionOne/my_account_page.dart';
 import 'package:akwaaba/versionOne/post_clocking_page.dart';
+import 'package:akwaaba/versionOne/view_leave_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -871,17 +873,11 @@ class _MainPageState extends State<MainPage> {
                           title: "Apply Leave/Excuse",
                           iconData: Icons.phone_android,
                           function: () async {
-                            var url =
-                                await AppConstants.applyLeaveRedirectUrl();
-                            if (!mounted) return;
                             toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => WebViewPage(
-                                  url: url,
-                                  title: 'Apply Leave/Excuse',
-                                ),
+                                builder: (_) => const ApplyLeavePage(),
                               ),
                             );
                           },
@@ -890,16 +886,11 @@ class _MainPageState extends State<MainPage> {
                           title: "View Leave/Absent Status ",
                           iconData: Icons.phone_android,
                           function: () async {
-                            var url = await AppConstants.viewLeaveRedirectUrl();
-                            if (!mounted) return;
                             toggleDrawer();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => WebViewPage(
-                                  url: url,
-                                  title: 'View Leave/Absent Status',
-                                ),
+                                builder: (_) => const ViewLeavePage(),
                               ),
                             );
                           },
