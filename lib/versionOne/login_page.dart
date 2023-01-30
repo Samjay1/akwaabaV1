@@ -301,7 +301,7 @@ class _LoginPageState extends State<LoginPage> {
                               content: ConfirmDialog(
                                 title: 'Registration Form',
                                 content:
-                                    'Create a Member account or an Organisation account!',
+                                    'Create a Individual account or an Organisation account!',
                                 onConfirmTap: () {
                                   Navigator.pop(context); //close the popup
                                   Navigator.push(
@@ -321,7 +321,7 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   );
                                 },
-                                confirmText: 'Member',
+                                confirmText: 'Individual',
                                 cancelText: 'Organisation',
                               ),
                             ),

@@ -25,6 +25,7 @@ import '../models/general/abstractSubGroup.dart';
 import '../models/general/constiteuncy.dart';
 import '../models/general/country.dart';
 import '../models/members/member_profile.dart';
+import '../models/members/previewMemberProfile.dart';
 
 class MemberAPI {
   final baseUrl = 'https://db-api-v2.akwaabasoftware.com';
@@ -51,8 +52,11 @@ class MemberAPI {
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         var memberToken = decodedResponse['token'];
+        var memberId = decodedResponse['id'];
         prefs.setString('token', memberToken);
+        prefs.setString('token', memberId);
         debugPrint('MEMBER TOKEN---------- --------------------- $memberToken');
+        debugPrint('MEMBER memberId---------- --------------------- $memberId');
 
         return response.body;
       } else {
@@ -89,6 +93,36 @@ class MemberAPI {
     return accountInfo;
   }
 
+
+  //GET MEMBER FULL PROFILE INFO
+  // Get client info of member
+  Future<PreviewMemberProfile> getFullProfileInfo() async {
+    PreviewMemberProfile accountInfo;
+    try {
+      prefs = await SharedPreferences.getInstance();
+      int? memberId = prefs.getInt('memberId');
+
+      var url = Uri.parse('$baseUrl/members/user/$memberId');
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("PreviewMemberProfile Info Res: ${jsonDecode(response.body)}");
+      var res = jsonDecode(response.body);
+      // print('')
+      accountInfo = PreviewMemberProfile.fromJson(
+        res['data'],
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return accountInfo;
+  }
+
+
+
+  //----------------------------------
   // get a  branch
   Future<Branch> getBranch({
     required int branchId,
@@ -151,6 +185,7 @@ class MemberAPI {
       required bool checkDeviceInfo}) async {
     MemberProfile? memberProfile;
     try {
+      prefs = await SharedPreferences.getInstance();
       var data = {
         'phone_email': phoneEmail,
         'password': password,
@@ -165,6 +200,13 @@ class MemberAPI {
         headers: {'Content-Type': 'application/json'},
       );
       var decodedResponse = await returnResponse(response);
+      print('decodedResponse $decodedResponse');
+      var memberToken = decodedResponse['token'];
+      int memberId = decodedResponse['user']['id'];
+      prefs.setString('token', memberToken);
+      prefs.setInt('memberId', memberId);
+      debugPrint('MEMBER TOKEN---------- --------------------- $memberToken');
+      debugPrint('MEMBER memberId---------- --------------------- $memberId');
       memberProfile = MemberProfile.fromJson(
         decodedResponse,
       );
@@ -462,9 +504,30 @@ class MemberAPI {
     }
   }
 
+  Future<Region?> getSingleRegion({required regionId}) async {
+    var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      http.Response response = await http.get(
+          Uri.parse('$mybaseUrl/locations/region/$regionId'),
+          headers: await getAllHeaders(),);
+      if (response.statusCode == 200) {
+        var decodedresponse = jsonDecode(response.body);
+        print("REGION single success: $decodedresponse");
+        return Region.fromJson(decodedresponse);
+      } else {
+        print('REGION error ${jsonDecode(response.body)}');
+        return null;
+      }
+    } on SocketException catch (_) {
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text('Network issue')));
+      return null;
+    }
+  }
+
 
    Future<List<District>?> getDistrict({required var regionID}) async {
-
+    debugPrint('regionID $regionID');
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -472,11 +535,32 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        // print("District success: $decodedresponse");
+        print("District success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList.map((data) => District.fromJson(data)).toList();
       } else {
         print('District error ${jsonDecode(response.body)}');
+        return null;
+      }
+    } on SocketException catch (_) {
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text('Network issue')));
+      return null;
+    }
+  }
+
+  Future<District?> getSingleDistrict({required districtId}) async {
+    var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$mybaseUrl/locations/district/$districtId'),
+        headers: await getAllHeaders(),);
+      if (response.statusCode == 200) {
+        var decodedresponse = jsonDecode(response.body);
+        print("District single success: $decodedresponse");
+        return District.fromJson(decodedresponse);
+      } else {
+        print('REGION error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -517,6 +601,27 @@ class MemberAPI {
   }
 
 
+  Future<Constituency?> getSingleConstituency({required ConstId}) async {
+    var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$mybaseUrl/locations/constituency/$ConstId'),
+        headers: await getAllHeaders(),);
+      if (response.statusCode == 200) {
+        var decodedresponse = jsonDecode(response.body);
+        print("Constituency single success: $decodedresponse");
+        return Constituency.fromJson(decodedresponse);
+      } else {
+        print('REGION error ${jsonDecode(response.body)}');
+        return null;
+      }
+    } on SocketException catch (_) {
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text('Network issue')));
+      return null;
+    }
+  }
+
    Future<List<ElectoralArea>?> getElectoralArea(
       {required var regionID, var districtID}) async {
 
@@ -533,6 +638,27 @@ class MemberAPI {
         return dataList.map((data) => ElectoralArea.fromJson(data)).toList();
       } else {
         print('ElectoralArea error ${jsonDecode(response.body)}');
+        return null;
+      }
+    } on SocketException catch (_) {
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text('Network issue')));
+      return null;
+    }
+  }
+
+  Future<ElectoralArea?> getSingleElectoralArea({required electoralId}) async {
+    var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$mybaseUrl/locations/electoral-area/$electoralId'),
+        headers: await getAllHeaders(),);
+      if (response.statusCode == 200) {
+        var decodedresponse = jsonDecode(response.body);
+        print("ElectoralArea single success: $decodedresponse");
+        return ElectoralArea.fromJson(decodedresponse);
+      } else {
+        print('REGION error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -1137,6 +1263,270 @@ class MemberAPI {
     }
   }
 
+
+
+  //UPDATE BIO INFO
+  static Future<String?> updateBio(BuildContext context,
+      {firstname,middlename,surname,gender, dateOfBirth,email,phone,referenceId}
+      ) async {
+      var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      var data = {
+        "firstname": firstname,
+        "middlename": middlename,
+        "surname": surname,
+        "gender": gender,
+        "dateOfBirth": dateOfBirth,
+        "email": email,
+        "phone": phone,
+        "accountType": 1,
+      };
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? memberId = prefs.getInt('memberId');
+      print('UPDATE BIO memberId $memberId');
+
+      http.Response response = await http.put(
+          Uri.parse('$regBaseUrl/members/user/$memberId'),
+          body: json.encode(data),
+          headers: await getAllHeaders(),);
+      var decodedResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        debugPrint('UPDATE BIO MEMBER -------------- $decodedResponse');
+        showNormalToast("Bio information Update Successful");
+        return 'successful';
+      } else {
+        return 'failed';
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+
+  //UPDATE GROUPINGS
+  static Future<String?> updateGroup(BuildContext context,
+      {branchId,category}
+      ) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      var data = {
+        "branchId": branchId,
+        "memberType": category,
+      };
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? memberId = prefs.getInt('memberId');
+      print('UPDATE GROUP memberId $memberId');
+
+      http.Response response = await http.put(
+        Uri.parse('$regBaseUrl/members/user/$memberId'),
+        body: json.encode(data),
+        headers: await getAllHeaders(),);
+      var decodedResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        debugPrint('UPDATE GROUP MEMBER -------------- $decodedResponse');
+        showNormalToast("Group information Update Successful");
+        return 'successful';
+      } else {
+        return 'failed';
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+
+  //UPDATE LOCATION
+  static Future<String?> updateLocation(BuildContext context,
+      { nationality,
+        countryOfResidence,
+        stateProvince,
+        region,
+        district,
+        constituency,
+        electoralArea,
+        community,
+        digitalAddress,
+        hometown}
+      ) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      var data = {
+        "nationality": nationality,
+        "countryOfResidence": countryOfResidence,
+        "stateProvince": stateProvince,
+        "region": region,
+        "district": district,
+        "constituency": constituency,
+        "electoralArea": electoralArea,
+        "community": community,
+        "digitalAddress": digitalAddress,
+        "hometown": hometown,
+      };
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? memberId = prefs.getInt('memberId');
+      print('UPDATE GROUP memberId $memberId');
+
+      http.Response response = await http.put(
+        Uri.parse('$regBaseUrl/members/user/$memberId'),
+        body: json.encode(data),
+        headers: await getAllHeaders(),);
+      var decodedResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        debugPrint('UPDATE LOCATION MEMBER -------------- $decodedResponse');
+        showNormalToast("Location information Update Successful");
+        return 'successful';
+      } else {
+        return 'failed';
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+
+  static Future<String?> updateCV(BuildContext context,{profileResume,}
+      ) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? memberId = prefs.getInt('memberId');
+      print('UPDATE GROUP memberId $memberId');
+      var request = await http.MultipartRequest('PUT',
+          Uri.parse('$regBaseUrl/members/user/$memberId'));
+
+      Map<String, String> headers = await getAllHeaders();
+
+      // multipart that takes file
+
+      if(profileResume!=null) {
+        var profResume = await http.MultipartFile.fromPath('profileResume', profileResume);
+        request.files.add(profResume);
+      }else{
+        showErrorToast("Please select a file");
+        return 'failed';
+      }
+      request.headers.addAll(headers);
+
+      // send
+      var response = await request.send();
+      // listen for response
+      print('response.statusCode ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        debugPrint('UPDATE LOCATION MEMBER -------------- ${response.stream.toString()}');
+        showNormalToast("CV Update Successful");
+        return 'successful';
+      } else {
+        response.stream.transform(utf8.decoder).listen((value) {
+          var data = json.decode(value);
+          // var message = data['non_field_errors'][0];
+          print('RESPONSE: $data');
+          // showNormalToast('$message');
+        });
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+
+  static Future<String?> updateIDCard(BuildContext context,{profileIdentification}
+      ) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? memberId = prefs.getInt('memberId');
+      print('UPDATE GROUP memberId $memberId');
+      var request = await http.MultipartRequest('PUT',
+          Uri.parse('$regBaseUrl/members/user/$memberId'));
+
+      Map<String, String> headers = await getAllHeaders();
+
+      // multipart that takes file
+
+      if(profileIdentification!=null) {
+        var profileIdentificationk = await http.MultipartFile.fromPath('profileIdentification', profileIdentification);
+        request.files.add(profileIdentificationk);
+      }else{
+        showErrorToast("Please select a file");
+        return 'failed';
+      }
+      request.headers.addAll(headers);
+
+      // send
+      var response = await request.send();
+      // listen for response
+      print('response.statusCode ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        showNormalToast("ID card Update Successful");
+        return 'successful';
+      } else {
+        response.stream.transform(utf8.decoder).listen((value) {
+          var data = json.decode(value);
+          // var message = data['non_field_errors'][0];
+          print('RESPONSE: $data');
+          // showNormalToast('$message');
+        });
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+
+  static Future<String?> updateProfilePic(BuildContext context,{profilePic}
+      ) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? memberId = prefs.getInt('memberId');
+      print('UPDATE GROUP memberId $memberId');
+      var request = await http.MultipartRequest('PUT',
+          Uri.parse('$regBaseUrl/members/user/$memberId'));
+
+      Map<String, String> headers = await getAllHeaders();
+
+      // multipart that takes file
+
+      if(profilePic!=null) {
+        var profilePicture = await http.MultipartFile.fromPath('profilePicture', profilePic);
+        request.files.add(profilePicture);
+      }else{
+        showErrorToast("Please select a file");
+        return 'failed';
+      }
+      request.headers.addAll(headers);
+
+      // send
+      var response = await request.send();
+      // listen for response
+      print('response.statusCode ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        showNormalToast("Profile picture Update Successful");
+        return 'successful';
+      } else {
+        response.stream.transform(utf8.decoder).listen((value) {
+          var data = json.decode(value);
+          // var message = data['non_field_errors'][0];
+          print('RESPONSE: $data');
+          // showNormalToast('$message');
+        });
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
 
 }
 

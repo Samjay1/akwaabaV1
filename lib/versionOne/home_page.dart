@@ -19,7 +19,7 @@ import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/screens/excuse_input_page.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/versionOne/members_page.dart';
-import 'package:akwaaba/screens/update_account_page.dart';
+import 'package:akwaaba/versionOne/update_account_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/dimens.dart';
@@ -37,6 +37,7 @@ import 'package:shimmer/shimmer.dart';
 import '../components/label_widget_container.dart';
 import '../models/meeting_event_item.dart';
 import '../providers/client_provider.dart';
+import 'my_account_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -382,7 +383,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const UpdateAccountPage(),
+                      builder: (_) => const MyAccountPage(),
                     ),
                   );
                 },

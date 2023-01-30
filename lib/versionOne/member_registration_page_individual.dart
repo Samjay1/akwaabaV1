@@ -271,14 +271,15 @@ class _MemberRegistrationPageIndividualState
         if (!formGlobalKeyBio.currentState!.validate()) {
           return;
         }
-        if (birthDate == null) {
-          showErrorSnackBar(context, "select date of birth");
-          return;
-        }
         if (selectedGender == null) {
           showErrorSnackBar(context, "select your gender");
           return;
         }
+        if (birthDate == null) {
+          showErrorSnackBar(context, "select date of birth");
+          return;
+        }
+
         pageViewController.animateToPage(1,
             duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
@@ -349,18 +350,18 @@ class _MemberRegistrationPageIndividualState
           return;
         }
 
-        if (!formGlobalKeyStatus.currentState!.validate()) {
-          return;
-        }
-
-        if(imageIDCard == null){
-          showErrorSnackBar(context, "Upload your ID Card");
-          return;
-        }
-        if(imageCV == null){
-          showErrorSnackBar(context, "Upload your CV");
-          return;
-        }
+        // if (!formGlobalKeyStatus.currentState!.validate()) {
+        //   return;
+        // }
+        //
+        // if(imageIDCard == null){
+        //   showErrorSnackBar(context, "Upload your ID Card");
+        //   return;
+        // }
+        // if(imageCV == null){
+        //   showErrorSnackBar(context, "Upload your CV");
+        //   return;
+        // }
         pageViewController.animateToPage(4,
             duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
@@ -509,6 +510,7 @@ class _MemberRegistrationPageIndividualState
   }
 
   Widget bioDataView() {
+    // _controllerWhatsappContact.text = '';
     return Form(
       key: formGlobalKeyBio,
       child: ListView(
@@ -578,24 +580,25 @@ class _MemberRegistrationPageIndividualState
           ),
           LabelWidgetContainer(
               label: "Whatsapp Contact",
+              setCompulsory: false,
               child: FormTextField(
                 controller: _controllerWhatsappContact,
                 textInputType: TextInputType.phone,
                 maxLength: 10,
-                applyValidation: false,
               )),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               imageFile != null
                   ? ClipRRect(
-                      borderRadius: BorderRadius.circular(360),
-                      child: Image.file(
-                        imageFile!,
-                        height: 120,
-                        width: 120,
-                      ),
-                    )
+                borderRadius: BorderRadius.circular(5),
+                child: Image.file(
+                  imageFile!,
+                  height: 120,
+                  width: 120,
+                ),
+              )
                   : defaultProfilePic(height: 120),
               CupertinoButton(
                   onPressed: () {
@@ -603,7 +606,7 @@ class _MemberRegistrationPageIndividualState
                     selectProfilePhoto();
                   },
                   child:
-                      Text(imageFile != null ? "Change Photo" : "Select Photo"))
+                  Text(imageFile != null ? "Change Photo" : "Select Photo"))
             ],
           ),
         ],
@@ -724,17 +727,6 @@ class _MemberRegistrationPageIndividualState
                 )
             ):Container(),
 
-            ifGhanaSelected?Form(
-              key: formGlobalKeyStateProvince,
-              child:  LabelWidgetContainer(
-                  label: "Community",
-                  setCompulsory: true,
-                  child: FormTextField(
-                    controller: _controllerCommunity,
-                    label: "Enter Community",
-                  )),
-            ):Container(),
-
             ifGhanaSelected?LabelWidgetContainer(
               // setCompulsory: true,
                 label: "District",
@@ -768,6 +760,16 @@ class _MemberRegistrationPageIndividualState
                     selectCommunity(newCommunityList);
                   },
                 )
+            ):Container(),
+            ifGhanaSelected?Form(
+              key: formGlobalKeyStateProvince,
+              child:  LabelWidgetContainer(
+                  label: "Community",
+                  setCompulsory: true,
+                  child: FormTextField(
+                    controller: _controllerCommunity,
+                    label: "Enter Community",
+                  )),
             ):Container(),
           ],
         ),
@@ -853,7 +855,8 @@ class _MemberRegistrationPageIndividualState
 
         Form(
           key: formGlobalKeyStatus,
-          child:  LabelWidgetContainer(label: "ID Number",
+          child:  LabelWidgetContainer(label: "Reference Number",
+              setCompulsory: false,
               child:FormTextField(
                 controller: _controllerIDNumber,
               )
@@ -879,7 +882,7 @@ class _MemberRegistrationPageIndividualState
                     onPressed: (){},
                     icon: Row(
                         children:const[
-                          Text('ID Card selected', style: TextStyle(color:Colors.green),),
+                          Text('National ID Card selected', style: TextStyle(color:Colors.green),),
                           SizedBox(width:10),
                           Icon(Icons.check_circle_outlined, color: Colors.green,)
                         ]
@@ -901,7 +904,7 @@ class _MemberRegistrationPageIndividualState
                   ),
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
-                  child: Text(imageIDCard != null ? "Change ID Card" : "Select ID Card", style: const TextStyle(color:Colors.black),)),
+                  child: Text(imageIDCard != null ? "Change ID Card" : "Attach Your National ID Card", style: const TextStyle(color:Colors.black),)),
             )
           ],
         ),
@@ -945,7 +948,7 @@ class _MemberRegistrationPageIndividualState
                     ),
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(10),
-                  child: Text(imageCV != null ? "Change CV" : "Select CV", style: const TextStyle(color:Colors.black),)),
+                  child: Text(imageCV != null ? "Change CV" : "Attach Your CV", style: const TextStyle(color:Colors.black),)),
                   )
           ],
         ),

@@ -1,5 +1,5 @@
 import 'package:akwaaba/models/general/organization.dart';
-import 'package:akwaaba/screens/update_account_page.dart';
+import 'package:akwaaba/versionOne/update_account_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/dimens.dart';

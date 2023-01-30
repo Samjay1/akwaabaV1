@@ -823,6 +823,19 @@ class _MainPageState extends State<MainPage> {
                       physics: const BouncingScrollPhysics(),
                       children: [
                         drawerItemView(
+                          title: "My Profile",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            toggleDrawer();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const MyAccountPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
                             title: "View Members",
                             iconData: Icons.phone_android,
                             function: () {
@@ -861,22 +874,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               );
                             }),
-                        drawerItemView(
-                          title: "Update Profile",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            toggleDrawer();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => MemberAccountPage(
-                                  member: null,
-                                  userType: userType,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+
                         drawerItemView(
                           title: "Apply Leave/Excuse",
                           iconData: Icons.phone_android,
