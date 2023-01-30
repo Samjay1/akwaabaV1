@@ -558,6 +558,7 @@ class _MemberRegistrationPageIndividualState
                   selectDateOfBirth();
                 },
               )),
+
           LabelWidgetContainer(
             label: "Phone",
             setCompulsory: true,
