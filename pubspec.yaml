@@ -33,6 +33,7 @@ dependencies:
   open_mail_app: ^0.4.5
   getwidget: ^3.0.1
   date_time_picker: ^2.1.0
+  in_app_update: ^4.0.1
 
 dev_dependencies:
   flutter_test:

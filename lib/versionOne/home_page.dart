@@ -19,7 +19,7 @@ import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/screens/excuse_input_page.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/versionOne/members_page.dart';
-import 'package:akwaaba/screens/update_account_page.dart';
+import 'package:akwaaba/versionOne/update_account_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/dimens.dart';
@@ -30,6 +30,7 @@ import 'package:akwaaba/versionOne/clocking_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,7 @@ import 'package:shimmer/shimmer.dart';
 import '../components/label_widget_container.dart';
 import '../models/meeting_event_item.dart';
 import '../providers/client_provider.dart';
+import 'my_account_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -72,6 +74,29 @@ class _HomePageState extends State<HomePage> {
       });
       loadMeetingEventsByUserType(userType: userType);
     });
+    checkForUpdate();
+  }
+
+  // check if there is a new update
+  void checkForUpdate() async {
+    var updateInfo = await InAppUpdate.checkForUpdate();
+    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+      //Logic to perform an update
+      if (updateInfo.immediateUpdateAllowed) {
+        // Perform an immediate update
+        var appUpdateResult = await InAppUpdate.performImmediateUpdate();
+        if (appUpdateResult == AppUpdateResult.success) {
+          // App Update Successful
+        }
+      } else if (updateInfo.flexibleUpdateAllowed) {
+        // Perform an flexible update
+        var appUpdateResult = await InAppUpdate.startFlexibleUpdate();
+        if (appUpdateResult == AppUpdateResult.success) {
+          // App Update Successful
+          InAppUpdate.completeFlexibleUpdate();
+        }
+      }
+    }
   }
 
   void loadMeetingEventsByUserType({var userType}) async {
@@ -382,7 +407,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const UpdateAccountPage(),
+                      builder: (_) => const MyAccountPage(),
                     ),
                   );
                 },

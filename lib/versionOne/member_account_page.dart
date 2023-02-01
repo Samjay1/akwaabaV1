@@ -1,6 +1,6 @@
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/providers/members_provider.dart';
-import 'package:akwaaba/screens/update_account_page.dart';
+import 'package:akwaaba/versionOne/update_account_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/dimens.dart';
@@ -71,21 +71,43 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            //padding: EdgeInsets.all(16),
             children: [
               Container(
                 height: dividerHeight,
                 color: dividerColor,
               ),
               profileItemView(
-                  title: "Date of Birth",
-                  label: widget.member!.dateOfBirth == null
-                      ? 'N/A'
-                      : widget.member!.dateOfBirth!),
+                title: "Phone",
+                label: widget.member!.phone == null
+                    ? "N/A"
+                    : widget.member!.phone!,
+                display: true,
+              ),
               profileItemView(
-                  title: "Gender",
-                  label: widget.member!.gender == 1 ? "Male" : "Female",
-                  display: true),
+                title: "Email",
+                label: widget.member!.email == null
+                    ? "N/A"
+                    : widget.member!.email!,
+                display: true,
+              ),
+              profileItemView(
+                title: "Date of Birth",
+                label: widget.member!.dateOfBirth == null
+                    ? 'N/A'
+                    : widget.member!.dateOfBirth!,
+              ),
+              profileItemView(
+                title: "ReferenceId",
+                label: widget.member!.referenceId == null
+                    ? "N/A"
+                    : widget.member!.referenceId!,
+                display: false,
+              ),
+              profileItemView(
+                title: "Gender",
+                label: widget.member!.gender == 1 ? "Male" : "Female",
+                display: true,
+              ),
               profileItemView(title: "Profession", label: "N/A", display: true),
               profileItemView(
                   title: "Place of work", label: "N/A", display: true),
@@ -110,8 +132,18 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
               ),
-              profileItemView(title: "Group", label: "N/A"),
-              profileItemView(title: "Sub Group", label: "N/A"),
+              profileItemView(
+                title: "Branch",
+                label: widget.member!.branchInfo != null
+                    ? widget.member!.branchInfo!.name!
+                    : 'N/A',
+              ),
+              profileItemView(
+                title: "Category",
+                label: widget.member!.categoryInfo != null
+                    ? widget.member!.categoryInfo!.category!
+                    : 'N/A',
+              ),
               const SizedBox(
                 height: 24,
               ),

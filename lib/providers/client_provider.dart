@@ -78,6 +78,7 @@ class ClientProvider extends ChangeNotifier {
         return;
       }
       setLoading(false);
+      debugPrint('USER INFO: $value');
       _user = value;
       Provider.of<GeneralProvider>(context, listen: false)
           .setAdminStatus(isAdmin: isAdmin);
