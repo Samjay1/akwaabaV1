@@ -131,7 +131,6 @@ class HomeProvider extends ChangeNotifier {
       );
       // debugPrint("Latitude: ${response.results![0].latitude}");
       // debugPrint("Longitude: ${response.results![0].longitude}");
-
       if (response.results == null) {
         if (context.mounted) {
           Navigator.of(context).pop();
@@ -187,7 +186,7 @@ class HomeProvider extends ChangeNotifier {
         context: context,
         title: 'Hey there!',
         content:
-            'Sorry, an unexpected error occurred when getting meeting or event coordinates. Please try again!',
+            'Sorry, an unexpected error occurred when getting the meeting or event coordinates.  Please be sure you have turned on your location and try again.',
         onTap: () => Navigator.pop(context),
       );
       //showErrorToast('An unexpected error occurred. Please try again!');

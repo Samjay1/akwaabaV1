@@ -80,7 +80,8 @@ class AttendanceProvider extends ChangeNotifier {
   List<Attendee?> totalFemaleAbsentees = [];
 
   BuildContext? _context;
-  String? search = '';
+
+  String search = '';
 
   List<Attendee?> get absentees => _absentees;
 
@@ -342,10 +343,6 @@ class AttendanceProvider extends ChangeNotifier {
   // get meetins from date specified
   Future<void> getPastMeetingEvents() async {
     try {
-      // _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
-      //   page: 1,
-      //   date: selectedDate!.toIso8601String().substring(0, 10),
-      // );
       var userBranch = await getUserBranch(currentContext);
       _pastMeetingEvents = await EventAPI.getAllMeetings(
         page: 1,
@@ -398,6 +395,7 @@ class AttendanceProvider extends ChangeNotifier {
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
+        search: search.isEmpty ? '' : search,
         memberCategoryId:
             selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
         groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -454,15 +452,16 @@ class AttendanceProvider extends ChangeNotifier {
       setLoadingMore(true); // show loading indicator
       _attendeesPage += 1; // increase page by 1
       try {
+        var userBranch = await getUserBranch(currentContext);
         var response = await ClockingAPI.getAttendeesList(
           page: _attendeesPage,
           meetingEventModel: selectedPastMeetingEvent!,
-          branchId: selectedBranch == null
-              ? selectedPastMeetingEvent!.branchId!
-              : selectedBranch!.id!,
+          branchId:
+              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
+          search: search.isEmpty ? '' : search,
           memberCategoryId:
               selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
           groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -521,6 +520,7 @@ class AttendanceProvider extends ChangeNotifier {
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
+        search: search.isEmpty ? '' : search,
         memberCategoryId:
             selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
         groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -573,15 +573,16 @@ class AttendanceProvider extends ChangeNotifier {
       setLoadingMore(true); // show loading indicator
       _absenteesPage += 1; // increase page by 1
       try {
+        var userBranch = await getUserBranch(currentContext);
         var response = await ClockingAPI.getAbsenteesList(
           page: _absenteesPage,
           meetingEventModel: selectedPastMeetingEvent!,
-          branchId: selectedBranch == null
-              ? selectedPastMeetingEvent!.branchId!
-              : selectedBranch!.id!,
+          branchId:
+              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
+          search: search.isEmpty ? '' : search,
           memberCategoryId:
               selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
           groupId: selectedGroup == null ? 0 : selectedGroup!.id!,

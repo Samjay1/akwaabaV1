@@ -107,28 +107,27 @@ class MemberProvider with ChangeNotifier {
     setLoading(true);
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      _memberProfile = await MemberAPI().login(
-        context: context,
-        phoneEmail: phoneEmail,
-        password: password,
-        checkDeviceInfo: false,
-      );
-      if (_memberProfile != null && _memberProfile!.nonFieldErrors != null) {
-        setLoading(false);
-        showErrorToast(_memberProfile!.nonFieldErrors![0]);
-        return;
+      if (context.mounted) {
+        _memberProfile = await MemberAPI().login(
+          context: context,
+          phoneEmail: phoneEmail,
+          password: password,
+          checkDeviceInfo: false,
+        );
+        if (_memberProfile != null && _memberProfile!.nonFieldErrors != null) {
+          setLoading(false);
+          showErrorToast(_memberProfile!.nonFieldErrors![0]);
+          return;
+        }
+        prefs.setString('token', _memberProfile!.token!);
+        // ignore: use_build_context_synchronously
+        getClientAccountInfo(
+          context: context,
+          clientId: _memberProfile!.user!.clientId!,
+          phoneEmail: phoneEmail,
+          password: password,
+        );
       }
-      Provider.of<GeneralProvider>(context, listen: false)
-          .setAdminStatus(isAdmin: isAdmin);
-      prefs.setString('token', _memberProfile!.token!);
-      SharedPrefs().setUserType(userType: "member");
-      SharedPrefs()
-          .saveLoginCredentials(emailOrPhone: phoneEmail, password: password);
-      SharedPrefs().saveMemberInfo(memberProfile: _memberProfile!);
-      getClientAccountInfo(
-        context: context,
-        clientId: _memberProfile!.user!.clientId!,
-      );
     } catch (err) {
       setLoading(false);
       debugPrint('Error: ${err.toString()}');
@@ -140,6 +139,8 @@ class MemberProvider with ChangeNotifier {
   Future<void> getClientAccountInfo({
     required BuildContext context,
     required int clientId,
+    required phoneEmail,
+    required password,
   }) async {
     MemberAPI()
         .getClientAccountInfo(
@@ -150,7 +151,8 @@ class MemberProvider with ChangeNotifier {
         setLoading(false);
         showErrorSnackBar(context, "Incorrect Login Details");
         return;
-      } else if (value == 'network_error') {
+      }
+      if (value == 'network_error') {
         setLoading(false);
         showErrorSnackBar(context, "Network Issue");
         return;
@@ -158,7 +160,9 @@ class MemberProvider with ChangeNotifier {
         _clientAccountInfo = value;
         getClientBranch(
           context: context,
-          branchId: _clientAccountInfo!.applicantDesignationRole!,
+          branchId: 1,
+          phoneEmail: phoneEmail,
+          password: password,
         );
         debugPrint('Client name ${value.applicantFirstname}');
         debugPrint('Client id ${value.id}');
@@ -170,6 +174,8 @@ class MemberProvider with ChangeNotifier {
   Future<void> getClientBranch({
     required BuildContext context,
     required int branchId,
+    required phoneEmail,
+    required password,
   }) async {
     MemberAPI()
         .getBranch(
@@ -181,13 +187,19 @@ class MemberProvider with ChangeNotifier {
         setLoading(false);
         showErrorSnackBar(context, "Incorrect Login Details");
         return;
-      } else if (value == 'network_error') {
+      }
+      if (value == 'network_error') {
         setLoading(false);
         showErrorSnackBar(context, "Network Issue");
         return;
       } else {
         _branch = value;
-        getIdentityNumber(context: context, memberId: 0);
+        getIdentityNumber(
+          context: context,
+          memberId: 0,
+          phoneEmail: phoneEmail,
+          password: password,
+        );
         debugPrint('Branch name ${value.name}');
         debugPrint('Branch id ${value.id}');
       }
@@ -198,24 +210,32 @@ class MemberProvider with ChangeNotifier {
   Future<void> getIdentityNumber({
     required BuildContext context,
     required int memberId,
+    required phoneEmail,
+    required password,
   }) async {
     MemberAPI()
         .getIdentityNumber(
       memberId: _memberProfile!.user!.id!,
     )
         .then((value) {
-      notifyListeners();
       if (value == 'login_error') {
         setLoading(false);
         showErrorSnackBar(context, "Incorrect Login Details");
         return;
-      } else if (value == 'network_error') {
+      }
+      if (value == 'network_error') {
         setLoading(false);
         showErrorSnackBar(context, "Network Issue");
         return;
       } else {
         setLoading(false);
         _identityNumber = value;
+        Provider.of<GeneralProvider>(context, listen: false)
+            .setAdminStatus(isAdmin: false);
+        SharedPrefs().setUserType(userType: "member");
+        SharedPrefs()
+            .saveLoginCredentials(emailOrPhone: phoneEmail, password: password);
+        SharedPrefs().saveMemberInfo(memberProfile: _memberProfile!);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

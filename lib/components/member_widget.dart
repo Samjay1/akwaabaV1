@@ -90,7 +90,10 @@ class _MemberWidgetState extends State<MemberWidget> {
                       Row(
                         children: [
                           GestureDetector(
-                            onTap: () => openEmailApp(context),
+                            onTap: () => openEmailAppWithSubject(
+                                widget.member!.email,
+                                'SUBJECT',
+                                "Hello ${widget.member!.firstname!},"),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: SvgPicture.asset(

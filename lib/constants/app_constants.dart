@@ -63,7 +63,8 @@ class AppConstants {
   // redirection url to renew client account
   static renewAccountRedirectUrl() async {
     var token = await getToken();
-    return "$attendanceBaseUrl/app-reroute?permission-key=${base64TokenEncoding(token)}&access-page-key=${base64TokenEncoding('absent-leave/assign-al-status')}";
+    //return "$attendanceBaseUrl/app-reroute?permission-key=${base64TokenEncoding(token)}&access-page-key=${base64TokenEncoding('absent-leave/assign-al-status')}";
+    return "https://super.akwaabasoftware.com/api/renew-subscription/token=$token/";
   }
 
   static const String akwaabaEduUrl = 'https://edu.akwaabasoftware.com/';

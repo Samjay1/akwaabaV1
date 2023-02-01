@@ -351,10 +351,11 @@ class _AttendanceReportDetailsPageState
                 height: 8,
               ),
               LabelWidgetContainer(
-                  label: "Clocked In By:",
-                  child: Text(widget.attendee!.attendance!.clockedBy == 0
-                      ? "$attendeeName(Me)"
-                      : "Admin")),
+                label: "Clocked In By:",
+                child: Text(widget.attendee!.attendance!.clockedBy == 0
+                    ? "Self"
+                    : "Admin"),
+              ),
               const Divider(
                 color: textColorPrimary,
               ),
@@ -362,10 +363,11 @@ class _AttendanceReportDetailsPageState
                 height: 8,
               ),
               LabelWidgetContainer(
-                  label: "Clocked Out by",
-                  child: Text(widget.attendee!.attendance!.clockedBy == 0
-                      ? "Me"
-                      : "Admin")),
+                label: "Clocked out by",
+                child: Text(widget.attendee!.attendance!.clockedBy == 0
+                    ? "Self"
+                    : "Admin"),
+              ),
 
               const Divider(
                 color: textColorPrimary,

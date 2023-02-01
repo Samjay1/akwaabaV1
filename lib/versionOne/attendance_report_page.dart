@@ -429,7 +429,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemBuilder: (_, __) => const EventShimmerItem(),
-                          itemCount: 6,
+                          itemCount: 10,
                         ),
                       ),
                     )
@@ -537,9 +537,11 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                 )
                               : Column(
                                   children: [
-                                    NotificationListener<ScrollNotification>(
-                                      onNotification: _handleScrollNotification,
-                                      child: Expanded(
+                                    Expanded(
+                                      child: NotificationListener<
+                                          ScrollNotification>(
+                                        onNotification:
+                                            _handleScrollNotification,
                                         child: ListView.builder(
                                             physics:
                                                 const BouncingScrollPhysics(),
@@ -903,7 +905,8 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 items: attendanceProvider.subGroups.map((SubGroup subGroup) {
                   return DropdownMenuItem(
                     value: subGroup,
-                    child: Text(subGroup.subgroup!),
+                    child: Text(
+                        '${subGroup.groupId!.group!} => ${subGroup.subgroup!}'),
                   );
                 }).toList(),
                 onChanged: (val) {

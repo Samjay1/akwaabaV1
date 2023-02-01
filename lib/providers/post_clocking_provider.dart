@@ -36,13 +36,9 @@ class PostClockingProvider extends ChangeNotifier {
 
   List<Attendee?> _absentees = [];
 
-  List<Attendee?> _tempAbsentees = [];
-
   final List<Attendee?> _selectedAbsentees = [];
 
   List<Attendee?> _attendees = [];
-
-  List<Attendee?> _tempAttendees = [];
 
   final List<Attendee?> _selectedAttendees = [];
 
@@ -53,6 +49,8 @@ class PostClockingProvider extends ChangeNotifier {
   MeetingEventModel? selectedPastMeetingEvent;
   DateTime? selectedDate;
   String? postClockTime;
+
+  String search = '';
 
   MeetingEventModel? _meetingEventModel;
 
@@ -252,7 +250,7 @@ class PostClockingProvider extends ChangeNotifier {
       getMemberCategories();
       getGenders();
     } catch (err) {
-      debugPrint('Error PMs: ${err.toString()}');
+      //debugPrint('Error PMs: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -274,6 +272,7 @@ class PostClockingProvider extends ChangeNotifier {
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
+        search: search.isEmpty ? '' : search,
         memberCategoryId:
             selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
         groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -284,7 +283,7 @@ class PostClockingProvider extends ChangeNotifier {
       );
       selectedAbsentees.clear();
 
-      if (response.results!.isNotEmpty) {
+      if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
         _absentees = response.results!
@@ -298,17 +297,13 @@ class PostClockingProvider extends ChangeNotifier {
                         .applicantPhone))
             .toList();
 
-        _tempAbsentees = _absentees;
-
         debugPrint('Absentees: ${_absentees.length}');
       } else {
-        _absentees = [];
-        _tempAbsentees = _absentees;
+        _absentees.clear();
       }
 
       getAllAttendees(
         meetingEventModel: meetingEventModel,
-        branchId: userBranch.id!,
       );
 
       setLoading(false);
@@ -328,16 +323,18 @@ class PostClockingProvider extends ChangeNotifier {
         absenteesScrollController.position.extentAfter < 300) {
       setLoadingMore(true); // show loading indicator
       _absenteesPage += 1; // increase page by 1
+      var userBranch =
+          await getUserBranch(currentContext); // get current user branch
       try {
         var response = await ClockingAPI.getAbsenteesList(
           page: _absenteesPage,
           meetingEventModel: selectedPastMeetingEvent!,
-          branchId: selectedBranch == null
-              ? selectedPastMeetingEvent!.branchId!
-              : selectedBranch!.id!,
+          branchId:
+              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
+          search: search.isEmpty ? '' : search,
           memberCategoryId:
               selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
           groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -357,7 +354,6 @@ class PostClockingProvider extends ChangeNotifier {
                           .getUser!
                           .applicantPhone))
               .toList());
-          _tempAbsentees.addAll(_absentees);
         } else {
           hasNextPage = false;
         }
@@ -373,17 +369,19 @@ class PostClockingProvider extends ChangeNotifier {
   // get clocked members for a meeting
   Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
-    required int branchId,
   }) async {
     try {
+      var userBranch =
+          await getUserBranch(currentContext); // get current user branch
       _attendeesPage = 1;
       var response = await ClockingAPI.getAttendeesList(
         page: _attendeesPage,
         meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null ? branchId : selectedBranch!.id!,
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
+        search: search.isEmpty ? '' : search,
         memberCategoryId:
             selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
         groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -394,7 +392,7 @@ class PostClockingProvider extends ChangeNotifier {
       );
       selectedAttendees.clear();
 
-      if (response.results!.isNotEmpty) {
+      if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
         _attendees = response.results!
@@ -407,13 +405,8 @@ class PostClockingProvider extends ChangeNotifier {
                         .getUser!
                         .applicantPhone))
             .toList();
-
-        _tempAttendees = _attendees;
-
-        debugPrint('Attendees: ${_attendees.length}');
       } else {
-        _attendees = [];
-        _tempAttendees = _attendees;
+        _attendees.clear();
       }
 
       setLoading(false);
@@ -433,16 +426,18 @@ class PostClockingProvider extends ChangeNotifier {
         attendeesScrollController.position.extentAfter < 300) {
       setLoadingMore(true); // show loading indicator
       _attendeesPage += 1; // increase page by 1
+      var userBranch =
+          await getUserBranch(currentContext); // get current user branch
       try {
         var response = await ClockingAPI.getAttendeesList(
           page: _attendeesPage,
           meetingEventModel: selectedPastMeetingEvent!,
-          branchId: selectedBranch == null
-              ? selectedPastMeetingEvent!.branchId!
-              : selectedBranch!.id!,
+          branchId:
+              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
+          search: search.isEmpty ? '' : search,
           memberCategoryId:
               selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
           groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -462,7 +457,6 @@ class PostClockingProvider extends ChangeNotifier {
                           .getUser!
                           .applicantPhone))
               .toList());
-          _tempAttendees.addAll(_attendees);
         } else {
           hasNextPage = false;
         }
@@ -472,19 +466,6 @@ class PostClockingProvider extends ChangeNotifier {
         debugPrint("error --> $err");
       }
     }
-    notifyListeners();
-  }
-
-  void clearFilters() {
-    selectedDate = null;
-    selectedBranch = null;
-    selectedGender = null;
-    selectedGroup = null;
-    selectedSubGroup = null;
-    selectedMemberCategory = null;
-    selectedPastMeetingEvent = null;
-    minAgeTEC.clear();
-    maxAgeTEC.clear();
     notifyListeners();
   }
 
@@ -742,96 +723,32 @@ class PostClockingProvider extends ChangeNotifier {
     }
   }
 
-  // search through absentees list by name
-  void searchAbsenteesByName({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAbsentees;
-    } else {
-      results = _tempAbsentees
-          .where((element) =>
-              element!.attendance!.memberId!.firstname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _absentees = results;
-    notifyListeners();
-  }
-
-  // search through attendance list by id
-  void searchAbsenteesById({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAbsentees;
-    } else {
-      results = _tempAbsentees
-          .where((absentees) => absentees!.identification!
-              .toString()
-              .toLowerCase()
-              .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _absentees = results;
-    notifyListeners();
-  }
-
-  // search through clocked member list by name
-  void searchAttendeesByName({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAttendees;
-    } else {
-      results = _tempAttendees
-          .where((attendee) =>
-              attendee!.attendance!.memberId!.firstname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              attendee.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _attendees = results;
-    notifyListeners();
-  }
-
-  // search through clocked member list by name
-  void searchAttendeesById({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAttendees;
-    } else {
-      results = _tempAttendees
-          .where((attendee) => attendee!.identification!
-              .toLowerCase()
-              .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _attendees = results;
-    notifyListeners();
-  }
-
   String getPostClockDateTime() {
     var date = selectedDate!.toIso8601String().substring(0, 11);
     var time = '$postClockTime:00';
     return '$date$time';
   }
 
+  void clearFilters() {
+    selectedDate = null;
+    selectedBranch = null;
+    selectedGender = null;
+    selectedGroup = null;
+    selectedSubGroup = null;
+    selectedMemberCategory = null;
+    selectedPastMeetingEvent = null;
+    search = '';
+    minAgeTEC.clear();
+    maxAgeTEC.clear();
+    notifyListeners();
+  }
+
   Future<void> clearData() async {
     clearFilters();
     postClockTime = null;
     _attendees.clear();
-    _tempAttendees.clear();
     _selectedAttendees.clear();
+    _selectedAbsentees.clear();
     _absentees.clear();
-    _tempAbsentees.clear();
   }
 }

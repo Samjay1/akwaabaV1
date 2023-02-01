@@ -121,8 +121,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               isShowTopView
-                  ? SizedBox(
-                      height: displayHeight(context) * 0.40,
+                  ? Expanded(
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Column(
@@ -134,18 +133,49 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             ),
 
                             CupertinoSearchTextField(
+                              onSubmitted: (val) {
+                                setState(() {
+                                  if (clockingListState) {
+                                    // search absentees by name
+                                    if (absentees.isNotEmpty) {
+                                      postClockingProvider.search = val;
+                                      postClockingProvider.getAllAbsentees(
+                                        meetingEventModel: postClockingProvider
+                                            .selectedPastMeetingEvent!,
+                                      );
+                                    }
+                                  } else {
+                                    // search attendees by name
+                                    if (attendees.isNotEmpty) {
+                                      postClockingProvider.search = val;
+                                      postClockingProvider.getAllAttendees(
+                                        meetingEventModel: postClockingProvider
+                                            .selectedPastMeetingEvent!,
+                                      );
+                                    }
+                                  }
+                                });
+                              },
                               onChanged: (val) {
                                 setState(() {
                                   if (clockingListState) {
                                     // search absentees by name
-                                    postClockingProvider.searchAbsenteesByName(
-                                      searchText: val,
-                                    );
+                                    if (val.isEmpty) {
+                                      postClockingProvider.search = val;
+                                      postClockingProvider.getAllAbsentees(
+                                        meetingEventModel: postClockingProvider
+                                            .selectedPastMeetingEvent!,
+                                      );
+                                    }
                                   } else {
-                                    // search atendees by name
-                                    postClockingProvider.searchAttendeesByName(
-                                      searchText: val,
-                                    );
+                                    // search attendees by name
+                                    if (val.isEmpty) {
+                                      postClockingProvider.search = val;
+                                      postClockingProvider.getAllAttendees(
+                                        meetingEventModel: postClockingProvider
+                                            .selectedPastMeetingEvent!,
+                                      );
+                                    }
                                   }
                                 });
                               },
@@ -157,16 +187,49 @@ class _PostClockingPageState extends State<PostClockingPage> {
 
                             CupertinoSearchTextField(
                               placeholder: "Enter ID",
+                              onSubmitted: (val) {
+                                setState(() {
+                                  if (clockingListState) {
+                                    // search absentees by id
+                                    if (absentees.isNotEmpty) {
+                                      postClockingProvider.search = val;
+                                      postClockingProvider.getAllAbsentees(
+                                        meetingEventModel: postClockingProvider
+                                            .selectedPastMeetingEvent!,
+                                      );
+                                    }
+                                  } else {
+                                    // search attendees by id
+                                    if (attendees.isNotEmpty) {
+                                      postClockingProvider.search = val;
+                                      postClockingProvider.getAllAttendees(
+                                        meetingEventModel: postClockingProvider
+                                            .selectedPastMeetingEvent!,
+                                      );
+                                    }
+                                  }
+                                });
+                              },
                               onChanged: (val) {
                                 setState(() {
                                   if (clockingListState) {
                                     // search absentees by id
-                                    postClockingProvider.searchAbsenteesById(
-                                        searchText: val);
+                                    if (val.isEmpty) {
+                                      postClockingProvider.search = val;
+                                      postClockingProvider.getAllAbsentees(
+                                        meetingEventModel: postClockingProvider
+                                            .selectedPastMeetingEvent!,
+                                      );
+                                    }
                                   } else {
-                                    // search atendees by id
-                                    postClockingProvider.searchAttendeesById(
-                                        searchText: val);
+                                    // search attendees by id
+                                    if (val.isEmpty) {
+                                      postClockingProvider.search = val;
+                                      postClockingProvider.getAllAttendees(
+                                        meetingEventModel: postClockingProvider
+                                            .selectedPastMeetingEvent!,
+                                      );
+                                    }
                                   }
                                 });
                               },
@@ -494,14 +557,15 @@ class _PostClockingPageState extends State<PostClockingPage> {
                               height: 2,
                               color: primaryColor,
                             ),
-                            SizedBox(
-                              height: displayHeight(context) * 0.01,
-                            ),
                           ],
                         ),
                       ),
                     )
                   : const SizedBox(),
+
+              SizedBox(
+                height: displayHeight(context) * 0.01,
+              ),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -634,6 +698,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
               const SizedBox(
                 height: 12,
               ),
+
               postClockingProvider.loading
                   ? Expanded(
                       child: Shimmer.fromColors(
@@ -712,44 +777,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                   ],
                                 ),
                         )
-                      // clockingListState
-                      //     ? Column(
-                      //         children: absentees.isEmpty
-                      //             ? [
-                      //                 const EmptyStateWidget(
-                      //                   text: 'No absentees found!',
-                      //                 )
-                      //               ]
-                      //             : List.generate(absentees.length, (index) {
-                      //                 return GestureDetector(
-                      //                   onTap: () {
-                      //                     setState(() {
-                      //                       if (absentees[index]!.selected!) {
-                      //                         //remove it
-                      //                         absentees[index]!.selected = false;
-                      //                         postClockingProvider.selectedAbsentees
-                      //                             .remove(absentees[index]);
-                      //                       } else {
-                      //                         absentees[index]!.selected = true;
-                      //                         postClockingProvider.selectedAbsentees
-                      //                             .add(absentees[index]);
-                      //                       }
-                      //                       if (postClockingProvider
-                      //                           .selectedAbsentees.isNotEmpty) {
-                      //                         itemHasBeenSelected = true;
-                      //                       } else {
-                      //                         itemHasBeenSelected = false;
-                      //                       }
-                      //                     });
-                      //                     debugPrint(
-                      //                         "Select Abseentees: ${postClockingProvider.selectedAbsentees.length}");
-                      //                   },
-                      //                   child: PostClockClockingMemberItem(
-                      //                     attendee: absentees[index],
-                      //                   ),
-                      //                 );
-                      //               }),
-                      //       )
                       : Expanded(
                           child: attendees.isEmpty
                               ? const EmptyStateWidget(
@@ -1138,7 +1165,8 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 items: postClockingProvider.subGroups.map((SubGroup subGroup) {
                   return DropdownMenuItem(
                     value: subGroup,
-                    child: Text(subGroup.subgroup!),
+                    child: Text(
+                        '${subGroup.groupId!.group!} => ${subGroup.subgroup!}'),
                   );
                 }).toList(),
                 onChanged: (val) {

@@ -35,13 +35,9 @@ class ClockingProvider extends ChangeNotifier {
 
   List<Attendee?> _absentees = [];
 
-  List<Attendee?> _tempAbsentees = [];
-
   final List<Attendee?> _selectedAbsentees = [];
 
   List<Attendee?> _attendees = [];
-
-  List<Attendee?> _tempAttendees = [];
 
   final List<Attendee?> _selectedAttendees = [];
 
@@ -84,6 +80,8 @@ class ClockingProvider extends ChangeNotifier {
   int _absenteesPage = 1;
   int _attendeesPage = 1;
   bool hasNextPage = true;
+
+  String search = '';
 
   late ScrollController absenteesScrollController = ScrollController()
     ..addListener(_loadMoreAbsentees);
@@ -233,18 +231,19 @@ class ClockingProvider extends ChangeNotifier {
   Future<void> getAllAbsentees({
     required MeetingEventModel meetingEventModel,
   }) async {
-    var userBranch =
-        await getUserBranch(currentContext); // get current user branch
     try {
       setLoading(true);
       _absenteesPage = 1;
       var response = await ClockingAPI.getAbsenteesList(
         page: _absenteesPage,
         meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+        branchId: selectedBranch == null
+            ? selectedCurrentMeeting.branchId
+            : selectedBranch!.id!,
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
+        search: search.isEmpty ? '' : search,
         memberCategoryId:
             selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
         groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -256,7 +255,7 @@ class ClockingProvider extends ChangeNotifier {
 
       _selectedAbsentees.clear();
 
-      if (response.results!.isNotEmpty) {
+      if (response.results != null || response.results!.isNotEmpty) {
         _absentees = response.results!
             .where((absentee) => (absentee.attendance!.memberId!.email !=
                     Provider.of<ClientProvider>(_context!, listen: false)
@@ -267,16 +266,12 @@ class ClockingProvider extends ChangeNotifier {
                         .getUser!
                         .applicantPhone))
             .toList();
-
-        _tempAbsentees = _absentees;
       } else {
-        _absentees = [];
-        _tempAbsentees = _absentees;
+        _absentees.clear();
       }
 
       getAllAttendees(
         meetingEventModel: meetingEventModel,
-        branchId: userBranch.id!,
       );
 
       setLoading(false);
@@ -296,17 +291,18 @@ class ClockingProvider extends ChangeNotifier {
         absenteesScrollController.position.extentAfter < 300) {
       setLoadingMore(true); // show loading indicator
       _absenteesPage += 1; // increase page by 1
-      var userBranch =
-          await getUserBranch(currentContext); // get current user branch
+
       try {
         var response = await ClockingAPI.getAbsenteesList(
           page: _absenteesPage,
           meetingEventModel: selectedCurrentMeeting,
-          branchId:
-              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+          branchId: selectedBranch == null
+              ? selectedCurrentMeeting.branchId
+              : selectedBranch!.id!,
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
+          search: search.isEmpty ? '' : search,
           memberCategoryId:
               selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
           groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -327,7 +323,6 @@ class ClockingProvider extends ChangeNotifier {
                           .applicantPhone))
               .toList();
           _absentees.addAll(newAbsenteesList);
-          _tempAbsentees.addAll(_absentees);
         } else {
           hasNextPage = false;
         }
@@ -343,17 +338,19 @@ class ClockingProvider extends ChangeNotifier {
   // get clocked members for a meeting
   Future<void> getAllAttendees({
     required MeetingEventModel meetingEventModel,
-    required branchId,
   }) async {
     try {
       _attendeesPage = 1;
       var response = await ClockingAPI.getAttendeesList(
         page: _attendeesPage,
         meetingEventModel: meetingEventModel,
-        branchId: selectedBranch == null ? branchId : selectedBranch!.id!,
+        branchId: selectedBranch == null
+            ? selectedCurrentMeeting.branchId
+            : selectedBranch!.id!,
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
+        search: search.isEmpty ? '' : search,
         memberCategoryId:
             selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
         groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -362,9 +359,10 @@ class ClockingProvider extends ChangeNotifier {
         fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
         toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
       );
+
       _selectedAttendees.clear();
 
-      if (response.results!.isNotEmpty) {
+      if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
         _attendees = response.results!
@@ -377,11 +375,10 @@ class ClockingProvider extends ChangeNotifier {
                         .getUser!
                         .applicantPhone))
             .toList();
-        _tempAttendees = _attendees;
       } else {
-        _attendees = [];
-        _tempAttendees = _attendees;
+        _attendees.clear();
       }
+
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -399,17 +396,18 @@ class ClockingProvider extends ChangeNotifier {
         attendeesScrollController.position.extentAfter < 300) {
       setLoadingMore(true); // show loading indicator
       _attendeesPage += 1; // increase page by 1
-      var userBranch =
-          await getUserBranch(currentContext); // get current user branch
+      // get current user branch
       try {
         var response = await ClockingAPI.getAttendeesList(
           page: _attendeesPage,
           meetingEventModel: selectedCurrentMeeting,
-          branchId:
-              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+          branchId: selectedBranch == null
+              ? selectedCurrentMeeting.branchId
+              : selectedBranch!.id!,
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
+          search: search.isEmpty ? '' : search,
           memberCategoryId:
               selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
           groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
@@ -430,7 +428,6 @@ class ClockingProvider extends ChangeNotifier {
                           .applicantPhone))
               .toList();
           _attendees.addAll(newAtendeesList);
-          _tempAttendees.addAll(_attendees);
         } else {
           hasNextPage = false;
         }
@@ -449,6 +446,7 @@ class ClockingProvider extends ChangeNotifier {
     selectedGroup = null;
     selectedSubGroup = null;
     selectedMemberCategory = null;
+    search = '';
     minAgeTEC.clear();
     maxAgeTEC.clear();
     notifyListeners();
@@ -472,10 +470,6 @@ class ClockingProvider extends ChangeNotifier {
         );
         debugPrint("SUCCESS ${response.message}");
         debugPrint("ClockingId ${attendee.attendance!.id!}");
-        // // remove from list after member is been clocked in
-        // if (_absentees.contains(attendee)) {
-        //   _absentees.remove(attendee);
-        // }
       } else {
         // Perform bulk clock-in
         for (Attendee? attendee in _selectedAbsentees) {
@@ -490,10 +484,10 @@ class ClockingProvider extends ChangeNotifier {
         }
         _selectedAbsentees.clear();
       }
+      if (context.mounted) Navigator.of(context).pop();
       // refresh list when there is bulk operation
       getAllAbsentees(meetingEventModel: selectedCurrentMeeting);
       showNormalToast(response.message!);
-      if (context.mounted) Navigator.of(context).pop();
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -699,88 +693,11 @@ class ClockingProvider extends ChangeNotifier {
     }
   }
 
-  // search through absentees list by name
-  void searchAbsenteesByName({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAbsentees;
-    } else {
-      results = _tempAbsentees
-          .where((element) =>
-              element!.attendance!.memberId!.firstname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _absentees = results;
-    notifyListeners();
-  }
-
-  // search through absentees list by id
-  void searchAbsenteesById({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAbsentees;
-    } else {
-      results = _tempAbsentees
-          .where((absentee) => absentee!.identification!
-              .toLowerCase()
-              .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _absentees = results;
-    notifyListeners();
-  }
-
-  // search through attendees list by name
-  void searchAttendeesByName({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAttendees;
-    } else {
-      results = _tempAttendees
-          .where((attendee) =>
-              attendee!.attendance!.memberId!.firstname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              attendee.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _attendees = results;
-    notifyListeners();
-  }
-
-  // search through attendees list by name
-  void searchAttendeesById({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAttendees;
-    } else {
-      results = _tempAttendees
-          .where((attendee) => attendee!.identification!
-              .toLowerCase()
-              .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _attendees = results;
-    notifyListeners();
-  }
-
   void clearData() {
     clearFilters();
     _attendees.clear();
-    _tempAttendees.clear();
     _selectedAttendees.clear();
+    _selectedAbsentees.clear();
     _absentees.clear();
-    _tempAbsentees.clear();
   }
 }

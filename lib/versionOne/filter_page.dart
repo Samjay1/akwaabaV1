@@ -334,7 +334,8 @@ class _FilterPageState extends State<FilterPage> {
                               .map((SubGroup subGroup) {
                             return DropdownMenuItem(
                               value: subGroup,
-                              child: Text(subGroup.subgroup!),
+                              child: Text(
+                                  '${subGroup.groupId!.group!} => ${subGroup.subgroup!}'),
                             );
                           }).toList(),
                           onChanged: (val) {

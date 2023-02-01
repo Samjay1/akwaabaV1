@@ -35,17 +35,20 @@ class _AttendanceHistoryItemPreviewPageState
 
     var onTime = DateUtil.getHourStringFromDouble(
       double.parse(
-          widget.attendanceHistory!.attendanceRecord!.meetings![0].onTime!),
+        widget.attendanceHistory!.attendanceRecord!.meetings![0].onTime!,
+      ),
     );
 
     var undertime = DateUtil.getTimeStringFromDouble(
       double.parse(
-          widget.attendanceHistory!.attendanceRecord!.meetings![0].undertime!),
+        widget.attendanceHistory!.attendanceRecord!.meetings![0].undertime!,
+      ),
     );
 
     var lateness = DateUtil.getHourStringFromDouble(
       double.parse(
-          widget.attendanceHistory!.attendanceRecord!.meetings![0].lateness!),
+        widget.attendanceHistory!.attendanceRecord!.meetings![0].lateness!,
+      ),
     );
     var attendeeName =
         "${widget.attendanceHistory!.attendanceRecord!.member!.firstname!} ${widget.attendanceHistory!.attendanceRecord!.member!.surname!}";

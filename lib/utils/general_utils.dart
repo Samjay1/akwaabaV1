@@ -51,19 +51,20 @@ String formattedPhone(String code, String phone) {
       : '${code.substring(1)}$phone';
 }
 
-// // open email app
-// openEmailApp(String? toEmail, String? emailSubject, String? emailBody) async {
-//   String email = Uri.encodeComponent(toEmail!);
-//   String subject = Uri.encodeComponent(emailSubject!);
-//   String body = Uri.encodeComponent(emailBody!);
-//   Uri mail = Uri.parse("mailto:$email?subject=$subject&body=$body");
-//   if (await canLaunchUrl(mail)) {
-//     await launchUrl(mail);
-//   } else {
-//     //email app is not opened
-//     throw 'Caould not launch email app';
-//   }
-// }
+// open email app
+openEmailAppWithSubject(
+    String? toEmail, String? emailSubject, String? emailBody) async {
+  String email = Uri.encodeComponent(toEmail!);
+  String subject = Uri.encodeComponent(emailSubject!);
+  String body = Uri.encodeComponent(emailBody!);
+  Uri mail = Uri.parse("mailto:$email?subject=$subject&body=$body");
+  if (await canLaunchUrl(mail)) {
+    await launchUrl(mail);
+  } else {
+    //email app is not opened
+    throw 'Caould not launch email app';
+  }
+}
 
 // open email app
 openEmailApp(BuildContext context) async {

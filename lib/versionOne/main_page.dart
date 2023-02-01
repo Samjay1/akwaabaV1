@@ -645,25 +645,25 @@ class _MainPageState extends State<MainPage> {
                             ],
                           ),
                         ),
-                        // drawerItemView(
-                        //   title: "Renew My Account",
-                        //   iconData: Icons.phone_android,
-                        //   function: () async {
-                        //     var url =
-                        //         await AppConstants.renewAccountRedirectUrl();
-                        //     if (!mounted) return;
-                        //     Navigator.pop(context);
-                        //     Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (_) => WebViewPage(
-                        //           url: url,
-                        //           title: 'Renew My Account',
-                        //         ),
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
+                        drawerItemView(
+                          title: "Renew My Account",
+                          iconData: Icons.phone_android,
+                          function: () async {
+                            var url =
+                                await AppConstants.renewAccountRedirectUrl();
+                            if (!mounted) return;
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'Renew My Account',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                         drawerItemView(
                           title: "My Account",
                           iconData: Icons.phone_android,

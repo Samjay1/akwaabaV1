@@ -12,26 +12,28 @@ class EmptyStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
-          SvgPicture.asset(
-            'images/illustrations/no_data.svg',
-            height: 100,
-          ),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
-          Text(
-            text!,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 15, letterSpacing: 0.8),
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: displayHeight(context) * 0.02,
+            ),
+            SvgPicture.asset(
+              'images/illustrations/no_data.svg',
+              height: 100,
+            ),
+            SizedBox(
+              height: displayHeight(context) * 0.02,
+            ),
+            Text(
+              text!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 15, letterSpacing: 0.8),
+            ),
+          ],
+        ),
       ),
     );
   }

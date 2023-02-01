@@ -1,16 +1,13 @@
 import 'package:akwaaba/components/custom_progress_indicator.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/versionOne/login_page.dart';
-import 'package:akwaaba/versionOne/main_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 import '../providers/client_provider.dart';
-import '../providers/general_provider.dart';
 import '../providers/member_provider.dart';
-import '../utils/widget_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -37,7 +34,20 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Stack(
           children: [
             Image.asset("images/logo_transparent.png"),
-            const CustomProgressIndicator()
+            const CustomProgressIndicator(),
+            const Positioned(
+              left: 0,
+              right: 0,
+              top: 420,
+              child: Text(
+                "Please wait, loading data",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: AppSize.s16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -23,6 +23,7 @@ import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:akwaaba/versionOne/self_clocking_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -35,27 +36,16 @@ import '../components/form_textfield.dart';
 
 class ClockingPage extends StatefulWidget {
   final MeetingEventModel meetingEventModel;
-  const ClockingPage({Key? key, required this.meetingEventModel})
-      : super(key: key);
+  const ClockingPage({
+    Key? key,
+    required this.meetingEventModel,
+  }) : super(key: key);
 
   @override
   State<ClockingPage> createState() => _ClockingPageState();
 }
 
 class _ClockingPageState extends State<ClockingPage> {
-  // List<Map> members = [
-  //   {"status": true},
-  //   {"status": true},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  // ];
-
   bool itemHasBeenSelected =
       false; //at least 1 member has been selected, so show options menu
   List<Map> selectedMembersList = [];
@@ -153,18 +143,22 @@ class _ClockingPageState extends State<ClockingPage> {
                               height: 12,
                             ),
                             CupertinoSearchTextField(
-                              onChanged: (val) {
+                              onSubmitted: (val) {
                                 setState(() {
-                                  if (_selectedIndex == 0) {
-                                    // search absentees by name
-                                    clockingProvider.searchAbsenteesByName(
-                                        searchText: val);
-                                  } else {
-                                    // search atendees by name
-                                    clockingProvider.searchAttendeesByName(
-                                        searchText: val);
-                                  }
+                                  clockingProvider.search = val;
                                 });
+                                // search absentees by name
+                                clockingProvider.getAllAbsentees(
+                                  meetingEventModel: widget.meetingEventModel,
+                                );
+                              },
+                              onChanged: (val) {
+                                if (val.isEmpty) {
+                                  clockingProvider.search = val;
+                                  clockingProvider.getAllAbsentees(
+                                    meetingEventModel: widget.meetingEventModel,
+                                  );
+                                }
                               },
                             ),
                             const SizedBox(
@@ -172,18 +166,22 @@ class _ClockingPageState extends State<ClockingPage> {
                             ),
                             CupertinoSearchTextField(
                               placeholder: "Enter ID",
-                              onChanged: (val) {
+                              onSubmitted: (val) {
                                 setState(() {
-                                  if (_selectedIndex == 0) {
-                                    // search absentees by id
-                                    clockingProvider.searchAbsenteesById(
-                                        searchText: val);
-                                  } else {
-                                    // search atendees by id
-                                    clockingProvider.searchAttendeesById(
-                                        searchText: val);
-                                  }
+                                  clockingProvider.search = val;
                                 });
+                                // search absentees by ID
+                                clockingProvider.getAllAbsentees(
+                                  meetingEventModel: widget.meetingEventModel,
+                                );
+                              },
+                              onChanged: (val) {
+                                if (val.isEmpty) {
+                                  clockingProvider.search = val;
+                                  clockingProvider.getAllAbsentees(
+                                    meetingEventModel: widget.meetingEventModel,
+                                  );
+                                }
                               },
                             ),
                             SizedBox(
@@ -488,130 +486,87 @@ class _ClockingPageState extends State<ClockingPage> {
                   },
                 ],
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Expanded(
-              //       child: InkWell(
-              //         onTap: () {
-              //           setState(() {
-              //             clockingListState = true;
-              //             checkAll = false;
-              //             clockingProvider.selectedAttendees.clear();
-              //             debugPrint(
-              //                 '     clockingListState = $clockingListState');
-              //           });
-              //         },
-              //         child: Container(
-              //           padding: const EdgeInsets.all(12.0),
-              //           decoration: BoxDecoration(
-              //               color: clockingListState
-              //                   ? primaryColor
-              //                   : Colors.transparent,
-              //               border: Border.all(color: primaryColor, width: 1.2),
-              //               borderRadius:
-              //                   BorderRadius.circular(AppRadius.borderRadius8)),
-              //           child: Center(
-              //             child: Text(
-              //               'Clocking List',
-              //               style: TextStyle(
-              //                 fontSize: 16.0,
-              //                 fontWeight: FontWeight.w600,
-              //                 color:
-              //                     clockingListState ? whiteColor : primaryColor,
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: displayWidth(context) * 0.03,
-              //     ),
-              //     Expanded(
-              //       child: InkWell(
-              //         onTap: () {
-              //           setState(() {
-              //             clockingListState = false;
-              //             checkAll = false;
-              //             clockingProvider.selectedAbsentees.clear();
-              //             debugPrint('clockingListState = $clockingListState');
-              //           });
-              //         },
-              //         child: Container(
-              //           padding: const EdgeInsets.all(12.0),
-              //           decoration: BoxDecoration(
-              //               color: !clockingListState
-              //                   ? primaryColor
-              //                   : Colors.transparent,
-              //               border: Border.all(color: primaryColor, width: 1.2),
-              //               borderRadius:
-              //                   BorderRadius.circular(AppRadius.borderRadius8)),
-              //           child: Center(
-              //             child: Text(
-              //               'Clocked List',
-              //               style: TextStyle(
-              //                 fontSize: 16.0,
-              //                 fontWeight: FontWeight.w600,
-              //                 color: !clockingListState
-              //                     ? whiteColor
-              //                     : primaryColor,
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
               SizedBox(
                 height: displayHeight(context) * 0.01,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Checkbox(
-                    activeColor: primaryColor,
-                    shape: const CircleBorder(),
-                    value: checkAll,
-                    onChanged: (val) {
-                      setState(() {
-                        checkAll = val!;
-                      });
+                  Row(
+                    children: [
+                      Checkbox(
+                        activeColor: primaryColor,
+                        shape: const CircleBorder(),
+                        value: checkAll,
+                        onChanged: (val) {
+                          setState(() {
+                            checkAll = val!;
+                          });
 
-                      if (_selectedIndex == 0) {
-                        for (Attendee? absentee in absentees) {
-                          absentee!.selected = checkAll;
-                          if (absentee.selected!) {
-                            clockingProvider.selectedAbsentees.add(absentee);
-                          }
-                          if (!absentee.selected!) {
-                            clockingProvider.selectedAbsentees.remove(absentee);
-                          }
-                          debugPrint(
-                              "Absentee: ${absentee.attendance!.memberId!.selected}");
-                        }
+                          if (_selectedIndex == 0) {
+                            for (Attendee? absentee in absentees) {
+                              absentee!.selected = checkAll;
+                              if (absentee.selected!) {
+                                clockingProvider.selectedAbsentees
+                                    .add(absentee);
+                              }
+                              if (!absentee.selected!) {
+                                clockingProvider.selectedAbsentees
+                                    .remove(absentee);
+                              }
+                              debugPrint(
+                                  "Absentee: ${absentee.attendance!.memberId!.selected}");
+                            }
 
-                        debugPrint(
-                            "Selected Absentees: ${clockingProvider.selectedAbsentees.length}");
-                      } else {
-                        for (Attendee? attendee in attendees) {
-                          attendee!.selected = checkAll;
-                          if (attendee.selected!) {
-                            clockingProvider.selectedAttendees.add(attendee);
                             debugPrint(
-                                "Attendee: ${attendee.attendance!.memberId!.selected}");
-                          }
-                          if (!attendee.selected!) {
-                            clockingProvider.selectedAttendees.remove(attendee);
-                          }
-                        }
+                                "Selected Absentees: ${clockingProvider.selectedAbsentees.length}");
+                          } else {
+                            for (Attendee? attendee in attendees) {
+                              attendee!.selected = checkAll;
+                              if (attendee.selected!) {
+                                clockingProvider.selectedAttendees
+                                    .add(attendee);
+                                debugPrint(
+                                    "Attendee: ${attendee.attendance!.memberId!.selected}");
+                              }
+                              if (!attendee.selected!) {
+                                clockingProvider.selectedAttendees
+                                    .remove(attendee);
+                              }
+                            }
 
-                        debugPrint(
-                            "Selected attendees: ${clockingProvider.selectedAttendees.length}");
-                      }
-                    },
+                            debugPrint(
+                                "Selected attendees: ${clockingProvider.selectedAttendees.length}");
+                          }
+                        },
+                      ),
+                      const Text("Select All")
+                    ],
                   ),
-                  const Text("Select All")
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      clockingProvider.clearData();
+                      await Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SelfClockingPage(
+                            meetingEventModel: widget.meetingEventModel,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      child: const Text("Self Clock"),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(
@@ -992,7 +947,8 @@ class _ClockingPageState extends State<ClockingPage> {
                 items: clockingProvider.subGroups.map((SubGroup subGroup) {
                   return DropdownMenuItem(
                     value: subGroup,
-                    child: Text(subGroup.subgroup!),
+                    child: Text(
+                        '${subGroup.groupId!.group!} => ${subGroup.subgroup!}'),
                   );
                 }).toList(),
                 onChanged: (val) {

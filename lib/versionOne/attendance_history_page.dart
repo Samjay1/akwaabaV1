@@ -136,16 +136,20 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               ),
               CupertinoSearchTextField(
                 onChanged: (val) {
-                  setState(() {
-                    attendanceHistoryProvider.search = val;
-                  });
-                  attendanceHistoryProvider.getAttendanceHistory();
+                  if (val.isEmpty) {
+                    setState(() {
+                      attendanceHistoryProvider.search = val;
+                    });
+                    attendanceHistoryProvider.getAttendanceHistory();
+                  }
                 },
                 onSubmitted: (val) {
-                  setState(() {
-                    attendanceHistoryProvider.search = val;
-                  });
-                  attendanceHistoryProvider.getAttendanceHistory();
+                  if (attendanceHistoryProvider.attendanceRecords.isNotEmpty) {
+                    setState(() {
+                      attendanceHistoryProvider.search = val;
+                    });
+                    attendanceHistoryProvider.getAttendanceHistory();
+                  }
                 },
               ),
               SizedBox(
@@ -472,7 +476,8 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                           .map((SubGroup subGroup) {
                         return DropdownMenuItem(
                           value: subGroup,
-                          child: Text(subGroup.subgroup!),
+                          child: Text(
+                              '${subGroup.groupId!.group!} => ${subGroup.subgroup!}'),
                         );
                       }).toList(),
                       onChanged: (val) {

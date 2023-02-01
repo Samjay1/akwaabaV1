@@ -29,13 +29,24 @@ class MeetingEventWidget extends StatelessWidget {
                 'Current Date: ${DateTime.now().toIso8601String().substring(0, 10)}');
             debugPrint(
                 'First Date: ${DateTime.parse(meetingEventModel!.upcomingDates![i].date!).toIso8601String().substring(0, 10)}');
-            date = DateUtil.formatStringDate(
-              DateFormat.yMMMEd(),
-              date: DateTime.parse(
-                  meetingEventModel!.upcomingDates![i + 1].date!),
-            );
-            debugPrint(
-                'Next Date: ${DateTime.parse(meetingEventModel!.upcomingDates![i + 1].date!).toIso8601String().substring(0, 10)}');
+            if (meetingEventModel!.upcomingDates!.length - 1 == i) {
+              date = DateUtil.formatStringDate(
+                DateFormat.yMMMEd(),
+                date: DateTime.parse(
+                  meetingEventModel!.upcomingDates![i].date!,
+                ),
+              );
+            } else if (meetingEventModel!.upcomingDates!.length - 1 > i) {
+              date = DateUtil.formatStringDate(
+                DateFormat.yMMMEd(),
+                date: DateTime.parse(
+                  meetingEventModel!.upcomingDates![i + 1].date!,
+                ),
+              );
+              debugPrint(
+                  'Next Date: ${DateTime.parse(meetingEventModel!.upcomingDates![i + 1].date!).toIso8601String().substring(0, 10)}');
+            }
+
             break;
           }
         }
@@ -50,11 +61,13 @@ class MeetingEventWidget extends StatelessWidget {
     } else {
       date = DateUtil.formatStringDate(
         DateFormat.yMMMEd(),
-        date: DateTime.parse(meetingEventModel!.upcomingDays != null
-            ? meetingEventModel!.upcomingDays![0].endDate!
-            : meetingEventModel!.upcomingDates != null
-                ? meetingEventModel!.upcomingDates![0].date!
-                : meetingEventModel!.updateDate!),
+        date: DateTime.parse(
+          meetingEventModel!.upcomingDays != null
+              ? meetingEventModel!.upcomingDays![0].endDate!
+              : meetingEventModel!.upcomingDates != null
+                  ? meetingEventModel!.upcomingDates![0].date!
+                  : meetingEventModel!.updateDate!,
+        ),
       );
     }
 

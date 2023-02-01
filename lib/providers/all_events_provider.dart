@@ -102,7 +102,6 @@ class AllEventsProvider extends ChangeNotifier {
         } else {
           hasNextPage = false;
         }
-        debugPrint("All upcomings: ${_upcomingMeetingEventList.length}");
         setLoadingMore(false);
       } catch (err) {
         setLoadingMore(false);

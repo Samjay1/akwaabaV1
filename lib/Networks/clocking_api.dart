@@ -18,6 +18,7 @@ class ClockingAPI {
     required int page,
     required MeetingEventModel meetingEventModel,
     required String filterDate,
+    required String search,
     required int branchId,
     required int memberCategoryId,
     required int groupId,
@@ -28,24 +29,25 @@ class ClockingAPI {
   }) async {
     ClockedMembersResponse membersResponse;
 
+    debugPrint("Search: $search");
+    debugPrint("Filter Date: $filterDate");
+    debugPrint("Branch ID: $branchId");
+    debugPrint("MemberCategoryId: $memberCategoryId");
+    debugPrint("groupId: $groupId");
+    debugPrint("subGroupId: $subGroupId");
+    debugPrint("genderId: $genderId");
+    debugPrint("fromAge: $fromAge");
+    debugPrint("toAge: $toAge");
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance/absentees?page=$page&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
+        '${getBaseUrl()}/attendance/meeting-event/attendance/absentees?page=$page&search_member=$search&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
     try {
       debugPrint("URL: ${url.toString()}");
-      debugPrint("Meeting ID: ${meetingEventModel.id}");
-      debugPrint("Filter Date: $filterDate");
-      debugPrint("Branch ID: $branchId");
-      debugPrint("MemberCategoryId: $memberCategoryId");
-      debugPrint("groupId: $groupId");
-      debugPrint("subGroupId: $subGroupId");
-      debugPrint("genderId: $genderId");
-      debugPrint("fromAge: $fromAge");
-      debugPrint("toAge: $toAge");
+
       http.Response response = await http.get(
         url,
         headers: await getAllHeaders(),
       );
-      debugPrint("Absentees Response: ${jsonDecode(response.body)}");
+      debugPrint("Absentees Response: ${await returnResponse(response)}");
       membersResponse = ClockedMembersResponse.fromJson(
         await returnResponse(response),
       );
@@ -61,6 +63,7 @@ class ClockingAPI {
     required int page,
     required MeetingEventModel meetingEventModel,
     required String filterDate,
+    required String search,
     required int branchId,
     required int memberCategoryId,
     required int groupId,
@@ -70,25 +73,26 @@ class ClockingAPI {
     required int toAge,
   }) async {
     ClockedMembersResponse membersResponse;
+    //debugPrint("URL: ${url.toString()}");
+    debugPrint("Meeting ID: ${meetingEventModel.id}");
+    debugPrint("Filter Date: $filterDate");
+    debugPrint("Search: $search");
+    debugPrint("Branch ID: $branchId");
+    debugPrint("MemberCategoryId: $memberCategoryId");
+    debugPrint("groupId: $groupId");
+    debugPrint("subGroupId: $subGroupId");
+    debugPrint("genderId: $genderId");
+    debugPrint("fromAge: $fromAge");
+    debugPrint("toAge: $toAge");
     var url = Uri.parse(
-      '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge',
+      '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&search_member=$search&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge',
     );
     try {
-      debugPrint("URL: ${url.toString()}");
-      debugPrint("Meeting ID: ${meetingEventModel.id}");
-      debugPrint("Filter Date: $filterDate");
-      debugPrint("Branch ID: $branchId");
-      debugPrint("MemberCategoryId: $memberCategoryId");
-      debugPrint("groupId: $groupId");
-      debugPrint("subGroupId: $subGroupId");
-      debugPrint("genderId: $genderId");
-      debugPrint("fromAge: $fromAge");
-      debugPrint("toAge: $toAge");
       http.Response response = await http.get(
         url,
         headers: await getAllHeaders(),
       );
-      debugPrint("Attendees Response: ${jsonDecode(response.body)}");
+      debugPrint("Attendees Response: ${await returnResponse(response)}");
       membersResponse = ClockedMembersResponse.fromJson(
         await returnResponse(response),
       );

@@ -327,12 +327,13 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       setLoadingMore(true); // show loading indicator
       _page += 1;
       try {
+        var userBranch =
+            await getUserBranch(currentContext); // get current user branch
         var response = await AttendanceAPI.getAttendanceHistory(
           page: _page,
           meetingIds: selectedMeetingIds(),
-          branchId: selectedBranch == null
-              ? selectedPastMeetingEvent!.branchId!
-              : selectedBranch!.id!,
+          branchId:
+              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
           startDate: selectedStartDate!.toIso8601String().substring(0, 10),
           endDate: selectedEndDate!.toIso8601String().substring(0, 10),
           search: search!,
