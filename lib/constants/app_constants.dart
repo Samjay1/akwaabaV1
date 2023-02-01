@@ -30,6 +30,24 @@ class AppConstants {
     return "$attendanceBaseUrl/app-reroute?permission-key=${base64TokenEncoding(token)}&access-page-key=${base64TokenEncoding('settings/schedules')}";
   }
 
+  // redirection url to verify new member
+  static verifyNewMemberRedirectUrl() async {
+    var token = await getToken();
+    return "$databaseManagerUrl/app-reroute?permission-key=${base64TokenEncoding(token)}&access-page-key=${base64TokenEncoding('member/verifications')}";
+  }
+
+  // redirection url to verify new organization
+  static verifyNewOrgRedirectUrl() async {
+    var token = await getToken();
+    return "$databaseManagerUrl/app-reroute?permission-key=${base64TokenEncoding(token)}&access-page-key=${base64TokenEncoding('member/organization/verifications')}";
+  }
+
+  // redirection url to verify new organization
+  static addAdminUserRedirectUrl() async {
+    var token = await getToken();
+    return "$databaseManagerUrl/app-reroute?permission-key=${base64TokenEncoding(token)}&access-page-key=${base64TokenEncoding('admin/user/accounts')}";
+  }
+
 // redirection url to assign leave
   static assignLeaveRedirectUrl() async {
     var token = await getToken();
@@ -63,10 +81,13 @@ class AppConstants {
   // redirection url to renew client account
   static renewAccountRedirectUrl() async {
     var token = await getToken();
-    //return "$attendanceBaseUrl/app-reroute?permission-key=${base64TokenEncoding(token)}&access-page-key=${base64TokenEncoding('absent-leave/assign-al-status')}";
     return "https://super.akwaabasoftware.com/api/renew-subscription/token=$token/";
   }
 
+  static const String akwaabaConnectUrl =
+      'https://connect.akwaabasoftware.com/';
+  static const String adminFormUrl = 'https://adminform.akwaabasoftware.com/';
+  static const String userFormUrl = 'https://userform.akwaabasoftware.com/';
   static const String akwaabaEduUrl = 'https://edu.akwaabasoftware.com/';
   static const String akwaabaMessengerUrl =
       'https://messenger.akwaabasoftware.com';

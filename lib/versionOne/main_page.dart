@@ -444,6 +444,95 @@ class _MainPageState extends State<MainPage> {
                           },
                         ),
                         drawerItemView(
+                          title: "Verify New Member",
+                          iconData: Icons.phone_android,
+                          function: () async {
+                            var url =
+                                await AppConstants.verifyNewMemberRedirectUrl();
+                            if (!mounted) return;
+                            toggleDrawer();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'Verify New Member',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Verify New Organization",
+                          iconData: Icons.phone_android,
+                          function: () async {
+                            var url =
+                                await AppConstants.verifyNewOrgRedirectUrl();
+                            if (!mounted) return;
+                            toggleDrawer();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'Verify New Organization',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Add Admin User",
+                          iconData: Icons.phone_android,
+                          function: () async {
+                            var url =
+                                await AppConstants.addAdminUserRedirectUrl();
+                            if (!mounted) return;
+                            toggleDrawer();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => WebViewPage(
+                                  url: url,
+                                  title: 'Add Admin User',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Register Connection",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            toggleDrawer();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                  url: AppConstants.akwaabaConnectUrl,
+                                  title: 'Register Connection',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Akwaaba Forms",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            toggleDrawer();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                  url: AppConstants.adminFormUrl,
+                                  title: 'Akwaaba Forms',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
                           title: "Attendance Report",
                           iconData: Icons.bar_chart,
                           function: () {
@@ -891,6 +980,22 @@ class _MainPageState extends State<MainPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const ViewLeavePage(),
+                              ),
+                            );
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Akwaaba Forms",
+                          iconData: Icons.phone_android,
+                          function: () {
+                            toggleDrawer();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const WebViewPage(
+                                  url: AppConstants.userFormUrl,
+                                  title: 'Akwaaba Forms',
+                                ),
                               ),
                             );
                           },
