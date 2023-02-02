@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "538850303764",
+    "project_id": "akwaaba-app-ghana",
+    "storage_bucket": "akwaaba-app-ghana.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538850303764:android:f194e170682748af15ac01",
+        "android_client_info": {
+          "package_name": "com.akwaaba.app.akwaaba"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538850303764-79c8s4c44go3oj5fmetuh54lqjodcteo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXLPuNLqjC8fYuz704rlYB7ORNYiAXeLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538850303764-79c8s4c44go3oj5fmetuh54lqjodcteo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "538850303764-8iblpgj8vcd2kd3q8tjp3ad760nlkem3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.akwaaba.app.akwaaba"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

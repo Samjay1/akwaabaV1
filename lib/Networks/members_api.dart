@@ -7,6 +7,8 @@ import 'package:akwaaba/models/general/client_stat.dart';
 import 'package:akwaaba/models/general/member_stat.dart';
 import 'package:akwaaba/models/general/member_status.dart';
 import 'package:akwaaba/models/general/organization.dart';
+import 'package:akwaaba/models/general/restricted_member.dart';
+import 'package:akwaaba/models/general/restriction.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -118,6 +120,61 @@ class MembersAPI {
       throw FetchDataException('No Internet connection');
     }
     return stats;
+  }
+
+  // get list of user restrictions
+  static Future<List<Restriction>> getUserRestrictions(
+      {required int page, required int clientId, required int branchId}) async {
+    List<Restriction> maritalStatuses = [];
+
+    var url = Uri.parse(
+        '${getBaseUrl()}/members/access/restriction?page=$page&clientId=$clientId&branchId=$branchId');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Restrictions: ${await returnResponse(response)}");
+      var res = await returnResponse(response);
+      if (res['data'] != null) {
+        maritalStatuses = <Restriction>[];
+        res['data'].forEach((v) {
+          maritalStatuses.add(Restriction.fromJson(v));
+        });
+      }
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return maritalStatuses;
+  }
+
+  // get list of restricted members
+  static Future<List<RestrictedMember>> getRestrictedMembers({
+    required int memberId,
+  }) async {
+    List<RestrictedMember> members = [];
+
+    var url = Uri.parse(
+        '${getBaseUrl()}/members/access/assignment/get-members?memberId=$memberId');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Restrictions: ${await returnResponse(response)}");
+      var res = await returnResponse(response);
+      if (res['results'] != null) {
+        members = <RestrictedMember>[];
+        res['results'].forEach((v) {
+          members.add(RestrictedMember.fromJson(v));
+        });
+      }
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return members;
   }
 
   // get individual and organization memebers stats

@@ -34,6 +34,9 @@ dependencies:
   getwidget: ^3.0.1
   date_time_picker: ^2.1.0
   in_app_update: ^4.0.1
+  flutter_local_notifications: ^13.0.0
+  firebase_messaging: ^14.2.1
+  firebase_core: ^2.4.1
 
 dev_dependencies:
   flutter_test:

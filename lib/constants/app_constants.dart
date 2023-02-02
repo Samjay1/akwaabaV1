@@ -12,6 +12,15 @@ class AppConstants {
   static const int meetingTypeEvent = 2;
   static String? token;
 
+  static int notificationChannelId = 001;
+  static String notificationChannelKey = "Akwaaba";
+  static String notificationChannelName = "Akwaaba notifications";
+
+  //static String NOTIFICATIONS_CHANNEL_KEY = "mmr";
+  //static String NOTIFICATIONS_CHANNEL_GROUP_KEY = "mmr_app";
+  static String notificationChannelDescription =
+      "Notification channel to receive notifications on Akwaaba app";
+
 // get user token
   static Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

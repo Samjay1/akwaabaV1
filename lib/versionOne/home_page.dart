@@ -10,6 +10,7 @@ import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
+import 'package:akwaaba/fcm/messaging_service.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/home_provider.dart';
@@ -81,7 +82,7 @@ class _HomePageState extends State<HomePage> {
   void checkForUpdate() async {
     var updateInfo = await InAppUpdate.checkForUpdate();
     if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-      //Logic to perform an update
+      // Logic to perform an update
       if (updateInfo.immediateUpdateAllowed) {
         // Perform an immediate update
         var appUpdateResult = await InAppUpdate.performImmediateUpdate();

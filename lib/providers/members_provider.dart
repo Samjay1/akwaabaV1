@@ -17,6 +17,7 @@ import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/organization.dart';
 import 'package:akwaaba/models/general/region.dart';
+import 'package:akwaaba/models/general/restricted_member.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
@@ -48,6 +49,7 @@ class MembersProvider extends ChangeNotifier {
   List<MemberStatus> _professions = [];
   List<MemberStatus> _educations = [];
 
+  List<RestrictedMember?> _restrictedMembers = [];
   List<Member?> _individualMembers = [];
   List<int?> _selectedMemberIds = [];
   List<Member?> _tempIndividualMembers = [];
@@ -350,7 +352,7 @@ class MembersProvider extends ChangeNotifier {
         memberIds: _selectedMemberIds,
       );
       _selectedMemberIds.clear();
-      Navigator.pop(currentContext);
+      if (currentContext.mounted) Navigator.pop(currentContext);
       showNormalToast('Profile editing enabled');
       getAllIndividualMembers();
     } catch (err) {
@@ -369,7 +371,7 @@ class MembersProvider extends ChangeNotifier {
         memberIds: _selectedMemberIds,
       );
       _selectedMemberIds.clear();
-      Navigator.pop(currentContext);
+      if (currentContext.mounted) Navigator.pop(currentContext);
       showNormalToast('Profile editing disabled');
       getAllIndividualMembers();
     } catch (err) {

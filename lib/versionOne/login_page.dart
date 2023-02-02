@@ -1,11 +1,10 @@
 import 'package:akwaaba/components/bottom_border_textfield.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
+import 'package:akwaaba/fcm/messaging_service.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/versionOne/forgot_password_page.dart';
-import 'package:akwaaba/versionOne/member_registration_page_organization.dart';
 import 'package:akwaaba/versionOne/RegistrationCode.dart';
-import 'package:akwaaba/versionOne/main_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:flutter/gestures.dart';
@@ -13,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../dialogs_modals/confirm_dialog.dart';
-import '../providers/client_provider.dart';
-import 'member_registration_page_individual.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -263,6 +260,11 @@ class _LoginPageState extends State<LoginPage> {
             return CustomElevatedButton(
               label: "Login",
               function: () {
+                // MessagingService.showBigTextNotification(
+                //   title: 'Notification Title',
+                //   body: 'Notification Body',
+                //   payload: 'Payload',
+                // );
                 _memberProvider!.validateInputFields(
                   context: context,
                   isAdmin: false,

@@ -1,4 +1,6 @@
 import 'package:akwaaba/Networks/member_api.dart';
+import 'package:akwaaba/Networks/notification_api.dart';
+import 'package:akwaaba/fcm/messaging_service.dart';
 import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/client_model.dart';
@@ -56,6 +58,18 @@ class ClientProvider extends ChangeNotifier {
     );
   }
 
+  // save token to backend
+  Future<void> _saveFirebaseToken() async {
+    var user = await SharedPrefs().getAdminProfile();
+    var msg = await NotificationAPI.saveClientFirebaseToken(
+      clientId: user!.id!,
+      token: await MessagingService().getToken(),
+    );
+    debugPrint('ClientId: ${user.id}');
+    debugPrint('Token: ${MessagingService().getToken()}');
+    debugPrint(msg);
+  }
+
   Future<void> login(
       {required BuildContext context,
       required bool isAdmin,
@@ -80,12 +94,15 @@ class ClientProvider extends ChangeNotifier {
       setLoading(false);
       debugPrint('USER INFO: $value');
       _user = value;
-      Provider.of<GeneralProvider>(context, listen: false)
-          .setAdminStatus(isAdmin: isAdmin);
-      SharedPrefs().setUserType(userType: "admin");
-      SharedPrefs()
-          .saveLoginCredentials(emailOrPhone: phoneEmail, password: password);
-      getAdminBranch(context: context);
+      // save client firebase token
+      _saveFirebaseToken();
+      if (context.mounted) {
+        getAdminBranch(
+          context: context,
+          phoneEmail: phoneEmail,
+          password: password,
+        );
+      }
     } catch (err) {
       setLoading(false);
       debugPrint('Error: ${err.toString()}');
@@ -95,7 +112,10 @@ class ClientProvider extends ChangeNotifier {
   }
 
   // get branch of the admin
-  Future<void> getAdminBranch({required BuildContext context}) async {
+  Future<void> getAdminBranch(
+      {required BuildContext context,
+      required var phoneEmail,
+      required var password}) async {
     try {
       var profile = await SharedPrefs().getAdminProfile();
       _branch = await MemberAPI().getBranch(
@@ -103,19 +123,38 @@ class ClientProvider extends ChangeNotifier {
         //adminProfile.branchId!,
       );
       debugPrint('Branch: ${_branch!.name}');
-      // ignore: use_build_context_synchronously
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const MainPage(),
-        ),
-      );
+      if (context.mounted) {
+        navigateToMainPage(
+          context: context,
+          phoneEmail: phoneEmail,
+          password: password,
+        );
+      }
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();
+  }
+
+  void navigateToMainPage({
+    required BuildContext context,
+    required var phoneEmail,
+    required var password,
+  }) {
+    Provider.of<GeneralProvider>(context, listen: false)
+        .setAdminStatus(isAdmin: true);
+    SharedPrefs().setUserType(userType: "admin");
+    SharedPrefs()
+        .saveLoginCredentials(emailOrPhone: phoneEmail, password: password);
+    // ignore: use_build_context_synchronously
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const MainPage(),
+      ),
+    );
   }
 
   Future<void> setClientToken({required token}) async {

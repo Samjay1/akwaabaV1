@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:akwaaba/Networks/group_api.dart';
 import 'package:akwaaba/Networks/member_api.dart';
+import 'package:akwaaba/Networks/notification_api.dart';
+import 'package:akwaaba/fcm/messaging_service.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
@@ -98,6 +100,17 @@ class MemberProvider with ChangeNotifier {
     );
   }
 
+  // save token to backend
+  Future<void> _saveFirebaseToken({required int memberId}) async {
+    var msg = await NotificationAPI.saveMemberFirebaseToken(
+      memberId: memberId,
+      token: await MessagingService().getToken(),
+    );
+    debugPrint('MemberId: $memberId');
+    debugPrint('Token: ${await MessagingService().getToken()}');
+    debugPrint(msg);
+  }
+
   Future<void> login({
     required BuildContext context,
     required phoneEmail,
@@ -120,6 +133,8 @@ class MemberProvider with ChangeNotifier {
           return;
         }
         prefs.setString('token', _memberProfile!.token!);
+        // save member firebase token
+        _saveFirebaseToken(memberId: _memberProfile!.user!.id!);
         // ignore: use_build_context_synchronously
         getClientAccountInfo(
           context: context,
