@@ -458,7 +458,7 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error CCM: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }

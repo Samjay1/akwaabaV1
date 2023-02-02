@@ -66,7 +66,7 @@ class ClientProvider extends ChangeNotifier {
       token: await MessagingService().getToken(),
     );
     debugPrint('ClientId: ${user.id}');
-    debugPrint('Token: ${MessagingService().getToken()}');
+    debugPrint('Token: ${await MessagingService().getToken()}');
     debugPrint(msg);
   }
 

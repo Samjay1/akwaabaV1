@@ -16,6 +16,7 @@ import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/providers/schoolManager_provider.dart';
 import 'package:akwaaba/providers/profile_provider.dart';
+import 'package:akwaaba/versionOne/main_page.dart';
 import 'package:akwaaba/versionOne/splash_screen.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -45,6 +46,8 @@ Future<void> main() async {
   );
 }
 
+BuildContext? context;
+
 Future initFirebaseApp() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -67,15 +70,204 @@ Future<void> _registerBackgroundMessageHandler(RemoteMessage message) async {
 
 // Navigate user to the ask expert page when notification is tapped
 Future<void> _registerMessageOpenedHandler(RemoteMessage message) async {
-  // if(message.data["screen"] == Routes.APPOINTMENT_SCREEN){
-  //   Get.toNamed(Routes.APPOINTMENT_SCREEN);
-  // }
-  // if(message.data["screen"] == Routes.IND_SESSION_SCREEN && UserPrefs.getUser()!.role == indUserType){
-  //   Get.toNamed(Routes.IND_SESSION_SCREEN);
-  // }
-  // if(message.data["screen"] == Routes.PRO_SESSION_SCREEN && UserPrefs.getUser()!.role == proUserType){
-  //   Get.toNamed(Routes.PRO_SESSION_SCREEN);
-  // }
+  checkIncomingPayload(message);
+}
+
+void checkIncomingPayload(RemoteMessage message) {
+  switch (message.data["type"]) {
+    case 'Push Notification':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Push Notification Comment':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Push Notification Reply':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Birthday Alert':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Birthday Wish':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Birthday Wish Reply':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Upcoming Meeting':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Member Registration':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Account Expiration':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'System Birthday Wish':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Info Center':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Meeting Excuse':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Absent/ Leave Request':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Absent/ Leave Approved':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Absent/ Leave Canceled':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+    case 'Clocking Device Request':
+      {
+        if (context != null) {
+          Navigator.pushReplacement(
+            context!,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
+        break;
+      }
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -83,6 +275,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context = context;
     //Noti().init(context);
     return MultiProvider(
       providers: [

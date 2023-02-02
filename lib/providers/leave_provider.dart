@@ -1,22 +1,9 @@
-import 'package:akwaaba/Networks/api_responses/attendance_history_response.dart';
-import 'package:akwaaba/Networks/attendance_api.dart';
-import 'package:akwaaba/Networks/event_api.dart';
-import 'package:akwaaba/Networks/group_api.dart';
 import 'package:akwaaba/Networks/leave_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/general/absent_leave.dart';
-import 'package:akwaaba/models/general/branch.dart';
-import 'package:akwaaba/models/general/gender.dart';
-import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/leave_status.dart';
-import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/models/general/member_category.dart';
-import 'package:akwaaba/models/general/messaging_type.dart';
-import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/member_provider.dart';
-import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
-import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -136,6 +123,7 @@ class LeaveProvider extends ChangeNotifier {
             .id,
         reason: reasonTEC.text.trim(),
       );
+      if (currentContext.mounted) Navigator.pop(currentContext);
       setLoading(false);
       showNormalToast(message);
       debugPrint('Statuses: ${_leaveStatuses.toString()}');

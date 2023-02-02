@@ -19,6 +19,7 @@ import 'package:akwaaba/models/general/organization.dart';
 import 'package:akwaaba/models/general/region.dart';
 import 'package:akwaaba/models/general/restricted_member.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
+import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
@@ -108,6 +109,7 @@ class MembersProvider extends ChangeNotifier {
   List<Region> get regions => _regions;
   List<District> get districts => _districts;
 
+  List<RestrictedMember?> get restrictedMembers => _restrictedMembers;
   List<Member?> get individualMembers => _individualMembers;
   List<int?> get selectedMemberIds => _selectedMemberIds;
   List<Organization?> get organizationalMembers => _organizationalMembers;
@@ -124,6 +126,9 @@ class MembersProvider extends ChangeNotifier {
   int _orgPage = 1;
   bool hasNextPage = true;
   bool isFilter = false;
+
+  late ScrollController restrictedMembersScrollController = ScrollController()
+    ..addListener(_loadMoreRestrictedMembers);
 
   late ScrollController indMembersScrollController = ScrollController()
     ..addListener(_loadMoreIndividualMembers);
@@ -195,9 +200,20 @@ class MembersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> refreshList({required bool isMember}) async {
+  Future<void> refreshList({
+    required bool isMember,
+    required String userType,
+  }) async {
     clearFilters(isMember: isMember);
-    isMember ? getAllIndividualMembers() : getAllOrganizations();
+    if (isMember) {
+      if (userType == AppConstants.member) {
+        getAllRestrictedMembers();
+      } else {
+        getAllIndividualMembers();
+      }
+    } else {
+      getAllOrganizations();
+    }
   }
 
   // get list of subgroups
@@ -419,6 +435,63 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       debugPrint('Error Member Stats: ${err.toString()}');
       showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // get list of retricted members, a currently logged in member can view
+  Future<void> getAllRestrictedMembers() async {
+    try {
+      setLoading(true);
+      _indPage = 1;
+      var memberId =
+          await Provider.of<MemberProvider>(currentContext, listen: false)
+              .memberProfile
+              .user
+              .id;
+      _restrictedMembers = await MembersAPI.getRestrictedMembers(
+        page: _indPage,
+        memberId: memberId,
+      );
+      // get individual members stats
+      getMembersStatistics();
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      debugPrint('Error Member Stats: ${err.toString()}');
+      showErrorToast(err.toString());
+    }
+    notifyListeners();
+  }
+
+  // load more list of restricted members
+  Future<void> _loadMoreRestrictedMembers() async {
+    if (hasNextPage == true &&
+        loading == false &&
+        _loadingMore == false &&
+        restrictedMembersScrollController.position.extentAfter < 300) {
+      setLoadingMore(true); // show loading indicator
+      _indPage += 1; // increase page by 1
+      try {
+        var memberId =
+            await Provider.of<MemberProvider>(currentContext, listen: false)
+                .memberProfile
+                .user
+                .id;
+        var members = await MembersAPI.getRestrictedMembers(
+          page: _indPage,
+          memberId: memberId,
+        );
+        if (members.isNotEmpty) {
+          _restrictedMembers.addAll(members);
+        } else {
+          hasNextPage = false;
+        }
+        setLoadingMore(false);
+      } catch (err) {
+        setLoadingMore(false);
+        debugPrint("error --> $err");
+      }
     }
     notifyListeners();
   }

@@ -131,27 +131,32 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                     )
                   : const SizedBox(),
               //filterButton(),
-              SizedBox(
-                height: displayHeight(context) * 0.02,
-              ),
-              CupertinoSearchTextField(
-                onChanged: (val) {
-                  if (val.isEmpty) {
-                    setState(() {
-                      attendanceHistoryProvider.search = val;
-                    });
-                    attendanceHistoryProvider.getAttendanceHistory();
-                  }
-                },
-                onSubmitted: (val) {
-                  if (attendanceHistoryProvider.attendanceRecords.isNotEmpty) {
-                    setState(() {
-                      attendanceHistoryProvider.search = val;
-                    });
-                    attendanceHistoryProvider.getAttendanceHistory();
-                  }
-                },
-              ),
+              userType == AppConstants.member
+                  ? const SizedBox()
+                  : SizedBox(
+                      height: displayHeight(context) * 0.02,
+                    ),
+              userType == AppConstants.member
+                  ? const SizedBox()
+                  : CupertinoSearchTextField(
+                      onChanged: (val) {
+                        if (val.isEmpty) {
+                          setState(() {
+                            attendanceHistoryProvider.search = val;
+                          });
+                          attendanceHistoryProvider.getAttendanceHistory();
+                        }
+                      },
+                      onSubmitted: (val) {
+                        if (attendanceHistoryProvider
+                            .attendanceRecords.isNotEmpty) {
+                          setState(() {
+                            attendanceHistoryProvider.search = val;
+                          });
+                          attendanceHistoryProvider.getAttendanceHistory();
+                        }
+                      },
+                    ),
               SizedBox(
                 height: displayHeight(context) * 0.02,
               ),

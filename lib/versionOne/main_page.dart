@@ -206,38 +206,38 @@ class _MainPageState extends State<MainPage> {
                       : "More",
           style: const TextStyle(color: Colors.black),
         ),
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const AlertsPage()));
-                },
-                icon: const Icon(Icons.notifications),
-                tooltip: 'hello',
-                isSelected: true,
-              ),
-              Positioned(
-                  right: 5,
-                  top: 5,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(color: Colors.orange),
-                        borderRadius: BorderRadius.circular(100)),
-                    child: const Text(
-                      '3',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ))
-            ],
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-        ],
+        // actions: [
+        //   Stack(
+        //     children: [
+        //       IconButton(
+        //         onPressed: () {
+        //           Navigator.push(context,
+        //               MaterialPageRoute(builder: (_) => const AlertsPage()));
+        //         },
+        //         icon: const Icon(Icons.notifications),
+        //         tooltip: 'hello',
+        //         isSelected: true,
+        //       ),
+        //       Positioned(
+        //           right: 5,
+        //           top: 5,
+        //           child: Container(
+        //             padding: const EdgeInsets.symmetric(horizontal: 5),
+        //             decoration: BoxDecoration(
+        //                 color: Colors.black,
+        //                 border: Border.all(color: Colors.orange),
+        //                 borderRadius: BorderRadius.circular(100)),
+        //             child: const Text(
+        //               '3',
+        //               style: TextStyle(fontSize: 14),
+        //             ),
+        //           ))
+        //     ],
+        //   ),
+        //   const SizedBox(
+        //     width: 5,
+        //   ),
+        // ],
       ),
       drawer: userType == 'admin'
           ? Consumer<ClientProvider>(

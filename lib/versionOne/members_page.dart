@@ -12,12 +12,14 @@ import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:akwaaba/versionOne/restricted_member_account_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../components/restricted_member_widget.dart';
 import 'filter_page.dart';
 
 class MembersPage extends StatefulWidget {
@@ -47,11 +49,23 @@ class _MembersPageState extends State<MembersPage> {
       Provider.of<MembersProvider>(context, listen: false)
           .setCurrentContext(context);
       // load individual or organization members
-      widget.isMemberuser
-          ? Provider.of<MembersProvider>(context, listen: false)
-              .getAllIndividualMembers()
-          : Provider.of<MembersProvider>(context, listen: false)
-              .getAllOrganizations();
+      if (userType == AppConstants.member) {
+        widget.isMemberuser
+            ? Provider.of<MembersProvider>(context, listen: false)
+                .getAllRestrictedMembers()
+            : Provider.of<MembersProvider>(context, listen: false)
+                .getAllOrganizations();
+      } else {
+        widget.isMemberuser
+            ? Provider.of<MembersProvider>(context, listen: false)
+                .getAllIndividualMembers()
+            : Provider.of<MembersProvider>(context, listen: false)
+                .getAllOrganizations();
+      }
+
+      debugPrint("isMemberuser: ${widget.isMemberuser}");
+      debugPrint("Type: $userType");
+
       setState(() {});
     });
   }
@@ -105,20 +119,22 @@ class _MembersPageState extends State<MembersPage> {
                     },
                   ),
                 ),
-                IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              FilterPage(isMemberUser: widget.isMemberuser),
-                        ),
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.filter_alt,
-                      color: primaryColor,
-                    )),
+                (widget.isMemberuser && userType == AppConstants.member)
+                    ? const SizedBox()
+                    : IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  FilterPage(isMemberUser: widget.isMemberuser),
+                            ),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.filter_alt,
+                          color: primaryColor,
+                        )),
               ],
             ),
 
@@ -289,14 +305,16 @@ class _MembersPageState extends State<MembersPage> {
                       ),
                     ),
                   )
-                : widget.isMemberuser
+                : (userType == AppConstants.member && widget.isMemberuser)
                     ? Expanded(
                         child: RefreshIndicator(
                           onRefresh: () => _membersProvider.refreshList(
-                              isMember: widget.isMemberuser),
+                            isMember: widget.isMemberuser,
+                            userType: userType!,
+                          ),
                           child: Column(
                             children: [
-                              _membersProvider.individualMembers.isEmpty
+                              _membersProvider.restrictedMembers.isEmpty
                                   ? const Expanded(
                                       child: EmptyStateWidget(
                                         text: 'No members found!',
@@ -306,48 +324,29 @@ class _MembersPageState extends State<MembersPage> {
                                       child: ListView.builder(
                                         physics: const BouncingScrollPhysics(),
                                         controller: _membersProvider
-                                            .indMembersScrollController,
+                                            .restrictedMembersScrollController,
                                         itemCount: _membersProvider
-                                            .individualMembers.length,
+                                            .restrictedMembers.length,
                                         itemBuilder: (context, index) {
                                           return InkWell(
                                             onTap: () {
-                                              setState(() {
-                                                if (_membersProvider
-                                                    .individualMembers[index]!
-                                                    .selected!) {
-                                                  _membersProvider
-                                                      .individualMembers[index]!
-                                                      .selected = false;
-                                                  _membersProvider
-                                                      .selectedMemberIds
-                                                      .remove(
-                                                    _membersProvider
-                                                        .individualMembers[
-                                                            index]!
-                                                        .id,
-                                                  );
-                                                } else {
-                                                  _membersProvider
-                                                      .individualMembers[index]!
-                                                      .selected = true;
-                                                  _membersProvider
-                                                      .selectedMemberIds
-                                                      .add(
-                                                    _membersProvider
-                                                        .individualMembers[
-                                                            index]!
-                                                        .id,
-                                                  );
-                                                }
-                                              });
-                                              debugPrint(
-                                                "Selected Members: ${_membersProvider.selectedMemberIds.toString()}",
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      RestrictedMemberAccountPage(
+                                                    restrictedMember:
+                                                        _membersProvider
+                                                                .restrictedMembers[
+                                                            index]!,
+                                                    userType: userType,
+                                                  ),
+                                                ),
                                               );
                                             },
-                                            child: MemberWidget(
-                                              member: _membersProvider
-                                                  .individualMembers[index],
+                                            child: RestrictedMemberWidget(
+                                              restrictedMember: _membersProvider
+                                                  .restrictedMembers[index]!,
                                             ),
                                           );
                                         },
@@ -361,41 +360,123 @@ class _MembersPageState extends State<MembersPage> {
                           ),
                         ),
                       )
-                    : Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: () => _membersProvider.refreshList(
-                              isMember: widget.isMemberuser),
-                          child: Column(
-                            children: [
-                              _membersProvider.organizationalMembers.isEmpty
-                                  ? const Expanded(
-                                      child: EmptyStateWidget(
-                                        text: 'No organizations found!',
-                                      ),
+                    : (userType == AppConstants.admin && widget.isMemberuser)
+                        ? Expanded(
+                            child: RefreshIndicator(
+                              onRefresh: () => _membersProvider.refreshList(
+                                isMember: widget.isMemberuser,
+                                userType: userType!,
+                              ),
+                              child: Column(
+                                children: [
+                                  _membersProvider.individualMembers.isEmpty
+                                      ? const Expanded(
+                                          child: EmptyStateWidget(
+                                            text: 'No members found!',
+                                          ),
+                                        )
+                                      : Expanded(
+                                          child: ListView.builder(
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            controller: _membersProvider
+                                                .indMembersScrollController,
+                                            itemCount: _membersProvider
+                                                .individualMembers.length,
+                                            itemBuilder: (context, index) {
+                                              return InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (_membersProvider
+                                                        .individualMembers[
+                                                            index]!
+                                                        .selected!) {
+                                                      _membersProvider
+                                                          .individualMembers[
+                                                              index]!
+                                                          .selected = false;
+                                                      _membersProvider
+                                                          .selectedMemberIds
+                                                          .remove(
+                                                        _membersProvider
+                                                            .individualMembers[
+                                                                index]!
+                                                            .id,
+                                                      );
+                                                    } else {
+                                                      _membersProvider
+                                                          .individualMembers[
+                                                              index]!
+                                                          .selected = true;
+                                                      _membersProvider
+                                                          .selectedMemberIds
+                                                          .add(
+                                                        _membersProvider
+                                                            .individualMembers[
+                                                                index]!
+                                                            .id,
+                                                      );
+                                                    }
+                                                  });
+                                                  debugPrint(
+                                                    "Selected Members: ${_membersProvider.selectedMemberIds.toString()}",
+                                                  );
+                                                },
+                                                child: MemberWidget(
+                                                  member: _membersProvider
+                                                      .individualMembers[index],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                  if (_membersProvider.loadingMore)
+                                    const PaginationLoader(
+                                      loadingText: 'Loading. please wait...',
                                     )
-                                  : Expanded(
-                                      child: ListView.builder(
-                                        physics: const BouncingScrollPhysics(),
-                                        controller: _membersProvider
-                                            .orgMembersScrollController,
-                                        itemCount: _membersProvider
-                                            .organizationalMembers.length,
-                                        itemBuilder: (context, index) {
-                                          return OrganizationWidget(
-                                            organization: _membersProvider
-                                                .organizationalMembers[index],
-                                          );
-                                        },
-                                      ),
-                                    ),
-                              if (_membersProvider.loadingMore)
-                                const PaginationLoader(
-                                  loadingText: 'Loading. please wait...',
-                                )
-                            ],
+                                ],
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: RefreshIndicator(
+                              onRefresh: () => _membersProvider.refreshList(
+                                isMember: widget.isMemberuser,
+                                userType: userType!,
+                              ),
+                              child: Column(
+                                children: [
+                                  _membersProvider.organizationalMembers.isEmpty
+                                      ? const Expanded(
+                                          child: EmptyStateWidget(
+                                            text: 'No organizations found!',
+                                          ),
+                                        )
+                                      : Expanded(
+                                          child: ListView.builder(
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            controller: _membersProvider
+                                                .orgMembersScrollController,
+                                            itemCount: _membersProvider
+                                                .organizationalMembers.length,
+                                            itemBuilder: (context, index) {
+                                              return OrganizationWidget(
+                                                organization: _membersProvider
+                                                        .organizationalMembers[
+                                                    index],
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                  if (_membersProvider.loadingMore)
+                                    const PaginationLoader(
+                                      loadingText: 'Loading. please wait...',
+                                    )
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
 
             // Expanded(
             //   child: ListView(

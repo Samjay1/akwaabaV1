@@ -202,7 +202,7 @@ class _ViewLeavePageState extends State<ViewLeavePage> {
                   child: CustomDatePicker(
                     hintText: 'Select End Date',
                     firstDate: DateTime(1970),
-                    lastDate: DateTime.now(),
+                    lastDate: DateTime(2050),
                     onChanged: (dateString) {
                       setState(() {
                         _leaveProvider.selectedEndDate =

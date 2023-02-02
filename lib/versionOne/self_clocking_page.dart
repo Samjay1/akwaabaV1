@@ -121,7 +121,14 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                       clockingProvider.search = val;
                     });
                     clockingProvider.getAllAbsentees(
-                        meetingEventModel: widget.meetingEventModel);
+                      meetingEventModel: widget.meetingEventModel,
+                    );
+                  },
+                  onChanged: (val) {
+                    setState(() {
+                      clockingProvider.search = val;
+                    });
+                    clockingProvider.clearData();
                   },
                 ),
 
@@ -176,7 +183,7 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                             child: clockingProvider.absentees.isEmpty
                                 ? const EmptyStateWidget(
                                     text:
-                                        'No records found! \nType in your ID to clockin',
+                                        'No records found! \nPlease type in your ID to clockin',
                                   )
                                 : Column(
                                     children: [
@@ -207,7 +214,7 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                             child: clockingProvider.attendees.isEmpty
                                 ? const EmptyStateWidget(
                                     text:
-                                        'No records found! \nType in your ID to clockout',
+                                        'No records found! \nPlease type in your ID to clockout',
                                   )
                                 : Column(
                                     children: [

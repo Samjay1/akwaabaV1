@@ -117,7 +117,7 @@ class AbsentLeaveWidget extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            'Update on: ${DateUtil.formatStringDate(DateFormat.yMMMEd().add_jm(), date: DateTime.parse(absentLeave!.fromDate!))}  by  ${absentLeave!.clientInfo!.applicantFirstname!}',
+                            'Update on: ${DateUtil.formatStringDate(DateFormat.yMMMEd().add_jm(), date: DateTime.parse(absentLeave!.fromDate!))}  by  ${absentLeave!.clientInfo!.applicantFirstname!} ${absentLeave!.clientInfo!.applicantSurname!}',
                             style: const TextStyle(
                               fontSize: AppSize.s14,
                               fontWeight: FontWeight.w500,
