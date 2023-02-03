@@ -20,11 +20,8 @@ class MeetingEventWidget extends StatelessWidget {
         meetingEventModel!.upcomingDates != null) {
       if (meetingEventModel!.upcomingDates!.length > 1) {
         for (var i = 0; i < meetingEventModel!.upcomingDates!.length; i++) {
-          if (DateTime.now().toIso8601String().substring(0, 10).trim() ==
-              DateTime.parse(meetingEventModel!.upcomingDates![i].date!)
-                  .toIso8601String()
-                  .substring(0, 10)
-                  .trim()) {
+          if (DateTime.now().isAtSameMomentAs(
+              DateTime.parse(meetingEventModel!.upcomingDates![i].date!))) {
             debugPrint(
                 'Current Date: ${DateTime.now().toIso8601String().substring(0, 10)}');
             debugPrint(
@@ -47,6 +44,16 @@ class MeetingEventWidget extends StatelessWidget {
                   'Next Date: ${DateTime.parse(meetingEventModel!.upcomingDates![i + 1].date!).toIso8601String().substring(0, 10)}');
             }
 
+            break;
+          }
+          if (DateTime.now().isBefore(
+              DateTime.parse(meetingEventModel!.upcomingDates![i].date!))) {
+            date = DateUtil.formatStringDate(
+              DateFormat.yMMMEd(),
+              date: DateTime.parse(
+                meetingEventModel!.upcomingDates![i].date!,
+              ),
+            );
             break;
           }
         }

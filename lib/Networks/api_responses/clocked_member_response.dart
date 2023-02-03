@@ -38,6 +38,7 @@ class Attendee {
   Attendance? attendance;
   String? lastSeen;
   String? status;
+
   String? identification;
   bool? selected = false;
 
@@ -57,6 +58,7 @@ class Attendee {
         : null;
     lastSeen = json['lastSeen'];
     status = json['status'];
+
     identification = json['identification'];
   }
 
@@ -70,6 +72,7 @@ class Attendee {
     }
     data['lastSeen'] = lastSeen;
     data['status'] = status;
+
     data['identification'] = identification;
     return data;
   }

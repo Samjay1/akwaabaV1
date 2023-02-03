@@ -61,12 +61,10 @@ class AllEventsProvider extends ChangeNotifier {
       );
       _tempUpcomingMeetingEventList = _upcomingMeetingEventList;
       _eventsList = _upcomingMeetingEventList
-          .where(
-              (meeting) => meeting.memberType == AppConstants.meetingTypeEvent)
+          .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
           .toList();
       _meetingsList = _upcomingMeetingEventList
-          .where((meeting) =>
-              meeting.memberType == AppConstants.meetingTypeMeeting)
+          .where((meeting) => meeting.type == AppConstants.meetingTypeMeeting)
           .toList();
       setLoading(false);
     } catch (err) {
@@ -99,6 +97,14 @@ class AllEventsProvider extends ChangeNotifier {
         }
         if (response.isNotEmpty) {
           _upcomingMeetingEventList.addAll(response);
+
+          _eventsList.addAll(_upcomingMeetingEventList
+              .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
+              .toList());
+          _meetingsList.addAll(_upcomingMeetingEventList
+              .where(
+                  (meeting) => meeting.type == AppConstants.meetingTypeMeeting)
+              .toList());
         } else {
           hasNextPage = false;
         }
@@ -132,12 +138,10 @@ class AllEventsProvider extends ChangeNotifier {
       );
       _tempUpcomingMeetingEventList = _upcomingMeetingEventList;
       _eventsList = _upcomingMeetingEventList
-          .where(
-              (meeting) => meeting.memberType == AppConstants.meetingTypeEvent)
+          .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
           .toList();
       _meetingsList = _upcomingMeetingEventList
-          .where((meeting) =>
-              meeting.memberType == AppConstants.meetingTypeMeeting)
+          .where((meeting) => meeting.type == AppConstants.meetingTypeMeeting)
           .toList();
       setLoading(false);
     } catch (err) {
@@ -164,6 +168,7 @@ class AllEventsProvider extends ChangeNotifier {
 
   void clearData() {
     _upcomingMeetingEventList.clear();
+    _eventsList.clear();
   }
 
   // search through attendees list by name

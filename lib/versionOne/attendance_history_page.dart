@@ -140,12 +140,10 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   ? const SizedBox()
                   : CupertinoSearchTextField(
                       onChanged: (val) {
-                        if (val.isEmpty) {
-                          setState(() {
-                            attendanceHistoryProvider.search = val;
-                          });
-                          attendanceHistoryProvider.getAttendanceHistory();
-                        }
+                        setState(() {
+                          attendanceHistoryProvider.search = val;
+                        });
+                        attendanceHistoryProvider.getAttendanceHistory();
                       },
                       onSubmitted: (val) {
                         if (attendanceHistoryProvider

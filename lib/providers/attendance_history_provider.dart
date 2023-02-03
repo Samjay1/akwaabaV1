@@ -290,15 +290,14 @@ class AttendanceHistoryProvider extends ChangeNotifier {
                 ? 1.toString()
                 : 0.toString(),
         memberCategoryId: selectedMemberCategory == null
-            ? null
+            ? ''
             : selectedMemberCategory!.id!.toString(),
-        groupId: selectedGroup == null ? null : selectedGroup!.id!.toString(),
+        groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
         subGroupId:
-            selectedSubGroup == null ? null : selectedSubGroup!.id!.toString(),
-        genderId:
-            selectedGender == null ? null : selectedGender!.id!.toString(),
-        fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
-        toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+            selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
+        genderId: selectedGender == null ? '' : selectedGender!.id!.toString(),
+        fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+        toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
 
       // filter list for only members excluding

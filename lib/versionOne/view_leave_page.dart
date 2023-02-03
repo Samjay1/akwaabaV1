@@ -35,6 +35,7 @@ class _ViewLeavePageState extends State<ViewLeavePage> {
     Future.delayed(Duration.zero, () {
       Provider.of<LeaveProvider>(context, listen: false)
           .setCurrentContext(context);
+      Provider.of<LeaveProvider>(context, listen: false).getAllAbsentLeave();
       setState(() {});
     });
     super.initState();

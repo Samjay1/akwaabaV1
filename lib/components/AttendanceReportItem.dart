@@ -18,6 +18,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../versionOne/attendance_report_preview.dart';
+import 'tag_widget_solid.dart';
 
 class AttendanceReportItem extends StatelessWidget {
   final Attendee? attendee;
@@ -113,16 +114,20 @@ class AttendanceReportItem extends StatelessWidget {
                                     SizedBox(
                                       width: displayWidth(context) * 0.02,
                                     ),
-                                    TagWidget(
+                                    TagWidgetSolid(
                                       color: primaryColor,
-                                      text: attendee!.status!,
+                                      text:
+                                          attendee!.attendance!.justification ??
+                                              'No Excuse',
                                     ),
                                   ],
                                 ),
                                 Text(
                                   attendee!.attendance!.meetingEventId!.name!,
                                   style: const TextStyle(
-                                      fontSize: 14, color: textColorLight),
+                                    fontSize: 14,
+                                    color: textColorLight,
+                                  ),
                                 ),
                                 SizedBox(
                                   height: displayHeight(context) * 0.005,
@@ -149,6 +154,16 @@ class AttendanceReportItem extends StatelessWidget {
                                   style: const TextStyle(
                                       color: textColorLight, fontSize: 14),
                                 ),
+                                // SizedBox(
+                                //   height: displayHeight(context) * 0.01,
+                                // ),
+                                // Text(
+                                //   attendee!.attendance!.justification ?? 'N/A',
+                                //   style: const TextStyle(
+                                //     fontSize: 14,
+                                //     color: textColorLight,
+                                //   ),
+                                // ),
                                 SizedBox(
                                   height: displayHeight(context) * 0.005,
                                 ),

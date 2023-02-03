@@ -92,13 +92,13 @@ class _RestrictedMemberAccountPageState
                         ),
                       ],
                     ),
-              profileItemView(
-                title: "Date of Birth",
-                label: widget.restrictedMember!.member!.dateOfBirth == null
-                    ? 'N/A'
-                    : widget.restrictedMember!.member!.dateOfBirth!,
-                display: true,
-              ),
+              // profileItemView(
+              //   title: "Date of Birth",
+              //   label: widget.restrictedMember!.member!.dateOfBirth == null
+              //       ? 'N/A'
+              //       : widget.restrictedMember!.member!.dateOfBirth!,
+              //   display: true,
+              // ),
               profileItemView(
                 title: "ReferenceId",
                 label: widget.restrictedMember!.member!.referenceId == null
@@ -247,18 +247,15 @@ class _RestrictedMemberAccountPageState
                           display: true,
                         ),
                         // profileItemView(
-                        //     title: "Residential Area",
-                        //     label: widget.member!.countryOfResidence!.toString()),
-                        profileItemView(
-                          title: "Digital Address",
-                          label:
-                              widget.restrictedMember!.member!.digitalAddress ==
-                                      null
-                                  ? 'N/A'
-                                  : widget.restrictedMember!.member!
-                                      .digitalAddress!,
-                          display: true,
-                        ),
+                        //   title: "Digital Address",
+                        //   label:
+                        //       widget.restrictedMember!.member!.digitalAddress ==
+                        //               null
+                        //           ? 'N/A'
+                        //           : widget.restrictedMember!.member!
+                        //               .digitalAddress!,
+                        //   display: true,
+                        // ),
                       ],
                     ),
               const SizedBox(

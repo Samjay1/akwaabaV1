@@ -148,8 +148,12 @@ class LeaveProvider extends ChangeNotifier {
         page: _page,
         branchId: userBranch.id!,
         search: search,
-        fromDate: selectedStartDate!.toIso8601String().substring(0, 10),
-        toDate: selectedEndDate!.toIso8601String().substring(0, 10),
+        fromDate: selectedStartDate == null
+            ? ''
+            : selectedStartDate!.toIso8601String().substring(0, 10),
+        toDate: selectedEndDate == null
+            ? ''
+            : selectedEndDate!.toIso8601String().substring(0, 10),
       );
 
       _absentLeaveList = response;

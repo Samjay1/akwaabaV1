@@ -257,6 +257,7 @@ class _HomePageState extends State<HomePage> {
                           }
                           return ListView.builder(
                               itemCount: data.todayMeetings.length,
+                              physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
                                 final item = data.todayMeetings[index];
                                 return InkWell(

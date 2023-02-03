@@ -77,13 +77,13 @@ class LeaveAPI {
     required int page,
     required int branchId,
     required String search,
-    required String fromDate,
-    required String toDate,
+    required String? fromDate,
+    required String? toDate,
   }) async {
     List<AbsentLeave> absentLeaveList = [];
 
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/absent-leave/assignment?page=$page&branchId=$branchId&search=$search&from_date=$fromDate&to_date=$toDate');
+        '${getBaseUrl()}/attendance/absent-leave/assignment?page=$page&ordering=-id&branchId=$branchId&search=$search&from_date=$fromDate&to_date=$toDate');
 
     debugPrint("URL: ${url.toString()}");
     debugPrint("page: $page");

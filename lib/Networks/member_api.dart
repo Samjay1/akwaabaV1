@@ -93,7 +93,6 @@ class MemberAPI {
     return accountInfo;
   }
 
-
   //GET MEMBER FULL PROFILE INFO
   // Get client info of member
   Future<PreviewMemberProfile> getFullProfileInfo() async {
@@ -119,8 +118,6 @@ class MemberAPI {
     }
     return accountInfo;
   }
-
-
 
   //----------------------------------
   // get a  branch
@@ -202,9 +199,12 @@ class MemberAPI {
       var decodedResponse = await returnResponse(response);
       print('decodedResponse $decodedResponse');
       var memberToken = decodedResponse['token'];
-      int memberId = decodedResponse['user']['id'];
-      prefs.setString('token', memberToken);
-      prefs.setInt('memberId', memberId);
+      int? memberId;
+      if (decodedResponse['user'] != null) {
+        memberId = decodedResponse['user']['id'];
+        prefs.setInt('memberId', memberId!);
+        prefs.setString('token', memberToken);
+      }
       debugPrint('MEMBER TOKEN---------- --------------------- $memberToken');
       debugPrint('MEMBER memberId---------- --------------------- $memberId');
       memberProfile = MemberProfile.fromJson(
@@ -355,42 +355,38 @@ class MemberAPI {
     }
   }
 
-  static Future<String?> registerMember(
-
-      BuildContext context,
-  {
-  clientId,
-  branchId,
-  firstname,
-  middlename,
-  surname,
-  gender,
-  dateOfBirth,
-  email,
-  phone,
-  memberType,
-  referenceId,
-  nationality,
-  countryOfResidence,
-  stateProvince,
-  region,
-  district,
-  constituency,
-  electoralArea,
-  community,
-  digitalAddress,
-  hometown,
-  occupation,
-  disability,
-  maritalStatus,
-  occupationalStatus,
-  professionStatus,
-  educationalStatus,
-    groupIds,
-    subgroupIds,
-  password,
-  confirm_password}
-    ) async {
+  static Future<String?> registerMember(BuildContext context,
+      {clientId,
+      branchId,
+      firstname,
+      middlename,
+      surname,
+      gender,
+      dateOfBirth,
+      email,
+      phone,
+      memberType,
+      referenceId,
+      nationality,
+      countryOfResidence,
+      stateProvince,
+      region,
+      district,
+      constituency,
+      electoralArea,
+      community,
+      digitalAddress,
+      hometown,
+      occupation,
+      disability,
+      maritalStatus,
+      occupationalStatus,
+      professionStatus,
+      educationalStatus,
+      groupIds,
+      subgroupIds,
+      password,
+      confirm_password}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       var data = {
@@ -454,11 +450,9 @@ class MemberAPI {
     }
   }
 
-
-
 //  LOCATION REQUESTS
 
-   Future<List<Country>?> getCountry()async{
+  Future<List<Country>?> getCountry() async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -480,9 +474,7 @@ class MemberAPI {
     }
   }
 
-
-   Future<List<Region>?> getRegion() async {
-
+  Future<List<Region>?> getRegion() async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -508,8 +500,9 @@ class MemberAPI {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
-          Uri.parse('$mybaseUrl/locations/region/$regionId'),
-          headers: await getAllHeaders(),);
+        Uri.parse('$mybaseUrl/locations/region/$regionId'),
+        headers: await getAllHeaders(),
+      );
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
         print("REGION single success: $decodedresponse");
@@ -525,8 +518,7 @@ class MemberAPI {
     }
   }
 
-
-   Future<List<District>?> getDistrict({required var regionID}) async {
+  Future<List<District>?> getDistrict({required var regionID}) async {
     debugPrint('regionID $regionID');
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
@@ -554,7 +546,8 @@ class MemberAPI {
     try {
       http.Response response = await http.get(
         Uri.parse('$mybaseUrl/locations/district/$districtId'),
-        headers: await getAllHeaders(),);
+        headers: await getAllHeaders(),
+      );
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
         print("District single success: $decodedresponse");
@@ -570,10 +563,8 @@ class MemberAPI {
     }
   }
 
-
-   Future<List<Constituency>?> getConstituency(
+  Future<List<Constituency>?> getConstituency(
       {required var regionID, var districtID}) async {
-
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -585,10 +576,7 @@ class MemberAPI {
 
         // print("Constituency success: $decodedresponse");
         Iterable dataList = decodedresponse['results'];
-        return dataList
-            .map((data) => Constituency.fromJson(data))
-            .toList();
-
+        return dataList.map((data) => Constituency.fromJson(data)).toList();
       } else {
         print('Constituency error ${jsonDecode(response.body)}');
         return null;
@@ -600,13 +588,13 @@ class MemberAPI {
     }
   }
 
-
   Future<Constituency?> getSingleConstituency({required ConstId}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
         Uri.parse('$mybaseUrl/locations/constituency/$ConstId'),
-        headers: await getAllHeaders(),);
+        headers: await getAllHeaders(),
+      );
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
         print("Constituency single success: $decodedresponse");
@@ -622,9 +610,8 @@ class MemberAPI {
     }
   }
 
-   Future<List<ElectoralArea>?> getElectoralArea(
+  Future<List<ElectoralArea>?> getElectoralArea(
       {required var regionID, var districtID}) async {
-
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -652,7 +639,8 @@ class MemberAPI {
     try {
       http.Response response = await http.get(
         Uri.parse('$mybaseUrl/locations/electoral-area/$electoralId'),
-        headers: await getAllHeaders(),);
+        headers: await getAllHeaders(),
+      );
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
         print("ElectoralArea single success: $decodedresponse");
@@ -670,8 +658,7 @@ class MemberAPI {
 
 //  BRANCH REQUEST
 
-
-   Future<List<Branch>?> getBranches({required var token}) async {
+  Future<List<Branch>?> getBranches({required var token}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http
@@ -697,10 +684,8 @@ class MemberAPI {
 
 //  GROUP AND SUB GROUPS REQUEST
 
-
-   Future<List<AbstractGroup>?> getGroup(
+  Future<List<AbstractGroup>?> getGroup(
       {required var token, var branchID}) async {
-
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -725,9 +710,8 @@ class MemberAPI {
     }
   }
 
-   Future<List<AbstractSubGroup>?> getSubGroup(
+  Future<List<AbstractSubGroup>?> getSubGroup(
       {required var token, var branchID}) async {
-
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -755,9 +739,7 @@ class MemberAPI {
 
 // OCCUPATION, PROFESSION, MARITAL STATUS
 
-
-   Future<List<AbstractModel>?> getOccupation() async {
-
+  Future<List<AbstractModel>?> getOccupation() async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -779,9 +761,7 @@ class MemberAPI {
     }
   }
 
-
-   Future<List<AbstractModel>?> getProfession() async {
-
+  Future<List<AbstractModel>?> getProfession() async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -803,9 +783,7 @@ class MemberAPI {
     }
   }
 
-
-   Future<List<AbstractModel>?> getMaritalStatus() async {
-
+  Future<List<AbstractModel>?> getMaritalStatus() async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -827,9 +805,7 @@ class MemberAPI {
     }
   }
 
-
-   Future<List<AbstractModel>?> getEducation() async {
-
+  Future<List<AbstractModel>?> getEducation() async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -853,9 +829,7 @@ class MemberAPI {
 
 //  ORGANISATION TYPE AND MEMBER TYPE
 
-
-   Future<List<MemberType>?> getMemberType({required var token}) async {
-
+  Future<List<MemberType>?> getMemberType({required var token}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -880,8 +854,7 @@ class MemberAPI {
     }
   }
 
-
-   Future<List<OrganisationType>?> getOrganisationType(
+  Future<List<OrganisationType>?> getOrganisationType(
       {required var token}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
@@ -910,7 +883,6 @@ class MemberAPI {
   // REGISTRATION CODE
 
   static Future<dynamic?> searchRegCode({required var regCode}) async {
-
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -923,9 +895,9 @@ class MemberAPI {
         var clientLogo = decodedresponse['data']['clientInfo']['logo'];
         var clientName = decodedresponse['data']['clientInfo']['name'];
         var clientInfo = {
-          'clientID':clientID,
-          'clientLogo':clientLogo,
-          'clientName':clientName
+          'clientID': clientID,
+          'clientLogo': clientLogo,
+          'clientName': clientName
         };
         return clientInfo;
       } else {
@@ -944,153 +916,146 @@ class MemberAPI {
 
   // GET TOKEN
 
-   Future<String?> getToken({required var clientID}) async {
-      var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
-      try {
-        var data = {"accountId": clientID};
-        http.Response response = await http.post(
-        Uri.parse('$mybaseUrl/clients/hash-hash'),
-        body: json.encode(data),
-        headers: {'Content-Type': 'application/json'});
-        if (response.statusCode == 200) {
-          var decodedresponse = jsonDecode(response.body);
-          print("token success: $decodedresponse");
-          var token = decodedresponse['token'];
-          return token;
-          } else {
-          print('token error ${jsonDecode(response.body)}');
-          return null;
-          }
-        } on SocketException catch (_) {
-          // ScaffoldMessenger.of(context)
-          //     .showSnackBar(SnackBar(content: Text('Network issue')));
-          return null;
-        }
+  Future<String?> getToken({required var clientID}) async {
+    var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      var data = {"accountId": clientID};
+      http.Response response = await http.post(
+          Uri.parse('$mybaseUrl/clients/hash-hash'),
+          body: json.encode(data),
+          headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        var decodedresponse = jsonDecode(response.body);
+        print("token success: $decodedresponse");
+        var token = decodedresponse['token'];
+        return token;
+      } else {
+        print('token error ${jsonDecode(response.body)}');
+        return null;
       }
+    } on SocketException catch (_) {
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text('Network issue')));
+      return null;
+    }
+  }
 
-  static Future<String?> registerMemberWithImage(
-
-      BuildContext context,
-      {
-        profilePicture,
-        profileResume,
-        profileIdentification,
-        clientId,
-        branchId,
-        firstname,
-        middlename,
-        surname,
-        gender,
-        dateOfBirth,
-        email,
-        phone,
-        memberType,
-        referenceId,
-        nationality,
-        countryOfResidence,
-        stateProvince,
-        region,
-        district,
-        constituency,
-        electoralArea,
-        community,
-        digitalAddress,
-        hometown,
-        occupation,
-        disability,
-        maritalStatus,
-        occupationalStatus,
-        professionStatus,
-        educationalStatus,
-        groupIds,
-        subgroupIds,
-        password,
-        confirm_password}
-      ) async {
+  static Future<String?> registerMemberWithImage(BuildContext context,
+      {profilePicture,
+      profileResume,
+      profileIdentification,
+      clientId,
+      branchId,
+      firstname,
+      middlename,
+      surname,
+      gender,
+      dateOfBirth,
+      email,
+      phone,
+      memberType,
+      referenceId,
+      nationality,
+      countryOfResidence,
+      stateProvince,
+      region,
+      district,
+      constituency,
+      electoralArea,
+      community,
+      digitalAddress,
+      hometown,
+      occupation,
+      disability,
+      maritalStatus,
+      occupationalStatus,
+      professionStatus,
+      educationalStatus,
+      groupIds,
+      subgroupIds,
+      password,
+      confirm_password}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
-      var request = await http.MultipartRequest('POST',
-        Uri.parse('$regBaseUrl/members/user/app-register'));
+      var request = await http.MultipartRequest(
+          'POST', Uri.parse('$regBaseUrl/members/user/app-register'));
 
-      Map<String, String> headers =  {'Content-Type': 'application/json'};
+      Map<String, String> headers = {'Content-Type': 'application/json'};
 
       // multipart that takes file
-      if(profilePicture!=null) {
-        var profPicture = await http.MultipartFile.fromPath('profilePicture', profilePicture);
+      if (profilePicture != null) {
+        var profPicture =
+            await http.MultipartFile.fromPath('profilePicture', profilePicture);
         request.files.add(profPicture);
       }
-      if(profileResume!=null) {
-        var profResume = await http.MultipartFile.fromPath('profileResume', profileResume);
+      if (profileResume != null) {
+        var profResume =
+            await http.MultipartFile.fromPath('profileResume', profileResume);
         request.files.add(profResume);
       }
-      if(profileIdentification!=null) {
-        var profIdentification = await http.MultipartFile.fromPath('profileIdentification', profileIdentification);
+      if (profileIdentification != null) {
+        var profIdentification = await http.MultipartFile.fromPath(
+            'profileIdentification', profileIdentification);
         request.files.add(profIdentification);
       }
-
-
-
 
       request.headers.addAll(headers);
 
       // add file to multipart
 
-
-
-      request.fields["clientId"]= clientId;
-      request.fields["branchId"]= branchId;
-      request.fields["firstname"]= firstname;
-      request.fields["middlename"]= middlename;
-      request.fields["surname"]= surname;
-      request.fields["gender"]= gender.toString();
-      request.fields["dateOfBirth"]= dateOfBirth;
-      request.fields["email"]= email;
-      request.fields["phone"]= phone;
-      request.fields["accountType"]= '1';
-      request.fields["memberType"]= memberType.toString();
-      request.fields["referenceId"]= referenceId;
-      request.fields["nationality"]= nationality.toString();
-      request.fields["countryOfResidence"]= countryOfResidence.toString();
-      request.fields["stateProvince"]= stateProvince.toString().isNotEmpty?stateProvince.toString():'-';
-      if(region!=null){
-        request.fields["region"]= region.toString();
+      request.fields["clientId"] = clientId;
+      request.fields["branchId"] = branchId;
+      request.fields["firstname"] = firstname;
+      request.fields["middlename"] = middlename;
+      request.fields["surname"] = surname;
+      request.fields["gender"] = gender.toString();
+      request.fields["dateOfBirth"] = dateOfBirth;
+      request.fields["email"] = email;
+      request.fields["phone"] = phone;
+      request.fields["accountType"] = '1';
+      request.fields["memberType"] = memberType.toString();
+      request.fields["referenceId"] = referenceId;
+      request.fields["nationality"] = nationality.toString();
+      request.fields["countryOfResidence"] = countryOfResidence.toString();
+      request.fields["stateProvince"] =
+          stateProvince.toString().isNotEmpty ? stateProvince.toString() : '-';
+      if (region != null) {
+        request.fields["region"] = region.toString();
       }
-      if(district!=null){
-        request.fields["district"]= district.toString();
+      if (district != null) {
+        request.fields["district"] = district.toString();
       }
-      if(constituency!=null){
-        request.fields["constituency"]= constituency.toString();
+      if (constituency != null) {
+        request.fields["constituency"] = constituency.toString();
       }
-      if(electoralArea!=null){
-        request.fields["electoralArea"]= electoralArea.toString();
-      }
-
-      request.fields["community"]= community.toString().isNotEmpty?community.toString():'-';
-      request.fields["digitalAddress"]= digitalAddress.toString();
-      request.fields["hometown"]= hometown.toString();
-      request.fields["occupation"]= occupation.toString();
-      request.fields["disability"]= disability.toString();
-      request.fields["maritalStatus"]= maritalStatus.toString();
-      request.fields["occupationalStatus"]= occupationalStatus.toString();
-      request.fields["professionStatus"]= professionStatus.toString();
-      request.fields["educationalStatus"]= educationalStatus.toString();
-      if(groupIds!=null){
-        request.fields["groupIds"]= groupIds.toString();
-      }
-      if(subgroupIds!=null){
-        request.fields["subgroupIds"]= subgroupIds.toString();
+      if (electoralArea != null) {
+        request.fields["electoralArea"] = electoralArea.toString();
       }
 
+      request.fields["community"] =
+          community.toString().isNotEmpty ? community.toString() : '-';
+      request.fields["digitalAddress"] = digitalAddress.toString();
+      request.fields["hometown"] = hometown.toString();
+      request.fields["occupation"] = occupation.toString();
+      request.fields["disability"] = disability.toString();
+      request.fields["maritalStatus"] = maritalStatus.toString();
+      request.fields["occupationalStatus"] = occupationalStatus.toString();
+      request.fields["professionStatus"] = professionStatus.toString();
+      request.fields["educationalStatus"] = educationalStatus.toString();
+      if (groupIds != null) {
+        request.fields["groupIds"] = groupIds.toString();
+      }
+      if (subgroupIds != null) {
+        request.fields["subgroupIds"] = subgroupIds.toString();
+      }
 
-      request.fields["password"]= password;
-      request.fields["confirm_password"]= confirm_password;
-
+      request.fields["password"] = password;
+      request.fields["confirm_password"] = confirm_password;
 
       // send
       var response = await request.send();
       // listen for response
       print('response.statusCode ${response.statusCode}');
-
 
       if (response.statusCode == 201) {
         debugPrint('REGISTRATION MEMBER -------------- $response');
@@ -1110,151 +1075,141 @@ class MemberAPI {
     }
   }
 
-
-  static Future<String?> registerOrg(
-
-      BuildContext context,
-      {
-        clientId,
-        branchId,
-        organizationName,
-        contactPersonName,
-        contactPersonGender,
-        organizationType,
-        businessRegistered,
-        organizationEmail,
-        organizationPhone,
-        contactPersonEmail,
-        contactPersonPhone,
-        contactPersonWhatsapp,
-        // occupation,
-        memberType,
-        referenceId,
-        countryOfBusiness,
-        stateProvince,
-        region,
-        district,
-        constituency,
-        electoralArea,
-        community,
-        digitalAddress,
-        password,
-        confirm_password,
-        groupIds,
-        subgroupIds,
-        website,
-        businessDescription,
-        logo,
-        certificates
-      }
-      ) async {
+  static Future<String?> registerOrg(BuildContext context,
+      {clientId,
+      branchId,
+      organizationName,
+      contactPersonName,
+      contactPersonGender,
+      organizationType,
+      businessRegistered,
+      organizationEmail,
+      organizationPhone,
+      contactPersonEmail,
+      contactPersonPhone,
+      contactPersonWhatsapp,
+      // occupation,
+      memberType,
+      referenceId,
+      countryOfBusiness,
+      stateProvince,
+      region,
+      district,
+      constituency,
+      electoralArea,
+      community,
+      digitalAddress,
+      password,
+      confirm_password,
+      groupIds,
+      subgroupIds,
+      website,
+      businessDescription,
+      logo,
+      certificates}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       var request = await http.MultipartRequest('POST',
           Uri.parse('$regBaseUrl/members/user-organization/app-register'));
 
-      Map<String, String> headers =  {'Content-Type': 'application/json'};
+      Map<String, String> headers = {'Content-Type': 'application/json'};
       request.headers.addAll(headers);
 
       // multipart that takes file
-      if(logo!=null) {
+      if (logo != null) {
         var orgLogo = await http.MultipartFile.fromPath('logo', logo);
         request.files.add(orgLogo);
       }
-      if(certificates!=null) {
-        var orgCertificates = await http.MultipartFile.fromPath(
-            'certificates', certificates);
+      if (certificates != null) {
+        var orgCertificates =
+            await http.MultipartFile.fromPath('certificates', certificates);
         request.files.add(orgCertificates);
       }
 
       // add file to multipart
 
-      request.fields["clientId"]= clientId;
-      request.fields["branchId"]= branchId;
-      request.fields["organizationName"]= organizationName;
-      request.fields["organizationType"]= organizationType.toString();
-      request.fields["organizationEmail"]= organizationEmail;
-      request.fields["organizationPhone"]= organizationPhone;
-      request.fields["contactPersonName"]= contactPersonName;
-      request.fields["contactPersonGender"]= contactPersonGender.toString();
-      request.fields["contactPersonEmail"]= contactPersonEmail;
-      request.fields["contactPersonPhone"]= contactPersonPhone;
-      request.fields["countryOfBusiness"]= countryOfBusiness.toString();
-      request.fields["memberType"]= memberType.toString();
-      request.fields["stateProvince"]= stateProvince.toString().isNotEmpty?stateProvince.toString():'-';
-      request.fields["businessRegistered"]= businessRegistered.toString();
+      request.fields["clientId"] = clientId;
+      request.fields["branchId"] = branchId;
+      request.fields["organizationName"] = organizationName;
+      request.fields["organizationType"] = organizationType.toString();
+      request.fields["organizationEmail"] = organizationEmail;
+      request.fields["organizationPhone"] = organizationPhone;
+      request.fields["contactPersonName"] = contactPersonName;
+      request.fields["contactPersonGender"] = contactPersonGender.toString();
+      request.fields["contactPersonEmail"] = contactPersonEmail;
+      request.fields["contactPersonPhone"] = contactPersonPhone;
+      request.fields["countryOfBusiness"] = countryOfBusiness.toString();
+      request.fields["memberType"] = memberType.toString();
+      request.fields["stateProvince"] =
+          stateProvince.toString().isNotEmpty ? stateProvince.toString() : '-';
+      request.fields["businessRegistered"] = businessRegistered.toString();
 
+      request.fields["contactPersonWhatsapp"] = contactPersonWhatsapp;
 
-      request.fields["contactPersonWhatsapp"]= contactPersonWhatsapp;
-
-      request.fields["accountType"]= '2';
+      request.fields["accountType"] = '2';
       // request.fields["referenceId"]= referenceId;
-      if(region!=null){
-        request.fields["region"]= region.toString();
+      if (region != null) {
+        request.fields["region"] = region.toString();
       }
-      if(district!=null){
-        request.fields["district"]= district.toString();
+      if (district != null) {
+        request.fields["district"] = district.toString();
       }
-      if(constituency!=null){
-        request.fields["constituency"]= constituency.toString();
+      if (constituency != null) {
+        request.fields["constituency"] = constituency.toString();
       }
-      if(electoralArea!=null){
-        request.fields["electoralArea"]= electoralArea.toString();
+      if (electoralArea != null) {
+        request.fields["electoralArea"] = electoralArea.toString();
       }
-      request.fields["community"]= community.toString().isNotEmpty?community.toString():'-';
-      request.fields["digitalAddress"]= digitalAddress.toString();
-      request.fields["website"]= website;
-      request.fields["businessDescription"]= businessDescription;
-      if(groupIds!=null){
-        request.fields["groupIds"]= groupIds.toString();
+      request.fields["community"] =
+          community.toString().isNotEmpty ? community.toString() : '-';
+      request.fields["digitalAddress"] = digitalAddress.toString();
+      request.fields["website"] = website;
+      request.fields["businessDescription"] = businessDescription;
+      if (groupIds != null) {
+        request.fields["groupIds"] = groupIds.toString();
       }
-      if(subgroupIds!=null){
-        request.fields["subgroupIds"]= subgroupIds.toString();
+      if (subgroupIds != null) {
+        request.fields["subgroupIds"] = subgroupIds.toString();
       }
-      request.fields["password"]= password;
-      request.fields["confirm_password"]= confirm_password;
+      request.fields["password"] = password;
+      request.fields["confirm_password"] = confirm_password;
 
       // send
       var response = await request.send();
-
 
       // listen for response
       print('response.statusCode ${response.statusCode}');
 
       // print('response.============> ${response}');
 
-
       if (response.statusCode == 201) {
         debugPrint('REGISTRATION MEMBER -------------- $response');
         response.stream.transform(utf8.decoder).listen((value) {
           var data = json.decode(value);
           // var message = data['non_field_errors'][0];
-          print('RESPONSE: $data' );
+          print('RESPONSE: $data');
           // showNormalToast('$message');
         });
 
-
         showNormalToast("Registration Successful, Proceed to Login.");
         return 'successful';
-      } else if(response.statusCode == 400) {
+      } else if (response.statusCode == 400) {
         response.stream.transform(utf8.decoder).listen((value) {
           var data = json.decode(value);
-          print('RESPONSE: $data' );
-          if(data==null){
+          print('RESPONSE: $data');
+          if (data == null) {
             showErrorToast('Failed, Try again');
-          }else{
-            if(data['non_field_errors']==null){
+          } else {
+            if (data['non_field_errors'] == null) {
               var res = data.keys.toList().first;
               print(res);
               var message = '$res: ${data[res][0]}';
               showErrorToast('$message');
-            }else{
+            } else {
               var message = data['non_field_errors'][0];
               showErrorToast('$message');
             }
-
           }
-
         });
       }
     } on SocketException catch (_) {
@@ -1263,13 +1218,17 @@ class MemberAPI {
     }
   }
 
-
-
   //UPDATE BIO INFO
   static Future<String?> updateBio(BuildContext context,
-      {firstname,middlename,surname,gender, dateOfBirth,email,phone,referenceId}
-      ) async {
-      var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+      {firstname,
+      middlename,
+      surname,
+      gender,
+      dateOfBirth,
+      email,
+      phone,
+      referenceId}) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       var data = {
         "firstname": firstname,
@@ -1287,9 +1246,10 @@ class MemberAPI {
       print('UPDATE BIO memberId $memberId');
 
       http.Response response = await http.put(
-          Uri.parse('$regBaseUrl/members/user/$memberId'),
-          body: json.encode(data),
-          headers: await getAllHeaders(),);
+        Uri.parse('$regBaseUrl/members/user/$memberId'),
+        body: json.encode(data),
+        headers: await getAllHeaders(),
+      );
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         debugPrint('UPDATE BIO MEMBER -------------- $decodedResponse');
@@ -1304,11 +1264,9 @@ class MemberAPI {
     }
   }
 
-
   //UPDATE GROUPINGS
   static Future<String?> updateGroup(BuildContext context,
-      {branchId,category}
-      ) async {
+      {branchId, category}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       var data = {
@@ -1323,7 +1281,8 @@ class MemberAPI {
       http.Response response = await http.put(
         Uri.parse('$regBaseUrl/members/user/$memberId'),
         body: json.encode(data),
-        headers: await getAllHeaders(),);
+        headers: await getAllHeaders(),
+      );
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         debugPrint('UPDATE GROUP MEMBER -------------- $decodedResponse');
@@ -1338,20 +1297,18 @@ class MemberAPI {
     }
   }
 
-
   //UPDATE LOCATION
   static Future<String?> updateLocation(BuildContext context,
-      { nationality,
-        countryOfResidence,
-        stateProvince,
-        region,
-        district,
-        constituency,
-        electoralArea,
-        community,
-        digitalAddress,
-        hometown}
-      ) async {
+      {nationality,
+      countryOfResidence,
+      stateProvince,
+      region,
+      district,
+      constituency,
+      electoralArea,
+      community,
+      digitalAddress,
+      hometown}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       var data = {
@@ -1374,7 +1331,8 @@ class MemberAPI {
       http.Response response = await http.put(
         Uri.parse('$regBaseUrl/members/user/$memberId'),
         body: json.encode(data),
-        headers: await getAllHeaders(),);
+        headers: await getAllHeaders(),
+      );
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         debugPrint('UPDATE LOCATION MEMBER -------------- $decodedResponse');
@@ -1389,25 +1347,27 @@ class MemberAPI {
     }
   }
 
-
-  static Future<String?> updateCV(BuildContext context,{profileResume,}
-      ) async {
+  static Future<String?> updateCV(
+    BuildContext context, {
+    profileResume,
+  }) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       int? memberId = prefs.getInt('memberId');
       print('UPDATE GROUP memberId $memberId');
-      var request = await http.MultipartRequest('PUT',
-          Uri.parse('$regBaseUrl/members/user/$memberId'));
+      var request = await http.MultipartRequest(
+          'PUT', Uri.parse('$regBaseUrl/members/user/$memberId'));
 
       Map<String, String> headers = await getAllHeaders();
 
       // multipart that takes file
 
-      if(profileResume!=null) {
-        var profResume = await http.MultipartFile.fromPath('profileResume', profileResume);
+      if (profileResume != null) {
+        var profResume =
+            await http.MultipartFile.fromPath('profileResume', profileResume);
         request.files.add(profResume);
-      }else{
+      } else {
         showErrorToast("Please select a file");
         return 'failed';
       }
@@ -1419,7 +1379,8 @@ class MemberAPI {
       print('response.statusCode ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        debugPrint('UPDATE LOCATION MEMBER -------------- ${response.stream.toString()}');
+        debugPrint(
+            'UPDATE LOCATION MEMBER -------------- ${response.stream.toString()}');
         showNormalToast("CV Update Successful");
         return 'successful';
       } else {
@@ -1436,25 +1397,25 @@ class MemberAPI {
     }
   }
 
-
-  static Future<String?> updateIDCard(BuildContext context,{profileIdentification}
-      ) async {
+  static Future<String?> updateIDCard(BuildContext context,
+      {profileIdentification}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       int? memberId = prefs.getInt('memberId');
       print('UPDATE GROUP memberId $memberId');
-      var request = await http.MultipartRequest('PUT',
-          Uri.parse('$regBaseUrl/members/user/$memberId'));
+      var request = await http.MultipartRequest(
+          'PUT', Uri.parse('$regBaseUrl/members/user/$memberId'));
 
       Map<String, String> headers = await getAllHeaders();
 
       // multipart that takes file
 
-      if(profileIdentification!=null) {
-        var profileIdentificationk = await http.MultipartFile.fromPath('profileIdentification', profileIdentification);
+      if (profileIdentification != null) {
+        var profileIdentificationk = await http.MultipartFile.fromPath(
+            'profileIdentification', profileIdentification);
         request.files.add(profileIdentificationk);
-      }else{
+      } else {
         showErrorToast("Please select a file");
         return 'failed';
       }
@@ -1482,25 +1443,25 @@ class MemberAPI {
     }
   }
 
-
-  static Future<String?> updateProfilePic(BuildContext context,{profilePic}
-      ) async {
+  static Future<String?> updateProfilePic(BuildContext context,
+      {profilePic}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       int? memberId = prefs.getInt('memberId');
       print('UPDATE GROUP memberId $memberId');
-      var request = await http.MultipartRequest('PUT',
-          Uri.parse('$regBaseUrl/members/user/$memberId'));
+      var request = await http.MultipartRequest(
+          'PUT', Uri.parse('$regBaseUrl/members/user/$memberId'));
 
       Map<String, String> headers = await getAllHeaders();
 
       // multipart that takes file
 
-      if(profilePic!=null) {
-        var profilePicture = await http.MultipartFile.fromPath('profilePicture', profilePic);
+      if (profilePic != null) {
+        var profilePicture =
+            await http.MultipartFile.fromPath('profilePicture', profilePic);
         request.files.add(profilePicture);
-      }else{
+      } else {
         showErrorToast("Please select a file");
         return 'failed';
       }
@@ -1527,10 +1488,4 @@ class MemberAPI {
       return 'network_error';
     }
   }
-
 }
-
-
-
-
-

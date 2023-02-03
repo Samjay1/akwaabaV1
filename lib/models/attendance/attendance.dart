@@ -11,6 +11,7 @@ class Attendance {
   Member? memberId;
   int? accountType;
   bool? inOrOut;
+  dynamic justification;
   String? inTime;
   String? outTime;
   String? startBreak;
@@ -53,6 +54,7 @@ class Attendance {
         json['memberId'] != null ? Member.fromJson(json['memberId']) : null;
     accountType = json['accountType'];
     inOrOut = json['inOrOut'];
+    justification = json['justification'];
     inTime = json['inTime'];
     outTime = json['outTime'];
     startBreak = json['startBreak'];
@@ -79,6 +81,7 @@ class Attendance {
     }
     data['accountType'] = accountType;
     data['inOrOut'] = inOrOut;
+    data['justification'] = justification;
     data['inTime'] = inTime;
     data['outTime'] = outTime;
     data['startBreak'] = startBreak;

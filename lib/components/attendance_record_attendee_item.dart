@@ -254,9 +254,7 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                         )
                       ],
                     ),
-                    SizedBox(
-                      height: displayHeight(context) * 0.01,
-                    ),
+
                     if (attendee!.attendance!.inTime != null &&
                         userType == AppConstants.admin)
                       attendee!.attendance!.validate! == 1
