@@ -87,9 +87,11 @@ class _RestrictedMemberWidgetState extends State<RestrictedMemberWidget> {
                     children: [
                       Expanded(
                           child: Text(
-                        "${widget.restrictedMember!.member!.firstname!.capitalize()} ${widget.restrictedMember!.member!.surname!.capitalize()}",
+                        "${widget.restrictedMember!.member!.firstname!.capitalize()} ${widget.restrictedMember!.member!.middlename!.isEmpty ? '' : widget.restrictedMember!.member!.middlename!.capitalize()} ${widget.restrictedMember!.member!.surname!.capitalize()}",
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
                         maxLines: 2,
                         //overflow: TextOverflow.ellipsis,
                       )),

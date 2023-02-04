@@ -20,12 +20,12 @@ class ClockingAPI {
     required String filterDate,
     required String search,
     required int branchId,
-    required int memberCategoryId,
-    required int groupId,
-    required int subGroupId,
-    required int genderId,
-    required int fromAge,
-    required int toAge,
+    required String? memberCategoryId,
+    required String? groupId,
+    required String? subGroupId,
+    required String? genderId,
+    required String? fromAge,
+    required String? toAge,
   }) async {
     ClockedMembersResponse membersResponse;
 
@@ -65,12 +65,12 @@ class ClockingAPI {
     required String filterDate,
     required String search,
     required int branchId,
-    required int memberCategoryId,
-    required int groupId,
-    required int subGroupId,
-    required int genderId,
-    required int fromAge,
-    required int toAge,
+    required String memberCategoryId,
+    required String groupId,
+    required String subGroupId,
+    required String genderId,
+    required String fromAge,
+    required String toAge,
   }) async {
     ClockedMembersResponse membersResponse;
     //debugPrint("URL: ${url.toString()}");

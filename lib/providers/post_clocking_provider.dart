@@ -273,13 +273,15 @@ class PostClockingProvider extends ChangeNotifier {
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
         search: search.isEmpty ? '' : search,
-        memberCategoryId:
-            selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-        groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-        subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-        genderId: selectedGender == null ? 0 : selectedGender!.id!,
-        fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-        toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+        memberCategoryId: selectedMemberCategory == null
+            ? ''
+            : selectedMemberCategory!.id!.toString(),
+        groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+        subGroupId:
+            selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
+        genderId: selectedGender == null ? '' : selectedGender!.id!.toString(),
+        fromAge: minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text,
+        toAge: maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text,
       );
       selectedAbsentees.clear();
 
@@ -335,13 +337,16 @@ class PostClockingProvider extends ChangeNotifier {
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
           search: search.isEmpty ? '' : search,
-          memberCategoryId:
-              selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-          groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-          subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-          genderId: selectedGender == null ? 0 : selectedGender!.id!,
-          fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-          toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+          memberCategoryId: selectedMemberCategory == null
+              ? ''
+              : selectedMemberCategory!.id!.toString(),
+          groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+          subGroupId:
+              selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
+          genderId:
+              selectedGender == null ? '' : selectedGender!.id!.toString(),
+          fromAge: minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text,
+          toAge: maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
           _absentees.addAll(response.results!
@@ -382,13 +387,15 @@ class PostClockingProvider extends ChangeNotifier {
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
         search: search.isEmpty ? '' : search,
-        memberCategoryId:
-            selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-        groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-        subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-        genderId: selectedGender == null ? 0 : selectedGender!.id!,
-        fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-        toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+        memberCategoryId: selectedMemberCategory == null
+            ? ''
+            : selectedMemberCategory!.id!.toString(),
+        groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+        subGroupId:
+            selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
+        genderId: selectedGender == null ? '' : selectedGender!.id!.toString(),
+        fromAge: minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text,
+        toAge: maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text,
       );
       selectedAttendees.clear();
 
@@ -438,13 +445,16 @@ class PostClockingProvider extends ChangeNotifier {
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
           search: search.isEmpty ? '' : search,
-          memberCategoryId:
-              selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-          groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-          subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-          genderId: selectedGender == null ? 0 : selectedGender!.id!,
-          fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-          toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+          memberCategoryId: selectedMemberCategory == null
+              ? ''
+              : selectedMemberCategory!.id!.toString(),
+          groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+          subGroupId:
+              selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
+          genderId:
+              selectedGender == null ? '' : selectedGender!.id!.toString(),
+          fromAge: minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text,
+          toAge: maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
           _attendees.addAll(response.results!

@@ -11,6 +11,7 @@ import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,15 +34,23 @@ class AttendanceReportItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var attendeeName =
-        "${attendee!.attendance!.memberId!.firstname!} ${attendee!.attendance!.memberId!.surname!}";
+        "${attendee!.additionalInfo!.memberInfo!.firstname!.capitalize()} ${attendee!.additionalInfo!.memberInfo!.middlename!.isEmpty ? '' : attendee!.additionalInfo!.memberInfo!.middlename!.capitalize()} ${attendee!.additionalInfo!.memberInfo!.surname!.capitalize()}";
 
-    var meetingDate = DateUtil.formatStringDate(
-      DateFormat.yMMMEd(),
-      date: DateTime.parse(attendee!.attendance!.date!),
-    );
-    var lastSeenDate = DateUtil.convertToAgo(
-      date: DateTime.parse(attendee!.lastSeen!),
-    );
+    var meetingDate = 'N/A';
+    if (attendee!.attendance!.date != null) {
+      meetingDate = DateUtil.formatStringDate(
+        DateFormat.yMMMEd(),
+        date: DateTime.parse(attendee!.attendance!.date!),
+      );
+    }
+
+    var lastSeenDate = 'N/A';
+    if (attendee!.lastSeen != null) {
+      lastSeenDate = DateUtil.convertToAgo(
+        date: DateTime.parse(attendee!.lastSeen!),
+      );
+    }
+
     return InkWell(
       onTap: () {
         Navigator.push(

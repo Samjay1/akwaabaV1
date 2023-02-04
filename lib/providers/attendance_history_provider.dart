@@ -281,8 +281,12 @@ class AttendanceHistoryProvider extends ChangeNotifier {
         page: _page,
         meetingIds: selectedMeetingIds(),
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
-        startDate: selectedStartDate!.toIso8601String().substring(0, 10),
-        endDate: selectedEndDate!.toIso8601String().substring(0, 10),
+        startDate: selectedStartDate == null
+            ? ''
+            : selectedStartDate!.toIso8601String().substring(0, 10),
+        endDate: selectedEndDate == null
+            ? ''
+            : selectedEndDate!.toIso8601String().substring(0, 10),
         search: search!,
         status: selectedStatus == 'Both'
             ? ''
@@ -333,8 +337,12 @@ class AttendanceHistoryProvider extends ChangeNotifier {
           meetingIds: selectedMeetingIds(),
           branchId:
               selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
-          startDate: selectedStartDate!.toIso8601String().substring(0, 10),
-          endDate: selectedEndDate!.toIso8601String().substring(0, 10),
+          startDate: selectedStartDate == null
+              ? ''
+              : selectedStartDate!.toIso8601String().substring(0, 10),
+          endDate: selectedEndDate == null
+              ? ''
+              : selectedEndDate!.toIso8601String().substring(0, 10),
           search: search!,
           status: selectedStatus == 'Both'
               ? ''
@@ -342,16 +350,15 @@ class AttendanceHistoryProvider extends ChangeNotifier {
                   ? 1.toString()
                   : 0.toString(),
           memberCategoryId: selectedMemberCategory == null
-              ? null
+              ? ''
               : selectedMemberCategory!.id!.toString(),
-          groupId: selectedGroup == null ? null : selectedGroup!.id!.toString(),
-          subGroupId: selectedSubGroup == null
-              ? null
-              : selectedSubGroup!.id!.toString(),
+          groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+          subGroupId:
+              selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
           genderId:
-              selectedGender == null ? null : selectedGender!.id!.toString(),
-          fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
-          toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
+              selectedGender == null ? '' : selectedGender!.id!.toString(),
+          fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+          toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
           // fromAge: int.parse(minAgeTEC.text.isEmpty ? null : minAgeTEC.text),
           // toAge: int.parse(maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text),
         );

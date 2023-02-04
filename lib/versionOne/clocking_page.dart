@@ -33,6 +33,7 @@ import 'package:shimmer/shimmer.dart';
 import '../components/clocked_member_item.dart';
 import '../components/clocking_member_item.dart';
 import '../components/form_textfield.dart';
+import '../providers/self_clocking_provider.dart';
 
 class ClockingPage extends StatefulWidget {
   final MeetingEventModel meetingEventModel;
@@ -143,6 +144,7 @@ class _ClockingPageState extends State<ClockingPage> {
                               height: 12,
                             ),
                             CupertinoSearchTextField(
+                              padding: const EdgeInsets.all(AppPadding.p14),
                               onSubmitted: (val) {
                                 setState(() {
                                   clockingProvider.search = val;
@@ -165,6 +167,7 @@ class _ClockingPageState extends State<ClockingPage> {
                               height: 12,
                             ),
                             CupertinoSearchTextField(
+                              padding: const EdgeInsets.all(AppPadding.p14),
                               placeholder: "Enter ID",
                               onSubmitted: (val) {
                                 setState(() {
@@ -176,12 +179,12 @@ class _ClockingPageState extends State<ClockingPage> {
                                 );
                               },
                               onChanged: (val) {
-                                if (val.isEmpty) {
+                                setState(() {
                                   clockingProvider.search = val;
-                                  clockingProvider.getAllAbsentees(
-                                    meetingEventModel: widget.meetingEventModel,
-                                  );
-                                }
+                                });
+                                clockingProvider.getAllAbsentees(
+                                  meetingEventModel: widget.meetingEventModel,
+                                );
                               },
                             ),
                             SizedBox(
@@ -548,7 +551,9 @@ class _ClockingPageState extends State<ClockingPage> {
                   ),
                   InkWell(
                     onTap: () async {
-                      clockingProvider.clearData();
+                      context
+                          .read<SelfClockingProvider>()
+                          .setSelectedMeeting(widget.meetingEventModel);
                       await Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

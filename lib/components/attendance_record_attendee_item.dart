@@ -1,12 +1,14 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/tag_widget.dart';
+import 'package:akwaaba/components/tag_widget_solid.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/attendance_report_preview.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,7 +54,7 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
     );
 
     var attendeeName =
-        "${attendee!.additionalInfo!.memberInfo!.firstname!} ${attendee!.additionalInfo!.memberInfo!.surname!}";
+        "${attendee!.additionalInfo!.memberInfo!.firstname!.capitalize()} ${attendee!.additionalInfo!.memberInfo!.middlename!.isEmpty ? '' : attendee!.additionalInfo!.memberInfo!.middlename!.capitalize()} ${attendee!.additionalInfo!.memberInfo!.surname!.capitalize()}";
 
     if (attendee!.attendance!.meetingEventId!.latenessTime != null &&
         attendee!.attendance!.inTime != null) {
@@ -154,8 +156,8 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                         SizedBox(
                           width: displayWidth(context) * 0.02,
                         ),
-                        TagWidget(
-                          color: isLate ? Colors.red : primaryColor,
+                        TagWidgetSolid(
+                          color: isLate ? Colors.red : Colors.green,
                           text:
                               isLate ? AppString.lateText : AppString.earlyText,
                         ),
@@ -185,7 +187,7 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                           : displayHeight(context) * 0.00,
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.005,
+                      height: displayHeight(context) * 0.003,
                     ),
                     attendee!.attendance!.meetingEventId!.hasBreakTime!
                         ? Row(

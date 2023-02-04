@@ -81,7 +81,7 @@ class _MemberWidgetState extends State<MemberWidget> {
                     children: [
                       Expanded(
                           child: Text(
-                        "${widget.member!.firstname!.capitalize()} ${widget.member!.surname!.capitalize()}",
+                        "${widget.member!.firstname!.capitalize()} ${widget.member!.middlename!.isEmpty ? '' : widget.member!.middlename!.capitalize()} ${widget.member!.surname!.capitalize()}",
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600),
                         maxLines: 2,

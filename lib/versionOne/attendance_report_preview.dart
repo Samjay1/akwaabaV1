@@ -54,6 +54,13 @@ class _AttendanceReportDetailsPageState
     bool isLate = true;
 
     var outTime = 'N/A';
+    if (widget.attendee!.attendance!.outTime != null) {
+      outTime = DateUtil.formatStringDate(
+        DateFormat.jm(),
+        date: DateTime.parse(widget.attendee!.attendance!.outTime!),
+      ).toLowerCase();
+    }
+
     var meetingDate = DateUtil.formatStringDate(
       DateFormat.yMMMEd(),
       date: DateTime.now(),
@@ -67,12 +74,7 @@ class _AttendanceReportDetailsPageState
     var attendeeName =
         "${widget.attendee!.attendance!.memberId!.firstname!} ${widget.attendee!.attendance!.memberId!.surname!}";
     var attendeePhone = widget.attendee!.attendance!.memberId!.phone!;
-    if (widget.attendee!.attendance!.outTime != null) {
-      outTime = DateUtil.formatStringDate(
-        DateFormat.jm(),
-        date: DateTime.parse(widget.attendee!.attendance!.outTime!),
-      ).toLowerCase();
-    }
+
     if (widget.attendee!.attendance!.meetingEventId!.latenessTime != null &&
         widget.attendee!.attendance!.inTime != null) {
       var lTime = widget.attendee!.attendance!.meetingEventId!.latenessTime!;
@@ -86,25 +88,29 @@ class _AttendanceReportDetailsPageState
       final iSec = int.parse(iTime.substring(17, 19));
 
       latenessTime = DateTime(
-          DateTime.now().year,
-          DateTime.now().month,
-          DateTime.now().day,
-          lHour,
-          lMin,
-          lSec,
-          DateTime.now().millisecond,
-          DateTime.now().microsecond);
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        lHour,
+        lMin,
+        lSec,
+        DateTime.now().millisecond,
+        DateTime.now().microsecond,
+      );
       inTime = DateTime(
-          DateTime.now().year,
-          DateTime.now().month,
-          DateTime.now().day,
-          iHour,
-          iMin,
-          iSec,
-          DateTime.now().millisecond,
-          DateTime.now().microsecond);
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        iHour,
+        iMin,
+        iSec,
+        DateTime.now().millisecond,
+        DateTime.now().microsecond,
+      );
 
-      isLate = latenessTime.compareTo(inTime) < 0 ? true : false;
+      isLate = inTime.isBefore(latenessTime) || inTime.isAtSameMomentAs(inTime)
+          ? false
+          : true;
     }
     return Scaffold(
       appBar: AppBar(
@@ -187,7 +193,7 @@ class _AttendanceReportDetailsPageState
                       padding: const EdgeInsets.symmetric(
                           vertical: 6, horizontal: 12),
                       decoration: BoxDecoration(
-                        color: isLate ? Colors.red : primaryColor,
+                        color: isLate ? Colors.red : Colors.green,
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Text(
@@ -352,9 +358,14 @@ class _AttendanceReportDetailsPageState
               ),
               LabelWidgetContainer(
                 label: "Clocked In By:",
-                child: Text(widget.attendee!.attendance!.clockedBy == 0
-                    ? "Self"
-                    : "Admin"),
+                child: Text(
+                  (widget.attendee!.attendance!.inTime == null)
+                      ? 'N/A'
+                      : (widget.attendee!.attendance!.inTime != null &&
+                              widget.attendee!.attendance!.clockedBy == 0)
+                          ? "Self"
+                          : "Admin",
+                ),
               ),
               const Divider(
                 color: textColorPrimary,
@@ -364,9 +375,14 @@ class _AttendanceReportDetailsPageState
               ),
               LabelWidgetContainer(
                 label: "Clocked out by",
-                child: Text(widget.attendee!.attendance!.clockedBy == 0
-                    ? "Self"
-                    : "Admin"),
+                child: Text(
+                  (widget.attendee!.attendance!.outTime == null)
+                      ? 'N/A'
+                      : (widget.attendee!.attendance!.outTime != null &&
+                              widget.attendee!.attendance!.clockedBy == 0)
+                          ? "Self"
+                          : "Admin",
+                ),
               ),
 
               const Divider(

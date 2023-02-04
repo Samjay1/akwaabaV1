@@ -8,6 +8,7 @@ import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class ClockedMemberItem extends StatelessWidget {
     }
 
     var attendeeName =
-        "${attendee!.additionalInfo!.memberInfo!.firstname!} ${attendee!.additionalInfo!.memberInfo!.surname!}";
+        "${attendee!.additionalInfo!.memberInfo!.firstname!.capitalize()} ${attendee!.additionalInfo!.memberInfo!.middlename!.isEmpty ? '' : attendee!.additionalInfo!.memberInfo!.middlename!.capitalize()} ${attendee!.additionalInfo!.memberInfo!.surname!.capitalize()}";
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),

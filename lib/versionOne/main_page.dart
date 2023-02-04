@@ -754,19 +754,19 @@ class _MainPageState extends State<MainPage> {
                             );
                           },
                         ),
-                        drawerItemView(
-                          title: "My Account",
-                          iconData: Icons.phone_android,
-                          function: () {
-                            toggleDrawer();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const MyAccountPage(),
-                              ),
-                            );
-                          },
-                        ),
+                        // drawerItemView(
+                        //   title: "My Account",
+                        //   iconData: Icons.phone_android,
+                        //   function: () {
+                        //     toggleDrawer();
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (_) => const MyAccountPage(),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                         drawerItemView(
                             title: "Log out",
                             iconData: Icons.logout_rounded,

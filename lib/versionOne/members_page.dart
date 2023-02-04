@@ -99,19 +99,17 @@ class _MembersPageState extends State<MembersPage> {
               children: [
                 Expanded(
                   child: CupertinoSearchTextField(
+                    padding: const EdgeInsets.all(AppPadding.p14),
                     onChanged: (val) {
-                      if (val.isEmpty) {
-                        _membersProvider.search = val;
-                        widget.isMemberuser
-                            ? _membersProvider.getAllIndividualMembers()
-                            : _membersProvider.getAllOrganizations();
-                      }
+                      _membersProvider.search = val;
+                      widget.isMemberuser
+                          ? _membersProvider.getAllIndividualMembers()
+                          : _membersProvider.getAllOrganizations();
                     },
                     onSubmitted: (value) {
                       setState(() {
                         _membersProvider.search = value;
                       });
-
                       widget.isMemberuser
                           ? _membersProvider.getAllIndividualMembers()
                           : _membersProvider.getAllOrganizations();

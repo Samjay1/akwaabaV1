@@ -97,7 +97,6 @@ class AllEventsProvider extends ChangeNotifier {
         }
         if (response.isNotEmpty) {
           _upcomingMeetingEventList.addAll(response);
-
           _eventsList.addAll(_upcomingMeetingEventList
               .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
               .toList());

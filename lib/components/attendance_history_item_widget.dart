@@ -8,6 +8,7 @@ import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/versionOne/attendance_history_item_preview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
@@ -54,7 +55,7 @@ class _AttendanceHistoryItemWidgetState
     );
 
     var attendeeName =
-        "${widget.attendanceHistory!.attendanceRecord!.member!.firstname!} ${widget.attendanceHistory!.attendanceRecord!.member!.surname!}";
+        "${widget.attendanceHistory!.attendanceRecord!.member!.firstname!.capitalize()} ${widget.attendanceHistory!.attendanceRecord!.member!.middlename!.isEmpty ? '' : widget.attendanceHistory!.attendanceRecord!.member!.middlename!.capitalize()} ${widget.attendanceHistory!.attendanceRecord!.member!.surname!.capitalize()}";
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: GestureDetector(

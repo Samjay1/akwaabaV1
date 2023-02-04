@@ -1,14 +1,17 @@
 import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
+import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -127,93 +130,133 @@ class _DeviceActivationRequestPageState
                 // color: Colors.blue,
                 child: Consumer<MemberProvider>(
                   builder: (context, data, child) {
-                    return data.deviceRequestList != null
-                        ? RefreshIndicator(
+                    return data.loading
+                        ? const Center(child: CircularProgressIndicator())
+                        : RefreshIndicator(
                             onRefresh: () => Provider.of<MemberProvider>(
                                     context,
                                     listen: false)
                                 .callDeviceRequestList(
-                                    memberToken: memberToken,
-                                    memberID: memberId,
-                                    context: context),
-                            child: ListView.builder(
-                                itemCount: data.deviceRequestList.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  var item = data.deviceRequestList[index];
-                                  return Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                              memberToken: memberToken,
+                              memberID: memberId,
+                              context: context,
+                            ),
+                            child: data.deviceRequestList.isEmpty
+                                ? const EmptyStateWidget(
+                                    text:
+                                        'You currently have no device activation requests at the moment!',
+                                  )
+                                : ListView.builder(
+                                    itemCount: data.deviceRequestList.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      var item = data.deviceRequestList[index];
+                                      return Column(
                                         children: [
-                                          Text('Device ID'),
-                                          Text('${item.deviceId}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text('Device Type'),
-                                          Text(
-                                            '${item.deviceType}',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text('Device ID'),
+                                              Text('${item.deviceId}',
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ],
                                           ),
+                                          SizedBox(
+                                            height:
+                                                displayHeight(context) * 0.001,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text('Device Type'),
+                                              Text(
+                                                '${item.deviceType}',
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height:
+                                                displayHeight(context) * 0.001,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text('Device Request'),
+                                              item.approved
+                                                  ? Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 3,
+                                                          horizontal: 5),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        border: Border.all(
+                                                            color:
+                                                                Colors.green),
+                                                        color: Colors.green,
+                                                      ),
+                                                      child: const Text(
+                                                          'Approved'),
+                                                    )
+                                                  : Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 3,
+                                                          horizontal: 5),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        border: Border.all(
+                                                            color:
+                                                                Colors.orange),
+                                                        color: Colors.orange,
+                                                      ),
+                                                      child:
+                                                          const Text('Pending'),
+                                                    )
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height:
+                                                displayHeight(context) * 0.001,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text('Request Date'),
+                                              Text(
+                                                DateUtil.formatStringDate(
+                                                    DateFormat.yMMMEd(),
+                                                    date: DateTime.parse(
+                                                        item.creationDate)),
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          const Divider(
+                                            color: Colors.orange,
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          )
                                         ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text('Device Request'),
-                                          item.approved
-                                              ? Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 3,
-                                                      horizontal: 5),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    border: Border.all(
-                                                        color: Colors.green),
-                                                    color: Colors.green,
-                                                  ),
-                                                  child: const Text(
-                                                      'Device Approved'),
-                                                )
-                                              : Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 3,
-                                                      horizontal: 5),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    border: Border.all(
-                                                        color: Colors.orange),
-                                                    color: Colors.orange,
-                                                  ),
-                                                  child: const Text(
-                                                      'Approval Pending'),
-                                                )
-                                        ],
-                                      ),
-                                      const Divider(
-                                        color: Colors.orange,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      )
-                                    ],
-                                  );
-                                }),
-                          )
-                        : const Center(child: CircularProgressIndicator());
+                                      );
+                                    }),
+                          );
                   },
                 )
 

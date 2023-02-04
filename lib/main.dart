@@ -16,6 +16,7 @@ import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/providers/schoolManager_provider.dart';
 import 'package:akwaaba/providers/profile_provider.dart';
+import 'package:akwaaba/providers/self_clocking_provider.dart';
 import 'package:akwaaba/versionOne/main_page.dart';
 import 'package:akwaaba/versionOne/splash_screen.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -294,6 +295,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MembersProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => LeaveProvider()),
+        ChangeNotifierProvider(create: (_) => SelfClockingProvider()),
       ],
       child: MaterialApp(
         key: scaffoldMessengerKey,

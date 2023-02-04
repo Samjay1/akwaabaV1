@@ -504,41 +504,38 @@ class MembersProvider extends ChangeNotifier {
       _indPage = 1;
       _individualMembers = await MembersAPI.getIndividualMembers(
         page: _indPage,
-        branchId:
-            selectedBranch == null ? null : selectedBranch!.id!.toString(),
+        branchId: selectedBranch == null ? '' : selectedBranch!.id!.toString(),
         search: search!,
-        groupId: selectedGroup == null ? null : selectedGroup!.id!.toString(),
+        groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
         subGroupId:
-            selectedSubGroup == null ? null : selectedSubGroup!.id!.toString(),
+            selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
         startDate: selectedStartDate == null
-            ? null
+            ? ''
             : selectedStartDate!.toIso8601String().substring(0, 10),
         endDate: selectedEndDate == null
-            ? null
+            ? ''
             : selectedEndDate!.toIso8601String().substring(0, 10),
         // fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
         // toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
         memberCategoryId: selectedMemberCategory == null
-            ? null
+            ? ''
             : selectedMemberCategory!.id!.toString(),
         countryId:
-            selectedCountry == null ? null : selectedCountry!.id!.toString(),
-        regionId:
-            selectedRegion == null ? null : selectedRegion!.id!.toString(),
+            selectedCountry == null ? '' : selectedCountry!.id!.toString(),
+        regionId: selectedRegion == null ? '' : selectedRegion!.id!.toString(),
         districtId:
-            selectedDistrict == null ? null : selectedDistrict!.id!.toString(),
+            selectedDistrict == null ? '' : selectedDistrict!.id!.toString(),
         //status: selectedStatus,
         maritalStatus: selectedMaritalStatus == null
-            ? null
+            ? ''
             : selectedMaritalStatus!.id!.toString(),
         occupationalStatus: selectedOccupation == null
-            ? null
+            ? ''
             : selectedOccupation!.id!.toString(),
-        educationalStatus: selectedEducation == null
-            ? null
-            : selectedEducation!.id!.toString(),
+        educationalStatus:
+            selectedEducation == null ? '' : selectedEducation!.id!.toString(),
         professionStatus: selectedProfession == null
-            ? null
+            ? ''
             : selectedProfession!.id!.toString(),
       );
 
@@ -591,42 +588,40 @@ class MembersProvider extends ChangeNotifier {
         var members = await MembersAPI.getIndividualMembers(
           page: _indPage,
           branchId:
-              selectedBranch == null ? null : selectedBranch!.id!.toString(),
+              selectedBranch == null ? '' : selectedBranch!.id!.toString(),
           search: search!,
-          groupId: selectedGroup == null ? null : selectedGroup!.id!.toString(),
-          subGroupId: selectedSubGroup == null
-              ? null
-              : selectedSubGroup!.id!.toString(),
+          groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+          subGroupId:
+              selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
           startDate: selectedStartDate == null
-              ? null
+              ? ''
               : selectedStartDate!.toIso8601String().substring(0, 10),
           endDate: selectedEndDate == null
-              ? null
+              ? ''
               : selectedEndDate!.toIso8601String().substring(0, 10),
           // fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
           // toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
           memberCategoryId: selectedMemberCategory == null
-              ? null
+              ? ''
               : selectedMemberCategory!.id!.toString(),
           countryId:
-              selectedCountry == null ? null : selectedCountry!.id!.toString(),
+              selectedCountry == null ? '' : selectedCountry!.id!.toString(),
           regionId:
-              selectedRegion == null ? null : selectedRegion!.id!.toString(),
-          districtId: selectedDistrict == null
-              ? null
-              : selectedDistrict!.id!.toString(),
+              selectedRegion == null ? '' : selectedRegion!.id!.toString(),
+          districtId:
+              selectedDistrict == null ? '' : selectedDistrict!.id!.toString(),
           // status: selectedStatus,
           maritalStatus: selectedMaritalStatus == null
-              ? null
+              ? ''
               : selectedMaritalStatus!.id!.toString(),
           occupationalStatus: selectedOccupation == null
-              ? null
+              ? ''
               : selectedOccupation!.id!.toString(),
           educationalStatus: selectedEducation == null
-              ? null
+              ? ''
               : selectedEducation!.id!.toString(),
           professionStatus: selectedProfession == null
-              ? null
+              ? ''
               : selectedProfession!.id!.toString(),
         );
         if (members.isNotEmpty) {
@@ -678,44 +673,41 @@ class MembersProvider extends ChangeNotifier {
       _orgPage = 1;
       _organizationalMembers = await MembersAPI.getOrganizationalMembers(
         page: _orgPage,
-        branchId:
-            selectedBranch == null ? null : selectedBranch!.id!.toString(),
+        branchId: selectedBranch == null ? '' : selectedBranch!.id!.toString(),
         search: search!,
-        groupId: selectedGroup == null ? null : selectedGroup!.id!.toString(),
+        groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
         subGroupId:
-            selectedSubGroup == null ? null : selectedSubGroup!.id!.toString(),
+            selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
         startDate: selectedStartDate == null
-            ? null
+            ? ''
             : selectedStartDate!.toIso8601String().substring(0, 10),
         endDate: selectedEndDate == null
-            ? null
+            ? ''
             : selectedEndDate!.toIso8601String().substring(0, 10),
         // fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
         // toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
         memberCategoryId: selectedMemberCategory == null
-            ? null
+            ? ''
             : selectedMemberCategory!.id!.toString(),
         countryId:
-            selectedCountry == null ? null : selectedCountry!.id!.toString(),
-        regionId:
-            selectedRegion == null ? null : selectedRegion!.id!.toString(),
+            selectedCountry == null ? '' : selectedCountry!.id!.toString(),
+        regionId: selectedRegion == null ? '' : selectedRegion!.id!.toString(),
         districtId:
-            selectedDistrict == null ? null : selectedDistrict!.id!.toString(),
+            selectedDistrict == null ? '' : selectedDistrict!.id!.toString(),
         // status: selectedStatus,
         maritalStatus: selectedMaritalStatus == null
-            ? null
+            ? ''
             : selectedMaritalStatus!.id!.toString(),
         occupationalStatus: selectedOccupation == null
-            ? null
+            ? ''
             : selectedOccupation!.id!.toString(),
-        educationalStatus: selectedEducation == null
-            ? null
-            : selectedEducation!.id!.toString(),
+        educationalStatus:
+            selectedEducation == null ? '' : selectedEducation!.id!.toString(),
         professionStatus: selectedProfession == null
-            ? null
+            ? ''
             : selectedProfession!.id!.toString(),
         organizationType: selectOrganizationType == null
-            ? null
+            ? ''
             : selectOrganizationType!.id!.toString(),
         businessRegistered: businessRegistered,
       );
@@ -770,45 +762,43 @@ class MembersProvider extends ChangeNotifier {
         var members = await MembersAPI.getOrganizationalMembers(
           page: _orgPage,
           branchId:
-              selectedBranch == null ? null : selectedBranch!.id!.toString(),
+              selectedBranch == null ? '' : selectedBranch!.id!.toString(),
           search: search!,
-          groupId: selectedGroup == null ? null : selectedGroup!.id!.toString(),
-          subGroupId: selectedSubGroup == null
-              ? null
-              : selectedSubGroup!.id!.toString(),
+          groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+          subGroupId:
+              selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
           startDate: selectedStartDate == null
-              ? null
+              ? ''
               : selectedStartDate!.toIso8601String().substring(0, 10),
           endDate: selectedEndDate == null
-              ? null
+              ? ''
               : selectedEndDate!.toIso8601String().substring(0, 10),
           // fromAge: minAgeTEC.text.isEmpty ? null : minAgeTEC.text,
           // toAge: maxAgeTEC.text.isEmpty ? null : maxAgeTEC.text,
           memberCategoryId: selectedMemberCategory == null
-              ? null
+              ? ''
               : selectedMemberCategory!.id!.toString(),
           countryId:
-              selectedCountry == null ? null : selectedCountry!.id!.toString(),
+              selectedCountry == null ? '' : selectedCountry!.id!.toString(),
           regionId:
-              selectedRegion == null ? null : selectedRegion!.id!.toString(),
-          districtId: selectedDistrict == null
-              ? null
-              : selectedDistrict!.id!.toString(),
+              selectedRegion == null ? '' : selectedRegion!.id!.toString(),
+          districtId:
+              selectedDistrict == null ? '' : selectedDistrict!.id!.toString(),
           // status: selectedStatus,
           maritalStatus: selectedMaritalStatus == null
-              ? null
+              ? ''
               : selectedMaritalStatus!.id!.toString(),
           occupationalStatus: selectedOccupation == null
-              ? null
+              ? ''
               : selectedOccupation!.id!.toString(),
           educationalStatus: selectedEducation == null
-              ? null
+              ? ''
               : selectedEducation!.id!.toString(),
           professionStatus: selectedProfession == null
-              ? null
+              ? ''
               : selectedProfession!.id!.toString(),
           organizationType: selectOrganizationType == null
-              ? null
+              ? ''
               : selectOrganizationType!.id!.toString(),
           businessRegistered: businessRegistered,
         );

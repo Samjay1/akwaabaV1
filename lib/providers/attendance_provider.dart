@@ -396,13 +396,15 @@ class AttendanceProvider extends ChangeNotifier {
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
         search: search.isEmpty ? '' : search,
-        memberCategoryId:
-            selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-        groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-        subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-        genderId: selectedGender == null ? 0 : selectedGender!.id!,
-        fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-        toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+        memberCategoryId: selectedMemberCategory == null
+            ? ''
+            : selectedMemberCategory!.id!.toString(),
+        groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+        subGroupId:
+            selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
+        genderId: selectedGender == null ? '' : selectedGender!.id!.toString(),
+        fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+        toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
 
       selectedAttendees.clear();
@@ -438,7 +440,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint("Error Attendees --> $err");
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -462,13 +464,16 @@ class AttendanceProvider extends ChangeNotifier {
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
           search: search.isEmpty ? '' : search,
-          memberCategoryId:
-              selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-          groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-          subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-          genderId: selectedGender == null ? 0 : selectedGender!.id!,
-          fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-          toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+          memberCategoryId: selectedMemberCategory == null
+              ? ''
+              : selectedMemberCategory!.id!.toString(),
+          groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+          subGroupId:
+              selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
+          genderId:
+              selectedGender == null ? '' : selectedGender!.id!.toString(),
+          fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+          toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
           _attendees.addAll(response.results!);
@@ -498,7 +503,6 @@ class AttendanceProvider extends ChangeNotifier {
         setLoadingMore(false);
       } catch (err) {
         setLoadingMore(false);
-
         debugPrint("Error Attendees --> $err");
       }
     }
@@ -521,13 +525,15 @@ class AttendanceProvider extends ChangeNotifier {
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
         search: search.isEmpty ? '' : search,
-        memberCategoryId:
-            selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-        groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-        subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-        genderId: selectedGender == null ? 0 : selectedGender!.id!,
-        fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-        toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+        memberCategoryId: selectedMemberCategory == null
+            ? ''
+            : selectedMemberCategory!.id!.toString(),
+        groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+        subGroupId:
+            selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
+        genderId: selectedGender == null ? '' : selectedGender!.id!.toString(),
+        fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+        toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
       selectedAbsentees.clear();
 
@@ -559,7 +565,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint("Error Absentees --> $err");
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -583,13 +589,16 @@ class AttendanceProvider extends ChangeNotifier {
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
           search: search.isEmpty ? '' : search,
-          memberCategoryId:
-              selectedMemberCategory == null ? 0 : selectedMemberCategory!.id!,
-          groupId: selectedGroup == null ? 0 : selectedGroup!.id!,
-          subGroupId: selectedSubGroup == null ? 0 : selectedSubGroup!.id!,
-          genderId: selectedGender == null ? 0 : selectedGender!.id!,
-          fromAge: int.parse(minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text),
-          toAge: int.parse(maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text),
+          memberCategoryId: selectedMemberCategory == null
+              ? ''
+              : selectedMemberCategory!.id!.toString(),
+          groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
+          subGroupId:
+              selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
+          genderId:
+              selectedGender == null ? '' : selectedGender!.id!.toString(),
+          fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+          toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
           _absentees.addAll(response.results!);

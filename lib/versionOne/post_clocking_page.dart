@@ -133,6 +133,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             ),
 
                             CupertinoSearchTextField(
+                              padding: const EdgeInsets.all(AppPadding.p14),
                               onSubmitted: (val) {
                                 setState(() {
                                   if (clockingListState) {
@@ -160,22 +161,18 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 setState(() {
                                   if (clockingListState) {
                                     // search absentees by name
-                                    if (val.isEmpty) {
-                                      postClockingProvider.search = val;
-                                      postClockingProvider.getAllAbsentees(
-                                        meetingEventModel: postClockingProvider
-                                            .selectedPastMeetingEvent!,
-                                      );
-                                    }
+                                    postClockingProvider.search = val;
+                                    postClockingProvider.getAllAbsentees(
+                                      meetingEventModel: postClockingProvider
+                                          .selectedPastMeetingEvent!,
+                                    );
                                   } else {
                                     // search attendees by name
-                                    if (val.isEmpty) {
-                                      postClockingProvider.search = val;
-                                      postClockingProvider.getAllAttendees(
-                                        meetingEventModel: postClockingProvider
-                                            .selectedPastMeetingEvent!,
-                                      );
-                                    }
+                                    postClockingProvider.search = val;
+                                    postClockingProvider.getAllAttendees(
+                                      meetingEventModel: postClockingProvider
+                                          .selectedPastMeetingEvent!,
+                                    );
                                   }
                                 });
                               },
@@ -186,6 +183,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             ),
 
                             CupertinoSearchTextField(
+                              padding: const EdgeInsets.all(AppPadding.p14),
                               placeholder: "Enter ID",
                               onSubmitted: (val) {
                                 setState(() {
@@ -214,22 +212,18 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 setState(() {
                                   if (clockingListState) {
                                     // search absentees by id
-                                    if (val.isEmpty) {
-                                      postClockingProvider.search = val;
-                                      postClockingProvider.getAllAbsentees(
-                                        meetingEventModel: postClockingProvider
-                                            .selectedPastMeetingEvent!,
-                                      );
-                                    }
+                                    postClockingProvider.search = val;
+                                    postClockingProvider.getAllAbsentees(
+                                      meetingEventModel: postClockingProvider
+                                          .selectedPastMeetingEvent!,
+                                    );
                                   } else {
                                     // search attendees by id
-                                    if (val.isEmpty) {
-                                      postClockingProvider.search = val;
-                                      postClockingProvider.getAllAttendees(
-                                        meetingEventModel: postClockingProvider
-                                            .selectedPastMeetingEvent!,
-                                      );
-                                    }
+                                    postClockingProvider.search = val;
+                                    postClockingProvider.getAllAttendees(
+                                      meetingEventModel: postClockingProvider
+                                          .selectedPastMeetingEvent!,
+                                    );
                                   }
                                 });
                               },

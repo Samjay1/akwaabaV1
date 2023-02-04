@@ -5,6 +5,7 @@ import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,8 @@ class ClockingMemberItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var attendeeName =
-        "${absentee!.attendance!.memberId!.firstname!} ${absentee!.attendance!.memberId!.surname!}";
+        "${absentee!.additionalInfo!.memberInfo!.firstname!.capitalize()} ${absentee!.additionalInfo!.memberInfo!.middlename!.isEmpty ? '' : absentee!.additionalInfo!.memberInfo!.middlename!.capitalize()} ${absentee!.additionalInfo!.memberInfo!.surname!.capitalize()}";
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       child: Card(

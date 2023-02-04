@@ -3,6 +3,7 @@ import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
+import 'package:akwaaba/providers/self_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -21,13 +22,13 @@ class SelfClockingMemberItem extends StatelessWidget {
     this.absentee,
   }) : super(key: key);
 
-  late ClockingProvider _clockingProvider;
+  late SelfClockingProvider _clockingProvider;
 
   @override
   Widget build(BuildContext context) {
     var attendeeName =
         "${absentee!.attendance!.memberId!.firstname!} ${absentee!.attendance!.memberId!.surname!}";
-    _clockingProvider = context.watch<ClockingProvider>();
+    _clockingProvider = context.watch<SelfClockingProvider>();
 
     var inTime = 'N/A';
     if (absentee!.attendance!.inTime != null) {
@@ -137,21 +138,20 @@ class SelfClockingMemberItem extends StatelessWidget {
                         onConfirmTap: () async {
                           Navigator.pop(context);
                           absentee!.attendance!.inTime == null
-                              ? await Provider.of<ClockingProvider>(context,
+                              ? await Provider.of<SelfClockingProvider>(context,
                                       listen: false)
                                   .clockMemberIn(
                                   context: context,
                                   attendee: absentee!,
                                   time: null,
                                 )
-                              : await Provider.of<ClockingProvider>(context,
+                              : await Provider.of<SelfClockingProvider>(context,
                                       listen: false)
                                   .clockMemberOut(
                                   context: context,
                                   attendee: absentee!,
                                   time: null,
                                 );
-                          _clockingProvider.clearData();
                         },
                         onCancelTap: () => Navigator.pop(context),
                         confirmText: 'Yes',

@@ -294,9 +294,16 @@ class MemberProvider with ChangeNotifier {
       {required var memberToken,
       required var memberID,
       required BuildContext context}) async {
-    // print('UserProvider token $token');
-    deviceRequestList =
-        await MemberAPI().getDeviceRequestList(context, memberToken, memberID);
+    setLoading(true);
+    try {
+// print('UserProvider token $token');
+      deviceRequestList = await MemberAPI()
+          .getDeviceRequestList(context, memberToken, memberID);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+    }
+
     notifyListeners();
   }
 }

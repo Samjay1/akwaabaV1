@@ -21,7 +21,9 @@ import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
+import 'package:akwaaba/providers/self_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,32 +46,13 @@ class SelfClockingPage extends StatefulWidget {
 }
 
 class _SelfClockingPageState extends State<SelfClockingPage> {
-  // List<Map> members = [
-  //   {"status": true},
-  //   {"status": true},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  //   {"status": false},
-  // ];
-
-  bool itemHasBeenSelected =
-      false; //at least 1 member has been selected, so show options menu
-  List<Map> selectedMembersList = [];
-  DateTime? generalClockTime;
-  bool checkAll = false;
-
   //bool clockingListState = true;
 
   int _selectedIndex = 0;
 
   bool isFilterExpanded = false;
 
-  late ClockingProvider clockingProvider;
+  late SelfClockingProvider clockingProvider;
 
   bool isShowTopView = true;
 
@@ -78,12 +61,8 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      Provider.of<ClockingProvider>(context, listen: false)
+      Provider.of<SelfClockingProvider>(context, listen: false)
           .setCurrentContext(context);
-      // load attendance list for meeting
-      // Provider.of<ClockingProvider>(context, listen: false).getAllAbsentees(
-      //   meetingEventModel: widget.meetingEventModel,
-      // );
       setState(() {});
     });
 
@@ -92,20 +71,25 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
 
   @override
   void dispose() {
-    clockingProvider.clearData();
+    //clockingProvider.clearData();
     super.dispose();
+  }
+
+  Future<bool> logout() async {
+    SharedPrefs().logout(context);
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    clockingProvider = context.watch<ClockingProvider>();
+    clockingProvider = context.watch<SelfClockingProvider>();
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async => logout(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(widget.meetingEventModel.name!),
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
         ),
         body: RefreshIndicator(
           onRefresh: () => clockingProvider.refreshList(),
@@ -114,7 +98,29 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Container(
+                  padding: const EdgeInsets.all(AppPadding.p12),
+                  decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius:
+                          BorderRadius.circular(AppRadius.borderRadius8)),
+                  child: const Text(
+                    "Hi there, it is a new day! \nPlease enter your ID to clockin or clockout",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: AppSize.s16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: displayHeight(context) * 0.025,
+                ),
                 CupertinoSearchTextField(
+                  padding: const EdgeInsets.all(AppPadding.p14),
+                  controller: clockingProvider.searchTEC,
                   placeholder: "Enter ID",
                   onSubmitted: (val) {
                     setState(() {
@@ -125,10 +131,19 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                     );
                   },
                   onChanged: (val) {
-                    setState(() {
-                      clockingProvider.search = val;
-                    });
-                    clockingProvider.clearData();
+                    if (val.isEmpty) {
+                      setState(() {
+                        clockingProvider.search = val;
+                      });
+                      clockingProvider.clearData();
+                    } else {
+                      setState(() {
+                        clockingProvider.search = val;
+                      });
+                      clockingProvider.getAllAbsentees(
+                        meetingEventModel: widget.meetingEventModel,
+                      );
+                    }
                   },
                 ),
 
@@ -147,7 +162,6 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                       setState(() {
                         _selectedIndex = 0;
 
-                        clockingProvider.selectedAttendees.clear();
                         debugPrint('clockingListState = $_selectedIndex');
                       });
                     },
@@ -155,7 +169,6 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                       setState(() {
                         _selectedIndex = 1;
 
-                        clockingProvider.selectedAbsentees.clear();
                         debugPrint('clockingListState = $_selectedIndex');
                       });
                     },
@@ -182,8 +195,7 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                         ? Expanded(
                             child: clockingProvider.absentees.isEmpty
                                 ? const EmptyStateWidget(
-                                    text:
-                                        'No records found! \nPlease type in your ID to clockin',
+                                    text: 'No records found!',
                                   )
                                 : Column(
                                     children: [
@@ -213,8 +225,7 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                         : Expanded(
                             child: clockingProvider.attendees.isEmpty
                                 ? const EmptyStateWidget(
-                                    text:
-                                        'No records found! \nPlease type in your ID to clockout',
+                                    text: 'No records found!',
                                   )
                                 : Column(
                                     children: [
