@@ -87,50 +87,55 @@ class _MemberWidgetState extends State<MemberWidget> {
                         maxLines: 2,
                         //overflow: TextOverflow.ellipsis,
                       )),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => openEmailAppWithSubject(
-                                widget.member!.email,
-                                'SUBJECT',
-                                "Hello ${widget.member!.firstname!},"),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SvgPicture.asset(
-                                "images/icons/email_ic.svg",
-                                width: 20,
-                                height: 20,
-                                color: primaryColor,
-                              ),
-                            ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => openEmailAppWithSubject(
+                            widget.member!.email,
+                            'SUBJECT',
+                            "Hello ${widget.member!.firstname!},"),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 0.0,
+                            top: 8.0,
+                            bottom: 8.0,
+                            right: 8.0,
                           ),
-                          GestureDetector(
-                            onTap: () => makePhoneCall(widget.member!.phone!),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SvgPicture.asset(
-                                "images/icons/phone_ic.svg",
-                                width: 20,
-                                height: 20,
-                                color: Colors.blueAccent,
-                              ),
-                            ),
+                          child: SvgPicture.asset(
+                            "images/icons/email_ic.svg",
+                            width: 20,
+                            height: 20,
+                            color: primaryColor,
                           ),
-                          GestureDetector(
-                            onTap: () => openWhatsapp(
-                                context, widget.member!.phone!, "Hello"),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SvgPicture.asset(
-                                "images/icons/whatsapp_ic.svg",
-                                width: 20,
-                                height: 20,
-                                color: Colors.green,
-                              ),
-                            ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => makePhoneCall(widget.member!.phone!),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SvgPicture.asset(
+                            "images/icons/phone_ic.svg",
+                            width: 20,
+                            height: 20,
+                            color: Colors.blueAccent,
                           ),
-                        ],
-                      )
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => openWhatsapp(
+                            context, widget.member!.phone!, "Hello"),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SvgPicture.asset(
+                            "images/icons/whatsapp_ic.svg",
+                            width: 20,
+                            height: 20,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   Row(

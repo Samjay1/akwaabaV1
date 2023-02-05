@@ -143,7 +143,7 @@ class ClientProvider extends ChangeNotifier {
     required var phoneEmail,
     required var password,
   }) {
-    showNormalToast('Login successful');
+    //showNormalToast('Login successful');
     Provider.of<GeneralProvider>(context, listen: false)
         .setAdminStatus(isAdmin: true);
     SharedPrefs().setUserType(userType: "admin");

@@ -206,7 +206,11 @@ class _DeviceActivationRequestPageState
                                                         color: Colors.green,
                                                       ),
                                                       child: const Text(
-                                                          'Approved'),
+                                                        'Approved',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
                                                     )
                                                   : Container(
                                                       padding: const EdgeInsets
@@ -219,11 +223,15 @@ class _DeviceActivationRequestPageState
                                                                 .circular(10),
                                                         border: Border.all(
                                                             color:
-                                                                Colors.orange),
-                                                        color: Colors.orange,
+                                                                primaryColor),
+                                                        color: primaryColor,
                                                       ),
-                                                      child:
-                                                          const Text('Pending'),
+                                                      child: const Text(
+                                                        'Pending',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
                                                     )
                                             ],
                                           ),

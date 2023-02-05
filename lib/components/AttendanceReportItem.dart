@@ -1,22 +1,13 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
-import 'package:akwaaba/components/label_widget_container.dart';
-import 'package:akwaaba/components/tag_widget.dart';
-import 'package:akwaaba/constants/app_constants.dart';
-import 'package:akwaaba/constants/app_dimens.dart';
-import 'package:akwaaba/constants/app_strings.dart';
-import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
-import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
-import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '../versionOne/attendance_report_preview.dart';
 import 'tag_widget_solid.dart';

@@ -566,23 +566,6 @@ class MembersProvider extends ChangeNotifier {
 
       _tempIndividualMembers = _individualMembers;
 
-      // totalMaleIndMembers = _tempIndividualMembers;
-
-      // totalFemaleIndMembers = _tempIndividualMembers;
-
-      // // get total members
-      // totalIndMembers = _tempIndividualMembers.length;
-
-      // // calc total males
-      // totalMaleIndMembers = _tempIndividualMembers
-      //     .where((member) => member!.gender == AppConstants.male)
-      //     .toList();
-
-      // // calc total females
-      // totalFemaleIndMembers = _tempIndividualMembers
-      //     .where((member) => member!.gender == AppConstants.female)
-      //     .toList();
-
       // check user type ('admin', 'member')
       if (await userType() == AppConstants.admin) {
         getClientStatistics();

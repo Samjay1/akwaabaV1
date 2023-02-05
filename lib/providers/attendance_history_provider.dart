@@ -169,6 +169,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   Future<void> getGenders() async {
     try {
       _genders = await GroupAPI.getGenders();
+      setLoadingFilters(false);
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Gender: ${err.toString()}');
@@ -226,6 +227,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     setLoadingFilters(true);
     try {
       var userBranch = await getUserBranch(currentContext);
+      var userType = await SharedPrefs().getUserType();
       debugPrint("BID: ${userBranch.name}");
       _pastMeetingEvents = await EventAPI.getAllMeetings(
         page: 1,
@@ -242,7 +244,11 @@ class AttendanceHistoryProvider extends ChangeNotifier {
           _tempMeetingEventMap.add(map);
         }
       }
-      getMemberCategories();
+      if (userType == AppConstants.member) {
+        setLoadingFilters(false);
+      } else {
+        getMemberCategories();
+      }
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error PMs: ${err.toString()}');
@@ -284,7 +290,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     String? userType = await SharedPrefs().getUserType();
     // search with member name if account type is member else
     search = userType == AppConstants.member
-        ? '${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.firstname} ${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.surname}'
+        ? '${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.firstname} ${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.middlename} ${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.surname}'
         : search!.isNotEmpty
             ? search!
             : '';

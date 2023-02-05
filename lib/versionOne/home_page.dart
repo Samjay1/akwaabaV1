@@ -898,8 +898,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Text(
                           meetingEventModel.inTime == null
-                              ? 'CI: N/A'
-                              : 'CI: ${DateUtil.formatStringDate(
+                              ? 'IN: N/A'
+                              : 'IN: ${DateUtil.formatStringDate(
                                   DateFormat.jm(),
                                   date:
                                       DateTime.parse(meetingEventModel.inTime),
@@ -920,8 +920,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Text(
                           meetingEventModel.outTime == null
-                              ? 'CO: N/A'
-                              : 'CO: ${DateUtil.formatStringDate(
+                              ? 'OUT: N/A'
+                              : 'OUT: ${DateUtil.formatStringDate(
                                   DateFormat.jm(),
                                   date:
                                       DateTime.parse(meetingEventModel.outTime),
@@ -951,8 +951,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Text(
                                 meetingEventModel.startBreak == null
-                                    ? 'SB: N/A'
-                                    : 'SB: ${DateUtil.formatStringDate(
+                                    ? 'Break: N/A'
+                                    : 'Break: ${DateUtil.formatStringDate(
                                         DateFormat.jm(),
                                         date: DateTime.parse(
                                             meetingEventModel.startBreak),
@@ -973,8 +973,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Text(
                                 meetingEventModel.endBreak == null
-                                    ? 'EB: N/A'
-                                    : 'EB: ${DateUtil.formatStringDate(
+                                    ? 'Resume: N/A'
+                                    : 'Resume: ${DateUtil.formatStringDate(
                                         DateFormat.jm(),
                                         date: DateTime.parse(
                                             meetingEventModel.endBreak),

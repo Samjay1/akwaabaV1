@@ -191,11 +191,6 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                       });
                       debugPrint(
                           "Selected Start Date: ${attendanceHistoryProvider.selectedStartDate!.toIso8601String().substring(0, 10)}");
-                      // if admin is main branch admin
-                      if (context.read<ClientProvider>().branch != null &&
-                          context.read<ClientProvider>().branch.id == 1) {
-                        attendanceHistoryProvider.getBranches();
-                      }
                     },
                     onSaved: (dateString) {
                       attendanceHistoryProvider.selectedStartDate =

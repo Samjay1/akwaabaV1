@@ -15,7 +15,6 @@ import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/restricted_member_account_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -220,7 +219,7 @@ class _MembersPageState extends State<MembersPage> {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: Colors.orange,
+                                  color: Colors.green,
                                   borderRadius: BorderRadius.circular(10)),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 5, horizontal: 10),
@@ -275,11 +274,14 @@ class _MembersPageState extends State<MembersPage> {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: Colors.grey,
+                                  color: Colors.red,
                                   borderRadius: BorderRadius.circular(10)),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 5, horizontal: 10),
-                              child: const Text("Disable"),
+                              child: const Text(
+                                "Disable",
+                                style: TextStyle(color: whiteColor),
+                              ),
                             ),
                           ),
                         ],

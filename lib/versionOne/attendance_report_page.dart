@@ -224,7 +224,9 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                             : attendanceProvider.totalMaleAbsentees.length
                                 .toString(),
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       )
                     ],
                   ),
@@ -238,7 +240,9 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                             : attendanceProvider.totalFemaleAbsentees.length
                                 .toString(),
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       )
                     ],
                   ),

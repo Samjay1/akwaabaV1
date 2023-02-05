@@ -1,5 +1,6 @@
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/providers/members_provider.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/versionOne/update_account_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
@@ -245,7 +246,7 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
               ),
             ),
             Text(
-              "${widget.member!.firstname} ${widget.member!.surname}",
+              "${widget.member!.firstname!.capitalize()} ${widget.member!.middlename!.isEmpty ? '' : widget.member!.middlename!.capitalize()} ${widget.member!.surname!.capitalize()}",
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 color: textColorPrimary,

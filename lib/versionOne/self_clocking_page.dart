@@ -108,7 +108,7 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                       borderRadius:
                           BorderRadius.circular(AppRadius.borderRadius8)),
                   child: const Text(
-                    "Hi there, it is a new day. \nPlease enter your ID to clockin or clockout. Have a nice day!",
+                    "Hi there, it is a new day. \nPlease enter your ID to clock in or clock out. Have a nice day!",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontSize: AppSize.s18,

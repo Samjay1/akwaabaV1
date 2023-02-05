@@ -2,6 +2,7 @@ import 'package:akwaaba/models/general/restricted_member.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -306,7 +307,7 @@ class _RestrictedMemberAccountPageState
               ),
             ),
             Text(
-              "${widget.restrictedMember!.member!.firstname} ${widget.restrictedMember!.member!.surname}",
+              "${widget.restrictedMember!.member!.firstname!.capitalize()} ${widget.restrictedMember!.member!.middlename!.isEmpty ? '' : widget.restrictedMember!.member!.middlename!.capitalize()} ${widget.restrictedMember!.member!.surname!.capitalize()}",
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 color: textColorPrimary,

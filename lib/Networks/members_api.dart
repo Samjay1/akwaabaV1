@@ -22,7 +22,7 @@ class MembersAPI {
   // get list of individual members
   static Future<List<Member>> getIndividualMembers({
     required int page,
-    required String? branchId,
+    required String branchId,
     required String? memberCategoryId,
     required String? groupId,
     required String? subGroupId,
@@ -43,14 +43,29 @@ class MembersAPI {
     if (regionId == null || districtId == null) {
       // remove district and region from url
       url = Uri.parse(
-          '${getBaseUrl()}/members/user/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+          '${getBaseUrl()}/members/user/location?page=$page&branchId=$branchId&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
     } else {
       // add district and region to url
       url = Uri.parse(
-          '${getBaseUrl()}/members/user/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
+          '${getBaseUrl()}/members/user/location?page=$page&branchId=$branchId&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
     }
 
     debugPrint("URL: ${url.toString()}");
+    debugPrint("page: $page");
+    debugPrint("Search: $search");
+    debugPrint("Start Date: $startDate");
+    debugPrint("End Date: $endDate");
+    debugPrint("BranchId: $branchId");
+    debugPrint("MemberCategoryId: $memberCategoryId");
+    debugPrint("groupId: $groupId");
+    debugPrint("subGroupId: $subGroupId");
+    debugPrint("countryId: $countryId");
+    debugPrint("regionId: $regionId");
+    debugPrint("districtId: $districtId");
+    debugPrint("maritalStatus: $maritalStatus");
+    debugPrint("educationalStatus: $educationalStatus");
+    debugPrint("professionStatus: $professionStatus");
+    debugPrint("occupationalStatus: $occupationalStatus");
 
     try {
       http.Response response = await http.get(

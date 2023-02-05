@@ -7,6 +7,7 @@ import 'package:akwaaba/providers/self_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class SelfClockingMemberItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var attendeeName =
-        "${absentee!.attendance!.memberId!.firstname!} ${absentee!.attendance!.memberId!.surname!}";
+        "${absentee!.attendance!.memberId!.firstname!.capitalize()} ${absentee!.attendance!.memberId!.middlename!.isEmpty ? '' : absentee!.attendance!.memberId!.middlename!.capitalize()} ${absentee!.attendance!.memberId!.surname!.capitalize()}";
     _clockingProvider = context.watch<SelfClockingProvider>();
 
     var inTime = 'N/A';
@@ -133,8 +134,8 @@ class SelfClockingMemberItem extends StatelessWidget {
                             ? 'Clock In'
                             : 'Clock Out',
                         content: absentee!.attendance!.inTime == null
-                            ? 'Are you sure you want to clockin?'
-                            : 'Are you sure you want to clockout?',
+                            ? 'Are you sure you want to clock in?'
+                            : 'Are you sure you want to clock out?',
                         onConfirmTap: () async {
                           Navigator.pop(context);
                           absentee!.attendance!.inTime == null

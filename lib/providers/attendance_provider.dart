@@ -38,15 +38,11 @@ class AttendanceProvider extends ChangeNotifier {
 
   List<Attendee?> _absentees = [];
 
-  List<Attendee?> _tempAbsentees = [];
-
   final List<Attendee?> _selectedAbsentees = [];
 
   final List<int> _selectedClockingIds = [];
 
   List<Attendee?> _attendees = [];
-
-  List<Attendee?> _tempAttendees = [];
 
   final List<Attendee?> _selectedAttendees = [];
 
@@ -73,12 +69,12 @@ class AttendanceProvider extends ChangeNotifier {
   List<Branch> get branches => _branches;
 
   int totalAttendees = 0;
-  List<Attendee?> totalMaleAttendees = [];
-  List<Attendee?> totalFemaleAttendees = [];
+  List<Attendee?> totalMaleAttendees = <Attendee?>[];
+  List<Attendee?> totalFemaleAttendees = <Attendee?>[];
 
   int totalAbsentees = 0;
-  List<Attendee?> totalMaleAbsentees = [];
-  List<Attendee?> totalFemaleAbsentees = [];
+  List<Attendee?> totalMaleAbsentees = <Attendee?>[];
+  List<Attendee?> totalFemaleAbsentees = <Attendee?>[];
 
   BuildContext? _context;
 
@@ -363,18 +359,7 @@ class AttendanceProvider extends ChangeNotifier {
         page: 1,
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
       );
-      if (_pastMeetingEvents.isNotEmpty) {
-        selectedPastMeetingEvent = _pastMeetingEvents[0];
-      } else {
-        showInfoDialog(
-          'ok',
-          context: _context!,
-          title: 'Sorry!',
-          content:
-              'No meetings/events were held on this date. \nPlease try again with another date.',
-          onTap: () => Navigator.pop(_context!),
-        );
-      }
+      selectedPastMeetingEvent = _pastMeetingEvents[0];
       getMemberCategories();
     } catch (err) {
       setLoadingFilters(false);
@@ -432,16 +417,14 @@ class AttendanceProvider extends ChangeNotifier {
 
       _attendees = response.results!;
 
-      _tempAttendees = _attendees;
-
       // calc total males
-      totalMaleAttendees = _tempAttendees
+      totalMaleAttendees = _attendees
           .where((attendee) =>
               attendee!.attendance!.memberId!.gender == AppConstants.male)
           .toList();
 
       // calc total females
-      totalFemaleAttendees = _tempAttendees
+      totalFemaleAttendees = _attendees
           .where((attendee) =>
               attendee!.attendance!.memberId!.gender == AppConstants.female)
           .toList();
@@ -451,8 +434,6 @@ class AttendanceProvider extends ChangeNotifier {
       getAllAbsentees(
         meetingEventModel: meetingEventModel,
       );
-
-      setLoading(false);
     } catch (err) {
       setLoading(false);
       debugPrint("Error Attendees --> $err");
@@ -494,25 +475,17 @@ class AttendanceProvider extends ChangeNotifier {
         if (response.results!.isNotEmpty) {
           _attendees.addAll(response.results!);
 
-          _tempAttendees.addAll(_attendees);
-
-          // calc rest of the total males
-          for (var attendee in _tempAttendees) {
+          // calc rest of the total males and females
+          totalMaleAttendees.clear();
+          totalFemaleAttendees.clear();
+          for (var attendee in _attendees) {
             if (attendee!.attendance!.memberId!.gender == AppConstants.male) {
               totalMaleAttendees.add(attendee);
             }
-          }
-
-          debugPrint("Total male attendees: ${totalMaleAttendees.length}");
-
-          // calc rest of the total females
-          for (var attendee in _tempAttendees) {
-            if (attendee!.attendance!.memberId!.gender == AppConstants.female) {
+            if (attendee.attendance!.memberId!.gender == AppConstants.female) {
               totalFemaleAttendees.add(attendee);
             }
           }
-
-          debugPrint("Total female attendees: ${totalFemaleAttendees.length}");
         } else {
           hasNextPage = false;
         }
@@ -559,21 +532,17 @@ class AttendanceProvider extends ChangeNotifier {
       // admin if he is also a member
       _absentees = response.results!;
 
-      _tempAbsentees = _absentees;
-
       // calc total males
-      for (var absentee in _tempAbsentees) {
-        if (absentee!.attendance!.memberId!.gender == AppConstants.male) {
-          totalMaleAbsentees.add(absentee);
-        }
-      }
+      totalMaleAbsentees = _absentees
+          .where((absentees) =>
+              absentees!.attendance!.memberId!.gender == AppConstants.male)
+          .toList();
 
       // calc total females
-      for (var absentee in _tempAbsentees) {
-        if (absentee!.attendance!.memberId!.gender == AppConstants.female) {
-          totalFemaleAbsentees.add(absentee);
-        }
-      }
+      totalFemaleAbsentees = _absentees
+          .where((absentees) =>
+              absentees!.attendance!.memberId!.gender == AppConstants.female)
+          .toList();
 
       debugPrint('Absentees: ${_absentees.length}');
 
@@ -619,25 +588,17 @@ class AttendanceProvider extends ChangeNotifier {
         if (response.results!.isNotEmpty) {
           _absentees.addAll(response.results!);
 
-          _tempAbsentees.addAll(_absentees);
-
-          // calc rest of the total males
-          for (var absentee in _tempAbsentees) {
+          // calc rest of the total males and females
+          totalMaleAbsentees.clear();
+          totalFemaleAbsentees.clear();
+          for (var absentee in _absentees) {
             if (absentee!.attendance!.memberId!.gender == AppConstants.male) {
               totalMaleAbsentees.add(absentee);
             }
-          }
-
-          debugPrint("Total male absentees: ${totalMaleAbsentees.length}");
-
-          // calc rest of the total females
-          for (var absentee in _tempAbsentees) {
-            if (absentee!.attendance!.memberId!.gender == AppConstants.female) {
+            if (absentee.attendance!.memberId!.gender == AppConstants.female) {
               totalFemaleAbsentees.add(absentee);
             }
           }
-
-          debugPrint("Total female absentees: ${totalFemaleAbsentees.length}");
         } else {
           hasNextPage = false;
         }
@@ -702,7 +663,7 @@ class AttendanceProvider extends ChangeNotifier {
         showNormalToast(response.message);
         debugPrint("SUCCESS ${response.message}");
       }
-      Navigator.pop(context);
+      if (context.mounted) Navigator.pop(context);
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
@@ -731,94 +692,6 @@ class AttendanceProvider extends ChangeNotifier {
     }
   }
 
-  // search through attendance list by name
-  void searchAbsenteesByName({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAbsentees;
-    } else {
-      results = _tempAbsentees
-          .where((element) =>
-              element!.attendance!.memberId!.firstname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _absentees = results;
-    notifyListeners();
-  }
-
-  // search through attendance list by id
-  void searchAbsenteesById({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAbsentees;
-    } else {
-      results = _tempAbsentees
-          .where((element) =>
-              element!.attendance!.memberId!.id!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _absentees = results;
-    notifyListeners();
-  }
-
-  // search through clocked member list by name
-  void searchAttendeesByName({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAttendees;
-    } else {
-      results = _tempAttendees
-          .where((element) =>
-              element!.attendance!.memberId!.firstname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _attendees = results;
-    notifyListeners();
-  }
-
-  // search through clocked member list by name
-  void searchAttendeesById({required String searchText}) {
-    List<Attendee?> results = [];
-    if (searchText.isEmpty) {
-      results = _tempAttendees;
-    } else {
-      results = _tempAttendees
-          .where((element) =>
-              element!.attendance!.memberId!.id!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              element.attendance!.memberId!.surname!
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()))
-          .toList();
-    }
-    _attendees = results;
-    notifyListeners();
-  }
-
   Future<void> clearData() async {
     clearFilters();
     search = '';
@@ -829,9 +702,8 @@ class AttendanceProvider extends ChangeNotifier {
     totalMaleAbsentees.clear();
     totalFemaleAbsentees.clear();
     _attendees.clear();
-    _tempAttendees.clear();
+
     _selectedAttendees.clear();
     _absentees.clear();
-    _tempAbsentees.clear();
   }
 }
