@@ -100,18 +100,43 @@ class _MembersPageState extends State<MembersPage> {
                   child: CupertinoSearchTextField(
                     padding: const EdgeInsets.all(AppPadding.p14),
                     onChanged: (val) {
-                      _membersProvider.search = val;
-                      widget.isMemberuser
-                          ? _membersProvider.getAllIndividualMembers()
-                          : _membersProvider.getAllOrganizations();
-                    },
-                    onSubmitted: (value) {
                       setState(() {
-                        _membersProvider.search = value;
+                        _membersProvider.search = val;
                       });
-                      widget.isMemberuser
-                          ? _membersProvider.getAllIndividualMembers()
-                          : _membersProvider.getAllOrganizations();
+                      if (userType == AppConstants.admin &&
+                          widget.isMemberuser) {
+                        widget.isMemberuser
+                            ? _membersProvider.getAllIndividualMembers()
+                            : _membersProvider.getAllOrganizations();
+                      }
+                      if (userType == AppConstants.member &&
+                          widget.isMemberuser) {
+                        widget.isMemberuser
+                            ? _membersProvider.searchRestrictedMembers(
+                                searchText: val,
+                              )
+                            : _membersProvider.getAllOrganizations();
+                      }
+                      debugPrint('Search: ${_membersProvider.search}');
+                    },
+                    onSubmitted: (val) {
+                      setState(() {
+                        _membersProvider.search = val;
+                      });
+                      if (userType == AppConstants.admin &&
+                          widget.isMemberuser) {
+                        widget.isMemberuser
+                            ? _membersProvider.getAllIndividualMembers()
+                            : _membersProvider.getAllOrganizations();
+                      }
+                      if (userType == AppConstants.member &&
+                          widget.isMemberuser) {
+                        widget.isMemberuser
+                            ? _membersProvider.searchRestrictedMembers(
+                                searchText: val,
+                              )
+                            : _membersProvider.getAllOrganizations();
+                      }
                       debugPrint('Search: ${_membersProvider.search}');
                     },
                   ),

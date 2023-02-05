@@ -248,7 +248,7 @@ class AttendanceProvider extends ChangeNotifier {
     try {
       _messagingTypes = await AttendanceAPI.getMessagingTypes(gender: gender);
       debugPrint('Messaging Types: ${_messagingTypes.length}');
-      getSubGroups();
+      //getSubGroups();
     } catch (err) {
       setLoading(false);
       debugPrint('Error MT: ${err.toString()}');
@@ -314,7 +314,6 @@ class AttendanceProvider extends ChangeNotifier {
       );
       debugPrint('Groups: ${_groups.length}');
       setLoadingFilters(false);
-      // selectedGroup = _groups[0];
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Group: ${err.toString()}');
@@ -335,17 +334,16 @@ class AttendanceProvider extends ChangeNotifier {
 
   // get list of subgroups
   Future<void> getSubGroups() async {
-    if (selectedMemberCategory != null) {
-      setLoadingFilters(true);
-      try {
-        _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
-        debugPrint('Sub Groups: ${_subGroups.length}');
-        setLoadingFilters(false);
-      } catch (err) {
-        setLoadingFilters(false);
-        debugPrint('Error SubGroup: ${err.toString()}');
-        showErrorToast(err.toString());
-      }
+    setLoadingFilters(true);
+    selectedSubGroup = null;
+    try {
+      _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
+      debugPrint('Sub Groups: ${_subGroups.length}');
+      setLoadingFilters(false);
+    } catch (err) {
+      setLoadingFilters(false);
+      debugPrint('Error SubGroup: ${err.toString()}');
+      showErrorToast(err.toString());
     }
     notifyListeners();
   }

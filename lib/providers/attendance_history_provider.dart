@@ -290,7 +290,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     String? userType = await SharedPrefs().getUserType();
     // search with member name if account type is member else
     search = userType == AppConstants.member
-        ? '${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.firstname} ${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.middlename} ${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.surname}'
+        ? '${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.firstname} ${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.surname}'
         : search!.isNotEmpty
             ? search!
             : '';

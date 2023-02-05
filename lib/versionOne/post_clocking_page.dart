@@ -182,6 +182,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             CupertinoSearchTextField(
                               padding: const EdgeInsets.all(AppPadding.p14),
                               placeholder: "Enter ID",
+                              //keyboardType: TextInputType.number,
                               onSubmitted: (val) {
                                 setState(() {
                                   if (clockingListState) {

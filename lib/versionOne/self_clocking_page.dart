@@ -122,8 +122,9 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                   height: displayHeight(context) * 0.03,
                 ),
                 CupertinoSearchTextField(
-                  padding: const EdgeInsets.all(AppPadding.p14),
+                  padding: const EdgeInsets.all(AppPadding.p18),
                   controller: clockingProvider.searchTEC,
+                  //keyboardType: TextInputType.number,
                   placeholder: "Enter ID",
                   onSubmitted: (val) {
                     setState(() {

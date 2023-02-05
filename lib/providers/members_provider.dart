@@ -52,6 +52,7 @@ class MembersProvider extends ChangeNotifier {
   List<MemberStatus> _educations = [];
 
   List<RestrictedMember?> _restrictedMembers = [];
+  List<RestrictedMember?> _tempRestrictedMembers = [];
   List<Member?> _individualMembers = [];
   List<int?> _selectedMemberIds = [];
   List<Member?> _tempIndividualMembers = [];
@@ -478,6 +479,7 @@ class MembersProvider extends ChangeNotifier {
         page: _indPage,
         memberId: memberId,
       );
+      _tempRestrictedMembers = _restrictedMembers;
       // get individual members stats
       getMembersStatistics();
       setLoading(false);
@@ -509,6 +511,7 @@ class MembersProvider extends ChangeNotifier {
         );
         if (members.isNotEmpty) {
           _restrictedMembers.addAll(members);
+          _tempRestrictedMembers.addAll(members);
         } else {
           hasNextPage = false;
         }
@@ -888,6 +891,32 @@ class MembersProvider extends ChangeNotifier {
     } else {
       showErrorToast('Please select fields to filter by');
     }
+  }
+
+  // search through attendees list by name
+  void searchRestrictedMembers({required String searchText}) {
+    List<RestrictedMember?> results = [];
+    if (searchText.isEmpty) {
+      results = _tempRestrictedMembers;
+    } else {
+      results = _tempRestrictedMembers
+          .where((restrictedMember) =>
+              restrictedMember!.member!.firstname!
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()) ||
+              restrictedMember.member!.surname!
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()) ||
+              restrictedMember.member!.identification!
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase()))
+          .toList();
+    }
+    _tempRestrictedMembers = results;
+    notifyListeners();
   }
 
   void clearData() {
