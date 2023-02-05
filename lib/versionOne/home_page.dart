@@ -242,7 +242,8 @@ class _HomePageState extends State<HomePage> {
                         builder: (context, data, child) {
                           if (data.todayMeetings.isEmpty) {
                             return const EmptyStateWidget(
-                              text: 'You currently have no \nmeetings now.',
+                              text:
+                                  'Currently, you do not have any \nmeeting or event.',
                             );
                           }
                           if (userType == AppConstants.member) {

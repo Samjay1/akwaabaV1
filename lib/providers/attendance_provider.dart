@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 class AttendanceProvider extends ChangeNotifier {
   bool _loading = false;
   bool _loadingMore = false;
+  bool _loadingFilters = false;
   bool _clocking = false;
   bool _submitting = false;
 
@@ -95,6 +96,7 @@ class AttendanceProvider extends ChangeNotifier {
 
   bool get loading => _loading;
   bool get loadingMore => _loadingMore;
+  bool get loadingFilters => _loadingFilters;
   bool get clocking => _clocking;
   bool get submitting => _submitting;
 
@@ -123,6 +125,11 @@ class AttendanceProvider extends ChangeNotifier {
 
   setLoadingMore(bool loading) {
     _loadingMore = loading;
+    notifyListeners();
+  }
+
+  setLoadingFilters(bool loading) {
+    _loadingFilters = loading;
     notifyListeners();
   }
 
@@ -261,7 +268,7 @@ class AttendanceProvider extends ChangeNotifier {
       debugPrint('Member Categories: ${_memberCategories.length}');
       getGenders();
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error MC: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -270,14 +277,16 @@ class AttendanceProvider extends ChangeNotifier {
 
   // get list of branches
   Future<void> getBranches() async {
+    setLoadingFilters(true);
     try {
       _branches = await GroupAPI.getBranches();
       debugPrint('Branches: ${_branches.length}');
       if (_branches.isNotEmpty) {
         selectedBranch = _branches[0];
       }
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -289,8 +298,9 @@ class AttendanceProvider extends ChangeNotifier {
     try {
       _genders = await GroupAPI.getGenders();
       debugPrint('Genders: ${_genders.length}');
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Gender: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -299,6 +309,7 @@ class AttendanceProvider extends ChangeNotifier {
 
   // get list of groups
   Future<void> getGroups() async {
+    setLoadingFilters(true);
     try {
       var userBranch = await getUserBranch(currentContext);
       _groups = await GroupAPI.getGroups(
@@ -306,9 +317,10 @@ class AttendanceProvider extends ChangeNotifier {
         memberCategoryId: selectedMemberCategory!.id!,
       );
       debugPrint('Groups: ${_groups.length}');
+      setLoadingFilters(false);
       // selectedGroup = _groups[0];
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Group: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -328,11 +340,13 @@ class AttendanceProvider extends ChangeNotifier {
   // get list of subgroups
   Future<void> getSubGroups() async {
     if (selectedMemberCategory != null) {
+      setLoadingFilters(true);
       try {
         _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
         debugPrint('Sub Groups: ${_subGroups.length}');
+        setLoadingFilters(false);
       } catch (err) {
-        setLoading(false);
+        setLoadingFilters(false);
         debugPrint('Error SubGroup: ${err.toString()}');
         showErrorToast(err.toString());
       }
@@ -342,6 +356,7 @@ class AttendanceProvider extends ChangeNotifier {
 
   // get meetins from date specified
   Future<void> getPastMeetingEvents() async {
+    setLoadingFilters(true);
     try {
       var userBranch = await getUserBranch(currentContext);
       _pastMeetingEvents = await EventAPI.getAllMeetings(
@@ -362,6 +377,7 @@ class AttendanceProvider extends ChangeNotifier {
       }
       getMemberCategories();
     } catch (err) {
+      setLoadingFilters(false);
       debugPrint('Error PMs: ${err.toString()}');
       showErrorToast(err.toString());
     }

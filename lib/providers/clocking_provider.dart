@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 
 class ClockingProvider extends ChangeNotifier {
   bool _loading = false;
+  bool _loadingFilters = false;
   bool _loadingMore = false;
   bool _clocking = false;
   bool _submitting = false;
@@ -72,6 +73,7 @@ class ClockingProvider extends ChangeNotifier {
   BuildContext get currentContext => _context!;
 
   bool get loading => _loading;
+  bool get loadingFilters => _loadingFilters;
   bool get loadingMore => _loadingMore;
   bool get clocking => _clocking;
   bool get submitting => _submitting;
@@ -91,6 +93,11 @@ class ClockingProvider extends ChangeNotifier {
 
   setLoading(bool loading) {
     _loading = loading;
+    notifyListeners();
+  }
+
+  setLoadingFilters(bool loading) {
+    _loadingFilters = loading;
     notifyListeners();
   }
 
@@ -150,8 +157,10 @@ class ClockingProvider extends ChangeNotifier {
   Future<void> getMemberCategories() async {
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
+      selectedMemberCategory = _memberCategories[0];
+      getGroups();
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error MC: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -160,15 +169,16 @@ class ClockingProvider extends ChangeNotifier {
 
   // get list of branches
   Future<void> getBranches() async {
+    setLoadingFilters(true);
     try {
       _branches = await GroupAPI.getBranches();
       debugPrint('Branches: ${_branches.length}');
       if (_branches.isNotEmpty) {
         selectedBranch = _branches[0];
       }
-      getGenders();
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -177,13 +187,14 @@ class ClockingProvider extends ChangeNotifier {
 
   // get list of genders
   Future<void> getGenders() async {
+    setLoadingFilters(true);
     try {
       _genders = await GroupAPI.getGenders();
       debugPrint('Genders: ${_genders.length}');
       //selectedGender = _genders[0];
       getMemberCategories();
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Gender: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -192,15 +203,17 @@ class ClockingProvider extends ChangeNotifier {
 
   // get list of groups
   Future<void> getGroups() async {
+    setLoadingFilters(true);
     try {
       var userBranch = await getUserBranch(currentContext);
       _groups = await GroupAPI.getGroups(
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
         memberCategoryId: selectedMemberCategory!.id!,
       );
+      setLoadingFilters(false);
       debugPrint('Groups: ${_groups.length}');
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Group: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -216,11 +229,13 @@ class ClockingProvider extends ChangeNotifier {
 
   // get list of subgroups
   Future<void> getSubGroups() async {
+    setLoadingFilters(true);
     try {
       _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
       debugPrint('Sub Groups: ${_subGroups.length}');
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error SubGroup: ${err.toString()}');
       showErrorToast(err.toString());
     }

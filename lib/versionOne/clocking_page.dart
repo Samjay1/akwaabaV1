@@ -5,6 +5,7 @@ import 'package:akwaaba/components/custom_progress_indicator.dart';
 import 'package:akwaaba/components/custom_tab_widget.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
+import 'package:akwaaba/components/filter_loader.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
@@ -807,11 +808,13 @@ class _ClockingPageState extends State<ClockingPage> {
                           decoration:
                               const InputDecoration(border: InputBorder.none),
                           value: clockingProvider.selectedBranch,
-                          icon: Icon(
-                            CupertinoIcons.chevron_up_chevron_down,
-                            color: Colors.grey.shade500,
-                            size: 16,
-                          ),
+                          icon: clockingProvider.loadingFilters
+                              ? const FilterLoader()
+                              : Icon(
+                                  CupertinoIcons.chevron_up_chevron_down,
+                                  color: Colors.grey.shade500,
+                                  size: 16,
+                                ),
                           // Array list of items
                           items: clockingProvider.branches.map((Branch branch) {
                             return DropdownMenuItem(
@@ -853,11 +856,13 @@ class _ClockingPageState extends State<ClockingPage> {
                 hint: const Text('Select Member Category'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: clockingProvider.selectedMemberCategory,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: clockingProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items:
                     clockingProvider.memberCategories.map((MemberCategory mc) {
@@ -897,14 +902,18 @@ class _ClockingPageState extends State<ClockingPage> {
                   fontSize: 15,
                   fontWeight: FontWeight.w400,
                 ),
-                hint: const Text('Select Group'),
+                hint: const Text(
+                  'Select Group',
+                ),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: clockingProvider.selectedGroup,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: clockingProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: clockingProvider.groups.map((Group group) {
                   return DropdownMenuItem(
@@ -943,11 +952,13 @@ class _ClockingPageState extends State<ClockingPage> {
                 hint: const Text('Select SubGroup'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: clockingProvider.selectedSubGroup,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: clockingProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: clockingProvider.subGroups.map((SubGroup subGroup) {
                   return DropdownMenuItem(
@@ -986,11 +997,13 @@ class _ClockingPageState extends State<ClockingPage> {
                 hint: const Text('Select Gender'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: clockingProvider.selectedGender,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: clockingProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: clockingProvider.genders.map((Gender gender) {
                   return DropdownMenuItem(

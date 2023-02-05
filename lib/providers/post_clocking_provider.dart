@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 
 class PostClockingProvider extends ChangeNotifier {
   bool _loading = false;
+  bool _loadingFilters = false;
   bool _loadingMore = false;
   bool _clocking = false;
   bool _submitting = false;
@@ -80,6 +81,7 @@ class PostClockingProvider extends ChangeNotifier {
   MeetingEventModel get selectedCurrentMeeting => _meetingEventModel!;
 
   bool get loading => _loading;
+  bool get loadingFilters => _loadingFilters;
   bool get loadingMore => _loadingMore;
   bool get clocking => _clocking;
   bool get submitting => _submitting;
@@ -107,6 +109,11 @@ class PostClockingProvider extends ChangeNotifier {
 
   setLoadingMore(bool loading) {
     _loadingMore = loading;
+    notifyListeners();
+  }
+
+  setLoadingFilters(bool loading) {
+    _loadingFilters = loading;
     notifyListeners();
   }
 
@@ -141,12 +148,13 @@ class PostClockingProvider extends ChangeNotifier {
 
   // get list of member categories
   Future<void> getMemberCategories() async {
+    setLoadingFilters(true);
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
       getGenders();
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error MC: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -155,11 +163,13 @@ class PostClockingProvider extends ChangeNotifier {
 
   // get list of branches
   Future<void> getBranches() async {
+    setLoadingFilters(true);
     try {
       _branches = await GroupAPI.getBranches();
+      setLoadingFilters(false);
       debugPrint('Branches: ${_branches.length}');
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -171,8 +181,9 @@ class PostClockingProvider extends ChangeNotifier {
     try {
       _genders = await GroupAPI.getGenders();
       debugPrint('Genders: ${_genders.length}');
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Gender: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -181,6 +192,7 @@ class PostClockingProvider extends ChangeNotifier {
 
   // get list of groups
   Future<void> getGroups() async {
+    setLoadingFilters(true);
     try {
       var userBranch = await getUserBranch(currentContext);
       _groups = await GroupAPI.getGroups(
@@ -188,9 +200,10 @@ class PostClockingProvider extends ChangeNotifier {
         memberCategoryId: selectedMemberCategory!.id!,
       );
       debugPrint('Groups: ${_groups.length}');
+      setLoadingFilters(false);
       // selectedGroup = _groups[0];
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Group: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -209,13 +222,15 @@ class PostClockingProvider extends ChangeNotifier {
 
   // get list of subgroups
   Future<void> getSubGroups() async {
+    setLoadingFilters(true);
     try {
       _subGroups = await GroupAPI.getSubGroups(
         groupId: selectedGroup!.id!,
       );
+      setLoadingFilters(false);
       debugPrint('Sub Groups: ${_subGroups.length}');
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error SubGroup: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -280,8 +295,8 @@ class PostClockingProvider extends ChangeNotifier {
         subGroupId:
             selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
         genderId: selectedGender == null ? '' : selectedGender!.id!.toString(),
-        fromAge: minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text,
-        toAge: maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text,
+        fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+        toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
       selectedAbsentees.clear();
 
@@ -345,8 +360,8 @@ class PostClockingProvider extends ChangeNotifier {
               selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
           genderId:
               selectedGender == null ? '' : selectedGender!.id!.toString(),
-          fromAge: minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text,
-          toAge: maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text,
+          fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+          toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
           _absentees.addAll(response.results!
@@ -394,8 +409,8 @@ class PostClockingProvider extends ChangeNotifier {
         subGroupId:
             selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
         genderId: selectedGender == null ? '' : selectedGender!.id!.toString(),
-        fromAge: minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text,
-        toAge: maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text,
+        fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+        toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
       selectedAttendees.clear();
 
@@ -453,8 +468,8 @@ class PostClockingProvider extends ChangeNotifier {
               selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
           genderId:
               selectedGender == null ? '' : selectedGender!.id!.toString(),
-          fromAge: minAgeTEC.text.isEmpty ? '0' : minAgeTEC.text,
-          toAge: maxAgeTEC.text.isEmpty ? '0' : maxAgeTEC.text,
+          fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
+          toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
           _attendees.addAll(response.results!

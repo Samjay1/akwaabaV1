@@ -2,11 +2,10 @@ import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_outlined_button.dart';
-import 'package:akwaaba/components/custom_progress_indicator.dart';
 import 'package:akwaaba/components/custom_time_picker.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
-import 'package:akwaaba/components/form_button.dart';
+import 'package:akwaaba/components/filter_loader.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
 import 'package:akwaaba/components/postclock_clocked_member_item.dart';
@@ -20,7 +19,6 @@ import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
-import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/post_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -28,7 +26,6 @@ import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -1015,11 +1012,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                           decoration:
                               const InputDecoration(border: InputBorder.none),
                           value: postClockingProvider.selectedBranch,
-                          icon: Icon(
-                            CupertinoIcons.chevron_up_chevron_down,
-                            color: Colors.grey.shade500,
-                            size: 16,
-                          ),
+                          icon: postClockingProvider.loadingFilters
+                              ? const FilterLoader()
+                              : Icon(
+                                  CupertinoIcons.chevron_up_chevron_down,
+                                  color: Colors.grey.shade500,
+                                  size: 16,
+                                ),
                           // Array list of items
                           items: postClockingProvider.branches
                               .map((Branch branch) {
@@ -1062,11 +1061,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 hint: const Text('Select Member Category'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: postClockingProvider.selectedMemberCategory,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: postClockingProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: postClockingProvider.memberCategories
                     .map((MemberCategory mc) {
@@ -1107,11 +1108,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 hint: const Text('Select Group'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: postClockingProvider.selectedGroup,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: postClockingProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: postClockingProvider.groups.map((Group group) {
                   return DropdownMenuItem(
@@ -1150,11 +1153,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 hint: const Text('Select SubGroup'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: postClockingProvider.selectedSubGroup,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: postClockingProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: postClockingProvider.subGroups.map((SubGroup subGroup) {
                   return DropdownMenuItem(
@@ -1193,11 +1198,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 hint: const Text('Select Gender'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: postClockingProvider.selectedGender,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: postClockingProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: postClockingProvider.genders.map((Gender gender) {
                   return DropdownMenuItem(

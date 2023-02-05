@@ -1,5 +1,6 @@
 import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
+import 'package:akwaaba/components/filter_loader.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/constants/app_constants.dart';
@@ -178,11 +179,14 @@ class _FilterPageState extends State<FilterPage> {
                                     decoration: const InputDecoration(
                                         border: InputBorder.none),
                                     value: _membersProvider.selectedBranch,
-                                    icon: Icon(
-                                      CupertinoIcons.chevron_up_chevron_down,
-                                      color: Colors.grey.shade500,
-                                      size: 16,
-                                    ),
+                                    icon: _membersProvider.loadingFilters
+                                        ? const FilterLoader()
+                                        : Icon(
+                                            CupertinoIcons
+                                                .chevron_up_chevron_down,
+                                            color: Colors.grey.shade500,
+                                            size: 16,
+                                          ),
                                     // Array list of items
                                     items: _membersProvider.branches
                                         .map((Branch branch) {
@@ -230,11 +234,13 @@ class _FilterPageState extends State<FilterPage> {
                           decoration:
                               const InputDecoration(border: InputBorder.none),
                           value: _membersProvider.selectedMemberCategory,
-                          icon: Icon(
-                            CupertinoIcons.chevron_up_chevron_down,
-                            color: Colors.grey.shade500,
-                            size: 16,
-                          ),
+                          icon: _membersProvider.loadingFilters
+                              ? const FilterLoader()
+                              : Icon(
+                                  CupertinoIcons.chevron_up_chevron_down,
+                                  color: Colors.grey.shade500,
+                                  size: 16,
+                                ),
                           // Array list of items
                           items: _membersProvider.memberCategories
                               .map((MemberCategory category) {
@@ -278,11 +284,13 @@ class _FilterPageState extends State<FilterPage> {
                           decoration:
                               const InputDecoration(border: InputBorder.none),
                           value: _membersProvider.selectedGroup,
-                          icon: Icon(
-                            CupertinoIcons.chevron_up_chevron_down,
-                            color: Colors.grey.shade500,
-                            size: 16,
-                          ),
+                          icon: _membersProvider.loadingFilters
+                              ? const FilterLoader()
+                              : Icon(
+                                  CupertinoIcons.chevron_up_chevron_down,
+                                  color: Colors.grey.shade500,
+                                  size: 16,
+                                ),
                           // Array list of items
                           items: _membersProvider.groups.map((Group group) {
                             return DropdownMenuItem(
@@ -324,11 +332,13 @@ class _FilterPageState extends State<FilterPage> {
                           decoration:
                               const InputDecoration(border: InputBorder.none),
                           value: _membersProvider.selectedSubGroup,
-                          icon: Icon(
-                            CupertinoIcons.chevron_up_chevron_down,
-                            color: Colors.grey.shade500,
-                            size: 16,
-                          ),
+                          icon: _membersProvider.loadingFilters
+                              ? const FilterLoader()
+                              : Icon(
+                                  CupertinoIcons.chevron_up_chevron_down,
+                                  color: Colors.grey.shade500,
+                                  size: 16,
+                                ),
                           // Array list of items
                           items: _membersProvider.subGroups
                               .map((SubGroup subGroup) {
@@ -475,11 +485,14 @@ class _FilterPageState extends State<FilterPage> {
                                         border: InputBorder.none),
                                     value:
                                         _membersProvider.selectOrganizationType,
-                                    icon: Icon(
-                                      CupertinoIcons.chevron_up_chevron_down,
-                                      color: Colors.grey.shade500,
-                                      size: 16,
-                                    ),
+                                    icon: _membersProvider.loadingFilters
+                                        ? const FilterLoader()
+                                        : Icon(
+                                            CupertinoIcons
+                                                .chevron_up_chevron_down,
+                                            color: Colors.grey.shade500,
+                                            size: 16,
+                                          ),
                                     // Array list of items
                                     items: _membersProvider.organizationTypes
                                         .map((OrganizationType orgType) {
@@ -591,11 +604,14 @@ class _FilterPageState extends State<FilterPage> {
                                     decoration: const InputDecoration(
                                         border: InputBorder.none),
                                     value: _membersProvider.selectedCountry,
-                                    icon: Icon(
-                                      CupertinoIcons.chevron_up_chevron_down,
-                                      color: Colors.grey.shade500,
-                                      size: 16,
-                                    ),
+                                    icon: _membersProvider.loadingFilters
+                                        ? const FilterLoader()
+                                        : Icon(
+                                            CupertinoIcons
+                                                .chevron_up_chevron_down,
+                                            color: Colors.grey.shade500,
+                                            size: 16,
+                                          ),
                                     // Array list of items
                                     items: _membersProvider.countries
                                         .map((Country country) {
@@ -656,12 +672,14 @@ class _FilterPageState extends State<FilterPage> {
                                               border: InputBorder.none),
                                           value:
                                               _membersProvider.selectedRegion,
-                                          icon: Icon(
-                                            CupertinoIcons
-                                                .chevron_up_chevron_down,
-                                            color: Colors.grey.shade500,
-                                            size: 16,
-                                          ),
+                                          icon: _membersProvider.loadingFilters
+                                              ? const FilterLoader()
+                                              : Icon(
+                                                  CupertinoIcons
+                                                      .chevron_up_chevron_down,
+                                                  color: Colors.grey.shade500,
+                                                  size: 16,
+                                                ),
                                           // Array list of items
                                           items: _membersProvider.regions
                                               .map((Region region) {
@@ -716,12 +734,14 @@ class _FilterPageState extends State<FilterPage> {
                                               border: InputBorder.none),
                                           value:
                                               _membersProvider.selectedDistrict,
-                                          icon: Icon(
-                                            CupertinoIcons
-                                                .chevron_up_chevron_down,
-                                            color: Colors.grey.shade500,
-                                            size: 16,
-                                          ),
+                                          icon: _membersProvider.loadingFilters
+                                              ? const FilterLoader()
+                                              : Icon(
+                                                  CupertinoIcons
+                                                      .chevron_up_chevron_down,
+                                                  color: Colors.grey.shade500,
+                                                  size: 16,
+                                                ),
                                           // Array list of items
                                           items: _membersProvider.districts
                                               .map((District district) {
@@ -870,12 +890,14 @@ class _FilterPageState extends State<FilterPage> {
                                             border: InputBorder.none),
                                         value: _membersProvider
                                             .selectedMaritalStatus,
-                                        icon: Icon(
-                                          CupertinoIcons
-                                              .chevron_up_chevron_down,
-                                          color: Colors.grey.shade500,
-                                          size: 16,
-                                        ),
+                                        icon: _membersProvider.loadingFilters
+                                            ? const FilterLoader()
+                                            : Icon(
+                                                CupertinoIcons
+                                                    .chevron_up_chevron_down,
+                                                color: Colors.grey.shade500,
+                                                size: 16,
+                                              ),
                                         // Array list of items
                                         items: _membersProvider.maritalStatuses
                                             .map((MemberStatus ms) {
@@ -923,12 +945,14 @@ class _FilterPageState extends State<FilterPage> {
                                             border: InputBorder.none),
                                         value:
                                             _membersProvider.selectedOccupation,
-                                        icon: Icon(
-                                          CupertinoIcons
-                                              .chevron_up_chevron_down,
-                                          color: Colors.grey.shade500,
-                                          size: 16,
-                                        ),
+                                        icon: _membersProvider.loadingFilters
+                                            ? const FilterLoader()
+                                            : Icon(
+                                                CupertinoIcons
+                                                    .chevron_up_chevron_down,
+                                                color: Colors.grey.shade500,
+                                                size: 16,
+                                              ),
                                         // Array list of items
                                         items: _membersProvider.occupations
                                             .map((MemberStatus ms) {
@@ -976,12 +1000,14 @@ class _FilterPageState extends State<FilterPage> {
                                             border: InputBorder.none),
                                         value:
                                             _membersProvider.selectedProfession,
-                                        icon: Icon(
-                                          CupertinoIcons
-                                              .chevron_up_chevron_down,
-                                          color: Colors.grey.shade500,
-                                          size: 16,
-                                        ),
+                                        icon: _membersProvider.loadingFilters
+                                            ? const FilterLoader()
+                                            : Icon(
+                                                CupertinoIcons
+                                                    .chevron_up_chevron_down,
+                                                color: Colors.grey.shade500,
+                                                size: 16,
+                                              ),
                                         // Array list of items
                                         items: _membersProvider.professions
                                             .map((MemberStatus ms) {
@@ -1030,12 +1056,14 @@ class _FilterPageState extends State<FilterPage> {
                                             border: InputBorder.none),
                                         value:
                                             _membersProvider.selectedEducation,
-                                        icon: Icon(
-                                          CupertinoIcons
-                                              .chevron_up_chevron_down,
-                                          color: Colors.grey.shade500,
-                                          size: 16,
-                                        ),
+                                        icon: _membersProvider.loadingFilters
+                                            ? const FilterLoader()
+                                            : Icon(
+                                                CupertinoIcons
+                                                    .chevron_up_chevron_down,
+                                                color: Colors.grey.shade500,
+                                                size: 16,
+                                              ),
                                         // Array list of items
                                         items: _membersProvider.educations
                                             .map((MemberStatus ms) {

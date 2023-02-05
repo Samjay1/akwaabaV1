@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 class AttendanceHistoryProvider extends ChangeNotifier {
   bool _loading = false;
   bool _loadingMore = false;
+  bool _loadingFilters = false;
 
   List<Group> _groups = [];
   List<SubGroup> _subGroups = [];
@@ -83,6 +84,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   bool get loading => _loading;
   bool get loadingMore => _loadingMore;
+  bool get loadingFilters => _loadingFilters;
 
   BuildContext get currentContext => _context!;
 
@@ -103,6 +105,11 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   setLoadingMore(bool loading) {
     _loadingMore = loading;
+    notifyListeners();
+  }
+
+  setLoadingFilters(bool loading) {
+    _loadingFilters = loading;
     notifyListeners();
   }
 
@@ -133,7 +140,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       debugPrint('Member Categories: ${_memberCategories.length}');
       getGenders();
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error MC: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -142,14 +149,16 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   // get list of branches
   Future<void> getBranches() async {
+    setLoadingFilters(true);
     try {
       _branches = await GroupAPI.getBranches();
       debugPrint('Branches: ${_branches.length}');
       if (_branches.isNotEmpty) {
         selectedBranch = _branches[0];
       }
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -161,7 +170,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     try {
       _genders = await GroupAPI.getGenders();
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Gender: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -170,14 +179,16 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   // get list of groups
   Future<void> getGroups() async {
+    setLoadingFilters(true);
     try {
       var userBranch = await getUserBranch(currentContext);
       _groups = await GroupAPI.getGroups(
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
         memberCategoryId: selectedMemberCategory!.id!,
       );
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Group: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -196,12 +207,13 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   // get list of subgroups
   Future<void> getSubGroups() async {
     if (selectedMemberCategory != null) {
+      setLoadingFilters(true);
       try {
         _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
-
         debugPrint('Sub Groups: ${_subGroups.length}');
+        setLoadingFilters(false);
       } catch (err) {
-        setLoading(false);
+        setLoadingFilters(false);
         debugPrint('Error SubGroup: ${err.toString()}');
         showErrorToast(err.toString());
       }
@@ -211,6 +223,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   // get meetins from date specified
   Future<void> getAllMeetingEvents() async {
+    setLoadingFilters(true);
     try {
       var userBranch = await getUserBranch(currentContext);
       debugPrint("BID: ${userBranch.name}");
@@ -218,7 +231,6 @@ class AttendanceHistoryProvider extends ChangeNotifier {
         page: 1,
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
       );
-
       if (_pastMeetingEvents.isNotEmpty) {
         _tempMeetingEventMap.clear();
         for (int i = 0; i < _pastMeetingEvents.length; i++) {
@@ -232,6 +244,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       }
       getMemberCategories();
     } catch (err) {
+      setLoadingFilters(false);
       debugPrint('Error PMs: ${err.toString()}');
       showErrorToast(err.toString());
     }

@@ -10,6 +10,7 @@ class AppConstants {
   static const int female = 2;
   static const int meetingTypeMeeting = 1;
   static const int meetingTypeEvent = 2;
+  static const int timOutDuration = 60;
   static String? token;
 
   static int notificationChannelId = 001;

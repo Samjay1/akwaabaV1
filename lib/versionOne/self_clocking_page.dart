@@ -98,6 +98,9 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
+                ),
                 Container(
                   padding: const EdgeInsets.all(AppPadding.p12),
                   decoration: BoxDecoration(
@@ -105,10 +108,10 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                       borderRadius:
                           BorderRadius.circular(AppRadius.borderRadius8)),
                   child: const Text(
-                    "Hi there, it is a new day! \nPlease enter your ID to clockin or clockout",
+                    "Hi there, it is a new day. \nPlease enter your ID to clockin or clockout. Have a nice day!",
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                      fontSize: AppSize.s16,
+                      fontSize: AppSize.s18,
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.8,
@@ -116,7 +119,7 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                   ),
                 ),
                 SizedBox(
-                  height: displayHeight(context) * 0.025,
+                  height: displayHeight(context) * 0.03,
                 ),
                 CupertinoSearchTextField(
                   padding: const EdgeInsets.all(AppPadding.p14),
@@ -136,48 +139,49 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                         clockingProvider.search = val;
                       });
                       clockingProvider.clearData();
-                    } else {
-                      setState(() {
-                        clockingProvider.search = val;
-                      });
-                      clockingProvider.getAllAbsentees(
-                        meetingEventModel: widget.meetingEventModel,
-                      );
                     }
+                    // else {
+                    //   setState(() {
+                    //     clockingProvider.search = val;
+                    //   });
+                    //   clockingProvider.getAllAbsentees(
+                    //     meetingEventModel: widget.meetingEventModel,
+                    //   );
+                    // }
                   },
                 ),
 
                 SizedBox(
-                  height: displayHeight(context) * 0.025,
+                  height: displayHeight(context) * 0.020,
                 ),
 
-                CustomTabWidget(
-                  selectedIndex: _selectedIndex,
-                  tabTitles: const [
-                    'Clockin ',
-                    'Clockout ',
-                  ],
-                  onTaps: [
-                    () {
-                      setState(() {
-                        _selectedIndex = 0;
+                // CustomTabWidget(
+                //   selectedIndex: _selectedIndex,
+                //   tabTitles: const [
+                //     'Clockin ',
+                //     'Clockout ',
+                //   ],
+                //   onTaps: [
+                //     () {
+                //       setState(() {
+                //         _selectedIndex = 0;
 
-                        debugPrint('clockingListState = $_selectedIndex');
-                      });
-                    },
-                    () {
-                      setState(() {
-                        _selectedIndex = 1;
+                //         debugPrint('clockingListState = $_selectedIndex');
+                //       });
+                //     },
+                //     () {
+                //       setState(() {
+                //         _selectedIndex = 1;
 
-                        debugPrint('clockingListState = $_selectedIndex');
-                      });
-                    },
-                  ],
-                ),
+                //         debugPrint('clockingListState = $_selectedIndex');
+                //       });
+                //     },
+                //   ],
+                // ),
 
-                SizedBox(
-                  height: displayHeight(context) * 0.015,
-                ),
+                // SizedBox(
+                //   height: displayHeight(context) * 0.015,
+                // ),
 
                 // list of absentees and attendees
                 clockingProvider.loading
@@ -191,67 +195,89 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                           ),
                         ),
                       )
-                    : _selectedIndex == 0
-                        ? Expanded(
-                            child: clockingProvider.absentees.isEmpty
-                                ? const EmptyStateWidget(
-                                    text: 'No records found!',
-                                  )
-                                : Column(
-                                    children: [
-                                      Expanded(
-                                        child: ListView.builder(
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            controller: clockingProvider
+                    :
+                    // _selectedIndex == 0
+                    //     ?
+                    Expanded(
+                        child: (clockingProvider.absentees.isEmpty &&
+                                clockingProvider.attendees.isEmpty)
+                            ? const EmptyStateWidget(
+                                text: 'No records found!',
+                              )
+                            : Column(
+                                children: [
+                                  Expanded(
+                                    child: ListView.builder(
+                                        physics: const BouncingScrollPhysics(),
+                                        controller: (clockingProvider
+                                                    .attendees.isNotEmpty &&
+                                                clockingProvider.attendees[0]!
+                                                        .attendance!.inTime !=
+                                                    null)
+                                            ? clockingProvider
+                                                .attendeesScrollController
+                                            : clockingProvider
                                                 .absenteesScrollController,
-                                            itemCount: clockingProvider
-                                                .absentees.length,
-                                            itemBuilder: (context, index) {
-                                              return SelfClockingMemberItem(
-                                                absentee: clockingProvider
+                                        itemCount: (clockingProvider
+                                                    .attendees.isNotEmpty &&
+                                                clockingProvider.attendees[0]!
+                                                        .attendance!.inTime !=
+                                                    null)
+                                            ? clockingProvider.attendees.length
+                                            : clockingProvider.absentees.length,
+                                        itemBuilder: (context, index) {
+                                          return SelfClockingMemberItem(
+                                            absentee: (clockingProvider
+                                                        .attendees.isNotEmpty &&
+                                                    clockingProvider
+                                                            .attendees[0]!
+                                                            .attendance!
+                                                            .inTime !=
+                                                        null)
+                                                ? clockingProvider
+                                                    .attendees[index]!
+                                                : clockingProvider
                                                     .absentees[index]!,
-                                              );
-                                            }),
-                                      ),
-                                      if (clockingProvider.loadingMore)
-                                        const PaginationLoader(
-                                          loadingText:
-                                              'Loading. please wait...',
-                                        )
-                                    ],
+                                          );
+                                        }),
                                   ),
-                          )
-                        : Expanded(
-                            child: clockingProvider.attendees.isEmpty
-                                ? const EmptyStateWidget(
-                                    text: 'No records found!',
-                                  )
-                                : Column(
-                                    children: [
-                                      Expanded(
-                                        child: ListView.builder(
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            controller: clockingProvider
-                                                .attendeesScrollController,
-                                            itemCount: clockingProvider
-                                                .attendees.length,
-                                            itemBuilder: (context, index) {
-                                              return SelfClockingMemberItem(
-                                                absentee: clockingProvider
-                                                    .attendees[index]!,
-                                              );
-                                            }),
-                                      ),
-                                      if (clockingProvider.loadingMore)
-                                        const PaginationLoader(
-                                          loadingText:
-                                              'Loading. please wait...',
-                                        )
-                                    ],
-                                  ),
-                          )
+                                  if (clockingProvider.loadingMore)
+                                    const PaginationLoader(
+                                      loadingText: 'Loading. please wait...',
+                                    )
+                                ],
+                              ),
+                      )
+                // : Expanded(
+                //     child: clockingProvider.attendees.isEmpty
+                //         ? const EmptyStateWidget(
+                //             text: 'No records found!',
+                //           )
+                //         : Column(
+                //             children: [
+                //               Expanded(
+                //                 child: ListView.builder(
+                //                     physics:
+                //                         const BouncingScrollPhysics(),
+                //                     controller: clockingProvider
+                //                         .attendeesScrollController,
+                //                     itemCount: clockingProvider
+                //                         .attendees.length,
+                //                     itemBuilder: (context, index) {
+                //                       return SelfClockingMemberItem(
+                //                         absentee: clockingProvider
+                //                             .attendees[index]!,
+                //                       );
+                //                     }),
+                //               ),
+                //               if (clockingProvider.loadingMore)
+                //                 const PaginationLoader(
+                //                   loadingText:
+                //                       'Loading. please wait...',
+                //                 )
+                //             ],
+                //           ),
+                //   )
               ],
             ),
           ),

@@ -7,6 +7,7 @@ import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_tab_widget.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
+import 'package:akwaaba/components/filter_loader.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
 import 'package:akwaaba/constants/app_constants.dart';
@@ -714,11 +715,13 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                           decoration:
                               const InputDecoration(border: InputBorder.none),
                           value: attendanceProvider.selectedBranch,
-                          icon: Icon(
-                            CupertinoIcons.chevron_up_chevron_down,
-                            color: Colors.grey.shade500,
-                            size: 16,
-                          ),
+                          icon: attendanceProvider.loadingFilters
+                              ? const FilterLoader()
+                              : Icon(
+                                  CupertinoIcons.chevron_up_chevron_down,
+                                  color: Colors.grey.shade500,
+                                  size: 16,
+                                ),
                           // Array list of items
                           items:
                               attendanceProvider.branches.map((Branch branch) {
@@ -764,11 +767,13 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 ),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: attendanceProvider.selectedPastMeetingEvent,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: attendanceProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: attendanceProvider.pastMeetingEvents
                     .map((MeetingEventModel mc) {
@@ -808,11 +813,13 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 hint: const Text('Select Member Category'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: attendanceProvider.selectedMemberCategory,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: attendanceProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: attendanceProvider.memberCategories
                     .map((MemberCategory mc) {
@@ -853,11 +860,13 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 hint: const Text('Select Group'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: attendanceProvider.selectedGroup,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: attendanceProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: attendanceProvider.groups.map((Group group) {
                   return DropdownMenuItem(
@@ -896,11 +905,13 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 hint: const Text('Select SubGroup'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: attendanceProvider.selectedSubGroup,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: attendanceProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: attendanceProvider.subGroups.map((SubGroup subGroup) {
                   return DropdownMenuItem(
@@ -939,11 +950,13 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 hint: const Text('Select Gender'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: attendanceProvider.selectedGender,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: attendanceProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: attendanceProvider.genders.map((Gender gender) {
                   return DropdownMenuItem(

@@ -27,6 +27,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../components/filter_loader.dart';
 import '../utils/widget_utils.dart';
 
 class AttendanceHistoryPage extends StatefulWidget {
@@ -260,11 +261,13 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                           decoration:
                               const InputDecoration(border: InputBorder.none),
                           value: attendanceHistoryProvider.selectedBranch,
-                          icon: Icon(
-                            CupertinoIcons.chevron_up_chevron_down,
-                            color: Colors.grey.shade500,
-                            size: 16,
-                          ),
+                          icon: attendanceHistoryProvider.loadingFilters
+                              ? const FilterLoader()
+                              : Icon(
+                                  CupertinoIcons.chevron_up_chevron_down,
+                                  color: Colors.grey.shade500,
+                                  size: 16,
+                                ),
                           // Array list of items
                           items: attendanceHistoryProvider.branches
                               .map((Branch branch) {
@@ -311,11 +314,13 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               dropdownTitleTileBorder:
                   Border.all(color: Colors.grey[300]!, width: 1),
               dropdownTitleTileBorderRadius: BorderRadius.circular(10),
-              expandedIcon: Icon(
-                CupertinoIcons.chevron_up_chevron_down,
-                color: Colors.grey.shade500,
-                size: 16,
-              ),
+              expandedIcon: attendanceHistoryProvider.loadingFilters
+                  ? const FilterLoader()
+                  : Icon(
+                      CupertinoIcons.chevron_up_chevron_down,
+                      color: Colors.grey.shade500,
+                      size: 16,
+                    ),
               collapsedIcon: Icon(
                 CupertinoIcons.chevron_up_chevron_down,
                 color: Colors.grey.shade500,
@@ -366,11 +371,13 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                       decoration:
                           const InputDecoration(border: InputBorder.none),
                       value: attendanceHistoryProvider.selectedMemberCategory,
-                      icon: Icon(
-                        CupertinoIcons.chevron_up_chevron_down,
-                        color: Colors.grey.shade500,
-                        size: 16,
-                      ),
+                      icon: attendanceHistoryProvider.loadingFilters
+                          ? const FilterLoader()
+                          : Icon(
+                              CupertinoIcons.chevron_up_chevron_down,
+                              color: Colors.grey.shade500,
+                              size: 16,
+                            ),
                       // Array list of items
                       items: attendanceHistoryProvider.memberCategories
                           .map((MemberCategory mc) {
@@ -418,11 +425,13 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                       decoration:
                           const InputDecoration(border: InputBorder.none),
                       value: attendanceHistoryProvider.selectedGroup,
-                      icon: Icon(
-                        CupertinoIcons.chevron_up_chevron_down,
-                        color: Colors.grey.shade500,
-                        size: 16,
-                      ),
+                      icon: attendanceHistoryProvider.loadingFilters
+                          ? const FilterLoader()
+                          : Icon(
+                              CupertinoIcons.chevron_up_chevron_down,
+                              color: Colors.grey.shade500,
+                              size: 16,
+                            ),
                       // Array list of items
                       items:
                           attendanceHistoryProvider.groups.map((Group group) {
@@ -470,11 +479,13 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                       decoration:
                           const InputDecoration(border: InputBorder.none),
                       value: attendanceHistoryProvider.selectedSubGroup,
-                      icon: Icon(
-                        CupertinoIcons.chevron_up_chevron_down,
-                        color: Colors.grey.shade500,
-                        size: 16,
-                      ),
+                      icon: attendanceHistoryProvider.loadingFilters
+                          ? const FilterLoader()
+                          : Icon(
+                              CupertinoIcons.chevron_up_chevron_down,
+                              color: Colors.grey.shade500,
+                              size: 16,
+                            ),
                       // Array list of items
                       items: attendanceHistoryProvider.subGroups
                           .map((SubGroup subGroup) {
@@ -522,11 +533,13 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                       decoration:
                           const InputDecoration(border: InputBorder.none),
                       value: attendanceHistoryProvider.selectedGender,
-                      icon: Icon(
-                        CupertinoIcons.chevron_up_chevron_down,
-                        color: Colors.grey.shade500,
-                        size: 16,
-                      ),
+                      icon: attendanceHistoryProvider.loadingFilters
+                          ? const FilterLoader()
+                          : Icon(
+                              CupertinoIcons.chevron_up_chevron_down,
+                              color: Colors.grey.shade500,
+                              size: 16,
+                            ),
                       // Array list of items
                       items: attendanceHistoryProvider.genders
                           .map((Gender gender) {
@@ -567,11 +580,13 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                 hint: const Text('Select Status'),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: attendanceHistoryProvider.selectedStatus,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: attendanceHistoryProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: attendanceHistoryProvider.statuses.map((String status) {
                   return DropdownMenuItem(

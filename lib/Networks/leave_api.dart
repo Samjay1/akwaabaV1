@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/general/absent_leave.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/leave_status.dart';
@@ -19,10 +20,17 @@ class LeaveAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/absent-leave/status?branchId=$branchId');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Leave Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -51,17 +59,24 @@ class LeaveAPI {
 
     var url = Uri.parse('${getBaseUrl()}/attendance/absent-leave/assignment');
     try {
-      http.Response response = await http.post(
-        url,
-        body: json.encode({
-          'statusId': statusId,
-          'memberId': memberId,
-          'fromDate': fromDate,
-          'toDate': toDate,
-          'reason': reason,
-        }),
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .post(
+            url,
+            body: json.encode({
+              'statusId': statusId,
+              'memberId': memberId,
+              'fromDate': fromDate,
+              'toDate': toDate,
+              'reason': reason,
+            }),
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Assignment Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       message = res['SUCCESS_RESPONSE_MESSAGE'];
@@ -93,10 +108,17 @@ class LeaveAPI {
     debugPrint("Branch ID: $branchId");
 
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Leaves: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['results'] != null) {

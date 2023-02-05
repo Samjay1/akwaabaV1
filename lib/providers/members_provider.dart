@@ -33,6 +33,7 @@ import '../models/admin/clocked_member.dart';
 class MembersProvider extends ChangeNotifier {
   bool _loading = false;
   bool _loadingMore = false;
+  bool _loadingFilters = false;
 
   List<Group> _groups = [];
   List<SubGroup> _subGroups = [];
@@ -116,6 +117,7 @@ class MembersProvider extends ChangeNotifier {
 
   bool get loading => _loading;
   bool get loadingMore => _loadingMore;
+  bool get loadingFilters => _loadingFilters;
 
   BuildContext get currentContext => _context!;
 
@@ -149,6 +151,11 @@ class MembersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  setLoadingFilters(bool loading) {
+    _loadingFilters = loading;
+    notifyListeners();
+  }
+
   setLoadingMore(bool loading) {
     _loadingMore = loading;
     notifyListeners();
@@ -156,11 +163,13 @@ class MembersProvider extends ChangeNotifier {
 
   // get list of branches
   Future<void> getBranches() async {
+    setLoadingFilters(true);
     try {
       _branches = await GroupAPI.getBranches();
       debugPrint('Branches: ${_branches.length}');
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -169,11 +178,13 @@ class MembersProvider extends ChangeNotifier {
 
   // get list of member categories
   Future<void> getMemberCategories() async {
+    setLoadingFilters(true);
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error MC: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -182,6 +193,7 @@ class MembersProvider extends ChangeNotifier {
 
   // get list of groups
   Future<void> getGroups() async {
+    setLoadingFilters(true);
     try {
       var userBranch = await getUserBranch(currentContext);
       _groups = await GroupAPI.getGroups(
@@ -191,9 +203,10 @@ class MembersProvider extends ChangeNotifier {
       if (_groups.isNotEmpty) {
         selectedGroup = _groups[0];
       }
+      setLoadingFilters(false);
       debugPrint('Groups: ${_groups.length}');
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Group: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -218,13 +231,15 @@ class MembersProvider extends ChangeNotifier {
 
   // get list of subgroups
   Future<void> getSubGroups() async {
+    setLoadingFilters(true);
     try {
       _subGroups = await GroupAPI.getSubGroups(
         groupId: selectedGroup!.id!,
       );
       debugPrint('Sub Groups: ${_subGroups.length}');
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error SubGroup: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -233,11 +248,13 @@ class MembersProvider extends ChangeNotifier {
 
   // get organization types
   Future<void> getOrganizationTypes() async {
+    setLoadingFilters(true);
     try {
       _organizationTypes = await MembersAPI.getOrganizationTypes();
       debugPrint('Org Types: ${_branches.length}');
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -246,10 +263,12 @@ class MembersProvider extends ChangeNotifier {
 
   // get list of coutries
   Future<void> getCoutries() async {
+    setLoadingFilters(true);
     try {
       _countries = await LocationAPI.getCountries();
       getRegions();
     } catch (err) {
+      setLoadingFilters(false);
       debugPrint('Error C: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -262,6 +281,7 @@ class MembersProvider extends ChangeNotifier {
       _regions = await LocationAPI.getRegions();
       getDistricts();
     } catch (err) {
+      setLoadingFilters(false);
       debugPrint('Error R: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -274,6 +294,7 @@ class MembersProvider extends ChangeNotifier {
       _districts = await LocationAPI.getDistricts();
       getMaritalStatuses();
     } catch (err) {
+      setLoadingFilters(false);
       debugPrint('Error D: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -286,6 +307,7 @@ class MembersProvider extends ChangeNotifier {
       _maritalStatuses = await MembersAPI.getMaritalStatuses();
       getOccupations();
     } catch (err) {
+      setLoadingFilters(false);
       debugPrint('Error MS: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -298,6 +320,7 @@ class MembersProvider extends ChangeNotifier {
       _occupations = await MembersAPI.getOccupations();
       getProfessions();
     } catch (err) {
+      setLoadingFilters(false);
       debugPrint('Error Occupation: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -310,7 +333,8 @@ class MembersProvider extends ChangeNotifier {
       _professions = await MembersAPI.getProfessions();
       getEducations();
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
+
       debugPrint('Error Prof: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -321,8 +345,9 @@ class MembersProvider extends ChangeNotifier {
   Future<void> getEducations() async {
     try {
       _educations = await MembersAPI.getEducations();
+      setLoadingFilters(false);
     } catch (err) {
-      setLoading(false);
+      setLoadingFilters(false);
       debugPrint('Error Edu: ${err.toString()}');
       showErrorToast(err.toString());
     }

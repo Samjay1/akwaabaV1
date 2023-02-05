@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/country.dart';
 import 'package:akwaaba/models/general/district.dart';
@@ -20,10 +21,17 @@ class LocationAPI {
 
     var url = Uri.parse('${getBaseUrl()}/locations/country');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Branch Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res != null) {
@@ -45,10 +53,17 @@ class LocationAPI {
 
     var url = Uri.parse('${getBaseUrl()}/locations/region');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Branch Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res != null) {
@@ -70,10 +85,17 @@ class LocationAPI {
 
     var url = Uri.parse('${getBaseUrl()}/locations/district');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Branch Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['results'] != null) {

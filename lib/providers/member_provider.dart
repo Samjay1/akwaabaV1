@@ -245,6 +245,7 @@ class MemberProvider with ChangeNotifier {
       } else {
         setLoading(false);
         _identityNumber = value;
+        showNormalToast('Login successful');
         Provider.of<GeneralProvider>(context, listen: false)
             .setAdminStatus(isAdmin: false);
         SharedPrefs().setUserType(userType: "member");

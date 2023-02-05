@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/clocking_response.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +17,20 @@ class ProfileAPI {
     String message;
     var url = Uri.parse('${getBaseUrl()}/members/user/enable-editable');
     try {
-      http.Response response = await http.post(
-        url,
-        body: json.encode({
-          'memberId': memberId,
-        }),
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .post(
+            url,
+            body: json.encode({
+              'memberId': memberId,
+            }),
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Response: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       //debugPrint("Message: ${res['SUCCESS_RESPONSE_MESSAGE']}");
@@ -41,13 +49,20 @@ class ProfileAPI {
     String message;
     var url = Uri.parse('${getBaseUrl()}/members/user/enable-editable-bulk');
     try {
-      http.Response response = await http.post(
-        url,
-        body: json.encode({
-          'memberIds': memberIds,
-        }),
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .post(
+            url,
+            body: json.encode({
+              'memberIds': memberIds,
+            }),
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       var res = await returnResponse(response);
       message = res['SUCCESS_RESPONSE_MESSAGE'];
     } on SocketException catch (_) {
@@ -64,13 +79,20 @@ class ProfileAPI {
     String message;
     var url = Uri.parse('${getBaseUrl()}/members/user/disable-editable-bulk');
     try {
-      http.Response response = await http.post(
-        url,
-        body: json.encode({
-          'memberIds': memberIds,
-        }),
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .post(
+            url,
+            body: json.encode({
+              'memberIds': memberIds,
+            }),
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       var res = await returnResponse(response);
       message = res['SUCCESS_RESPONSE_MESSAGE'];
     } on SocketException catch (_) {
@@ -87,13 +109,20 @@ class ProfileAPI {
     String message;
     var url = Uri.parse('${getBaseUrl()}/members/user/disable-editable');
     try {
-      http.Response response = await http.post(
-        url,
-        body: json.encode({
-          'memberId': memberId,
-        }),
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .post(
+            url,
+            body: json.encode({
+              'memberId': memberId,
+            }),
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       var res = await returnResponse(response);
       message = res['SUCCESS_RESPONSE_MESSAGE'];
     } on SocketException catch (_) {

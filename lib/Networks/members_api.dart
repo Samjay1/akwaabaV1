@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/models/general/account_type.dart';
 import 'package:akwaaba/models/general/client_stat.dart';
@@ -159,10 +160,17 @@ class MembersAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=$memberId');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Restrictions: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['results'] != null) {
@@ -187,10 +195,17 @@ class MembersAPI {
     var url =
         Uri.parse('${getBaseUrl()}/members/statistics?branchId=$branchId');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Stats Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       stats = MemberStat.fromJson(
@@ -252,10 +267,17 @@ class MembersAPI {
     //     '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus');
 
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Org Members Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['results'] != null) {
@@ -277,10 +299,17 @@ class MembersAPI {
 
     var url = Uri.parse('${getBaseUrl()}/members/user-status/marital');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Marital Status Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -303,10 +332,17 @@ class MembersAPI {
     var url =
         Uri.parse('${getBaseUrl()}/members/groupings/member-organization-type');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Org Types: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -328,10 +364,17 @@ class MembersAPI {
 
     var url = Uri.parse('${getBaseUrl()}/members/user-status/occupation');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Occupation Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -353,10 +396,17 @@ class MembersAPI {
 
     var url = Uri.parse('${getBaseUrl()}/members/user-status/profession');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Profession Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -378,10 +428,17 @@ class MembersAPI {
 
     var url = Uri.parse('${getBaseUrl()}/members/user-status/education');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Education Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {

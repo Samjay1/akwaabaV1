@@ -4,6 +4,7 @@ import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/clocking_response.dart';
 import 'package:akwaaba/Networks/api_responses/coordinates_response.dart';
 import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/attendance/excuse_model.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
@@ -105,10 +106,17 @@ class EventAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both&page=$page');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       var decodedresponse = jsonDecode(response.body);
       debugPrint("UPCOMING MeetingEventModel success: $decodedresponse");
       Iterable dataList = decodedresponse['data'];
@@ -132,10 +140,17 @@ class EventAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/meeting-event/location?meetingEventId=${meetingEventModel.id}');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Coordinates Response: ${jsonDecode(response.body)}");
       coordinateResponse = CoordinatesResponse.fromJson(
         await returnResponse(response),
@@ -155,10 +170,17 @@ class EventAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/meeting-event/attendance?filter_branch=${meetingEventModel.branchId}&filter_date=$filterDate&meetingEventId=${meetingEventModel.id}');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Attendance Response: ${jsonDecode(response.body)}");
       attendanceResponse = MeetingAttendanceResponse.fromJson(
         await returnResponse(response),
@@ -190,10 +212,17 @@ class EventAPI {
       debugPrint('NEW URL: ${url.toString()}');
     }
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Attendance Response: ${jsonDecode(response.body)}");
       attendanceResponse = MeetingAttendanceResponse.fromJson(
         await returnResponse(response),
@@ -215,13 +244,20 @@ class EventAPI {
       var url = Uri.parse(
           '${getBaseUrl()}/attendance/meeting-event/attendance/clock-in/$clockingId');
 
-      http.Response response = await http.patch(
-        url,
-        body: {
-          'time': time,
-        },
-        headers: await getTokenHeader(),
-      );
+      http.Response response = await http
+          .patch(
+            url,
+            body: {
+              'time': time,
+            },
+            headers: await getTokenHeader(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       clockInResponse = ClockingResponse.fromJson(
         await returnResponse(response),
       );
@@ -242,13 +278,20 @@ class EventAPI {
       '${getBaseUrl()}/attendance/meeting-event/attendance/clock-out/$clockingId',
     );
     try {
-      http.Response response = await http.patch(
-        url,
-        body: {
-          'time': time,
-        },
-        headers: await getTokenHeader(),
-      );
+      http.Response response = await http
+          .patch(
+            url,
+            body: {
+              'time': time,
+            },
+            headers: await getTokenHeader(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       clockOutResponse = ClockingResponse.fromJson(
         await returnResponse(response),
       );
@@ -268,13 +311,20 @@ class EventAPI {
     try {
       var url = Uri.parse(
           '${getBaseUrl()}/attendance/meeting-event/attendance/start-break/$clockingId');
-      http.Response response = await http.patch(
-        url,
-        body: {
-          'time': time,
-        },
-        headers: await getTokenHeader(),
-      );
+      http.Response response = await http
+          .patch(
+            url,
+            body: {
+              'time': time,
+            },
+            headers: await getTokenHeader(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       clockInResponse = ClockingResponse.fromJson(
         await returnResponse(response),
       );
@@ -294,13 +344,20 @@ class EventAPI {
     try {
       var url = Uri.parse(
           '${getBaseUrl()}/attendance/meeting-event/attendance/end-break/$clockingId');
-      http.Response response = await http.patch(
-        url,
-        body: {
-          'time': time,
-        },
-        headers: await getTokenHeader(),
-      );
+      http.Response response = await http
+          .patch(
+            url,
+            body: {
+              'time': time,
+            },
+            headers: await getTokenHeader(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       clockInResponse = ClockingResponse.fromJson(
         await returnResponse(response),
       );
@@ -321,16 +378,23 @@ class EventAPI {
     var url =
         Uri.parse('${getBaseUrl()}/attendance/meeting-event/attendance-excuse');
     try {
-      http.Response response = await http.post(
-        url,
-        body: {
-          'meetingEventId': meetingEventId.toString(),
-          'clockingId': clockingId.toString(),
-          'enteredBy': "0",
-          'excuse': excuse,
-        },
-        headers: await getTokenHeader(),
-      );
+      http.Response response = await http
+          .post(
+            url,
+            body: {
+              'meetingEventId': meetingEventId.toString(),
+              'clockingId': clockingId.toString(),
+              'enteredBy': "0",
+              'excuse': excuse,
+            },
+            headers: await getTokenHeader(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Submit Excuse Response: ${jsonDecode(response.body)}");
       excuseModel = ExcuseModel.fromJson(await returnResponse(response));
     } on SocketException catch (_) {

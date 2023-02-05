@@ -1,7 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
-import 'package:akwaaba/models/subscription/subscription.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +14,12 @@ class SubscriptionAPI {
   //     http.Response response = await http.get(
   //       url,
   //       headers: await getAllHeaders(),
-  //     );
+  //     ).timeout(
+  //   const Duration(seconds: AppConstants.timOutDuration),
+  //   onTimeout: () => throw FetchDataException(
+  //     'Your internet connection is poor, please try again later!',
+  //   ), // Time has run out, do what you wanted to do.
+  // );
   //     debugPrint("Client Sub: ${await returnResponse(response)}");
   //     var res = await returnResponse(response);
   //     if (res['results'] != null) {
