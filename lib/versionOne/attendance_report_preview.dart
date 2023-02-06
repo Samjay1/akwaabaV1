@@ -363,8 +363,8 @@ class _AttendanceReportDetailsPageState
                       ? 'N/A'
                       : (widget.attendee!.attendance!.inTime != null &&
                               widget.attendee!.attendance!.clockedBy == 0)
-                          ? "Self"
-                          : "Admin",
+                          ? "Self "
+                          : "Admin (${widget.attendee!.attendance!.clockedByInfo!.firstname} ${widget.attendee!.attendance!.clockedByInfo!.surname})",
                 ),
               ),
               const Divider(
@@ -381,7 +381,7 @@ class _AttendanceReportDetailsPageState
                       : (widget.attendee!.attendance!.outTime != null &&
                               widget.attendee!.attendance!.clockedBy == 0)
                           ? "Self"
-                          : "Admin",
+                          : "Admin (${widget.attendee!.attendance!.clockedByInfo!.firstname} ${widget.attendee!.attendance!.clockedByInfo!.surname})",
                 ),
               ),
 

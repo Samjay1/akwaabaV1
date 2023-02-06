@@ -17,6 +17,8 @@ class Attendance {
   String? startBreak;
   String? endBreak;
   int? clockedBy;
+
+  ClockedByInfo? clockedByInfo;
   int? clockingMethod;
   dynamic validate;
   dynamic validationDate;
@@ -36,6 +38,7 @@ class Attendance {
     this.startBreak,
     this.endBreak,
     this.clockedBy,
+    this.clockedByInfo,
     this.clockingMethod,
     this.validate,
     this.validationDate,
@@ -60,6 +63,9 @@ class Attendance {
     startBreak = json['startBreak'];
     endBreak = json['endBreak'];
     clockedBy = json['clockedBy'];
+    clockedByInfo = json['clockedByInfo'] != null
+        ? ClockedByInfo.fromJson(json['clockedByInfo'])
+        : null;
     clockingMethod = json['clockingMethod'];
     validate =
         json['validate']; //!= null ? dynamic.fromJson(json['validate']) : null;
@@ -87,6 +93,9 @@ class Attendance {
     data['startBreak'] = startBreak;
     data['endBreak'] = endBreak;
     data['clockedBy'] = clockedBy;
+    if (this.clockedByInfo != null) {
+      data['clockedByInfo'] = this.clockedByInfo!.toJson();
+    }
     data['clockingMethod'] = clockingMethod;
     if (validate != null) {
       data['validate'] = validate!.toJson();
@@ -96,6 +105,83 @@ class Attendance {
     data['date'] = date;
     data['clockingMethodName'] = clockingMethodName;
     data['SUCCESS_RESPONSE_MESSAGE'] = message;
+    return data;
+  }
+}
+
+class ClockedByInfo {
+  int? id;
+  String? firstname;
+  String? surname;
+  int? gender;
+  String? profilePicture;
+  String? dateOfBirth;
+  String? phone;
+  String? email;
+  int? role;
+  int? accountId;
+  int? branchId;
+  int? level;
+  int? status;
+  int? lastUpdatedBy;
+  String? date;
+  String? lastLogin;
+
+  ClockedByInfo(
+      {this.id,
+      this.firstname,
+      this.surname,
+      this.gender,
+      this.profilePicture,
+      this.dateOfBirth,
+      this.phone,
+      this.email,
+      this.role,
+      this.accountId,
+      this.branchId,
+      this.level,
+      this.status,
+      this.lastUpdatedBy,
+      this.date,
+      this.lastLogin});
+
+  ClockedByInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    firstname = json['firstname'];
+    surname = json['surname'];
+    gender = json['gender'];
+    profilePicture = json['profilePicture'];
+    dateOfBirth = json['dateOfBirth'];
+    phone = json['phone'];
+    email = json['email'];
+    role = json['role'];
+    accountId = json['accountId'];
+    branchId = json['branchId'];
+    level = json['level'];
+    status = json['status'];
+    lastUpdatedBy = json['lastUpdatedBy'];
+    date = json['date'];
+    lastLogin = json['last_login'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['firstname'] = this.firstname;
+    data['surname'] = this.surname;
+    data['gender'] = this.gender;
+    data['profilePicture'] = this.profilePicture;
+    data['dateOfBirth'] = this.dateOfBirth;
+    data['phone'] = this.phone;
+    data['email'] = this.email;
+    data['role'] = this.role;
+    data['accountId'] = this.accountId;
+    data['branchId'] = this.branchId;
+    data['level'] = this.level;
+    data['status'] = this.status;
+    data['lastUpdatedBy'] = this.lastUpdatedBy;
+    data['date'] = this.date;
+    data['last_login'] = this.lastLogin;
     return data;
   }
 }

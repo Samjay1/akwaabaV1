@@ -103,7 +103,7 @@ class AttendanceProvider extends ChangeNotifier {
   int _attendeesPage = 1;
   var limit = AppConstants.pageLimit;
   var isFirstLoadRunning = false;
-  var hasNextPage = true;
+  var hasNextPage = false;
   var isLoadMoreRunning = false;
 
   String? userType;
@@ -406,6 +406,8 @@ class AttendanceProvider extends ChangeNotifier {
         toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
 
+      hasNextPage = response.next == null ? false : true;
+
       selectedAttendees.clear();
 
       resetStatsData();
@@ -443,9 +445,8 @@ class AttendanceProvider extends ChangeNotifier {
   // load more list of absentees of past meeting
   Future<void> _loadMoreAttendees() async {
     if (hasNextPage == true &&
-        loading == false &&
-        isLoadMoreRunning == false &&
-        attendeesScrollController.position.extentAfter < 300) {
+        (attendeesScrollController.position.pixels ==
+            attendeesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _attendeesPage += 1; // increase page by 1
       try {
@@ -471,8 +472,9 @@ class AttendanceProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
-          _attendees.addAll(response.results!);
+          hasNextPage = response.next == null ? false : true;
 
+          _attendees.addAll(response.results!);
           // calc rest of the total males and females
           totalMaleAttendees.clear();
           totalFemaleAttendees.clear();
@@ -524,6 +526,8 @@ class AttendanceProvider extends ChangeNotifier {
       );
       selectedAbsentees.clear();
 
+      hasNextPage = response.next == null ? false : true;
+
       // get total number of absentees
       totalAbsentees = response.count!;
       // filter list for only members excluding
@@ -556,9 +560,8 @@ class AttendanceProvider extends ChangeNotifier {
   // load more list of absentees of past meeting
   Future<void> _loadMoreAbsentees() async {
     if (hasNextPage == true &&
-        loading == false &&
-        isLoadMoreRunning == false &&
-        absenteesScrollController.position.extentAfter < 300) {
+        (absenteesScrollController.position.pixels ==
+            absenteesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _absenteesPage += 1; // increase page by 1
       try {
@@ -585,6 +588,8 @@ class AttendanceProvider extends ChangeNotifier {
         );
         if (response.results!.isNotEmpty) {
           _absentees.addAll(response.results!);
+
+          hasNextPage = response.next == null ? false : true;
 
           // calc rest of the total males and females
           totalMaleAbsentees.clear();

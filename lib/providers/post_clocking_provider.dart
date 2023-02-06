@@ -93,7 +93,7 @@ class PostClockingProvider extends ChangeNotifier {
   int _attendeesPage = 1;
   var limit = AppConstants.pageLimit;
   var isFirstLoadRunning = false;
-  var hasNextPage = true;
+  var hasNextPage = false;
   var isLoadMoreRunning = false;
 
   late ScrollController absenteesScrollController = ScrollController()
@@ -300,6 +300,8 @@ class PostClockingProvider extends ChangeNotifier {
       );
       selectedAbsentees.clear();
 
+      hasNextPage = response.next == null ? false : true;
+
       if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
@@ -335,9 +337,8 @@ class PostClockingProvider extends ChangeNotifier {
   // load more list of absentees of past meeting
   Future<void> _loadMoreAbsentees() async {
     if (hasNextPage == true &&
-        loading == false &&
-        isLoadMoreRunning == false &&
-        absenteesScrollController.position.extentAfter < 300) {
+        (absenteesScrollController.position.pixels ==
+            absenteesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _absenteesPage += 1; // increase page by 1
       var userBranch =
@@ -363,7 +364,9 @@ class PostClockingProvider extends ChangeNotifier {
           fromAge: minAgeTEC.text.isEmpty ? '' : minAgeTEC.text,
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
+
         if (response.results!.isNotEmpty) {
+          hasNextPage = response.next == null ? false : true;
           _absentees.addAll(response.results!
               .where((absentee) => (absentee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)
@@ -414,6 +417,8 @@ class PostClockingProvider extends ChangeNotifier {
       );
       selectedAttendees.clear();
 
+      hasNextPage = response.next == null ? false : true;
+
       if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
@@ -443,9 +448,8 @@ class PostClockingProvider extends ChangeNotifier {
   // load more list of absentees of past meeting
   Future<void> _loadMoreAttendees() async {
     if (hasNextPage == true &&
-        loading == false &&
-        isLoadMoreRunning == false &&
-        attendeesScrollController.position.extentAfter < 300) {
+        (attendeesScrollController.position.pixels ==
+            attendeesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _attendeesPage += 1; // increase page by 1
       var userBranch =
@@ -472,6 +476,7 @@ class PostClockingProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
+          hasNextPage = response.next == null ? false : true;
           _attendees.addAll(response.results!
               .where((atendee) => (atendee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)

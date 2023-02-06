@@ -99,16 +99,17 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(
-                  height: displayHeight(context) * 0.01,
+                  height: displayHeight(context) * 0.03,
                 ),
                 Container(
                   padding: const EdgeInsets.all(AppPadding.p12),
                   decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius:
-                          BorderRadius.circular(AppRadius.borderRadius8)),
+                    color: Colors.green,
+                    borderRadius:
+                        BorderRadius.circular(AppRadius.borderRadius8),
+                  ),
                   child: const Text(
-                    "Hi there, it is a new day. \nPlease enter your ID to clock in or clock out. Have a nice day!",
+                    "Hi there, you're welcome. \nPlease enter your ID to clock in or clock out. Have a nice day!",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontSize: AppSize.s18,
@@ -119,7 +120,7 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                   ),
                 ),
                 SizedBox(
-                  height: displayHeight(context) * 0.03,
+                  height: displayHeight(context) * 0.05,
                 ),
                 CupertinoSearchTextField(
                   padding: const EdgeInsets.all(AppPadding.p18),

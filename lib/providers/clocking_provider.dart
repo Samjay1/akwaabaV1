@@ -81,7 +81,7 @@ class ClockingProvider extends ChangeNotifier {
   // pagination variables
   int _absenteesPage = 1;
   int _attendeesPage = 1;
-  bool hasNextPage = true;
+  bool hasNextPage = false;
 
   String search = '';
 
@@ -272,6 +272,8 @@ class ClockingProvider extends ChangeNotifier {
 
       _selectedAbsentees.clear();
 
+      hasNextPage = response.next == null ? false : true;
+
       if (response.results != null || response.results!.isNotEmpty) {
         _absentees = response.results!
             .where((absentee) => (absentee.attendance!.memberId!.email !=
@@ -301,9 +303,8 @@ class ClockingProvider extends ChangeNotifier {
   // load more list of attendees of a meeting
   Future<void> _loadMoreAbsentees() async {
     if (hasNextPage == true &&
-        loading == false &&
-        _loadingMore == false &&
-        absenteesScrollController.position.extentAfter < 300) {
+        (absenteesScrollController.position.pixels ==
+            absenteesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _absenteesPage += 1; // increase page by 1
 
@@ -330,6 +331,7 @@ class ClockingProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
+          hasNextPage = response.next == null ? false : true;
           var newAbsenteesList = response.results!
               .where((absentee) => (absentee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)
@@ -380,6 +382,8 @@ class ClockingProvider extends ChangeNotifier {
         toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
 
+      hasNextPage = response.next == null ? false : true;
+
       _selectedAttendees.clear();
 
       if (response.results != null || response.results!.isNotEmpty) {
@@ -411,9 +415,8 @@ class ClockingProvider extends ChangeNotifier {
   // load more list of absentees of a meeting
   Future<void> _loadMoreAttendees() async {
     if (hasNextPage == true &&
-        loading == false &&
-        _loadingMore == false &&
-        attendeesScrollController.position.extentAfter < 300) {
+        (attendeesScrollController.position.pixels ==
+            attendeesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _attendeesPage += 1; // increase page by 1
       // get current user branch
@@ -440,6 +443,7 @@ class ClockingProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
+          hasNextPage = response.next == null ? false : true;
           var newAtendeesList = response.results!
               .where((attendee) => (attendee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)

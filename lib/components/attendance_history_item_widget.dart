@@ -3,6 +3,7 @@ import 'package:akwaaba/components/custom_cached_image_widget.dart';
 import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/components/tag_widget_solid.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/models/attendance_history_item.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
@@ -76,7 +77,7 @@ class _AttendanceHistoryItemWidgetState
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: 3,
           child: Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(AppPadding.p12),
             child: Row(
               //  crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -98,9 +99,20 @@ class _AttendanceHistoryItemWidgetState
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      attendeeName,
-                      style: const TextStyle(fontSize: 18),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            attendeeName,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                        widget.userType == AppConstants.member
+                            ? const SizedBox()
+                            : const Icon(
+                                Icons.chevron_right,
+                              )
+                      ],
                     ),
                     const SizedBox(
                       height: 6,
@@ -248,26 +260,17 @@ class _AttendanceHistoryItemWidgetState
                         SizedBox(
                           width: displayWidth(context) * 0.02,
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TagWidgetSolid(
-                            text: widget.attendanceHistory!.status!.name!,
-                            color: widget.attendanceHistory!.status!.name ==
-                                    'Active'
-                                ? Colors.green
-                                : Colors.red,
-                          ),
+                        TagWidgetSolid(
+                          text: widget.attendanceHistory!.status!.name!,
+                          color:
+                              widget.attendanceHistory!.status!.name == 'Active'
+                                  ? Colors.green
+                                  : Colors.red,
                         ),
                       ],
                     ),
                   ],
                 )),
-                widget.userType == AppConstants.member
-                    ? const SizedBox()
-                    : const Align(
-                        alignment: Alignment.center,
-                        child: Icon(Icons.chevron_right),
-                      )
               ],
             ),
           ),

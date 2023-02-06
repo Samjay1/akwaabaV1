@@ -30,9 +30,11 @@ class ClockingAPI {
   }) async {
     ClockedMembersResponse membersResponse;
 
-    debugPrint("Search: $search");
+    debugPrint("Meeting ID: ${meetingEventModel.id}");
     debugPrint("Filter Date: $filterDate");
+    debugPrint("Search: $search");
     debugPrint("Branch ID: $branchId");
+    debugPrint("Page: $page");
     debugPrint("MemberCategoryId: $memberCategoryId");
     debugPrint("groupId: $groupId");
     debugPrint("subGroupId: $subGroupId");
@@ -82,16 +84,17 @@ class ClockingAPI {
   }) async {
     ClockedMembersResponse membersResponse;
     //debugPrint("URL: ${url.toString()}");
-    debugPrint("Meeting ID: ${meetingEventModel.id}");
-    debugPrint("Filter Date: $filterDate");
-    debugPrint("Search: $search");
-    debugPrint("Branch ID: $branchId");
-    debugPrint("MemberCategoryId: $memberCategoryId");
-    debugPrint("groupId: $groupId");
-    debugPrint("subGroupId: $subGroupId");
-    debugPrint("genderId: $genderId");
-    debugPrint("fromAge: $fromAge");
-    debugPrint("toAge: $toAge");
+    // debugPrint("Meeting ID: ${meetingEventModel.id}");
+    // debugPrint("Filter Date: $filterDate");
+    // debugPrint("Search: $search");
+    // debugPrint("Branch ID: $branchId");
+    // debugPrint("Page: $page");
+    // debugPrint("MemberCategoryId: $memberCategoryId");
+    // debugPrint("groupId: $groupId");
+    // debugPrint("subGroupId: $subGroupId");
+    // debugPrint("genderId: $genderId");
+    // debugPrint("fromAge: $fromAge");
+    // debugPrint("toAge: $toAge");
     var url = Uri.parse(
       '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&search_member=$search&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge',
     );

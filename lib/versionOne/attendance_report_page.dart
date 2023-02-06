@@ -317,25 +317,6 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                   debugPrint(
                                     "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
                                   );
-                                } else {
-                                  for (Attendee? absentee in absentees) {
-                                    absentee!.selected = checkAll;
-                                    if (absentee.selected!) {
-                                      attendanceProvider.selectedAbsentees
-                                          .add(absentee);
-                                      attendanceProvider.selectedClockingIds
-                                          .add(absentee.attendance!.id!);
-                                    }
-                                    if (!absentee.selected!) {
-                                      attendanceProvider.selectedAbsentees
-                                          .remove(absentee);
-                                      attendanceProvider.selectedClockingIds
-                                          .remove(absentee.attendance!.id!);
-                                    }
-                                  }
-                                  debugPrint(
-                                    "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
-                                  );
                                 }
                               },
                             ),
@@ -485,7 +466,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                                                           index]!);
                                                               attendanceProvider
                                                                   .selectedClockingIds
-                                                                  .remove(absentees[
+                                                                  .remove(attendees[
                                                                           index]!
                                                                       .attendance!
                                                                       .id!);
@@ -499,7 +480,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                                                       index]!);
                                                               attendanceProvider
                                                                   .selectedClockingIds
-                                                                  .add(absentees[
+                                                                  .add(attendees[
                                                                           index]!
                                                                       .attendance!
                                                                       .id!);
