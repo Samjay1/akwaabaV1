@@ -1,5 +1,6 @@
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -78,18 +79,7 @@ class _MemberWidgetState extends State<MemberWidget> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
-                    children: [
-                      Expanded(
-                          child: Text(
-                        "${widget.member!.firstname!.capitalize()} ${widget.member!.middlename!.isEmpty ? '' : widget.member!.middlename!.capitalize()} ${widget.member!.surname!.capitalize()}",
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600),
-                        maxLines: 2,
-                        //overflow: TextOverflow.ellipsis,
-                      )),
-                    ],
-                  ),
-                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
                         onTap: () => openEmailAppWithSubject(
@@ -138,6 +128,45 @@ class _MemberWidgetState extends State<MemberWidget> {
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.005,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: Text(
+                        "${widget.member!.firstname!.capitalize()} ${widget.member!.middlename!.isEmpty ? '' : widget.member!.middlename!.capitalize()} ${widget.member!.surname!.capitalize()}",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600),
+                        maxLines: 2,
+                        //overflow: TextOverflow.ellipsis,
+                      )),
+                      SizedBox(
+                        width: displayWidth(context) * 0.02,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MemberAccountPage(
+                                member: widget.member,
+                                userType: userType,
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Icon(
+                          Icons.chevron_right,
+                          size: 20,
+                          color: primaryColor,
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.01,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -159,27 +188,9 @@ class _MemberWidgetState extends State<MemberWidget> {
                             color: textColorLight),
                       )
                     ],
-                  )
+                  ),
                 ],
               )),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => MemberAccountPage(
-                        member: widget.member,
-                        userType: userType,
-                      ),
-                    ),
-                  );
-                },
-                child: const Icon(
-                  Icons.chevron_right,
-                  size: 20,
-                  color: primaryColor,
-                ),
-              )
             ],
           ),
         ),

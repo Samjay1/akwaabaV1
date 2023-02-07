@@ -54,7 +54,8 @@ class SelfClockingProvider extends ChangeNotifier {
   int _attendeesPage = 1;
   bool hasNextPage = true;
 
-  String search = '';
+  String searchName = '';
+  String searchIdentity = '';
 
   late ScrollController absenteesScrollController = ScrollController()
     ..addListener(_loadMoreAbsentees);
@@ -134,7 +135,8 @@ class SelfClockingProvider extends ChangeNotifier {
         meetingEventModel: meetingEventModel,
         branchId: meetingEventModel.branchId,
         filterDate: getFilterDate(),
-        search: search.isEmpty ? '' : search,
+        searchName: searchName.isEmpty ? '' : searchName,
+        searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
         memberCategoryId: '',
         groupId: '',
         subGroupId: '',
@@ -186,7 +188,8 @@ class SelfClockingProvider extends ChangeNotifier {
           meetingEventModel: selectedCurrentMeeting,
           branchId: selectedCurrentMeeting.branchId,
           filterDate: getFilterDate(),
-          search: search.isEmpty ? '' : search,
+          searchName: searchName.isEmpty ? '' : searchName,
+          searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
           memberCategoryId: '',
           groupId: '',
           subGroupId: '',
@@ -229,7 +232,8 @@ class SelfClockingProvider extends ChangeNotifier {
         meetingEventModel: meetingEventModel,
         branchId: meetingEventModel.branchId,
         filterDate: getFilterDate(),
-        search: search.isEmpty ? '' : search,
+        searchName: searchName.isEmpty ? '' : searchName,
+        searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
         memberCategoryId: '',
         groupId: '',
         subGroupId: '',
@@ -283,7 +287,8 @@ class SelfClockingProvider extends ChangeNotifier {
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
-          search: search.isEmpty ? '' : search,
+          searchName: searchName.isEmpty ? '' : searchName,
+          searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
           memberCategoryId: '',
           groupId: '',
           subGroupId: '',
@@ -316,7 +321,8 @@ class SelfClockingProvider extends ChangeNotifier {
   }
 
   void clearFilters() {
-    search = '';
+    searchName = '';
+    searchIdentity = '';
     searchTEC.clear();
     minAgeTEC.clear();
     maxAgeTEC.clear();

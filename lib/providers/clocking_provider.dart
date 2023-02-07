@@ -83,7 +83,8 @@ class ClockingProvider extends ChangeNotifier {
   int _attendeesPage = 1;
   bool hasNextPage = false;
 
-  String search = '';
+  String searchName = '';
+  String searchIdentity = '';
 
   late ScrollController absenteesScrollController = ScrollController()
     ..addListener(_loadMoreAbsentees);
@@ -258,7 +259,8 @@ class ClockingProvider extends ChangeNotifier {
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
-        search: search.isEmpty ? '' : search,
+        searchName: searchName.isEmpty ? '' : searchName,
+        searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
         memberCategoryId: selectedMemberCategory == null
             ? ''
             : selectedMemberCategory!.id!.toString(),
@@ -318,7 +320,8 @@ class ClockingProvider extends ChangeNotifier {
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
-          search: search.isEmpty ? '' : search,
+          searchName: searchName.isEmpty ? '' : searchName,
+          searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
           memberCategoryId: selectedMemberCategory == null
               ? ''
               : selectedMemberCategory!.id!.toString(),
@@ -370,7 +373,8 @@ class ClockingProvider extends ChangeNotifier {
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
-        search: search.isEmpty ? '' : search,
+        searchName: searchName.isEmpty ? '' : searchName,
+        searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
         memberCategoryId: selectedMemberCategory == null
             ? ''
             : selectedMemberCategory!.id!.toString(),
@@ -430,7 +434,8 @@ class ClockingProvider extends ChangeNotifier {
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
-          search: search.isEmpty ? '' : search,
+          searchName: searchName.isEmpty ? '' : searchName,
+          searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
           memberCategoryId: selectedMemberCategory == null
               ? ''
               : selectedMemberCategory!.id!.toString(),
@@ -473,7 +478,8 @@ class ClockingProvider extends ChangeNotifier {
     selectedGroup = null;
     selectedSubGroup = null;
     selectedMemberCategory = null;
-    search = '';
+    searchName = '';
+    searchIdentity = '';
     minAgeTEC.clear();
     maxAgeTEC.clear();
     notifyListeners();

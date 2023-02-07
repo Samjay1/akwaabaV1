@@ -148,7 +148,7 @@ class _ClockingPageState extends State<ClockingPage> {
                               padding: const EdgeInsets.all(AppPadding.p14),
                               onSubmitted: (val) {
                                 setState(() {
-                                  clockingProvider.search = val;
+                                  clockingProvider.searchName = val;
                                 });
                                 // search absentees by name
                                 clockingProvider.getAllAbsentees(
@@ -157,7 +157,7 @@ class _ClockingPageState extends State<ClockingPage> {
                               },
                               onChanged: (val) {
                                 if (val.isEmpty) {
-                                  clockingProvider.search = val;
+                                  clockingProvider.searchName = val;
                                   clockingProvider.getAllAbsentees(
                                     meetingEventModel: widget.meetingEventModel,
                                   );
@@ -170,10 +170,10 @@ class _ClockingPageState extends State<ClockingPage> {
                             CupertinoSearchTextField(
                               padding: const EdgeInsets.all(AppPadding.p14),
                               placeholder: "Enter ID",
-                              //keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.number,
                               onSubmitted: (val) {
                                 setState(() {
-                                  clockingProvider.search = val;
+                                  clockingProvider.searchIdentity = val;
                                 });
                                 // search absentees by ID
                                 clockingProvider.getAllAbsentees(
@@ -182,7 +182,7 @@ class _ClockingPageState extends State<ClockingPage> {
                               },
                               onChanged: (val) {
                                 setState(() {
-                                  clockingProvider.search = val;
+                                  clockingProvider.searchIdentity = val;
                                 });
                                 clockingProvider.getAllAbsentees(
                                   meetingEventModel: widget.meetingEventModel,

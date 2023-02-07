@@ -326,6 +326,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.0"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -544,6 +549,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
+  multiselect:
+    dependency: "direct main"
+    description:
+      name: multiselect
+      sha256: ef0881ab40ea680cee4aaca2e13f17fc1b53a28cf66a8b440667f02558ce1474
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.7"
+  navigation_builder:
+    dependency: transitive
+    description:
+      name: navigation_builder
+      sha256: cbf966253e1f5b1798f3fbcae571fb6d452e5c7a606a5c451e2b9a3d343920f0
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2+4"
   nested:
     dependency: transitive
     description:
@@ -805,6 +826,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.0"
+  states_rebuilder:
+    dependency: transitive
+    description:
+      name: states_rebuilder
+      sha256: e8612993e97a5caeb9d983f6081304ef10868ba436ae49a723ee089ab51e2d12
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.0"
   stream_channel:
     dependency: transitive
     description:
@@ -1022,5 +1051,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.18.0 <4.0.0"
+  dart: ">=2.18.2 <4.0.0"
   flutter: ">=3.3.0"

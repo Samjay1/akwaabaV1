@@ -8,6 +8,7 @@ import 'package:akwaaba/models/general/district.dart';
 import 'package:akwaaba/models/general/electoralArea.dart';
 import 'package:akwaaba/models/general/memberType.dart';
 import 'package:akwaaba/models/general/region.dart';
+import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/models/members/deviceRequestModel.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -705,7 +706,7 @@ class MemberAPI {
     }
   }
 
-  Future<List<AbstractSubGroup>?> getSubGroup(
+  Future<List<SubGroup>?> getSubGroup(
       {required var token, var branchID}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
@@ -720,7 +721,7 @@ class MemberAPI {
         var decodedresponse = jsonDecode(response.body);
         print("SubGroup success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
-        return dataList.map((data) => AbstractSubGroup.fromJson(data)).toList();
+        return dataList.map((data) => SubGroup.fromJson(data)).toList();
       } else {
         print('SubGroup error ${jsonDecode(response.body)}');
         return null;
@@ -897,7 +898,7 @@ class MemberAPI {
         return clientInfo;
       } else {
         print('searchRegCode error ${jsonDecode(response.body)}');
-        showErrorToast("Please a valid Registration Code");
+        //showErrorToast("Please a valid Registration Code");
         return null;
       }
     } on SocketException catch (e) {
@@ -972,7 +973,7 @@ class MemberAPI {
       confirm_password}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
-      var request = await http.MultipartRequest(
+      var request = http.MultipartRequest(
           'POST', Uri.parse('$regBaseUrl/members/user/app-register'));
 
       Map<String, String> headers = {'Content-Type': 'application/json'};
@@ -997,7 +998,6 @@ class MemberAPI {
       request.headers.addAll(headers);
 
       // add file to multipart
-
       request.fields["clientId"] = clientId;
       request.fields["branchId"] = branchId;
       request.fields["firstname"] = firstname;
@@ -1050,12 +1050,15 @@ class MemberAPI {
       // send
       var response = await request.send();
       // listen for response
-      print('response.statusCode ${response.statusCode}');
+      debugPrint('response.statusCode ${response.statusCode}');
 
       if (response.statusCode == 201) {
         debugPrint('REGISTRATION MEMBER -------------- $response');
-        showNormalToast("Registration Successful, Proceed to Login.");
         return 'successful';
+      } else if (response.statusCode == 400) {
+        return jsonDecode(
+          await response.stream.bytesToString(),
+        )['non_field_errors'][0];
       } else {
         response.stream.transform(utf8.decoder).listen((value) {
           var data = json.decode(value);
@@ -1104,22 +1107,25 @@ class MemberAPI {
       certificates}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
-      var request = await http.MultipartRequest('POST',
+      var request = http.MultipartRequest('POST',
           Uri.parse('$regBaseUrl/members/user-organization/app-register'));
 
       Map<String, String> headers = {'Content-Type': 'application/json'};
-      request.headers.addAll(headers);
+      //Map<String, String> headers = {'Content-Type': 'multipart/form-data'};
 
       // multipart that takes file
       if (logo != null) {
         var orgLogo = await http.MultipartFile.fromPath('logo', logo);
         request.files.add(orgLogo);
       }
+
       if (certificates != null) {
         var orgCertificates =
             await http.MultipartFile.fromPath('certificates', certificates);
         request.files.add(orgCertificates);
       }
+
+      request.headers.addAll(headers);
 
       // add file to multipart
 
@@ -1185,27 +1191,33 @@ class MemberAPI {
           print('RESPONSE: $data');
           // showNormalToast('$message');
         });
-
-        showNormalToast("Registration Successful, Proceed to Login.");
         return 'successful';
       } else if (response.statusCode == 400) {
-        response.stream.transform(utf8.decoder).listen((value) {
-          var data = json.decode(value);
-          print('RESPONSE: $data');
-          if (data == null) {
-            showErrorToast('Failed, Try again');
+        var data = jsonDecode(await response.stream.bytesToString());
+        if (data == null) {
+          //showErrorToast('Failed, Try again');
+          if (context.mounted) {
+            showErrorSnackBar(
+              context,
+              'An unexpected error occured, please try again',
+            );
+          }
+        } else {
+          if (data['non_field_errors'] == null) {
+            var res = data.keys.toList().first;
+            debugPrint(data.toString());
+            var message = '${data[res]['0']}';
+            //showErrorToast(message);
+            if (context.mounted) {
+              showErrorSnackBar(context, message);
+            }
           } else {
-            if (data['non_field_errors'] == null) {
-              var res = data.keys.toList().first;
-              print(res);
-              var message = '$res: ${data[res][0]}';
-              showErrorToast('$message');
-            } else {
-              var message = data['non_field_errors'][0];
-              showErrorToast('$message');
+            var message = data['non_field_errors'][0];
+            if (context.mounted) {
+              showErrorSnackBar(context, message);
             }
           }
-        });
+        }
       }
     } on SocketException catch (_) {
       showErrorToast("Network Error");

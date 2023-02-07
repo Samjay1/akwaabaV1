@@ -78,7 +78,8 @@ class AttendanceProvider extends ChangeNotifier {
 
   BuildContext? _context;
 
-  String search = '';
+  String searchName = '';
+  String searchIdentity = '';
 
   List<Attendee?> get absentees => _absentees;
 
@@ -394,7 +395,8 @@ class AttendanceProvider extends ChangeNotifier {
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
-        search: search.isEmpty ? '' : search,
+        searchName: searchName.isEmpty ? '' : searchName,
+        searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
         memberCategoryId: selectedMemberCategory == null
             ? ''
             : selectedMemberCategory!.id!.toString(),
@@ -459,7 +461,8 @@ class AttendanceProvider extends ChangeNotifier {
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
-          search: search.isEmpty ? '' : search,
+          searchName: searchName.isEmpty ? '' : searchName,
+          searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
           memberCategoryId: selectedMemberCategory == null
               ? ''
               : selectedMemberCategory!.id!.toString(),
@@ -513,7 +516,8 @@ class AttendanceProvider extends ChangeNotifier {
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
-        search: search.isEmpty ? '' : search,
+        searchName: searchName.isEmpty ? '' : searchName,
+        searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
         memberCategoryId: selectedMemberCategory == null
             ? ''
             : selectedMemberCategory!.id!.toString(),
@@ -574,7 +578,8 @@ class AttendanceProvider extends ChangeNotifier {
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
-          search: search.isEmpty ? '' : search,
+          searchName: searchName.isEmpty ? '' : searchName,
+          searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
           memberCategoryId: selectedMemberCategory == null
               ? ''
               : selectedMemberCategory!.id!.toString(),
@@ -697,7 +702,8 @@ class AttendanceProvider extends ChangeNotifier {
 
   Future<void> clearData() async {
     clearFilters();
-    search = '';
+    searchName = '';
+    searchIdentity = '';
     totalAttendees = 0;
     totalAbsentees = 0;
     totalMaleAttendees.clear();

@@ -125,11 +125,11 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                 CupertinoSearchTextField(
                   padding: const EdgeInsets.all(AppPadding.p18),
                   controller: clockingProvider.searchTEC,
-                  //keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.number,
                   placeholder: "Enter ID",
                   onSubmitted: (val) {
                     setState(() {
-                      clockingProvider.search = val;
+                      clockingProvider.searchIdentity = val;
                     });
                     clockingProvider.getAllAbsentees(
                       meetingEventModel: widget.meetingEventModel,
@@ -138,18 +138,17 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                   onChanged: (val) {
                     if (val.isEmpty) {
                       setState(() {
-                        clockingProvider.search = val;
+                        clockingProvider.searchIdentity = val;
                       });
                       clockingProvider.clearData();
+                    } else {
+                      setState(() {
+                        clockingProvider.searchIdentity = val;
+                      });
+                      clockingProvider.getAllAbsentees(
+                        meetingEventModel: widget.meetingEventModel,
+                      );
                     }
-                    // else {
-                    //   setState(() {
-                    //     clockingProvider.search = val;
-                    //   });
-                    //   clockingProvider.getAllAbsentees(
-                    //     meetingEventModel: widget.meetingEventModel,
-                    //   );
-                    // }
                   },
                 ),
 

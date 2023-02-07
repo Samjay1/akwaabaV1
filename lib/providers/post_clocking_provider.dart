@@ -51,7 +51,8 @@ class PostClockingProvider extends ChangeNotifier {
   DateTime? selectedDate;
   String? postClockTime;
 
-  String search = '';
+  String searchName = '';
+  String searchIdentity = '';
 
   MeetingEventModel? _meetingEventModel;
 
@@ -287,7 +288,8 @@ class PostClockingProvider extends ChangeNotifier {
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
-        search: search.isEmpty ? '' : search,
+        searchName: searchName.isEmpty ? '' : searchName,
+        searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
         memberCategoryId: selectedMemberCategory == null
             ? ''
             : selectedMemberCategory!.id!.toString(),
@@ -352,7 +354,8 @@ class PostClockingProvider extends ChangeNotifier {
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
-          search: search.isEmpty ? '' : search,
+          searchName: searchName.isEmpty ? '' : searchName,
+          searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
           memberCategoryId: selectedMemberCategory == null
               ? ''
               : selectedMemberCategory!.id!.toString(),
@@ -404,7 +407,8 @@ class PostClockingProvider extends ChangeNotifier {
         filterDate: selectedDate == null
             ? getFilterDate()
             : selectedDate!.toIso8601String().substring(0, 10),
-        search: search.isEmpty ? '' : search,
+        searchName: searchName.isEmpty ? '' : searchName,
+        searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
         memberCategoryId: selectedMemberCategory == null
             ? ''
             : selectedMemberCategory!.id!.toString(),
@@ -463,7 +467,8 @@ class PostClockingProvider extends ChangeNotifier {
           filterDate: selectedDate == null
               ? getFilterDate()
               : selectedDate!.toIso8601String().substring(0, 10),
-          search: search.isEmpty ? '' : search,
+          searchName: searchName.isEmpty ? '' : searchName,
+          searchIdentity: searchIdentity.isEmpty ? '' : searchIdentity,
           memberCategoryId: selectedMemberCategory == null
               ? ''
               : selectedMemberCategory!.id!.toString(),
@@ -767,7 +772,8 @@ class PostClockingProvider extends ChangeNotifier {
     selectedSubGroup = null;
     selectedMemberCategory = null;
     selectedPastMeetingEvent = null;
-    search = '';
+    searchName = '';
+    searchIdentity = '';
     minAgeTEC.clear();
     maxAgeTEC.clear();
     notifyListeners();

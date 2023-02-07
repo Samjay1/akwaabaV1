@@ -136,7 +136,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                   if (clockingListState) {
                                     // search absentees by name
                                     if (absentees.isNotEmpty) {
-                                      postClockingProvider.search = val;
+                                      postClockingProvider.searchName = val;
                                       postClockingProvider.getAllAbsentees(
                                         meetingEventModel: postClockingProvider
                                             .selectedPastMeetingEvent!,
@@ -145,7 +145,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                   } else {
                                     // search attendees by name
                                     if (attendees.isNotEmpty) {
-                                      postClockingProvider.search = val;
+                                      postClockingProvider.searchName = val;
                                       postClockingProvider.getAllAttendees(
                                         meetingEventModel: postClockingProvider
                                             .selectedPastMeetingEvent!,
@@ -158,14 +158,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 setState(() {
                                   if (clockingListState) {
                                     // search absentees by name
-                                    postClockingProvider.search = val;
+                                    postClockingProvider.searchName = val;
                                     postClockingProvider.getAllAbsentees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,
                                     );
                                   } else {
                                     // search attendees by name
-                                    postClockingProvider.search = val;
+                                    postClockingProvider.searchName = val;
                                     postClockingProvider.getAllAttendees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,
@@ -182,13 +182,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             CupertinoSearchTextField(
                               padding: const EdgeInsets.all(AppPadding.p14),
                               placeholder: "Enter ID",
-                              //keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.number,
                               onSubmitted: (val) {
                                 setState(() {
                                   if (clockingListState) {
                                     // search absentees by id
                                     if (absentees.isNotEmpty) {
-                                      postClockingProvider.search = val;
+                                      postClockingProvider.searchIdentity = val;
                                       postClockingProvider.getAllAbsentees(
                                         meetingEventModel: postClockingProvider
                                             .selectedPastMeetingEvent!,
@@ -197,7 +197,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                   } else {
                                     // search attendees by id
                                     if (attendees.isNotEmpty) {
-                                      postClockingProvider.search = val;
+                                      postClockingProvider.searchIdentity = val;
                                       postClockingProvider.getAllAttendees(
                                         meetingEventModel: postClockingProvider
                                             .selectedPastMeetingEvent!,
@@ -210,14 +210,14 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 setState(() {
                                   if (clockingListState) {
                                     // search absentees by id
-                                    postClockingProvider.search = val;
+                                    postClockingProvider.searchIdentity = val;
                                     postClockingProvider.getAllAbsentees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,
                                     );
                                   } else {
                                     // search attendees by id
-                                    postClockingProvider.search = val;
+                                    postClockingProvider.searchIdentity = val;
                                     postClockingProvider.getAllAttendees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,

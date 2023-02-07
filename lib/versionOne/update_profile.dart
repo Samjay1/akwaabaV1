@@ -5,6 +5,7 @@ import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
+import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
@@ -268,7 +269,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   //GROUPING - SUB GROUP
   var selectedSubGroup;
   var selectedSubGroupID;
-  late List<AbstractSubGroup>? subGroupList = [];
+  late List<SubGroup>? subGroupList = [];
   void _getSubGroupList({required var branchID, var token}) async {
     subGroupList =
         (await MemberAPI().getSubGroup(branchID: branchID, token: token));

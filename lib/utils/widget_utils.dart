@@ -42,15 +42,16 @@ displayCustomCupertinoDialog(
   );
 }
 
-Future displayCustomDropDown(
-    {required List options,
-    required BuildContext context,
-    var title,
-    var message,
-    bool showCancel = true,
-    bool listItemsIsMap = true,
-    var initialValue,
-    var customActions}) async {
+Future displayCustomDropDown({
+  required List options,
+  required BuildContext context,
+  var title,
+  var message,
+  bool showCancel = true,
+  bool listItemsIsMap = true,
+  var initialValue,
+  var customActions,
+}) async {
   var selectedOption;
 
   await showCupertinoModalPopup(
@@ -224,6 +225,7 @@ void showNormalSnackBar(BuildContext context, String message) {
   final scaffold = ScaffoldMessenger.of(context);
   scaffold.showSnackBar(
     SnackBar(
+      backgroundColor: Colors.green,
       content: Text(message),
       duration: const Duration(milliseconds: 1000),
     ),
@@ -239,7 +241,7 @@ void showErrorSnackBar(BuildContext context, String message) {
         message,
         style: const TextStyle(color: Colors.white),
       ),
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 3000),
     ),
   );
 }

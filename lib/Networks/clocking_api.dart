@@ -19,7 +19,8 @@ class ClockingAPI {
     required int page,
     required MeetingEventModel meetingEventModel,
     required String filterDate,
-    required String search,
+    required String searchName,
+    required String searchIdentity,
     required int branchId,
     required String? memberCategoryId,
     required String? groupId,
@@ -32,7 +33,8 @@ class ClockingAPI {
 
     debugPrint("Meeting ID: ${meetingEventModel.id}");
     debugPrint("Filter Date: $filterDate");
-    debugPrint("Search: $search");
+    debugPrint("SearchName: $searchName");
+    debugPrint("SearchIdentity: $searchIdentity");
     debugPrint("Branch ID: $branchId");
     debugPrint("Page: $page");
     debugPrint("MemberCategoryId: $memberCategoryId");
@@ -42,7 +44,7 @@ class ClockingAPI {
     debugPrint("fromAge: $fromAge");
     debugPrint("toAge: $toAge");
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance/absentees?page=$page&search_member=$search&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
+        '${getBaseUrl()}/attendance/meeting-event/attendance/absentees?page=$page&filter_name=$searchName&filter_identity=$searchIdentity&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
     try {
       debugPrint("URL: ${url.toString()}");
 
@@ -73,7 +75,8 @@ class ClockingAPI {
     required int page,
     required MeetingEventModel meetingEventModel,
     required String filterDate,
-    required String search,
+    required String searchName,
+    required String searchIdentity,
     required int branchId,
     required String memberCategoryId,
     required String groupId,
@@ -86,7 +89,8 @@ class ClockingAPI {
     //debugPrint("URL: ${url.toString()}");
     // debugPrint("Meeting ID: ${meetingEventModel.id}");
     // debugPrint("Filter Date: $filterDate");
-    // debugPrint("Search: $search");
+    // debugPrint("SearchName: $searchName");
+    // debugPrint("SearchIdentity: $searchIdentity");
     // debugPrint("Branch ID: $branchId");
     // debugPrint("Page: $page");
     // debugPrint("MemberCategoryId: $memberCategoryId");
@@ -96,7 +100,7 @@ class ClockingAPI {
     // debugPrint("fromAge: $fromAge");
     // debugPrint("toAge: $toAge");
     var url = Uri.parse(
-      '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&search_member=$search&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge',
+      '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&filter_name=$searchName&filter_identity=$searchIdentity&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge',
     );
     try {
       http.Response response = await http
