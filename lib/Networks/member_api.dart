@@ -17,9 +17,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../models/general/OrganisationType.dart';
 import '../models/general/abstractGroup.dart';
-import '../models/general/abstractSubGroup.dart';
 import '../models/general/constiteuncy.dart';
 import '../models/general/country.dart';
+import '../models/general/group.dart';
 import '../models/members/member_profile.dart';
 import '../models/members/previewMemberProfile.dart';
 
@@ -91,12 +91,10 @@ class MemberAPI {
 
   //GET MEMBER FULL PROFILE INFO
   // Get client info of member
-  Future<PreviewMemberProfile> getFullProfileInfo() async {
+  Future<PreviewMemberProfile> getFullProfileInfo(
+      {required int memberId}) async {
     PreviewMemberProfile accountInfo;
     try {
-      prefs = await SharedPreferences.getInstance();
-      int? memberId = prefs.getInt('memberId');
-
       var url = Uri.parse('$baseUrl/members/user/$memberId');
       http.Response response = await http.get(
         url,
@@ -138,6 +136,62 @@ class MemberAPI {
       throw FetchDataException('No Internet connection');
     }
     return branch;
+  }
+
+  // get member groups
+  Future<List<Group>> getMemberGroups({required int memberId}) async {
+    List<Group> groups = [];
+
+    var url =
+        Uri.parse('$baseUrl/members/groupings/group-member?memberId=$memberId');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Group Member Res: ${jsonDecode(response.body)}");
+      var res = jsonDecode(response.body);
+      debugPrint(res.toString());
+
+      if (res['results'] != null) {
+        groups = <Group>[];
+        res['results'].forEach((v) {
+          groups.add(Group.fromJson(v['groupId']));
+        });
+      }
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return groups;
+  }
+
+  // get member subgroups
+  Future<List<SubGroup>> getMemberSubGroups({required int memberId}) async {
+    List<SubGroup> subGroups = [];
+
+    var url = Uri.parse(
+        '$baseUrl/members/groupings/sub-group-member?memberId=$memberId');
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("SubGroup Member Res: ${jsonDecode(response.body)}");
+      var res = jsonDecode(response.body);
+      debugPrint(res.toString());
+
+      if (res['results'] != null) {
+        subGroups = <SubGroup>[];
+        res['results'].forEach((v) {
+          subGroups.add(SubGroup.fromJson(v['subgroupId']));
+        });
+      }
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return subGroups;
   }
 
   // get a  branch
@@ -193,7 +247,7 @@ class MemberAPI {
         headers: {'Content-Type': 'application/json'},
       );
       var decodedResponse = await returnResponse(response);
-      print('decodedResponse $decodedResponse');
+      debugPrint('decodedResponse $decodedResponse');
       var memberToken = decodedResponse['token'];
       int? memberId;
       if (decodedResponse['user'] != null) {
@@ -276,7 +330,7 @@ class MemberAPI {
             'Content-Type': 'application/json'
           });
       var decodedResponse = jsonDecode(response.body);
-      print('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
+      debugPrint('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
       if (response.statusCode == 201) {
         // debugPrint('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
         // debugPrint(
@@ -311,19 +365,19 @@ class MemberAPI {
             .map((data) => DeviceRequestModel.fromJson(data))
             .toList();
       } else {
-        print('DeviceRequestModel error ${jsonDecode(response.body)}');
+        debugPrint('DeviceRequestModel error ${jsonDecode(response.body)}');
         return [];
       }
     } on SocketException catch (_) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Network issue')));
+          .showSnackBar(const SnackBar(content: Text('Network issue')));
       return [];
     }
   }
 
   Future<Object?> getRecentClocking(
       BuildContext context, String memberToken, memberID) async {
-    print('UserApi token-transactions $memberToken');
+    debugPrint('UserApi token-transactions $memberToken');
     try {
       http.Response response = await http.get(
           Uri.parse(
@@ -334,14 +388,14 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("RecentClocking success: $decodedresponse");
+        debugPrint("RecentClocking success: $decodedresponse");
         Iterable dataList = decodedresponse['results'];
         // return dataList
         //     .map((data) => RecentClockModal.fromJson(data))
         //     .toList();
         return 'hello';
       } else {
-        print('DeviceRequestModel error ${jsonDecode(response.body)}');
+        debugPrint('DeviceRequestModel error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -460,7 +514,7 @@ class MemberAPI {
         Iterable dataList = decodedresponse;
         return dataList.map((data) => Country.fromJson(data)).toList();
       } else {
-        print('Country error ${jsonDecode(response.body)}');
+        debugPrint('Country error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -482,7 +536,7 @@ class MemberAPI {
         Iterable dataList = decodedresponse;
         return dataList.map((data) => Region.fromJson(data)).toList();
       } else {
-        print('REGION error ${jsonDecode(response.body)}');
+        debugPrint('REGION error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -501,10 +555,10 @@ class MemberAPI {
       );
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("REGION single success: $decodedresponse");
+        debugPrint("REGION single success: $decodedresponse");
         return Region.fromJson(decodedresponse);
       } else {
-        print('REGION error ${jsonDecode(response.body)}');
+        debugPrint('REGION error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -523,11 +577,11 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("District success: $decodedresponse");
+        debugPrint("District success: $decodedresponse");
         Iterable dataList = decodedresponse;
         return dataList.map((data) => District.fromJson(data)).toList();
       } else {
-        print('District error ${jsonDecode(response.body)}');
+        debugPrint('District error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -546,10 +600,10 @@ class MemberAPI {
       );
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("District single success: $decodedresponse");
+        debugPrint("District single success: $decodedresponse");
         return District.fromJson(decodedresponse);
       } else {
-        print('REGION error ${jsonDecode(response.body)}');
+        debugPrint('REGION error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -574,7 +628,7 @@ class MemberAPI {
         Iterable dataList = decodedresponse['results'];
         return dataList.map((data) => Constituency.fromJson(data)).toList();
       } else {
-        print('Constituency error ${jsonDecode(response.body)}');
+        debugPrint('Constituency error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -593,10 +647,10 @@ class MemberAPI {
       );
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Constituency single success: $decodedresponse");
+        debugPrint("Constituency single success: $decodedresponse");
         return Constituency.fromJson(decodedresponse);
       } else {
-        print('REGION error ${jsonDecode(response.body)}');
+        debugPrint('REGION error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -620,7 +674,7 @@ class MemberAPI {
         Iterable dataList = decodedresponse;
         return dataList.map((data) => ElectoralArea.fromJson(data)).toList();
       } else {
-        print('ElectoralArea error ${jsonDecode(response.body)}');
+        debugPrint('ElectoralArea error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -639,10 +693,10 @@ class MemberAPI {
       );
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("ElectoralArea single success: $decodedresponse");
+        debugPrint("ElectoralArea single success: $decodedresponse");
         return ElectoralArea.fromJson(decodedresponse);
       } else {
-        print('REGION error ${jsonDecode(response.body)}');
+        debugPrint('REGION error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -664,11 +718,11 @@ class MemberAPI {
       });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Branch success: $decodedresponse, TOKEN: $token");
+        debugPrint("Branch success: $decodedresponse, TOKEN: $token");
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => Branch.fromJson(data)).toList();
       } else {
-        print('Branch error ${jsonDecode(response.body)}');
+        debugPrint('Branch error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -680,8 +734,7 @@ class MemberAPI {
 
 //  GROUP AND SUB GROUPS REQUEST
 
-  Future<List<AbstractGroup>?> getGroup(
-      {required var token, var branchID}) async {
+  Future<List<Group>?> getGroup({required var token, var branchID}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -692,11 +745,11 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("Group success: $decodedresponse");
+        debugPrint("Group success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
-        return dataList.map((data) => AbstractGroup.fromJson(data)).toList();
+        return dataList.map((data) => Group.fromJson(data)).toList();
       } else {
-        print('Group error ${jsonDecode(response.body)}');
+        debugPrint('Group error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -878,7 +931,7 @@ class MemberAPI {
 
   // REGISTRATION CODE
 
-  static Future<dynamic?> searchRegCode({required var regCode}) async {
+  static Future<dynamic> searchRegCode({required var regCode}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
@@ -1038,10 +1091,10 @@ class MemberAPI {
       request.fields["professionStatus"] = professionStatus.toString();
       request.fields["educationalStatus"] = educationalStatus.toString();
       if (groupIds != null) {
-        request.fields["groupIds"] = groupIds.toString();
+        request.fields["groupIds[]"] = groupIds.toString();
       }
       if (subgroupIds != null) {
-        request.fields["subgroupIds"] = subgroupIds.toString();
+        request.fields["subgroupIds[]"] = subgroupIds.toString();
       }
 
       request.fields["password"] = password;
@@ -1167,10 +1220,10 @@ class MemberAPI {
       request.fields["website"] = website;
       request.fields["businessDescription"] = businessDescription;
       if (groupIds != null) {
-        request.fields["groupIds"] = groupIds.toString();
+        request.fields["groupIds[]"] = groupIds.toString();
       }
       if (subgroupIds != null) {
-        request.fields["subgroupIds"] = subgroupIds.toString();
+        request.fields["subgroupIds[]"] = subgroupIds.toString();
       }
       request.fields["password"] = password;
       request.fields["confirm_password"] = confirm_password;
@@ -1226,15 +1279,17 @@ class MemberAPI {
   }
 
   //UPDATE BIO INFO
-  static Future<String?> updateBio(BuildContext context,
-      {firstname,
-      middlename,
-      surname,
-      gender,
-      dateOfBirth,
-      email,
-      phone,
-      referenceId}) async {
+  static Future<String?> updateBio({
+    memberId,
+    firstname,
+    middlename,
+    surname,
+    gender,
+    dateOfBirth,
+    email,
+    phone,
+    referenceId,
+  }) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       var data = {
@@ -1248,9 +1303,7 @@ class MemberAPI {
         "accountType": 1,
       };
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? memberId = prefs.getInt('memberId');
-      print('UPDATE BIO memberId $memberId');
+      debugPrint('UPDATE BIO memberId $memberId');
 
       http.Response response = await http.put(
         Uri.parse('$regBaseUrl/members/user/$memberId'),
@@ -1260,7 +1313,7 @@ class MemberAPI {
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         debugPrint('UPDATE BIO MEMBER -------------- $decodedResponse');
-        showNormalToast("Bio information Update Successful");
+
         return 'successful';
       } else {
         return 'failed';
@@ -1272,8 +1325,11 @@ class MemberAPI {
   }
 
   //UPDATE GROUPINGS
-  static Future<String?> updateGroup(BuildContext context,
-      {branchId, category}) async {
+  static Future<String?> updateGroup({
+    required branchId,
+    required category,
+    required memberId,
+  }) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       var data = {
@@ -1281,8 +1337,6 @@ class MemberAPI {
         "memberType": category,
       };
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? memberId = prefs.getInt('memberId');
       print('UPDATE GROUP memberId $memberId');
 
       http.Response response = await http.put(
@@ -1293,7 +1347,77 @@ class MemberAPI {
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         debugPrint('UPDATE GROUP MEMBER -------------- $decodedResponse');
-        showNormalToast("Group information Update Successful");
+
+        return 'successful';
+      } else {
+        return 'failed';
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+  //UPDATE MEMBER GROUPS
+  static Future<String?> updateMemberGroups({
+    required List<int> groupIds,
+    required List<int> subgroupIds,
+    required int memberId,
+  }) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      var data = {
+        "groups": groupIds,
+        "memberId": memberId,
+      };
+
+      debugPrint('GroupIDs: ${groupIds.toString()}');
+
+      http.Response response = await http.post(
+        Uri.parse('$regBaseUrl/members/groupings/group-member/bulk'),
+        body: json.encode(data),
+        headers: await getAllHeaders(),
+      );
+      var decodedResponse = jsonDecode(response.body);
+      if (response.statusCode == 201) {
+        debugPrint('UPDATE GROUP -------------- $decodedResponse');
+        await updateMemberSubGroups(
+          subgroupIds: subgroupIds,
+          memberId: memberId,
+        );
+        //return 'successful';
+      } else {
+        debugPrint('GroupIDs: ${jsonDecode(response.body)}');
+        return 'failed';
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+  //UPDATE MEMBER SUBGROUPS
+  static Future<String?> updateMemberSubGroups({
+    required List<int> subgroupIds,
+    required int memberId,
+  }) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      var data = {
+        "subgroups": subgroupIds,
+        "memberId": memberId,
+      };
+      debugPrint('SubGroupIds: ${subgroupIds.toString()}');
+
+      http.Response response = await http.post(
+        Uri.parse('$regBaseUrl/members/groupings/sub-group-member/bulk'),
+        body: json.encode(data),
+        headers: await getAllHeaders(),
+      );
+      var decodedResponse = jsonDecode(response.body);
+      if (response.statusCode == 201) {
+        debugPrint('UPDATE SUBGROUP -------------- $decodedResponse');
+        showNormalToast("Group information updated successfully");
         return 'successful';
       } else {
         return 'failed';
@@ -1306,7 +1430,8 @@ class MemberAPI {
 
   //UPDATE LOCATION
   static Future<String?> updateLocation(BuildContext context,
-      {nationality,
+      {memberId,
+      nationality,
       countryOfResidence,
       stateProvince,
       region,
@@ -1331,8 +1456,6 @@ class MemberAPI {
         "hometown": hometown,
       };
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? memberId = prefs.getInt('memberId');
       print('UPDATE GROUP memberId $memberId');
 
       http.Response response = await http.put(
@@ -1343,7 +1466,6 @@ class MemberAPI {
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         debugPrint('UPDATE LOCATION MEMBER -------------- $decodedResponse');
-        showNormalToast("Location information Update Successful");
         return 'successful';
       } else {
         return 'failed';
@@ -1354,15 +1476,13 @@ class MemberAPI {
     }
   }
 
-  static Future<String?> updateCV(
-    BuildContext context, {
+  static Future<String?> updateCV({
+    required int memberId,
     profileResume,
   }) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? memberId = prefs.getInt('memberId');
-      print('UPDATE GROUP memberId $memberId');
+      debugPrint('UPDATE GROUP memberId $memberId');
       var request = await http.MultipartRequest(
           'PUT', Uri.parse('$regBaseUrl/members/user/$memberId'));
 
@@ -1370,33 +1490,29 @@ class MemberAPI {
 
       // multipart that takes file
 
-      if (profileResume != null) {
-        var profResume =
-            await http.MultipartFile.fromPath('profileResume', profileResume);
-        request.files.add(profResume);
-      } else {
-        showErrorToast("Please select a file");
-        return 'failed';
-      }
+      var profResume =
+          await http.MultipartFile.fromPath('profileResume', profileResume);
+      request.files.add(profResume);
       request.headers.addAll(headers);
 
       // send
       var response = await request.send();
       // listen for response
-      print('response.statusCode ${response.statusCode}');
+      debugPrint('response.statusCode ${response.statusCode}');
 
       if (response.statusCode == 200) {
         debugPrint(
             'UPDATE LOCATION MEMBER -------------- ${response.stream.toString()}');
-        showNormalToast("CV Update Successful");
+
         return 'successful';
       } else {
         response.stream.transform(utf8.decoder).listen((value) {
           var data = json.decode(value);
           // var message = data['non_field_errors'][0];
-          print('RESPONSE: $data');
+          debugPrint('RESPONSE: $data');
           // showNormalToast('$message');
         });
+        return 'failed';
       }
     } on SocketException catch (_) {
       showErrorToast("Network Error");
@@ -1404,13 +1520,11 @@ class MemberAPI {
     }
   }
 
-  static Future<String?> updateIDCard(BuildContext context,
-      {profileIdentification}) async {
+  static Future<String?> updateIDCard(
+      {required int memberId, profileIdentification}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? memberId = prefs.getInt('memberId');
-      print('UPDATE GROUP memberId $memberId');
+      debugPrint('UPDATE GROUP memberId $memberId');
       var request = await http.MultipartRequest(
           'PUT', Uri.parse('$regBaseUrl/members/user/$memberId'));
 
@@ -1418,14 +1532,9 @@ class MemberAPI {
 
       // multipart that takes file
 
-      if (profileIdentification != null) {
-        var profileIdentificationk = await http.MultipartFile.fromPath(
-            'profileIdentification', profileIdentification);
-        request.files.add(profileIdentificationk);
-      } else {
-        showErrorToast("Please select a file");
-        return 'failed';
-      }
+      var profileIdentificationk = await http.MultipartFile.fromPath(
+          'profileIdentification', profileIdentification);
+      request.files.add(profileIdentificationk);
       request.headers.addAll(headers);
 
       // send
@@ -1434,7 +1543,6 @@ class MemberAPI {
       print('response.statusCode ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        showNormalToast("ID card Update Successful");
         return 'successful';
       } else {
         response.stream.transform(utf8.decoder).listen((value) {
@@ -1443,6 +1551,7 @@ class MemberAPI {
           print('RESPONSE: $data');
           // showNormalToast('$message');
         });
+        return 'failed';
       }
     } on SocketException catch (_) {
       showErrorToast("Network Error");
@@ -1450,12 +1559,10 @@ class MemberAPI {
     }
   }
 
-  static Future<String?> updateProfilePic(BuildContext context,
-      {profilePic}) async {
+  static Future<String?> updateProfilePic(
+      {required int memberId, profilePic}) async {
     var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? memberId = prefs.getInt('memberId');
       print('UPDATE GROUP memberId $memberId');
       var request = await http.MultipartRequest(
           'PUT', Uri.parse('$regBaseUrl/members/user/$memberId'));
@@ -1480,7 +1587,6 @@ class MemberAPI {
       print('response.statusCode ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        showNormalToast("Profile picture Update Successful");
         return 'successful';
       } else {
         response.stream.transform(utf8.decoder).listen((value) {
@@ -1489,6 +1595,7 @@ class MemberAPI {
           print('RESPONSE: $data');
           // showNormalToast('$message');
         });
+        return 'failed';
       }
     } on SocketException catch (_) {
       showErrorToast("Network Error");

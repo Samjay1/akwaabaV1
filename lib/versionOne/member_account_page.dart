@@ -1,4 +1,7 @@
+import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/models/general/group.dart';
+import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/versionOne/update_account_page.dart';
@@ -8,6 +11,7 @@ import 'package:akwaaba/utils/dimens.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:akwaaba/versionOne/update_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,7 +41,24 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
   @override
   initState() {
     enabledEditing = widget.member!.editable!;
+    _getMemberGroups();
+    _getMemberSubGroups();
     super.initState();
+  }
+
+  // GROUP - GROUPS
+  List<Group> groups = [];
+  void _getMemberGroups() async {
+    groups = await MemberAPI().getMemberGroups(memberId: widget.member!.id!);
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
+  }
+
+  // GROUP - SUBGROUPS
+  List<SubGroup> subGroups = [];
+  void _getMemberSubGroups() async {
+    subGroups =
+        await MemberAPI().getMemberSubGroups(memberId: widget.member!.id!);
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
 
   @override
@@ -145,9 +166,35 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                     ? widget.member!.categoryInfo!.category!
                     : 'N/A',
               ),
-              const SizedBox(
-                height: 24,
-              ),
+              profileItemView(
+                  title: groups.length > 1 ? "Groups" : "Group",
+                  label: groups
+                      .map((e) => e.group)
+                      .toList()
+                      .toString()
+                      .substring(
+                          1,
+                          groups
+                                  .map((e) => e.group)
+                                  .toList()
+                                  .toString()
+                                  .length -
+                              1)),
+              profileItemView(
+                  title: groups.length > 1 ? "SubGroups" : "SubGroup",
+                  label: subGroups
+                      .map((e) => e.subgroup)
+                      .toList()
+                      .toString()
+                      .substring(
+                          1,
+                          subGroups
+                                  .map((e) => e.subgroup)
+                                  .toList()
+                                  .toString()
+                                  .length -
+                              1)),
+
               Container(
                 height: dividerHeight,
                 color: dividerColor,
@@ -273,7 +320,8 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const UpdateAccountPage(),
+                          builder: (_) =>
+                              UpdateProfile(memberId: widget.member!.id!),
                         ),
                       );
                     },
@@ -349,13 +397,16 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
           children: [
             Text(title),
             const SizedBox(
-              width: 12,
+              width: 20,
             ),
             Row(
               children: [
-                Text(label),
+                Text(
+                  label,
+                  textAlign: TextAlign.end,
+                ),
                 const SizedBox(
-                  width: 12,
+                  width: 10,
                 ),
                 Icon(display ? Icons.visibility : Icons.visibility_off)
               ],

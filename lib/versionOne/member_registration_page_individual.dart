@@ -6,6 +6,7 @@ import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -198,7 +199,7 @@ class _MemberRegistrationPageIndividualState
   //GROUPING - GROUP
   var selectedGroup;
   var selectedGroupID;
-  late List<AbstractGroup>? groupList = [];
+  late List<Group>? groupList = [];
   late List<String>? selectedGroupList = [];
   late String selectedGroupOption;
   void _getGroupList({required var branchID, var token}) async {

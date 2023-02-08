@@ -1,20 +1,21 @@
 import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/models/general/electoralArea.dart';
-import 'package:akwaaba/versionOne/update_account_page.dart';
+import 'package:akwaaba/models/general/group.dart';
+import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/update_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../components/custom_cached_image_widget.dart';
-import '../components/event_shimmer_item.dart';
 import '../components/profile_shimmer_item.dart';
 import '../components/text_shimmer_item.dart';
 import '../models/general/constiteuncy.dart';
-import '../models/general/country.dart';
 import '../models/general/district.dart';
 import '../models/general/region.dart';
 import '../models/members/previewMemberProfile.dart';
@@ -31,8 +32,29 @@ class _MyAccountPageState extends State<MyAccountPage> {
   double dividerHeight = 7;
   PreviewMemberProfile? myProfile;
 
-  void _getMyProfile() async {
-    myProfile = (await MemberAPI().getFullProfileInfo());
+  Future<void> _getMyProfile() async {
+    myProfile =
+        await MemberAPI().getFullProfileInfo(memberId: await getMemberId());
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
+  }
+
+  Future<int> getMemberId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('memberId')!;
+  }
+
+  // GROUP - GROUPS
+  List<Group> groups = [];
+  void _getMemberGroups() async {
+    groups = await MemberAPI().getMemberGroups(memberId: await getMemberId());
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
+  }
+
+  // GROUP - SUBGROUPS
+  List<SubGroup> subGroups = [];
+  void _getMemberSubGroups() async {
+    subGroups =
+        await MemberAPI().getMemberSubGroups(memberId: await getMemberId());
     Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
 
@@ -72,6 +94,8 @@ class _MyAccountPageState extends State<MyAccountPage> {
   void initState() {
     // TODO: implement initState
     _getMyProfile();
+    _getMemberGroups();
+    _getMemberSubGroups();
     Future.delayed(const Duration(seconds: 8)).then((value) {
       print('1. Region ID ${myProfile?.region}'); // Don't touch
       _getSingleRegion(regionId: myProfile?.region);
@@ -90,7 +114,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
   Widget build(BuildContext context) {
     late var olddate = myProfile?.date;
     if (olddate != null) {
-      DateTime? mydate = DateTime.parse(olddate!);
+      DateTime? mydate = DateTime.parse(olddate);
       formatedDate = '${mydate.day}-${mydate.month}-${mydate.year}';
     }
     return Scaffold(
@@ -145,7 +169,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                         height: dividerHeight,
                         color: dividerColor,
                       ),
-
                       const Padding(
                         padding: EdgeInsets.only(left: 16),
                         child: Text(
@@ -173,11 +196,9 @@ class _MyAccountPageState extends State<MyAccountPage> {
                       profileItemView(
                           title: "Reference Id",
                           label: "${myProfile?.referenceId}"),
-
                       const SizedBox(
                         height: 24,
                       ),
-
                       Container(
                         height: dividerHeight,
                         color: dividerColor,
@@ -185,7 +206,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                       const SizedBox(
                         height: 24,
                       ),
-
                       const Padding(
                         padding: EdgeInsets.only(left: 16),
                         child: Text(
@@ -194,14 +214,40 @@ class _MyAccountPageState extends State<MyAccountPage> {
                               fontSize: 20, fontWeight: FontWeight.w600),
                         ),
                       ),
-                      // profileItemView(title: "Group", label: "-"),
-                      // profileItemView(title: "Sub Group", label: "-"),
                       profileItemView(
                           title: "Branch",
                           label: "${myProfile?.branchInfo['name']}"),
                       profileItemView(
                           title: "Category",
                           label: "${myProfile?.categoryInfo['category']}"),
+                      profileItemView(
+                          title: groups.length > 1 ? "Groups" : "Group",
+                          label: groups
+                              .map((e) => e.group)
+                              .toList()
+                              .toString()
+                              .substring(
+                                  1,
+                                  groups
+                                          .map((e) => e.group)
+                                          .toList()
+                                          .toString()
+                                          .length -
+                                      1)),
+                      profileItemView(
+                          title: groups.length > 1 ? "SubGroups" : "SubGroup",
+                          label: subGroups
+                              .map((e) => e.subgroup)
+                              .toList()
+                              .toString()
+                              .substring(
+                                  1,
+                                  subGroups
+                                          .map((e) => e.subgroup)
+                                          .toList()
+                                          .toString()
+                                          .length -
+                                      1)),
                       const SizedBox(
                         height: 24,
                       ),
@@ -212,7 +258,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                       const SizedBox(
                         height: 24,
                       ),
-
                       const Padding(
                         padding: EdgeInsets.only(left: 16),
                         child: Text(
@@ -264,16 +309,13 @@ class _MyAccountPageState extends State<MyAccountPage> {
                           label: myProfile?.digitalAddress == null
                               ? "-"
                               : "${myProfile?.digitalAddress}"),
-
                       const SizedBox(
                         height: 24,
                       ),
-
                       Container(
                         height: dividerHeight,
                         color: dividerColor,
                       ),
-
                       profileItemView(
                           title: "CV",
                           label: myProfile?.profileResume != null
@@ -359,8 +401,12 @@ class _MyAccountPageState extends State<MyAccountPage> {
           OutlinedButton(
             onPressed: () {
               if (myProfile!.editable!) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const UpdateProfile()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const UpdateProfile(
+                              memberId: null,
+                            )));
               } else {
                 showInfoDialog(
                   'ok',
@@ -393,21 +439,17 @@ class _MyAccountPageState extends State<MyAccountPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title),
-            const SizedBox(
-              width: 12,
+            Text(
+              title,
             ),
-            Row(
-              children: [
-                Text(label),
-                const SizedBox(
-                  width: 12,
-                ),
-                // Icon(
-                //   display?Icons.visibility:Icons.visibility_off
-                // )
-              ],
+            SizedBox(
+              width: displayWidth(context) * 0.05,
             ),
+            Expanded(
+                child: Text(
+              label,
+              textAlign: TextAlign.end,
+            )),
           ],
         ));
   }

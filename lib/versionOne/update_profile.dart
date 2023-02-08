@@ -1,21 +1,33 @@
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
+import 'package:akwaaba/components/custom_progress_indicator.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
+import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/download_util.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import '../components/custom_cached_image_widget.dart';
+import '../components/custom_dropdown_multiselect.dart';
 import '../components/text_shimmer_item.dart';
 import '../models/general/abstractGroup.dart';
 import '../models/general/abstractModel.dart';
@@ -32,7 +44,8 @@ import '../models/members/previewMemberProfile.dart';
 import 'login_page.dart';
 
 class UpdateProfile extends StatefulWidget {
-  const UpdateProfile({Key? key}) : super(key: key);
+  final int? memberId;
+  const UpdateProfile({Key? key, this.memberId}) : super(key: key);
 
   @override
   State<UpdateProfile> createState() => _UpdateProfileState();
@@ -109,8 +122,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
       selectedDistrictID = districtId;
       selectedConstituency = constituency;
       selectedConstituencyID = constituencyId;
-      selectedCommunityID = electoralAreaId;
-      selectedCommunity = electoralArea;
+      selectedElectoralAreaID = electoralAreaId;
+      selectedElectoralArea = electoralArea;
       _controllerCommunity.text = community;
       _controllerStateProvince.text = stateProvince;
     });
@@ -140,7 +153,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
   //PROFILE INFO
   PreviewMemberProfile? myProfile;
   void _getMyProfile() async {
-    myProfile = (await MemberAPI().getFullProfileInfo());
+    myProfile =
+        (await MemberAPI().getFullProfileInfo(memberId: await getMemberId()));
     Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
 
@@ -164,6 +178,17 @@ class _UpdateProfileState extends State<UpdateProfile> {
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
           loadingLocation = false;
         }));
+  }
+
+  Future<int> getMemberId() async {
+    int? memberId;
+    if (widget.memberId == null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      memberId = prefs.getInt('memberId');
+    } else {
+      memberId = widget.memberId;
+    }
+    return memberId!;
   }
 
   //LOCATION - DISTRICT
@@ -190,11 +215,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
   }
 
   //LOCATION - COMMUNITY
-  var selectedCommunity;
-  var selectedCommunityID;
-  late List<ElectoralArea>? communityList = [];
-  void _getCommunityList({var regionID, var districtID}) async {
-    communityList = (await MemberAPI()
+  var selectedElectoralArea;
+  var selectedElectoralAreaID;
+  late List<ElectoralArea>? electoralAreaList = [];
+  void _getElectoralAreaList({var regionID, var districtID}) async {
+    electoralAreaList = (await MemberAPI()
         .getElectoralArea(regionID: regionID, districtID: districtID));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
           loadingLocation = false;
@@ -256,24 +281,123 @@ class _UpdateProfileState extends State<UpdateProfile> {
     loadingGroup = false;
   }
 
+  // //GROUPING - GROUP
+  // var selectedGroup;
+  // var selectedGroupID;
+  // late List<AbstractGroup>? groupList = [];
+  // void _getGroupList({required var branchID, var token}) async {
+  //   groupList = (await MemberAPI().getGroup(branchID: branchID, token: token));
+  //   Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  //   loadingGroup = false;
+  // }
+
+  // //GROUPING - SUB GROUP
+  // var selectedSubGroup;
+  // var selectedSubGroupID;
+  // late List<SubGroup>? subGroupList = [];
+  // void _getSubGroupList({required var branchID, var token}) async {
+  //   subGroupList =
+  //       (await MemberAPI().getSubGroup(branchID: branchID, token: token));
+  //   Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  // }
+
+  // GROUP - MEMBER GROUPS
+  List<Group> groups = [];
+  void _getMemberGroups() async {
+    groups = await MemberAPI().getMemberGroups(memberId: await getMemberId());
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {
+          selectedGroupList = groups.map((e) => e.group!).toList();
+        }));
+  }
+
+  // GROUP - MEMBER SUBGROUPS
+  List<SubGroup> subGroups = [];
+  void _getMemberSubGroups() async {
+    subGroups =
+        await MemberAPI().getMemberSubGroups(memberId: await getMemberId());
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {
+          selectedSubGroupList = subGroups
+              .map((e) => '${e.groupId!.group!} => ${e.subgroup!}')
+              .toList();
+        }));
+  }
+
   //GROUPING - GROUP
   var selectedGroup;
   var selectedGroupID;
-  late List<AbstractGroup>? groupList = [];
+
+  late List<String>? selectedGroupList = [];
+  late String selectedGroupOption;
+  late List<Group>? groupList = [];
   void _getGroupList({required var branchID, var token}) async {
     groupList = (await MemberAPI().getGroup(branchID: branchID, token: token));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
     loadingGroup = false;
   }
 
+  // get IDs of selected groups
+  List<int> selectedGroupIds() {
+    List<int> ids = [];
+    for (var group in groupList!) {
+      if (selectedGroupList!.contains(group.group)) {
+        ids.add(group.id!);
+      }
+    }
+    debugPrint("SelectedGroupIds ${ids.toString()}");
+    return ids;
+  }
+
   //GROUPING - SUB GROUP
   var selectedSubGroup;
   var selectedSubGroupID;
+  late List<String>? selectedSubGroupList = [];
+  late String selectedSubGroupOption = '';
   late List<SubGroup>? subGroupList = [];
   void _getSubGroupList({required var branchID, var token}) async {
     subGroupList =
         (await MemberAPI().getSubGroup(branchID: branchID, token: token));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
+
+  // get IDs of selected subgroups
+  List<int> selectedSubGroupIds() {
+    List<int> ids = [];
+    for (var subGroup in subGroupList!) {
+      if (selectedSubGroupList!
+          .contains('${subGroup.groupId!.group} => ${subGroup.subgroup}')) {
+        ids.add(subGroup.id!);
+      }
+    }
+    debugPrint("SelectedSubGroupIds ${ids.toString()}");
+    return ids;
+  }
+
+  final ReceivePort _port = ReceivePort();
+
+  _registerDownloadTask() {
+    IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      String id = data[0];
+      DownloadTaskStatus status = data[1];
+      int progress = data[2];
+      setState(() {});
+    });
+    FlutterDownloader.registerCallback(downloadCallback);
+  }
+
+  @override
+  void dispose() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    super.dispose();
+  }
+
+  @pragma('vm:entry-point')
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    final SendPort? send =
+        IsolateNameServer.lookupPortByName('downloader_send_port');
+    send!.send([id, status, progress]);
   }
 
   var token;
@@ -283,6 +407,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
     token = prefs.getString('token');
     _getBranchList(token: token);
     _getCategoryList(token: token);
+    _getMemberGroups();
+    _getMemberSubGroups();
+    if (myProfile != null) {
+      _getGroupList(branchID: myProfile!.branchId, token: token);
+      _getSubGroupList(branchID: myProfile!.branchId, token: token);
+    }
   }
 
   //LOCATION - REGION
@@ -324,9 +454,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
     Future.delayed(const Duration(seconds: 2)).then((value) => setState(() {}));
   }
 
+  String? userType;
+
   bool delayLoading = true;
   @override
   void initState() {
+    _registerDownloadTask();
     _getMyProfile();
     _getCountryList();
     _getRegionList();
@@ -338,6 +471,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
     Future.delayed(const Duration(seconds: 8)).then((value) => setState(() {
           print('kjRegion ID ${myProfile?.region} ${singleRegion?.location}');
+
+          SharedPrefs().getUserType().then((value) => setState(() {
+                userType = value;
+              }));
 
           setState(() {
             _getSingleRegion(regionId: myProfile?.region);
@@ -391,7 +528,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
           _getDistrictList(regionID: selectedRegionID);
           _getConstituencyList(
               regionID: selectedRegionID, districtID: selectedDistrictID);
-          _getCommunityList(
+          _getElectoralAreaList(
               regionID: selectedRegionID, districtID: selectedDistrictID);
           delayLoading = false;
         }));
@@ -418,18 +555,19 @@ class _UpdateProfileState extends State<UpdateProfile> {
   }
 
   void selectProfileCV() async {
-    final getImage = await picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (getImage != null) {
-        imageCV = File(getImage.path);
-      }
-    });
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowedExtensions: ['doc', 'docx', 'pdf'],
+      type: FileType.custom,
+    );
+    if (result != null) {
+      setState(() {
+        imageCV = File(result.files.single.path!);
+      });
+    }
   }
 
   void selectProfileIDCard() async {
     final getImage = await picker.pickImage(source: ImageSource.gallery);
-
     setState(() {
       if (getImage != null) {
         imageIDCard = File(getImage.path);
@@ -470,11 +608,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
             duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
       case 2:
+        // if (!formGlobalKeyStateProvince.currentState!.validate()) {
+        //   return;
+        // }
         if (selectedCountryID == null) {
           showErrorSnackBar(context, "select your Country");
-          return;
-        }
-        if (!formGlobalKeyStateProvince.currentState!.validate()) {
           return;
         }
         if (ifGhanaSelected) {
@@ -490,9 +628,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
             showErrorSnackBar(context, "select your Constituency");
             return;
           }
-
-          if (selectedCommunityID == null) {
-            showErrorSnackBar(context, "select your Community");
+          if (_controllerCommunity.text.isEmpty) {
+            showErrorSnackBar(context, "Enter your Community");
             return;
           }
         } else {
@@ -578,7 +715,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   bioDataView(),
                   groupingView(),
                   locationView(),
-
                   statusView(),
                   // passwordsView(),
                 ],
@@ -668,24 +804,32 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         print('PROFILE IMAGE FILE----- ${imageFile?.path}');
                         selectProfilePhoto();
                       },
-                      child: Text(
-                          imageFile != null ? "Change Photo" : "Select Photo"))
+                      child: loading
+                          ? const CustomProgressIndicator()
+                          : Text(imageFile != null
+                              ? "Change Photo"
+                              : "Select Photo"))
                   : Container(),
               imageFile != null
                   ? CupertinoButton(
-                      color: Colors.orangeAccent,
-                      onPressed: () {
-                        MemberAPI.updateProfilePic(context,
-                                profilePic: imageFile?.path)
-                            .then((value) {
+                      color: primaryColor,
+                      onPressed: () async {
+                        setState(() {
+                          loading = true;
+                        });
+                        MemberAPI.updateProfilePic(
+                          memberId: await getMemberId(),
+                          profilePic: imageFile?.path,
+                        ).then((value) {
+                          setState(() {
+                            loading = false;
+                          });
                           if (value == 'failed') {
-                            setState(() {});
-                            showErrorToast("Profile Picture Update failed");
+                            showErrorToast("Profile photo Update failed");
                           } else if (value == 'successful') {
-                            setState(() {});
-                            // showNormalToast("ID Card Successful");
-                            // Navigator.pop(context);
-                            // Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
+                            showNormalToast(
+                              "Profile photo uploaded successfully",
+                            );
                           }
                         });
                       },
@@ -832,7 +976,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               : Form(
                   key: formGlobalKeyStatus,
                   child: LabelWidgetContainer(
-                      label: "ID Number",
+                      label: "Reference ID",
                       child: FormTextField(
                         controller: _controllerIDNumber,
                       )),
@@ -848,7 +992,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
           CustomElevatedButton(
             label: 'Update Bio',
             showProgress: bioLoading,
-            function: () {
+            function: () async {
               setState(() {
                 bioLoading = true;
               });
@@ -866,7 +1010,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   'surname ${_controllerSurname.text},'
                   '');
 
-              MemberAPI.updateBio(context,
+              MemberAPI.updateBio(
+                      memberId: await getMemberId(),
                       firstname: _controllerFirstName.text,
                       surname: _controllerSurname.text,
                       middlename: _controllerMiddleName.text,
@@ -881,9 +1026,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 });
                 if (value == 'failed') {
                   showErrorToast("Bio Update failed");
-                } else if (value == 'successful') {
-                  // Navigator.pop(context);
-                  // Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
+                  return;
+                }
+                if (value == 'successful') {
+                  showNormalToast("Bio information Update Successful");
                 }
               });
               //Navigator.pop(context);
@@ -894,6 +1040,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
     );
   }
 
+  bool loadingBranch = false;
   bool loadingGroup = false;
   Widget groupingView() {
     return Stack(children: [
@@ -926,18 +1073,20 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 },
               )),
 
-          loadingGroup
+          loadingBranch
               ? const Align(
                   child: CircularProgressIndicator(),
                 )
               : Container(),
-          const SizedBox(
-            height: 26,
+          SizedBox(
+            height: displayHeight(context) * 0.01,
           ),
           CustomElevatedButton(
-            label: 'Update Group',
-            function: () {
-              loadingGroup = true;
+            label: 'Update ',
+            function: () async {
+              setState(() {
+                loadingBranch = true;
+              });
               final DateTime? now = birthDate;
               final DateFormat formatter = DateFormat('yyyy-MM-dd');
               String? formatted;
@@ -951,40 +1100,121 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   'surname ${_controllerSurname.text},'
                   '');
 
-              MemberAPI.updateGroup(context,
-                      branchId: selectedBranchID, category: selectedCategoryID)
-                  .then((value) {
+              MemberAPI.updateGroup(
+                branchId: selectedBranchID,
+                category: selectedCategoryID,
+                memberId: await getMemberId(),
+              ).then((value) async {
                 setState(() {
-                  loadingGroup = false;
+                  loadingBranch = false;
                 });
                 if (value == 'failed') {
-                  showErrorToast("Group Update failed");
-                } else if (value == 'successful') {
-                  // Navigator.pop(context);
-                  // Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
+                  showErrorToast("Group update failed");
+                  return;
+                }
+                if (value == 'successful') {
+                  showNormalToast("Update successfully");
                 }
               });
             },
-          )
-          // LabelWidgetContainer(label: "Group",
-          //     child: FormButton(
-          //       label: selectedGroup??"Select Group",
-          //       function: (){
-          //         var newGroupList = groupList?.map((value)=> {'name':value.group, 'id':value.id}).toList();
-          //         selectGroup(newGroupList);
-          //       },
-          //     )
-          // ),
+          ),
 
-          // LabelWidgetContainer(label: "Sub Group",
-          //     child: FormButton(
-          //       label: selectedSubGroup??"Select Sub Group",
-          //       function: (){
-          //         var newSubgroupList = subGroupList?.map((value)=> {'name':value.subgroup, 'id':value.id}).toList();
-          //         selectSubGroup(newSubgroupList);
-          //       },
-          //     )
-          // )
+          SizedBox(
+            height: displayHeight(context) * 0.03,
+          ),
+
+          // UPDATE GROUP AND SUBGROUP
+          userType == AppConstants.admin
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    LabelWidgetContainer(
+                      label: "Group",
+                      child: CustomMultiselectDropDown(
+                        hinText: 'Select Group(s)',
+                        selectedItems: selectedGroupList!,
+                        itemList: groupList!.map((e) => e.group!).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGroupList = value;
+                          });
+
+                          debugPrint('Selected Options: $selectedGroupList');
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.020,
+                    ),
+                    LabelWidgetContainer(
+                      label: "SubGroup",
+                      child: CustomMultiselectDropDown(
+                        hinText: 'Select Subgroup(s)',
+                        selectedItems: selectedSubGroupList!,
+                        itemList: subGroupList!
+                            .map(
+                                (e) => '${e.groupId!.group!} => ${e.subgroup!}')
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedSubGroupList = value;
+                          });
+                          debugPrint('Selected Options: $selectedSubGroupList');
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.020,
+                    ),
+                    loadingGroup
+                        ? const Align(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Container(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    CustomElevatedButton(
+                      label: 'Update Group',
+                      function: () async {
+                        setState(() {
+                          loadingGroup = true;
+                        });
+                        final DateTime? now = birthDate;
+                        final DateFormat formatter = DateFormat('yyyy-MM-dd');
+                        String? formatted;
+                        if (birthDate != null) {
+                          setState(() {
+                            formatted = formatter.format(now!);
+                          });
+                        }
+                        debugPrint('firstname ${_controllerFirstName.text},'
+                            'formatter $formatter '
+                            'surname ${_controllerSurname.text},'
+                            '');
+
+                        MemberAPI.updateMemberGroups(
+                                memberId: await getMemberId(),
+                                groupIds: selectedGroupIds(),
+                                subgroupIds: selectedSubGroupIds())
+                            .then((value) async {
+                          setState(() {
+                            loadingGroup = false;
+                          });
+                          if (value == 'failed') {
+                            showErrorToast("Group Update failed");
+                            return;
+                          }
+                          if (value == 'successful') {
+                            showNormalToast(
+                                "Group information updated successfully");
+                          }
+                        });
+                      },
+                    )
+                  ],
+                )
+              : const SizedBox(),
         ],
       ),
     ]);
@@ -1081,9 +1311,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
               ? LabelWidgetContainer(
                   label: "Electoral Area",
                   child: FormButton(
-                    label: selectedCommunity ?? "Select Electoral Area",
+                    label: selectedElectoralArea ?? "Select Electoral Area",
                     function: () {
-                      var newCommunityList = communityList
+                      var newCommunityList = electoralAreaList
                           ?.map((value) =>
                               {'name': value.location, 'id': value.id})
                           .toList();
@@ -1124,31 +1354,38 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   child: CircularProgressIndicator(),
                 )
               : Container(),
-          const SizedBox(
-            height: 26,
+          SizedBox(
+            height: displayHeight(context) * 0.01,
           ),
           CustomElevatedButton(
             label: 'Update Location',
-            function: () {
-              loadingLocation = true;
-              MemberAPI.updateLocation(context,
-                      nationality: selectedCountryID,
-                      countryOfResidence: selectedCountry,
-                      stateProvince: _controllerStateProvince.text.trim(),
-                      region: selectedRegionID,
-                      district: selectedDistrictID,
-                      constituency: selectedConstituencyID,
-                      electoralArea: selectedCommunityID,
-                      community: _controllerCommunity.text.trim(),
-                      digitalAddress: _controllerDigitalAddress.text.trim(),
-                      hometown: _controllerHomeTown.text.trim())
-                  .then((value) {
+            function: () async {
+              setState(() {
+                loadingLocation = true;
+              });
+
+              MemberAPI.updateLocation(
+                context,
+                memberId: await getMemberId(),
+                nationality: selectedCountryID,
+                countryOfResidence: selectedCountry,
+                stateProvince: _controllerStateProvince.text.trim(),
+                region: selectedRegionID,
+                district: selectedDistrictID,
+                constituency: selectedConstituencyID,
+                electoralArea: selectedElectoralAreaID,
+                community: _controllerCommunity.text.trim(),
+                digitalAddress: _controllerDigitalAddress.text.trim(),
+                hometown: _controllerHomeTown.text.trim(),
+              ).then((value) {
                 setState(() {
                   loadingLocation = false;
                 });
                 if (value == 'failed') {
                   showErrorToast("Location Update failed");
                 } else if (value == 'successful') {
+                  showNormalToast(
+                      'Location data has been updated successfully');
                   // Navigator.pop(context);
                   // Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
                 }
@@ -1184,7 +1421,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                           onPressed: () {},
                           icon: Row(children: const [
                             Text(
-                              'ID Card selected',
+                              'National ID Card selected',
                               style: TextStyle(color: Colors.green),
                             ),
                             SizedBox(width: 10),
@@ -1203,47 +1440,86 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 print('IMAGE NAME----- ${imageIDCard?.absolute}');
                 selectProfileIDCard();
               },
-              child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.orange,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: primaryColor,
+                      ),
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        imageIDCard != null
+                            ? "Change National ID"
+                            : "Select National ID",
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ),
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: Text(
-                    imageIDCard != null ? "Change ID Card" : "Select ID Card",
-                    style: const TextStyle(color: Colors.black),
-                  )),
+                  SizedBox(
+                    width: displayWidth(context) * 0.04,
+                  ),
+                  (myProfile != null &&
+                          myProfile?.profileIdentification != null)
+                      ? InkWell(
+                          onTap: () => DownloadUtil.downloadFile(
+                            url: myProfile!.profileIdentification!,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: primaryColor.withOpacity(0.2),
+                            ),
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(10),
+                            child: const Icon(
+                              CupertinoIcons.cloud_download,
+                              color: primaryColor,
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
+              ),
             ),
             Center(
               child: CustomElevatedButton(
                   color: Colors.green,
                   textColor: Colors.white,
-                  label: 'Upload ID Card',
-                  function: () {
-                    setState(() {
-                      loadingStatus = true;
-                    });
-                    MemberAPI.updateIDCard(context,
-                            profileIdentification: imageIDCard?.path)
-                        .then((value) {
-                      if (value == 'failed') {
-                        setState(() {
-                          loadingStatus = false;
-                        });
-                        showErrorToast("ID Card Update failed");
-                      } else if (value == 'successful') {
-                        setState(() {
-                          loadingStatus = false;
-                        });
-                        // showNormalToast("ID Card Successful");
-                        // Navigator.pop(context);
-                        // Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
-                      }
-                    });
+                  label: 'Upload National ID Card',
+                  function: () async {
+                    if (imageIDCard != null) {
+                      setState(() {
+                        loadingStatus = true;
+                      });
+                      MemberAPI.updateIDCard(
+                              memberId: await getMemberId(),
+                              profileIdentification: imageIDCard?.path)
+                          .then((value) {
+                        if (value == 'failed') {
+                          setState(() {
+                            loadingStatus = false;
+                          });
+                          showErrorToast("ID Card Update failed");
+                          return;
+                        }
+                        if (value == 'successful') {
+                          setState(() {
+                            loadingStatus = false;
+                          });
+                          showNormalToast(
+                              "ID card  has been uploaded successfully");
+                        }
+                      });
+                    } else {
+                      showErrorToast(
+                          'Please select a national ID card to upload');
+                    }
                   }),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
           ],
         ),
         Column(
@@ -1283,43 +1559,76 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 print('IMAGE NAME----- ${imageCV?.absolute}');
                 selectProfileCV();
               },
-              child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.orange,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: primaryColor,
+                        ),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          imageCV != null ? "Change CV" : "Select CV",
+                          style: const TextStyle(color: Colors.black),
+                        )),
                   ),
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: Text(
-                    imageCV != null ? "Change CV" : "Select CV",
-                    style: const TextStyle(color: Colors.black),
-                  )),
+                  SizedBox(
+                    width: displayWidth(context) * 0.04,
+                  ),
+                  (myProfile != null && myProfile!.profileResume != null)
+                      ? InkWell(
+                          onTap: () => DownloadUtil.downloadFile(
+                              url: myProfile!.profileResume!),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: primaryColor.withOpacity(0.2),
+                            ),
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(10),
+                            child: const Icon(
+                              CupertinoIcons.cloud_download,
+                              color: primaryColor,
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
+              ),
             ),
             Center(
               child: CustomElevatedButton(
                   color: Colors.green,
                   textColor: Colors.white,
                   label: 'Upload CV',
-                  function: () {
-                    setState(() {
-                      loadingStatus = true;
-                    });
-                    MemberAPI.updateCV(context, profileResume: imageCV?.path)
-                        .then((value) {
-                      if (value == 'failed') {
-                        setState(() {
-                          loadingStatus = false;
-                        });
-                        showErrorToast("CV Update failed");
-                      } else if (value == 'successful') {
-                        setState(() {
-                          loadingStatus = false;
-                        });
-                        // showNormalToast("CV Update Successful");
-                        // Navigator.pop(context);
-                        // Navigator.push(context, MaterialPageRoute( builder: (_) =>  const LoginPage(),));
-                      }
-                    });
+                  function: () async {
+                    if (imageCV != null) {
+                      setState(() {
+                        loadingStatus = true;
+                      });
+                      MemberAPI.updateCV(
+                              memberId: await getMemberId(),
+                              profileResume: imageCV?.path)
+                          .then((value) {
+                        if (value == 'failed') {
+                          setState(() {
+                            loadingStatus = false;
+                          });
+                          showErrorToast("CV Update failed");
+                          return;
+                        }
+                        if (value == 'successful') {
+                          setState(() {
+                            loadingStatus = false;
+                          });
+                          showNormalToast("CV has been uploaded successfully");
+                        }
+                      });
+                    } else {
+                      showErrorToast('Please select your CV to upload');
+                    }
                   }),
             ),
             const SizedBox(height: 10),
@@ -1372,7 +1681,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                       'selectedRegion $selectedRegion'
                       'selectedDistrict $selectedDistrict'
                       'selectedConstituency $selectedConstituency'
-                      'selectedCommunity $selectedCommunity'
+                      'selectedCommunity ${_controllerCommunity.text}'
                       ''
                       'selectedMarital $selectedMarital'
                       'selectedEducation $selectedEducation '
@@ -1389,7 +1698,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
                       formatted = formatter.format(now!);
                     });
                   }
-                  print(formatted);
+                  if (kDebugMode) {
+                    print(formatted);
+                  }
                   var password = _controllerPassword.text.trim();
                   var repeat_password = _controllerConfirmPassword.text.trim();
                   if (!formGlobalKeyPassword.currentState!.validate()) {
@@ -1399,28 +1710,33 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   } else if (password.length < 7) {
                     showErrorSnackBar(context,
                         'Passwords must contain at least 8 characters');
-                  } else if (!password.contains(new RegExp(r'[0-9]'))) {
+                  } else if (!password.contains(RegExp(r'[0-9]'))) {
                     showErrorSnackBar(context,
                         'This password is too common, add special symbols eg.!@#');
                   } else {
                     setState(() {
                       loading = true;
                     });
-                    print(' value');
+                    debugPrint(' value');
                     debugPrint('ProfileImage => ${imageFile?.path}'
                         ' profileResume:> ${imageCV?.path}'
                         ' profileIdentification:> ${imageIDCard?.path};');
+
+                    showLoadingDialog(
+                      context,
+                      'Please wait, we are processing...',
+                    );
 
                     MemberAPI.registerMemberWithImage(context,
                             profilePicture: imageFile?.path,
                             profileResume: imageCV?.path,
                             profileIdentification: imageIDCard?.path,
                             clientId: '',
-                            branchId: '${selectedBranchID}',
+                            branchId: '$selectedBranchID',
                             firstname: _controllerFirstName.text.trim(),
                             middlename: _controllerMiddleName.text.trim(),
                             surname: _controllerSurname.text,
-                            gender: selectedGender == 'Male' ? 1 : 0,
+                            gender: selectedGender == 'Male' ? 1 : 2,
                             dateOfBirth: formatted,
                             email: _controllerEmail.text,
                             phone: _controllerPhone.text,
@@ -1432,8 +1748,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
                             region: selectedRegionID,
                             district: selectedDistrictID,
                             constituency: selectedConstituencyID,
-                            electoralArea: selectedCommunityID,
-                            community: '$selectedCommunityID',
+                            electoralArea: selectedElectoralAreaID,
+                            community: _controllerCommunity.text.trim(),
                             digitalAddress: '-',
                             hometown: '-',
                             occupation: selectedOccupationID,
@@ -1442,24 +1758,20 @@ class _UpdateProfileState extends State<UpdateProfile> {
                             occupationalStatus: selectedOccupationID,
                             professionStatus: selectedProfessionID,
                             educationalStatus: selectedEducationID,
-                            groupIds: [selectedGroupID],
-                            subgroupIds: [selectedSubGroupID],
+                            groupIds: selectedGroupIds(),
+                            subgroupIds: selectedSubGroupIds(),
                             password: _controllerPassword.text.trim(),
                             confirm_password:
                                 _controllerConfirmPassword.text.trim())
                         .then((value) {
-                      setState(() {
-                        loading = false;
-                      });
-                      if (value == 'non_field_errors') {
-                        showErrorToast("Please fill all required fields");
-                      } else if (value == 'successful') {
+                      // setState(() {
+                      //   loading = false;
+                      // });
+
+                      Navigator.of(context).pop();
+                      if (value == 'successful') {
+                        showNormalToast("Update Successful");
                         Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const LoginPage(),
-                            ));
                       }
                     });
                   }
@@ -1575,7 +1887,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               'selectedDistrictID $selectedDistrict, $selectedDistrictID');
           _getConstituencyList(
               regionID: selectedRegionID, districtID: selectedDistrictID);
-          _getCommunityList(
+          _getElectoralAreaList(
               regionID: selectedRegionID, districtID: selectedDistrictID);
           loadingLocation = false;
         });
@@ -1604,10 +1916,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
         .then((value) {
       if (value != null) {
         setState(() {
-          selectedCommunity = value['name'];
-          selectedCommunityID = value['id'];
+          selectedElectoralArea = value['name'];
+          selectedElectoralAreaID = value['id'];
           debugPrint(
-              'selectedCommunity $selectedCommunity, $selectedCommunityID');
+              'selectedCommunity $selectedElectoralArea, $selectedElectoralAreaID');
         });
       }
     });
@@ -1685,6 +1997,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
           debugPrint('selectedBranchdf $selectedBranchID, $selectedBranch');
           _getSubGroupList(token: token, branchID: selectedBranchID);
           _getGroupList(token: token, branchID: selectedBranchID);
+          _getMemberGroups();
+          _getMemberSubGroups();
           loadingGroup = true;
         });
       }

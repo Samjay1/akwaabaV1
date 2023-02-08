@@ -19,18 +19,21 @@ class RestrictedMember {
   List<SubGroup>? subgroup;
   Contacts? contacts;
   Location? location;
+  String? identification;
 
-  RestrictedMember(
-      {this.id,
-      this.member,
-      this.accountType,
-      this.branch,
-      this.category,
-      this.restriction,
-      this.group,
-      this.subgroup,
-      this.contacts,
-      this.location});
+  RestrictedMember({
+    this.id,
+    this.member,
+    this.accountType,
+    this.branch,
+    this.category,
+    this.restriction,
+    this.group,
+    this.subgroup,
+    this.contacts,
+    this.location,
+    this.identification,
+  });
 
   RestrictedMember.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -64,6 +67,7 @@ class RestrictedMember {
         json['contacts'] != null ? Contacts.fromJson(json['contacts']) : null;
     location =
         json['location'] != null ? Location.fromJson(json['location']) : null;
+    identification = json['identification'];
   }
 
   Map<String, dynamic> toJson() {
@@ -96,6 +100,7 @@ class RestrictedMember {
     if (location != null) {
       data['location'] = location!.toJson();
     }
+    data['identification'] = identification;
     return data;
   }
 }

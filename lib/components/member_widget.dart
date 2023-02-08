@@ -180,12 +180,15 @@ class _MemberWidgetState extends State<MemberWidget> {
                       const SizedBox(
                         width: 12,
                       ),
-                      Text(
-                        widget.member!.categoryInfo!.category!,
-                        style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: textColorLight),
+                      Expanded(
+                        child: Text(
+                          widget.member!.categoryInfo!.category!,
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: textColorLight),
+                        ),
                       )
                     ],
                   ),

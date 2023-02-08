@@ -3,18 +3,13 @@ import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/string_extension.dart';
-import 'package:akwaaba/versionOne/all_events_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/dimens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../models/admin/clocked_member.dart';
-import '../versionOne/my_account_page.dart';
 import '../utils/widget_utils.dart';
-import '../versionOne/member_account_page.dart';
-import '../versionOne/restricted_member_account_page.dart';
 import 'custom_cached_image_widget.dart';
 
 class RestrictedMemberWidget extends StatefulWidget {
@@ -57,17 +52,6 @@ class _RestrictedMemberWidgetState extends State<RestrictedMemberWidget> {
               borderRadius: BorderRadius.circular(defaultRadius)),
           child: Row(
             children: [
-              Icon(
-                widget.restrictedMember!.member!.selected!
-                    ? CupertinoIcons.check_mark_circled_solid
-                    : CupertinoIcons.checkmark_alt_circle,
-                color: widget.restrictedMember!.member!.selected!
-                    ? primaryColor
-                    : Colors.grey,
-              ),
-              const SizedBox(
-                width: 8,
-              ),
               widget.restrictedMember!.member!.profilePicture != null
                   ? Align(
                       child: CustomCachedImageWidget(
@@ -83,67 +67,72 @@ class _RestrictedMemberWidgetState extends State<RestrictedMemberWidget> {
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  widget.restrictedMember!.contacts == null
+                      ? const SizedBox()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () => openEmailAppWithSubject(
+                                  widget.restrictedMember!.member!.email,
+                                  'SUBJECT',
+                                  "Hello ${widget.restrictedMember!.member!.firstname!},"),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(
+                                  "images/icons/email_ic.svg",
+                                  width: 20,
+                                  height: 20,
+                                  color: primaryColor,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => makePhoneCall(
+                                  widget.restrictedMember!.member!.phone!),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(
+                                  "images/icons/phone_ic.svg",
+                                  width: 20,
+                                  height: 20,
+                                  color: Colors.blueAccent,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => openWhatsapp(
+                                  context,
+                                  widget.restrictedMember!.member!.phone!,
+                                  "Hello"),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(
+                                  "images/icons/whatsapp_ic.svg",
+                                  width: 20,
+                                  height: 20,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.005,
+                  ),
                   Row(
                     children: [
                       Expanded(
-                          child: Text(
-                        "${widget.restrictedMember!.member!.firstname!.capitalize()} ${widget.restrictedMember!.member!.middlename!.isEmpty ? '' : widget.restrictedMember!.member!.middlename!.capitalize()} ${widget.restrictedMember!.member!.surname!.capitalize()}",
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                        child: Text(
+                          "${widget.restrictedMember!.member!.firstname!.capitalize()} ${widget.restrictedMember!.member!.middlename!.isEmpty ? '' : widget.restrictedMember!.member!.middlename!.capitalize()} ${widget.restrictedMember!.member!.surname!.capitalize()}",
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 2,
+                          //overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 2,
-                        //overflow: TextOverflow.ellipsis,
-                      )),
-                      widget.restrictedMember!.contacts == null
-                          ? const SizedBox()
-                          : Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () => openEmailAppWithSubject(
-                                      widget.restrictedMember!.member!.email,
-                                      'SUBJECT',
-                                      "Hello ${widget.restrictedMember!.member!.firstname!},"),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SvgPicture.asset(
-                                      "images/icons/email_ic.svg",
-                                      width: 20,
-                                      height: 20,
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () => makePhoneCall(
-                                      widget.restrictedMember!.member!.phone!),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SvgPicture.asset(
-                                      "images/icons/phone_ic.svg",
-                                      width: 20,
-                                      height: 20,
-                                      color: Colors.blueAccent,
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () => openWhatsapp(
-                                      context,
-                                      widget.restrictedMember!.member!.phone!,
-                                      "Hello"),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SvgPicture.asset(
-                                      "images/icons/whatsapp_ic.svg",
-                                      width: 20,
-                                      height: 20,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -153,9 +142,9 @@ class _RestrictedMemberWidgetState extends State<RestrictedMemberWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.restrictedMember!.member!.identification == null
+                        widget.restrictedMember!.identification == null
                             ? 'N/A'
-                            : widget.restrictedMember!.member!.identification!,
+                            : widget.restrictedMember!.identification!,
                         style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -166,13 +155,16 @@ class _RestrictedMemberWidgetState extends State<RestrictedMemberWidget> {
                       ),
                       widget.restrictedMember!.member!.categoryInfo == null
                           ? const SizedBox()
-                          : Text(
-                              widget.restrictedMember!.member!.categoryInfo!
-                                  .category!,
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: textColorLight),
+                          : Expanded(
+                              child: Text(
+                                widget.restrictedMember!.member!.categoryInfo!
+                                    .category!,
+                                textAlign: TextAlign.end,
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: textColorLight),
+                              ),
                             )
                     ],
                   )

@@ -5,21 +5,19 @@ import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
+import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../Networks/member_api.dart';
 import '../components/custom_cached_image_widget.dart';
 import '../models/general/OrganisationType.dart';
-import '../models/general/abstractGroup.dart';
-import '../models/general/abstractSubGroup.dart';
 import '../models/general/branch.dart';
 import '../models/general/constiteuncy.dart';
 import '../models/general/country.dart';
@@ -90,7 +88,7 @@ class _MemberRegistrationPageOrganizationState
   String? selectedGender;
 
   //--------------------------------------------------------------------------
-  //GROUPING - BRANCH
+  // GROUPING - BRANCH
   var selectedBranch;
   var selectedBranchID;
   late List<Branch>? branchList = [];
@@ -99,7 +97,7 @@ class _MemberRegistrationPageOrganizationState
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
-  //GROUPING - CATEGORY
+  // GROUPING - CATEGORY
   var selectedCategory;
   var selectedCategoryID;
   late List<MemberType>? categoryList = [];
@@ -109,7 +107,7 @@ class _MemberRegistrationPageOrganizationState
     loadingGroup = false;
   }
 
-  //GROUPING - ORGANIZATION TYPE
+  // GROUPING - ORGANIZATION TYPE
   var selectedOrgType;
   var selectedOrgTypeID;
   late List<OrganisationType>? orgTypeList = [];
@@ -125,9 +123,9 @@ class _MemberRegistrationPageOrganizationState
 
   late List<String>? selectedGroupList = [];
   late String selectedGroupOption;
-  late List<AbstractGroup>? groupList = [];
+  late List<Group>? groupList = [];
   void _getGroupList({required var branchID, var token}) async {
-    groupList = (await MemberAPI().getGroup(branchID: branchID, token: token));
+    groupList = await MemberAPI().getGroup(branchID: branchID, token: token);
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
     loadingGroup = false;
   }
@@ -500,7 +498,7 @@ class _MemberRegistrationPageOrganizationState
             decoration: BoxDecoration(
                 // border: Border.all(color: textColorLight),
                 borderRadius: BorderRadius.circular(12)),
-            padding: EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(
               children: [
                 Container(
@@ -623,7 +621,7 @@ class _MemberRegistrationPageOrganizationState
                     ),
                   ],
                 )
-              : SizedBox.shrink(),
+              : const SizedBox.shrink(),
           LabelWidgetContainer(
               label: "Organization Type/Description",
               setCompulsory: true,
@@ -732,11 +730,9 @@ class _MemberRegistrationPageOrganizationState
               },
             ),
           ),
-
           SizedBox(
             height: displayHeight(context) * 0.020,
           ),
-
           LabelWidgetContainer(
             label: "SubGroup",
             child: CustomMultiselectDropDown(
@@ -759,32 +755,9 @@ class _MemberRegistrationPageOrganizationState
               },
             ),
           ),
-
           SizedBox(
             height: displayHeight(context) * 0.020,
           ),
-          // LabelWidgetContainer(
-          //     label: "Group",
-          //     child: FormButton(
-          //       label: selectedGroup ?? "Select Group",
-          //       function: () {
-          //         var newGroupList = groupList
-          //             ?.map((value) => {'name': value.group, 'id': value.id})
-          //             .toList();
-          //         selectGroup(newGroupList);
-          //       },
-          //     )),
-          // LabelWidgetContainer(
-          //     label: "Sub Group",
-          //     child: FormButton(
-          //       label: selectedSubGroup ?? "Select Sub Group",
-          //       function: () {
-          //         var newSubgroupList = subGroupList
-          //             ?.map((value) => {'name': value.subgroup, 'id': value.id})
-          //             .toList();
-          //         selectSubGroup(newSubgroupList);
-          //       },
-          //     ))
         ],
       ),
       loadingGroup
@@ -1037,7 +1010,7 @@ class _MemberRegistrationPageOrganizationState
                 } else if (password.length < 7) {
                   showErrorSnackBar(
                       context, 'Passwords must contain at least 8 characters');
-                } else if (!password.contains(new RegExp(r'[0-9]'))) {
+                } else if (!password.contains(RegExp(r'[0-9]'))) {
                   showErrorSnackBar(context,
                       'This password is too common, add special symbols eg.!@#');
                 } else {
@@ -1086,12 +1059,6 @@ class _MemberRegistrationPageOrganizationState
                     logo: imageFile?.path,
                     certificates: imageRegCert?.path,
                   ).then((value) {
-                    // setState(() {
-                    //   loading = false;
-                    // });
-                    // if (value == 'non_field_errors') {
-                    //   showErrorToast("Please fill all required fields");
-                    // }
                     Navigator.of(context).pop();
                     if (value == 'successful') {
                       showNormalToast(

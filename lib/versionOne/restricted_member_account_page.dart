@@ -1,4 +1,7 @@
+import 'package:akwaaba/Networks/member_api.dart';
+import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/restricted_member.dart';
+import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -28,12 +31,32 @@ class _RestrictedMemberAccountPageState
   Color dividerColor = Colors.grey.shade300;
   double dividerHeight = 7;
 
+  List<Group> groups = [];
+  List<SubGroup> subGroups = [];
+
   bool enabledEditing = false;
 
   @override
   initState() {
     enabledEditing = widget.restrictedMember!.member!.editable!;
+    _getMemberGroups();
+    _getMemberSubGroups();
     super.initState();
+  }
+
+  // GROUP - GROUPS
+
+  void _getMemberGroups() async {
+    groups = await MemberAPI()
+        .getMemberGroups(memberId: widget.restrictedMember!.id!);
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
+  }
+
+  // GROUP - SUBGROUPS
+  void _getMemberSubGroups() async {
+    subGroups = await MemberAPI()
+        .getMemberSubGroups(memberId: widget.restrictedMember!.id!);
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
 
   @override
@@ -164,11 +187,37 @@ class _RestrictedMemberAccountPageState
                               : 'N/A',
                           display: true,
                         ),
+                        profileItemView(
+                            title: groups.length > 1 ? "Groups" : "Group",
+                            label: groups
+                                .map((e) => e.group)
+                                .toList()
+                                .toString()
+                                .substring(
+                                    1,
+                                    groups
+                                            .map((e) => e.group)
+                                            .toList()
+                                            .toString()
+                                            .length -
+                                        1)),
+                        profileItemView(
+                            title: groups.length > 1 ? "SubGroups" : "SubGroup",
+                            label: subGroups
+                                .map((e) => e.subgroup)
+                                .toList()
+                                .toString()
+                                .substring(
+                                    1,
+                                    subGroups
+                                            .map((e) => e.subgroup)
+                                            .toList()
+                                            .toString()
+                                            .length -
+                                        1)),
                       ],
                     ),
-              const SizedBox(
-                height: 24,
-              ),
+
               Container(
                 height: dividerHeight,
                 color: dividerColor,
@@ -317,8 +366,7 @@ class _RestrictedMemberAccountPageState
             const SizedBox(
               height: 12,
             ),
-            Text(
-                "ID : ${widget.restrictedMember!.member!.identification ?? 'N/A'}"),
+            Text("ID : ${widget.restrictedMember!.identification ?? 'N/A'}"),
             const SizedBox(
               height: 6,
             ),

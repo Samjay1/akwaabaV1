@@ -227,7 +227,7 @@ void showNormalSnackBar(BuildContext context, String message) {
     SnackBar(
       backgroundColor: Colors.green,
       content: Text(message),
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 3000),
     ),
   );
 }
@@ -249,7 +249,7 @@ void showErrorSnackBar(BuildContext context, String message) {
 void showNormalToast(String msg) {
   Fluttertoast.showToast(
       msg: msg,
-      toastLength: Toast.LENGTH_SHORT,
+      toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 1,
       backgroundColor: Colors.green,
