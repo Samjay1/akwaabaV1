@@ -1185,24 +1185,6 @@ class MemberAPI {
         request.files.addAll(newList);
       }
 
-      // if (certificates.isNotEmpty) {
-      //   for (int i = 0; i < certificates.length; i++) {
-      //     request.files.add(http.MultipartFile(
-      //         'certificates',
-      //         File(certificates[i].path).readAsBytes().asStream(),
-      //         File(certificates[i].path).lengthSync(),
-      //         filename: path.basename(certificates[i].path.split("/").last)));
-      //   }
-      // }
-
-      // if (certificates != null) {
-      //   for (String path in certificates) {
-      //     var orgCertificates =
-      //         await http.MultipartFile.fromPath('certificates', path);
-      //     request.files.add(orgCertificates);
-      //   }
-      // }
-
       request.headers.addAll(headers);
 
       // add file to multipart
