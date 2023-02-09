@@ -15,8 +15,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 import '../models/general/OrganisationType.dart';
-import '../models/general/abstractGroup.dart';
 import '../models/general/constiteuncy.dart';
 import '../models/general/country.dart';
 import '../models/general/group.dart';
@@ -1172,11 +1172,36 @@ class MemberAPI {
         request.files.add(orgLogo);
       }
 
-      if (certificates != null) {
-        var orgCertificates =
-            await http.MultipartFile.fromPath('certificates', certificates);
-        request.files.add(orgCertificates);
+      if (certificates.isNotEmpty) {
+        List<http.MultipartFile> newList = <http.MultipartFile>[];
+        for (int i = 0; i < certificates.length; i++) {
+          File imageFile = File(certificates[i].path);
+          var stream = http.ByteStream(imageFile.openRead());
+          var length = await imageFile.length();
+          var multipartFile = http.MultipartFile("files", stream, length,
+              filename: path.basename(imageFile.path));
+          newList.add(multipartFile);
+        }
+        request.files.addAll(newList);
       }
+
+      // if (certificates.isNotEmpty) {
+      //   for (int i = 0; i < certificates.length; i++) {
+      //     request.files.add(http.MultipartFile(
+      //         'certificates',
+      //         File(certificates[i].path).readAsBytes().asStream(),
+      //         File(certificates[i].path).lengthSync(),
+      //         filename: path.basename(certificates[i].path.split("/").last)));
+      //   }
+      // }
+
+      // if (certificates != null) {
+      //   for (String path in certificates) {
+      //     var orgCertificates =
+      //         await http.MultipartFile.fromPath('certificates', path);
+      //     request.files.add(orgCertificates);
+      //   }
+      // }
 
       request.headers.addAll(headers);
 

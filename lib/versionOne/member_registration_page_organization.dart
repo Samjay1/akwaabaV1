@@ -76,7 +76,7 @@ class _MemberRegistrationPageOrganizationState
   int currentIndex = 0;
   final ImagePicker picker = ImagePicker();
   File? imageFile;
-  File? imageRegCert;
+  List<File> imageRegCert = [];
 
   int organizationLegalRegistration = -1;
 
@@ -262,12 +262,14 @@ class _MemberRegistrationPageOrganizationState
 
   void selectRegCert() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
       allowedExtensions: ['png', 'jpg', 'doc', 'docx', 'pdf'],
       type: FileType.custom,
     );
     if (result != null) {
       setState(() {
-        imageRegCert = File(result.files.single.path!);
+        imageRegCert = result.paths.map((path) => File(path!)).toList();
+        //imageRegCert = File(result.files.single.path!);
       });
     }
   }
@@ -570,7 +572,7 @@ class _MemberRegistrationPageOrganizationState
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        imageRegCert != null
+                        imageRegCert.isNotEmpty
                             ? Container(
                                 width: size.width * 0.93,
                                 padding: const EdgeInsets.symmetric(
@@ -600,7 +602,8 @@ class _MemberRegistrationPageOrganizationState
                             : const Text('No File selected'),
                         CupertinoButton(
                           onPressed: () {
-                            print('IMAGE NAME----- ${imageRegCert?.absolute}');
+                            debugPrint(
+                                'IMAGE NAME----- ${imageRegCert.map((e) => e.path).toList()}');
                             selectRegCert();
                           },
                           child: Container(
@@ -611,7 +614,7 @@ class _MemberRegistrationPageOrganizationState
                               alignment: Alignment.center,
                               padding: const EdgeInsets.all(10),
                               child: Text(
-                                imageRegCert != null
+                                imageRegCert.isNotEmpty
                                     ? "Change Registration Certificate"
                                     : "Upload Registration Certificate",
                                 style: const TextStyle(color: Colors.black),
@@ -1057,7 +1060,7 @@ class _MemberRegistrationPageOrganizationState
                     password: _controllerPassword.text.trim(),
                     confirm_password: _controllerConfirmPassword.text.trim(),
                     logo: imageFile?.path,
-                    certificates: imageRegCert?.path,
+                    certificates: imageRegCert,
                   ).then((value) {
                     Navigator.of(context).pop();
                     if (value == 'successful') {
