@@ -138,9 +138,6 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: displayHeight(context) * 0.01,
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -229,11 +226,13 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Last seen: $lastSeenDate",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: blackColor,
+                        Expanded(
+                          child: Text(
+                            "Last seen: $lastSeenDate",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: blackColor,
+                            ),
                           ),
                         ),
                         InkWell(
@@ -256,68 +255,20 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                         )
                       ],
                     ),
-
                     SizedBox(
                       height: displayHeight(context) * 0.005,
                     ),
-
                     if (attendee!.attendance!.inTime != null &&
                         userType == AppConstants.admin)
                       attendee!.attendance!.validate! == 1
                           ? const SizedBox(
                               width: double.infinity,
-                              child: Expanded(
-                                child: TagWidget(
-                                  color: Colors.green,
-                                  text: "Validated",
-                                ),
+                              child: TagWidget(
+                                color: Colors.green,
+                                text: "Validated",
                               ),
                             )
                           : const SizedBox(),
-                    // InkWell(
-                    //     onTap: () {
-                    //       showDialog(
-                    //         context: context,
-                    //         builder: (_) => AlertDialog(
-                    //           insetPadding: const EdgeInsets.all(10),
-                    //           backgroundColor: Colors.transparent,
-                    //           elevation: 0,
-                    //           content: ConfirmDialog(
-                    //             title: 'Validate',
-                    //             content:
-                    //                 'Are you sure you want to validate $attendeeName?',
-                    //             onConfirmTap: () {
-                    //               Navigator.pop(context);
-                    //               Provider.of<AttendanceProvider>(context,
-                    //                       listen: false)
-                    //                   .validateMemberAttendance(
-                    //                 clockingId: attendee!.attendance!.id!,
-                    //               );
-                    //             },
-                    //             onCancelTap: () => Navigator.pop(context),
-                    //             confirmText: 'Yes',
-                    //             cancelText: 'Cancel',
-                    //           ),
-                    //         ),
-                    //       );
-                    //     },
-                    //     child: Container(
-                    //       width: double.infinity,
-                    //       alignment: Alignment.center,
-                    //       padding: const EdgeInsets.symmetric(
-                    //           horizontal: 14.0, vertical: 7.0),
-                    //       decoration: BoxDecoration(
-                    //         borderRadius: BorderRadius.circular(
-                    //             AppRadius.borderRadius8),
-                    //         color: Colors.green,
-                    //       ),
-                    //       child: const Text(
-                    //         "Validate",
-                    //         style: TextStyle(
-                    //             fontSize: 13, color: Colors.white),
-                    //       ),
-                    //     ),
-                    //   ),
                     SizedBox(
                       height: displayHeight(context) * 0.01,
                     ),
