@@ -11,6 +11,7 @@ class AppConstants {
   static const int meetingTypeMeeting = 1;
   static const int meetingTypeEvent = 2;
   static const int timOutDuration = 60;
+  static const int searchTimerDuration = 300;
   static String? token;
 
   static int notificationChannelId = 001;

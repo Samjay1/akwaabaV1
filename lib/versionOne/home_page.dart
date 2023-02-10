@@ -1009,21 +1009,6 @@ class _HomePageState extends State<HomePage> {
                               onTap: () => Navigator.pop(context),
                             );
                           } else {
-                            // if ((!currentTime.isAtSameMomentAs(closeTime) ||
-                            //         !currentTime.isAfter(closeTime
-                            //             .add(const Duration(minutes: 30)))) &&
-                            //     (meetingEventModel.inTime != null &&
-                            //         meetingEventModel.outTime == null)) {
-                            //   showInfoDialog(
-                            //     'ok',
-                            //     context: context,
-                            //     title: 'Hey there!',
-                            //     content:
-                            //         'Time is not up for clocking out. \nGood Bye!',
-                            //     onTap: () => Navigator.pop(context),
-                            //   );
-                            //   return;
-                            // }
                             if ((!currentTime.isAtSameMomentAs(closeTime) &&
                                     meetingEventModel.hasOvertime!) &&
                                 (meetingEventModel.inTime != null &&

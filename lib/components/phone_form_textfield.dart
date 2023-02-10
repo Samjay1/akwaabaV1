@@ -2,7 +2,7 @@ import 'package:akwaaba/utils/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class FormTextField extends StatelessWidget {
+class PhoneFormTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final bool enableEdit;
@@ -21,7 +21,7 @@ class FormTextField extends StatelessWidget {
   final VoidCallback? suffixTapFunction;
   final bool? applyValidation;
 
-  const FormTextField(
+  const PhoneFormTextField(
       {required this.controller,
       this.label = "",
       this.hint = "",
@@ -112,14 +112,12 @@ class FormTextField extends StatelessWidget {
         minLines: minLines,
         keyboardType: textInputType ?? TextInputType.text,
         textInputAction: textInputAction ?? TextInputAction.next,
-
         validator: (value) {
-          if (value!.isEmpty) {
-            return applyValidation!
-                ? hint.isEmpty
-                    ? "you can't leave here empty"
-                    : "Please input $hint"
-                : null;
+          if (value!.isEmpty ||
+              value.length < 10 ||
+              !RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$')
+                  .hasMatch(value)) {
+            return applyValidation! ? "Enter a valid phone number" : null;
           }
           return null;
         },

@@ -124,7 +124,7 @@ class _RestrictedMemberWidgetState extends State<RestrictedMemberWidget> {
                     children: [
                       Expanded(
                         child: Text(
-                          "${widget.restrictedMember!.member!.firstname!.capitalize()} ${widget.restrictedMember!.member!.middlename!.isEmpty ? '' : widget.restrictedMember!.member!.middlename!.capitalize()} ${widget.restrictedMember!.member!.surname!.capitalize()}",
+                          "${widget.restrictedMember!.member!.firstname == null ? '' : widget.restrictedMember!.member!.firstname!} ${(widget.restrictedMember!.member!.middlename == null || widget.restrictedMember!.member!.middlename!.isEmpty) ? '' : widget.restrictedMember!.member!.middlename!.capitalize()} ${widget.restrictedMember!.member!.surname == null ? '' : widget.restrictedMember!.member!.surname!.capitalize()}",
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,

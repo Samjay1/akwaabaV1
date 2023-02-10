@@ -18,6 +18,7 @@ import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/search_util.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,6 +46,8 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   bool isShowTopView = true;
 
   bool isTileExpanded = false;
+
+  final _debouncer = Debouncer(milliseconds: AppConstants.searchTimerDuration);
 
   @override
   void initState() {
@@ -145,16 +148,15 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                         setState(() {
                           attendanceHistoryProvider.search = val;
                         });
-                        attendanceHistoryProvider.getAttendanceHistory();
+                        _debouncer.run(() {
+                          attendanceHistoryProvider.getAttendanceHistory();
+                        });
                       },
                       onSubmitted: (val) {
-                        if (attendanceHistoryProvider
-                            .attendanceRecords.isNotEmpty) {
-                          setState(() {
-                            attendanceHistoryProvider.search = val;
-                          });
-                          attendanceHistoryProvider.getAttendanceHistory();
-                        }
+                        setState(() {
+                          attendanceHistoryProvider.search = val;
+                        });
+                        attendanceHistoryProvider.getAttendanceHistory();
                       },
                     ),
               SizedBox(

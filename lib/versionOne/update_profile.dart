@@ -575,8 +575,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
     });
   }
 
-  nextButtonTapped({required pageId}) {
-    switch (pageId) {
+  nextButtonTapped({required double pageId}) {
+    switch (pageId.toInt()) {
       case 0:
         //currently on bio data page,
         //check these inputs -> gender and dob
@@ -591,8 +591,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
           showErrorSnackBar(context, "select your gender");
           return;
         }
-        pageViewController.animateToPage(1,
-            duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
+        userType == AppConstants.member
+            ? pageViewController.jumpToPage(2)
+            : pageViewController.animateToPage(1,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.easeIn);
         break;
       case 1:
         //currenty on grouping page
@@ -681,6 +684,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   @override
   Widget build(BuildContext context) {
     print('singleton-----${singleDistrict?.location}');
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -709,7 +713,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
             ),
             Expanded(
               child: PageView(
-                physics: const BouncingScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 controller: pageViewController,
                 children: [
                   bioDataView(),
@@ -738,9 +742,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
                             ],
                           ),
                           onPressed: () {
-                            pageViewController.animateToPage(currentIndex - 1,
-                                duration: const Duration(milliseconds: 100),
-                                curve: Curves.easeIn);
+                            userType == AppConstants.member && currentIndex == 2
+                                ? pageViewController.jumpToPage(0)
+                                : pageViewController.animateToPage(
+                                    currentIndex - 1,
+                                    duration: const Duration(milliseconds: 100),
+                                    curve: Curves.easeIn);
                             // nextButtonTapped(pageId: pageViewController.page);
                           }),
                   const SizedBox(
@@ -756,7 +763,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                             ],
                           ),
                           onPressed: () {
-                            nextButtonTapped(pageId: pageViewController.page);
+                            nextButtonTapped(pageId: pageViewController.page!);
                           })
                 ],
               ),

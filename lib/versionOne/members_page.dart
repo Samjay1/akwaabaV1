@@ -9,6 +9,7 @@ import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/search_util.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -37,6 +38,8 @@ class _MembersPageState extends State<MembersPage> {
   bool checkAll = false;
   bool itemHasBeenSelected =
       false; // at least 1 member has been selected, so show options menu
+
+  final _debouncer = Debouncer(milliseconds: AppConstants.searchTimerDuration);
 
   void loadAllMembers() async {
     SharedPrefs().getUserType().then((value) {
@@ -103,20 +106,24 @@ class _MembersPageState extends State<MembersPage> {
                       setState(() {
                         _membersProvider.search = val;
                       });
-                      if (userType == AppConstants.admin &&
-                          widget.isMemberuser) {
-                        widget.isMemberuser
-                            ? _membersProvider.getAllIndividualMembers()
-                            : _membersProvider.getAllOrganizations();
-                      }
-                      if (userType == AppConstants.member &&
-                          widget.isMemberuser) {
-                        widget.isMemberuser
-                            ? _membersProvider.searchRestrictedMembers(
-                                searchText: val,
-                              )
-                            : _membersProvider.getAllOrganizations();
-                      }
+                      _debouncer.run(() {
+                        if (userType == AppConstants.admin &&
+                            widget.isMemberuser) {
+                          widget.isMemberuser
+                              ? _membersProvider.getAllIndividualMembers()
+                              : _membersProvider.getAllOrganizations();
+                        }
+                        if (userType == AppConstants.member &&
+                            widget.isMemberuser) {
+                          widget.isMemberuser
+                              ? _membersProvider.getAllRestrictedMembers()
+                              // _membersProvider.searchRestrictedMembers(
+                              //     searchText: val,
+                              //   )
+                              : _membersProvider.getAllOrganizations();
+                        }
+                      });
+
                       debugPrint('Search: ${_membersProvider.search}');
                     },
                     onSubmitted: (val) {
@@ -132,9 +139,10 @@ class _MembersPageState extends State<MembersPage> {
                       if (userType == AppConstants.member &&
                           widget.isMemberuser) {
                         widget.isMemberuser
-                            ? _membersProvider.searchRestrictedMembers(
-                                searchText: val,
-                              )
+                            ? _membersProvider.getAllRestrictedMembers()
+                            // _membersProvider.searchRestrictedMembers(
+                            //     searchText: val,
+                            //   )
                             : _membersProvider.getAllOrganizations();
                       }
                       debugPrint('Search: ${_membersProvider.search}');

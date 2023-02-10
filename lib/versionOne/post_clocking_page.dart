@@ -21,6 +21,7 @@ import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/post_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/search_util.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,6 +54,8 @@ class _PostClockingPageState extends State<PostClockingPage> {
   bool isFilterExpanded = false;
 
   late PostClockingProvider postClockingProvider;
+
+  final _debouncer = Debouncer(milliseconds: AppConstants.searchTimerDuration);
 
   bool isShowTopView = true;
 
@@ -132,40 +135,41 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             CupertinoSearchTextField(
                               padding: const EdgeInsets.all(AppPadding.p14),
                               onSubmitted: (val) {
-                                setState(() {
-                                  if (clockingListState) {
-                                    // search absentees by name
-                                    if (absentees.isNotEmpty) {
-                                      postClockingProvider.searchName = val;
-                                      postClockingProvider.getAllAbsentees(
-                                        meetingEventModel: postClockingProvider
-                                            .selectedPastMeetingEvent!,
-                                      );
-                                    }
-                                  } else {
-                                    // search attendees by name
-                                    if (attendees.isNotEmpty) {
-                                      postClockingProvider.searchName = val;
-                                      postClockingProvider.getAllAttendees(
-                                        meetingEventModel: postClockingProvider
-                                            .selectedPastMeetingEvent!,
-                                      );
-                                    }
+                                if (clockingListState) {
+                                  // search absentees by name
+                                  if (absentees.isNotEmpty) {
+                                    postClockingProvider.searchName = val;
+                                    postClockingProvider.getAllAbsentees(
+                                      meetingEventModel: postClockingProvider
+                                          .selectedPastMeetingEvent!,
+                                    );
                                   }
-                                });
+                                } else {
+                                  // search attendees by name
+                                  if (attendees.isNotEmpty) {
+                                    postClockingProvider.searchName = val;
+                                    postClockingProvider.getAllAttendees(
+                                      meetingEventModel: postClockingProvider
+                                          .selectedPastMeetingEvent!,
+                                    );
+                                  }
+                                }
                               },
                               onChanged: (val) {
                                 setState(() {
+                                  // search absentees by name
+                                  postClockingProvider.searchName = val;
+                                });
+                                _debouncer.run(() {
                                   if (clockingListState) {
                                     // search absentees by name
-                                    postClockingProvider.searchName = val;
                                     postClockingProvider.getAllAbsentees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,
                                     );
                                   } else {
                                     // search attendees by name
-                                    postClockingProvider.searchName = val;
+                                    //postClockingProvider.searchName = val;
                                     postClockingProvider.getAllAttendees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,
@@ -208,16 +212,17 @@ class _PostClockingPageState extends State<PostClockingPage> {
                               },
                               onChanged: (val) {
                                 setState(() {
+                                  postClockingProvider.searchIdentity = val;
+                                });
+                                _debouncer.run(() {
                                   if (clockingListState) {
-                                    // search absentees by id
-                                    postClockingProvider.searchIdentity = val;
                                     postClockingProvider.getAllAbsentees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,
                                     );
                                   } else {
                                     // search attendees by id
-                                    postClockingProvider.searchIdentity = val;
+                                    // postClockingProvider.searchIdentity = val;
                                     postClockingProvider.getAllAttendees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,

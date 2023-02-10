@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:akwaaba/components/custom_dropdown_multiselect.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
+import 'package:akwaaba/components/email_form_textfield.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
@@ -17,6 +18,7 @@ import 'package:intl/intl.dart';
 
 import '../Networks/member_api.dart';
 import '../components/custom_cached_image_widget.dart';
+import '../components/phone_form_textfield.dart';
 import '../models/general/OrganisationType.dart';
 import '../models/general/branch.dart';
 import '../models/general/constiteuncy.dart';
@@ -27,6 +29,7 @@ import '../models/general/memberType.dart';
 import '../models/general/region.dart';
 import '../utils/widget_utils.dart';
 import 'login_page.dart';
+import 'package:validators/validators.dart';
 
 class MemberRegistrationPageOrganization extends StatefulWidget {
   final clientID;
@@ -274,21 +277,25 @@ class _MemberRegistrationPageOrganizationState
     }
   }
 
-  nextButtonTapped({required pageId}) {
-    switch (pageId) {
+  nextButtonTapped({required double pageId}) {
+    switch (pageId.toInt()) {
       case 0:
         if (!formGlobalKey.currentState!.validate()) {
           return;
         }
         if (organizationLegalRegistration == 0) {
           if (orgDate == null) {
-            showErrorSnackBar(context, "select Date");
+            showErrorSnackBar(context, "Select Date");
             return;
           }
-          if (imageRegCert == null) {
+          if (imageRegCert.isEmpty) {
             showErrorSnackBar(context, "Upload Registration certificate");
             return;
           }
+        }
+        if (!isURL(_controllerWebsite.text)) {
+          showErrorSnackBar(context, "Enter a valid website url");
+          return;
         }
         //currently on bio data page,
         //check these inputs -> first name, last name, DOB, gender, email, phone
@@ -298,11 +305,11 @@ class _MemberRegistrationPageOrganizationState
       case 1:
         //currenty on
         if (selectedBranchID == null) {
-          showErrorSnackBar(context, "select date of Branch");
+          showErrorSnackBar(context, "Select your Branch");
           return;
         }
         if (selectedCategoryID == null) {
-          showErrorSnackBar(context, "select your Category");
+          showErrorSnackBar(context, "Select your Category");
           return;
         }
         pageViewController.animateToPage(2,
@@ -310,7 +317,7 @@ class _MemberRegistrationPageOrganizationState
         break;
       case 2:
         if (selectedCountryID == null) {
-          showErrorSnackBar(context, "select your Country");
+          showErrorSnackBar(context, "Select your Country");
           return;
         }
         if (!formGlobalKeyStateProvince.currentState!.validate()) {
@@ -318,15 +325,15 @@ class _MemberRegistrationPageOrganizationState
         }
         if (ifGhanaSelected) {
           if (selectedRegionID == null) {
-            showErrorSnackBar(context, "select your Region");
+            showErrorSnackBar(context, "Select your Region");
             return;
           }
           if (selectedDistrictID == null) {
-            showErrorSnackBar(context, "select your District");
+            showErrorSnackBar(context, "Select your District");
             return;
           }
           if (selectedConstituencyID == null) {
-            showErrorSnackBar(context, "select your Constituency");
+            showErrorSnackBar(context, "Select your Constituency");
             return;
           }
 
@@ -350,10 +357,16 @@ class _MemberRegistrationPageOrganizationState
           showErrorSnackBar(context, "select your Gender");
           return;
         }
-        pageViewController.animateToPage(4,
-            duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
+
+        // pageViewController.animateToPage(4,
+        //     duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
         break;
     }
+
+    // pageViewController.nextPage(
+    //   duration: const Duration(milliseconds: 100),
+    //   curve: Curves.easeIn,
+    // );
   }
 
   @override
@@ -371,37 +384,36 @@ class _MemberRegistrationPageOrganizationState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            size.height >= 800
-                ? Container(
-                    child: Column(
-                    children: [
-                      Container(
-                        child: widget.clientLogo != null
-                            ? Align(
-                                child: CustomCachedImageWidget(
-                                  url: widget.clientLogo,
-                                  height: 100,
-                                ),
-                              )
-                            : defaultProfilePic(height: 100),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "${widget.clientName}",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 13,
-                      ),
-                    ],
-                  ))
-                : Container(),
+            SizedBox(
+              child: Column(
+                children: [
+                  Container(
+                    child: widget.clientLogo != null
+                        ? Align(
+                            child: CustomCachedImageWidget(
+                              url: widget.clientLogo,
+                              height: 100,
+                            ),
+                          )
+                        : defaultProfilePic(height: 100),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "${widget.clientName}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 13,
+                  ),
+                ],
+              ),
+            ),
             Text(
               currentIndex == 0
                   ? "Organizational Info "
@@ -450,9 +462,11 @@ class _MemberRegistrationPageOrganizationState
                             ],
                           ),
                           onPressed: () {
-                            pageViewController.animateToPage(currentIndex - 1,
-                                duration: const Duration(milliseconds: 100),
-                                curve: Curves.easeIn);
+                            pageViewController.animateToPage(
+                              currentIndex - 1,
+                              duration: const Duration(milliseconds: 100),
+                              curve: Curves.easeIn,
+                            );
                           }),
                   const SizedBox(
                     width: 12,
@@ -470,7 +484,7 @@ class _MemberRegistrationPageOrganizationState
                             ],
                           ),
                           onPressed: () {
-                            nextButtonTapped(pageId: pageViewController.page);
+                            nextButtonTapped(pageId: pageViewController.page!);
                           })
                 ],
               ),
@@ -485,105 +499,105 @@ class _MemberRegistrationPageOrganizationState
     Size size = MediaQuery.of(context).size;
     return Form(
       key: formGlobalKey,
-      child: ListView(
+      child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        children: [
-          LabelWidgetContainer(
-              setCompulsory: true,
-              label: "Name of Organization",
-              child: FormTextField(
-                controller: _controllerOrgName,
-                label: "",
-                applyValidation: true,
-              )),
-          Container(
-            decoration: BoxDecoration(
-                // border: Border.all(color: textColorLight),
-                borderRadius: BorderRadius.circular(12)),
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              children: [
-                Container(
-                  height: 150,
-                  width: 220,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: imageFile != null
-                          ? Image.file(imageFile!,
-                              height: 120,
-                              width: double.infinity,
-                              fit: BoxFit.cover)
-                          : Image.asset(
-                              "images/img.png",
-                              height: 90,
-                              width: 100,
-                              fit: BoxFit.cover,
-                            )),
-                ),
-                CupertinoButton(
-                    child:
-                        Text(imageFile != null ? "Change Logo" : "Upload Logo"),
-                    onPressed: () {
-                      selectLogo();
-                    })
-              ],
+        child: Column(
+          children: [
+            LabelWidgetContainer(
+                setCompulsory: true,
+                label: "Name of Organization",
+                child: FormTextField(
+                  controller: _controllerOrgName,
+                  label: "",
+                  applyValidation: true,
+                )),
+            Container(
+              decoration: BoxDecoration(
+                  // border: Border.all(color: textColorLight),
+                  borderRadius: BorderRadius.circular(12)),
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 150,
+                    width: 220,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: imageFile != null
+                            ? Image.file(imageFile!,
+                                height: 120,
+                                width: double.infinity,
+                                fit: BoxFit.cover)
+                            : Image.asset(
+                                "images/img.png",
+                                height: 90,
+                                width: 100,
+                                fit: BoxFit.cover,
+                              )),
+                  ),
+                  CupertinoButton(
+                      child: Text(
+                          imageFile != null ? "Change Logo" : "Upload Logo"),
+                      onPressed: () {
+                        selectLogo();
+                      })
+                ],
+              ),
             ),
-          ),
-          LabelWidgetContainer(
-              label: "Is the organization legally registered?",
-              setCompulsory: true,
-              child: Row(
-                children: List.generate(2, (index) {
-                  return Row(
-                    children: [
-                      Radio(
-                          activeColor: primaryColor,
-                          value: index,
-                          groupValue: organizationLegalRegistration,
-                          onChanged: (int? value) {
-                            setState(() {
-                              organizationLegalRegistration = value!;
-                            });
-                          }),
-                      const SizedBox(
-                        width: 6,
-                      ),
-                      Text(index == 0 ? "Yes" : "No")
-                    ],
-                  );
-                }),
-              )),
-          const SizedBox(
-            height: 8,
-          ),
-          organizationLegalRegistration == 0
-              ? Column(
-                  children: [
-                    LabelWidgetContainer(
-                        label: "Date of Registration",
-                        child: FormButton(
-                          label: orgDate != null
-                              ? DateFormat("dd MMM yyyy").format(orgDate!)
-                              : "Select Date",
-                          function: () {
-                            selectOrgDate();
-                          },
-                        )),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            LabelWidgetContainer(
+                label: "Is the organization legally registered?",
+                setCompulsory: true,
+                child: Row(
+                  children: List.generate(2, (index) {
+                    return Row(
                       children: [
-                        imageRegCert.isNotEmpty
-                            ? Container(
-                                width: size.width * 0.93,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 2),
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.green, width: 1),
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                ),
-                                child: Expanded(
+                        Radio(
+                            activeColor: primaryColor,
+                            value: index,
+                            groupValue: organizationLegalRegistration,
+                            onChanged: (int? value) {
+                              setState(() {
+                                organizationLegalRegistration = value!;
+                              });
+                            }),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        Text(index == 0 ? "Yes" : "No")
+                      ],
+                    );
+                  }),
+                )),
+            const SizedBox(
+              height: 8,
+            ),
+            organizationLegalRegistration == 0
+                ? Column(
+                    children: [
+                      LabelWidgetContainer(
+                          label: "Date of Registration",
+                          child: FormButton(
+                            label: orgDate != null
+                                ? DateFormat("dd MMM yyyy").format(orgDate!)
+                                : "Select Date",
+                            function: () {
+                              selectOrgDate();
+                            },
+                          )),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          imageRegCert.isNotEmpty
+                              ? Container(
+                                  width: size.width * 0.93,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.green, width: 1),
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                  ),
                                   child: IconButton(
                                       onPressed: () => selectRegCert(),
                                       icon: Row(children: const [
@@ -597,90 +611,91 @@ class _MemberRegistrationPageOrganizationState
                                           color: Colors.green,
                                         )
                                       ])),
+                                )
+                              : const Text('No File selected'),
+                          CupertinoButton(
+                            onPressed: () {
+                              debugPrint(
+                                  'IMAGE NAME----- ${imageRegCert.map((e) => e.path).toList()}');
+                              selectRegCert();
+                            },
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.orange,
                                 ),
-                              )
-                            : const Text('No File selected'),
-                        CupertinoButton(
-                          onPressed: () {
-                            debugPrint(
-                                'IMAGE NAME----- ${imageRegCert.map((e) => e.path).toList()}');
-                            selectRegCert();
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.orange,
-                              ),
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.all(10),
-                              child: Text(
-                                imageRegCert.isNotEmpty
-                                    ? "Change Registration Certificate"
-                                    : "Upload Registration Certificate",
-                                style: const TextStyle(color: Colors.black),
-                              )),
-                        )
-                      ],
-                    ),
-                  ],
-                )
-              : const SizedBox.shrink(),
-          LabelWidgetContainer(
-              label: "Organization Type/Description",
-              setCompulsory: true,
-              child: FormButton(
-                label:
-                    selectedOrgType ?? "Select Organization Type/Description",
-                function: () {
-                  var newOrgTypeList = orgTypeList
-                      ?.map((value) => {'type': value.type, 'id': value.id})
-                      .toList();
-                  selectOrgType(newOrgTypeList);
-                },
-              )),
-          LabelWidgetContainer(
-              setCompulsory: true,
-              label: "Email",
-              child: FormTextField(
-                controller: _controllerEmail,
-                textInputType: TextInputType.emailAddress,
-                applyValidation: true,
-              )),
-          LabelWidgetContainer(
-              label: "Phone",
-              setCompulsory: true,
-              child: FormTextField(
-                controller: _controllerPhone,
-                textInputType: TextInputType.phone,
-                maxLength: 10,
-              )),
-          LabelWidgetContainer(
-              label: "Website",
-              setCompulsory: true,
-              child: FormTextField(
-                controller: _controllerWebsite,
-                textInputType: TextInputType.url,
-                applyValidation: true,
-                hint: "https://mywebsiteurl.com",
-              )),
-          LabelWidgetContainer(
-              label: "Postal Address",
-              child: FormTextField(
-                controller: _controllerPostalAddress,
-                applyValidation: false,
-                maxLength: 200,
-              )),
-          LabelWidgetContainer(
-              label: "Core Areas of Operation",
-              child: FormTextField(
-                controller: _controllerCoreAreas,
-                maxLength: 500,
-                minLines: 6,
-                maxLines: 12,
-                showMaxLength: true,
-                applyValidation: true,
-              ))
-        ],
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  imageRegCert.isNotEmpty
+                                      ? "Change Registration Certificate"
+                                      : "Upload Registration Certificate",
+                                  style: const TextStyle(color: Colors.black),
+                                )),
+                          )
+                        ],
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+            LabelWidgetContainer(
+                label: "Organization Type/Description",
+                setCompulsory: true,
+                child: FormButton(
+                  label:
+                      selectedOrgType ?? "Select Organization Type/Description",
+                  function: () {
+                    var newOrgTypeList = orgTypeList
+                        ?.map((value) => {'type': value.type, 'id': value.id})
+                        .toList();
+                    selectOrgType(newOrgTypeList);
+                  },
+                )),
+            LabelWidgetContainer(
+                setCompulsory: true,
+                label: "Email",
+                child: EmailFormTextField(
+                  controller: _controllerEmail,
+                  textInputType: TextInputType.emailAddress,
+                  applyValidation: true,
+                )),
+            LabelWidgetContainer(
+                label: "Phone",
+                setCompulsory: true,
+                child: PhoneFormTextField(
+                  controller: _controllerPhone,
+                  textInputType: TextInputType.phone,
+                  maxLength: 10,
+                )),
+            LabelWidgetContainer(
+                label: "Website",
+                setCompulsory: false,
+                child: FormTextField(
+                  controller: _controllerWebsite,
+                  textInputType: TextInputType.url,
+                  applyValidation: false,
+                  hint: "https://mywebsiteurl.com",
+                )),
+            LabelWidgetContainer(
+                label: "Postal Address",
+                child: FormTextField(
+                  controller: _controllerPostalAddress,
+                  applyValidation: false,
+                  maxLength: 200,
+                )),
+            LabelWidgetContainer(
+                label: "Core Areas of Operation",
+                setCompulsory: true,
+                child: FormTextField(
+                  controller: _controllerCoreAreas,
+                  maxLength: 500,
+                  minLines: 6,
+                  maxLines: 12,
+                  showMaxLength: true,
+                  applyValidation: true,
+                ))
+          ],
+        ),
       ),
     );
   }
@@ -907,7 +922,7 @@ class _MemberRegistrationPageOrganizationState
           LabelWidgetContainer(
               label: "Email Address",
               setCompulsory: true,
-              child: FormTextField(
+              child: EmailFormTextField(
                 controller: _controllerContactEmail,
               )),
           LabelWidgetContainer(
@@ -922,7 +937,7 @@ class _MemberRegistrationPageOrganizationState
           LabelWidgetContainer(
               label: "Phone",
               setCompulsory: true,
-              child: FormTextField(
+              child: PhoneFormTextField(
                 controller: _controllerContactPhone,
                 textInputType: TextInputType.number,
                 maxLength: 10,
@@ -930,9 +945,10 @@ class _MemberRegistrationPageOrganizationState
           LabelWidgetContainer(
               label: "Whatsapp Contact",
               setCompulsory: false,
-              child: FormTextField(
+              child: PhoneFormTextField(
                 controller: _controllerContactWhatsapp,
                 textInputType: TextInputType.number,
+                applyValidation: false,
                 maxLength: 10,
               )),
           const Divider(
@@ -1008,75 +1024,91 @@ class _MemberRegistrationPageOrganizationState
                 var repeat_password = _controllerConfirmPassword.text.trim();
                 if (!formGlobalKeyContactPerson.currentState!.validate()) {
                   return;
-                } else if (password != repeat_password) {
+                }
+                if (_controllerContactName.text.isEmpty) {
+                  showErrorSnackBar(
+                      context, "Enter your contact person's name");
+                  return;
+                }
+                if (_controllerContactEmail.text.isEmpty) {
+                  showErrorSnackBar(
+                      context, "Enter your contact person's email");
+                  return;
+                }
+                if (_controllerContactPhone.text.isEmpty) {
+                  showErrorSnackBar(
+                      context, "Enter your contact person's phone");
+                  return;
+                }
+                if (password != repeat_password) {
                   showErrorSnackBar(context, 'Passwords must be the same');
-                } else if (password.length < 7) {
+                  return;
+                }
+                if (password.length < 7) {
                   showErrorSnackBar(
                       context, 'Passwords must contain at least 8 characters');
-                } else if (!password.contains(RegExp(r'[0-9]'))) {
+                  return;
+                }
+                if (!password.contains(RegExp(r'[0-9]'))) {
                   showErrorSnackBar(context,
                       'This password is too common, add special symbols eg.!@#');
-                } else {
-                  // setState(() {
-                  //   loading = true;
-                  // });
-
-                  showLoadingDialog(
-                    context,
-                    'Please wait, we are processing...',
-                  );
-
-                  MemberAPI.registerOrg(
-                    context,
-                    clientId: '${widget.clientID}',
-                    branchId: '$selectedBranchID',
-                    organizationName: _controllerOrgName.text.trim(),
-                    contactPersonName: _controllerContactName.text.trim(),
-                    contactPersonGender: selectedGender == 'Male' ? 1 : 2,
-                    organizationType: selectedOrgTypeID,
-                    organizationEmail: _controllerEmail.text.trim(),
-                    organizationPhone: _controllerPhone.text.trim(),
-                    contactPersonEmail: _controllerContactEmail.text.trim(),
-                    contactPersonPhone: _controllerContactPhone.text.trim(),
-                    contactPersonWhatsapp:
-                        _controllerContactWhatsapp.text.trim(),
-                    // occupation,
-                    memberType: selectedCategoryID,
-                    // referenceId: _controllerIDNumber.text,
-                    countryOfBusiness: selectedCountryID,
-                    stateProvince: _controllerStateProvince.text.trim(),
-                    region: selectedRegionID,
-                    district: selectedDistrictID,
-                    constituency: selectedConstituencyID,
-                    electoralArea: selectedElectoralID,
-                    community: _controllerCommunity.text.trim(),
-                    digitalAddress: '-',
-                    businessRegistered:
-                        organizationLegalRegistration == 0 ? true : false,
-                    businessDescription: _controllerCoreAreas.text.trim(),
-                    website: _controllerWebsite.text.trim(),
-                    groupIds: selectedGroupIds(),
-                    subgroupIds: selectedSubGroupIds(),
-                    password: _controllerPassword.text.trim(),
-                    confirm_password: _controllerConfirmPassword.text.trim(),
-                    logo: imageFile?.path,
-                    certificates: imageRegCert,
-                  ).then((value) {
-                    Navigator.of(context).pop();
-                    if (value == 'successful') {
-                      showNormalToast(
-                          "Registration Successful, Proceed to Login.");
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const LoginPage(),
-                          ));
-                      return;
-                    }
-                    //showErrorToast(value);
-                  });
+                  return;
                 }
+
+                showLoadingDialog(
+                  context,
+                  'Please wait, we are processing...',
+                );
+
+                MemberAPI.registerOrg(
+                  context,
+                  clientId: '${widget.clientID}',
+                  branchId: '$selectedBranchID',
+                  organizationName: _controllerOrgName.text.trim(),
+                  contactPersonName: _controllerContactName.text.trim(),
+                  contactPersonGender: selectedGender == 'Male' ? 1 : 2,
+                  organizationType: selectedOrgTypeID,
+                  organizationEmail: _controllerEmail.text.trim(),
+                  organizationPhone: _controllerPhone.text.trim(),
+                  contactPersonEmail: _controllerContactEmail.text.trim(),
+                  contactPersonPhone: _controllerContactPhone.text.trim(),
+                  contactPersonWhatsapp: _controllerContactWhatsapp.text.trim(),
+                  // occupation,
+                  memberType: selectedCategoryID,
+                  // referenceId: _controllerIDNumber.text,
+                  countryOfBusiness: selectedCountryID,
+                  stateProvince: _controllerStateProvince.text.trim(),
+                  region: selectedRegionID,
+                  district: selectedDistrictID,
+                  constituency: selectedConstituencyID,
+                  electoralArea: selectedElectoralID,
+                  community: _controllerCommunity.text.trim(),
+                  digitalAddress: '-',
+                  businessRegistered:
+                      organizationLegalRegistration == 0 ? true : false,
+                  businessDescription: _controllerCoreAreas.text.trim(),
+                  website: _controllerWebsite.text.trim(),
+                  groupIds: selectedGroupIds(),
+                  subgroupIds: selectedSubGroupIds(),
+                  password: _controllerPassword.text.trim(),
+                  confirm_password: _controllerConfirmPassword.text.trim(),
+                  logo: imageFile?.path,
+                  certificates: imageRegCert,
+                ).then((value) {
+                  Navigator.of(context).pop();
+                  if (value == 'successful') {
+                    showNormalToast(
+                        "Registration Successful, Proceed to Login.");
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const LoginPage(),
+                        ));
+                    return;
+                  }
+                  //showErrorToast(value);
+                });
               })
         ],
       ),

@@ -478,6 +478,7 @@ class MembersProvider extends ChangeNotifier {
       _restrictedMembers = await MembersAPI.getRestrictedMembers(
         page: _indPage,
         memberId: memberId,
+        search: search ?? '',
       );
       _tempRestrictedMembers = _restrictedMembers;
       // get individual members stats
@@ -506,9 +507,7 @@ class MembersProvider extends ChangeNotifier {
                 .user
                 .id;
         var members = await MembersAPI.getRestrictedMembers(
-          page: _indPage,
-          memberId: memberId,
-        );
+            page: _indPage, memberId: memberId, search: search ?? '');
         if (members.isNotEmpty) {
           _restrictedMembers.addAll(members);
           _tempRestrictedMembers.addAll(members);
@@ -533,7 +532,7 @@ class MembersProvider extends ChangeNotifier {
       _individualMembers = await MembersAPI.getIndividualMembers(
         page: _indPage,
         branchId: selectedBranch == null ? '' : selectedBranch!.id!.toString(),
-        search: search!,
+        search: search ?? '',
         groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
         subGroupId:
             selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
@@ -600,7 +599,7 @@ class MembersProvider extends ChangeNotifier {
           page: _indPage,
           branchId:
               selectedBranch == null ? '' : selectedBranch!.id!.toString(),
-          search: search!,
+          search: search ?? '',
           groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
           subGroupId:
               selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
@@ -685,7 +684,7 @@ class MembersProvider extends ChangeNotifier {
       _organizationalMembers = await MembersAPI.getOrganizationalMembers(
         page: _orgPage,
         branchId: selectedBranch == null ? '' : selectedBranch!.id!.toString(),
-        search: search!,
+        search: search ?? '',
         groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
         subGroupId:
             selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
@@ -774,7 +773,7 @@ class MembersProvider extends ChangeNotifier {
           page: _orgPage,
           branchId:
               selectedBranch == null ? '' : selectedBranch!.id!.toString(),
-          search: search!,
+          search: search ?? '',
           groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
           subGroupId:
               selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
@@ -901,21 +900,21 @@ class MembersProvider extends ChangeNotifier {
     } else {
       results = _tempRestrictedMembers
           .where((restrictedMember) =>
-              restrictedMember!.member!.firstname!
+              restrictedMember!.member!.firstname
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase()) ||
-              restrictedMember.member!.surname!
+              restrictedMember.member!.surname
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase()) ||
-              restrictedMember.member!.identification!
+              restrictedMember.member!.identification
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase()))
           .toList();
     }
-    _tempRestrictedMembers = results;
+    _restrictedMembers = results;
     notifyListeners();
   }
 

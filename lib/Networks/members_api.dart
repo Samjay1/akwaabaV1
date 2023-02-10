@@ -169,11 +169,12 @@ class MembersAPI {
   static Future<List<RestrictedMember>> getRestrictedMembers({
     required int page,
     required int memberId,
+    required String search,
   }) async {
     List<RestrictedMember> members = [];
 
     var url = Uri.parse(
-        '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=$memberId');
+        '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=$memberId&filter_member=$search');
     try {
       http.Response response = await http
           .get(

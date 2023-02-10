@@ -22,6 +22,7 @@ import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/search_util.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/self_clocking_page.dart';
@@ -65,6 +66,8 @@ class _ClockingPageState extends State<ClockingPage> {
   bool isShowTopView = true;
 
   bool clockingListState = true;
+
+  final _debouncer = Debouncer(milliseconds: AppConstants.searchTimerDuration);
 
   @override
   void initState() {
@@ -156,12 +159,14 @@ class _ClockingPageState extends State<ClockingPage> {
                                 );
                               },
                               onChanged: (val) {
-                                if (val.isEmpty) {
+                                setState(() {
                                   clockingProvider.searchName = val;
+                                });
+                                _debouncer.run(() {
                                   clockingProvider.getAllAbsentees(
                                     meetingEventModel: widget.meetingEventModel,
                                   );
-                                }
+                                });
                               },
                             ),
                             const SizedBox(
@@ -184,9 +189,11 @@ class _ClockingPageState extends State<ClockingPage> {
                                 setState(() {
                                   clockingProvider.searchIdentity = val;
                                 });
-                                clockingProvider.getAllAbsentees(
-                                  meetingEventModel: widget.meetingEventModel,
-                                );
+                                _debouncer.run(() {
+                                  clockingProvider.getAllAbsentees(
+                                    meetingEventModel: widget.meetingEventModel,
+                                  );
+                                });
                               },
                             ),
                             SizedBox(
