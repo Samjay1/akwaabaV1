@@ -1260,6 +1260,7 @@ class _MemberRegistrationPageIndividualState
                         if (value == 'successful') {
                           showInfoDialog(
                             'ok',
+                            dismissible: false,
                             context: context,
                             title:
                                 'Welcome ${_controllerFirstName.text} ${_controllerSurname.text},',

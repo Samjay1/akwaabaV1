@@ -201,12 +201,14 @@ showLoadingDialog(BuildContext context, [String? message]) {
 showInfoDialog(
   String? cancelText, {
   required BuildContext context,
+  bool? dismissible = true,
   required String title,
   required String content,
   required Function() onTap,
 }) {
   showDialog(
     context: context,
+    barrierDismissible: dismissible ?? true,
     builder: (_) => AlertDialog(
       insetPadding: const EdgeInsets.all(10),
       backgroundColor: Colors.transparent,

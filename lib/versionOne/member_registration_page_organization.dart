@@ -941,6 +941,7 @@ class _MemberRegistrationPageOrganizationState
               setCompulsory: true,
               child: EmailFormTextField(
                 controller: _controllerContactEmail,
+                textInputType: TextInputType.emailAddress,
               )),
           LabelWidgetContainer(
               label: "Gender",
@@ -1117,6 +1118,7 @@ class _MemberRegistrationPageOrganizationState
                     showInfoDialog(
                       'ok',
                       context: context,
+                      dismissible: false,
                       title: 'Welcome ${_controllerOrgName.text},',
                       content:
                           'Successfully submitted, check email/spam and contact admin for verification.',
