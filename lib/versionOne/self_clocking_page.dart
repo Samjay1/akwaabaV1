@@ -23,6 +23,7 @@ import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/self_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/search_util.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -57,6 +58,8 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
   bool isShowTopView = true;
 
   bool clockingListState = true;
+
+  final _debouncer = Debouncer(milliseconds: AppConstants.searchTimerDuration);
 
   @override
   void initState() {
@@ -136,18 +139,19 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                     );
                   },
                   onChanged: (val) {
+                    setState(() {
+                      clockingProvider.searchIdentity = val;
+                    });
                     if (val.isEmpty) {
-                      setState(() {
-                        clockingProvider.searchIdentity = val;
+                      _debouncer.run(() {
+                        clockingProvider.clearData();
                       });
-                      clockingProvider.clearData();
                     } else {
-                      setState(() {
-                        clockingProvider.searchIdentity = val;
+                      _debouncer.run(() {
+                        clockingProvider.getAllAbsentees(
+                          meetingEventModel: widget.meetingEventModel,
+                        );
                       });
-                      clockingProvider.getAllAbsentees(
-                        meetingEventModel: widget.meetingEventModel,
-                      );
                     }
                   },
                 ),

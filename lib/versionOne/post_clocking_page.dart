@@ -134,11 +134,17 @@ class _PostClockingPageState extends State<PostClockingPage> {
 
                             CupertinoSearchTextField(
                               padding: const EdgeInsets.all(AppPadding.p14),
+                              controller: postClockingProvider.searchNameTEC,
                               onSubmitted: (val) {
+                                setState(() {
+                                  postClockingProvider.searchName = val;
+                                });
+                                val.isEmpty
+                                    ? postClockingProvider.isSearch = false
+                                    : postClockingProvider.isSearch = true;
                                 if (clockingListState) {
                                   // search absentees by name
                                   if (absentees.isNotEmpty) {
-                                    postClockingProvider.searchName = val;
                                     postClockingProvider.getAllAbsentees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,
@@ -147,7 +153,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                 } else {
                                   // search attendees by name
                                   if (attendees.isNotEmpty) {
-                                    postClockingProvider.searchName = val;
                                     postClockingProvider.getAllAttendees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,
@@ -160,6 +165,9 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                   // search absentees by name
                                   postClockingProvider.searchName = val;
                                 });
+                                val.isEmpty
+                                    ? postClockingProvider.isSearch = false
+                                    : postClockingProvider.isSearch = true;
                                 _debouncer.run(() {
                                   if (clockingListState) {
                                     // search absentees by name
@@ -186,34 +194,40 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             CupertinoSearchTextField(
                               padding: const EdgeInsets.all(AppPadding.p14),
                               placeholder: "Enter ID",
+                              controller: postClockingProvider.searchIDTEC,
                               keyboardType: TextInputType.number,
                               onSubmitted: (val) {
                                 setState(() {
-                                  if (clockingListState) {
-                                    // search absentees by id
-                                    if (absentees.isNotEmpty) {
-                                      postClockingProvider.searchIdentity = val;
-                                      postClockingProvider.getAllAbsentees(
-                                        meetingEventModel: postClockingProvider
-                                            .selectedPastMeetingEvent!,
-                                      );
-                                    }
-                                  } else {
-                                    // search attendees by id
-                                    if (attendees.isNotEmpty) {
-                                      postClockingProvider.searchIdentity = val;
-                                      postClockingProvider.getAllAttendees(
-                                        meetingEventModel: postClockingProvider
-                                            .selectedPastMeetingEvent!,
-                                      );
-                                    }
-                                  }
+                                  postClockingProvider.searchIdentity = val;
                                 });
+                                val.isEmpty
+                                    ? postClockingProvider.isSearch = false
+                                    : postClockingProvider.isSearch = true;
+                                if (clockingListState) {
+                                  // search absentees by id
+                                  if (absentees.isNotEmpty) {
+                                    postClockingProvider.getAllAbsentees(
+                                      meetingEventModel: postClockingProvider
+                                          .selectedPastMeetingEvent!,
+                                    );
+                                  }
+                                } else {
+                                  // search attendees by id
+                                  if (attendees.isNotEmpty) {
+                                    postClockingProvider.getAllAttendees(
+                                      meetingEventModel: postClockingProvider
+                                          .selectedPastMeetingEvent!,
+                                    );
+                                  }
+                                }
                               },
                               onChanged: (val) {
                                 setState(() {
                                   postClockingProvider.searchIdentity = val;
                                 });
+                                val.isEmpty
+                                    ? postClockingProvider.isSearch = false
+                                    : postClockingProvider.isSearch = true;
                                 _debouncer.run(() {
                                   if (clockingListState) {
                                     postClockingProvider.getAllAbsentees(
@@ -221,8 +235,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                           .selectedPastMeetingEvent!,
                                     );
                                   } else {
-                                    // search attendees by id
-                                    // postClockingProvider.searchIdentity = val;
                                     postClockingProvider.getAllAttendees(
                                       meetingEventModel: postClockingProvider
                                           .selectedPastMeetingEvent!,

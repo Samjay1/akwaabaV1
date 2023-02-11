@@ -103,6 +103,33 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+// checks if account has expired and take appropriate action to log out user
+  logoutUserIfAccountExpired() {
+    final clientProvider = Provider.of<ClientProvider>(context, listen: false);
+    //DateTime? expiryDate;
+    if (clientProvider.getUser.subscriptionInfo != null) {
+      DateTime expiryDate = DateTime.parse(clientProvider
+          .getUser.subscriptionInfo!.subscribedModules!.module3!.expiresOn!);
+      if (DateTime.now().isAtSameMomentAs(expiryDate) ||
+          DateTime.now().isAfter(expiryDate)) {
+        showInfoDialog(
+          'ok',
+          context: context,
+          title: 'Hey there!',
+          content: userType == AppConstants.admin
+              ? 'Sorry, your account has expired. Please renew to continue enjoying our services.'
+              : 'Sorry, your account has expired. Please contact your admin for asssistance.',
+          onTap: () {
+            if (context.mounted) {
+              Navigator.pop(context);
+              SharedPrefs().logout(context);
+            }
+          },
+        );
+      }
+    }
+  }
+
   initFunctions() async {
     //get user type and show the required bottom nav pages
     //based on the user type, call the provider function to set the user profile info
@@ -129,16 +156,6 @@ class _MainPageState extends State<MainPage> {
               Provider.of<MemberProvider>(context, listen: false)
                   .setMemberProfileInfo(memberProfile: value!);
             });
-            // bottomNavItems = [
-            //   {"title": "Home", "icon_data": CupertinoIcons.home},
-            //   {"title": "Events", "icon_data": Icons.calendar_month_outlined},
-            //   // {"title":"More","icon_data":Icons.menu},
-            // ];
-            // bottomNavItemsFiled = [
-            //   {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
-            //   {"title": "Events", "icon_data": Icons.calendar_month},
-            //   // {"title":"More","icon_data":Icons.menu},
-            // ];
           } else if (userType.compareTo("admin") == 0) {
             SharedPrefs().getAdminProfile().then((value) {
               Provider.of<ClientProvider>(context, listen: false)
@@ -146,44 +163,9 @@ class _MainPageState extends State<MainPage> {
                 adminProfile: value!,
               );
             });
-            // bottomNavItems = [
-            //   {"title": "Home", "icon_data": CupertinoIcons.home},
-            //   {"title": "Events", "icon_data": Icons.calendar_month_outlined},
-            //   {"title": "Post Clocking", "icon_data": CupertinoIcons.alarm},
-            //   // {"title":"More","icon_data":Icons.menu},
-            // ];
-            // bottomNavItemsFiled = [
-            //   {"title": "Home", "icon_data": CupertinoIcons.house_alt_fill},
-            //   {"title": "Events", "icon_data": Icons.calendar_month},
-            //   {
-            //     "title": "Post Clocking",
-            //     "icon_data": CupertinoIcons.alarm_fill
-            //   },
-            //   // {"title":"More","icon_data":Icons.menu},
-            // ];
           }
 
-          // SharedPrefs().getMemberProfile().then((value) {
-          //   if(value!=null){
-          //
-          //   }
-          // })
-          //MemberProfile? memberProfile =  await SharedPrefs().getMemberProfile();
-
-          // debugPrint("member profile ${memberProfile!.toJson()} ");
-
-          // if(memberProfile!=null){
-          //
-          //   if(userType.compareTo("member")==0){
-          //     Provider.of<MemberProvider>(context,listen: false)
-          //         .setMemberProfileInfo(memberProfile: memberProfile);
-          //
-          //   }else if(userType.compareTo("admin")==0){
-          //     bottomNavItems.removeAt(2);
-          //     bottomNavItemsFiled.removeAt(2);
-          //     children.removeAt(2);
-          //   }
-          // }
+          logoutUserIfAccountExpired();
         } else {}
       });
     });
@@ -754,6 +736,15 @@ class _MainPageState extends State<MainPage> {
                             );
                           },
                         ),
+
+                        drawerItemView(
+                          title: "Tutorial Hub",
+                          iconData: Icons.phone_android,
+                          function: () async {
+                            Navigator.pop(context);
+                            launchURL(AppConstants.adminTutorialUrl);
+                          },
+                        ),
                         // drawerItemView(
                         //   title: "My Account",
                         //   iconData: Icons.phone_android,
@@ -1123,6 +1114,14 @@ class _MainPageState extends State<MainPage> {
                                         );
                                       });
                                 });
+                          },
+                        ),
+                        drawerItemView(
+                          title: "Tutorial Hub",
+                          iconData: Icons.phone_android,
+                          function: () async {
+                            Navigator.pop(context);
+                            launchURL(AppConstants.userTutorialUrl);
                           },
                         ),
                         drawerItemView(

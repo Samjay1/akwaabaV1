@@ -93,8 +93,8 @@ class Attendance {
     data['startBreak'] = startBreak;
     data['endBreak'] = endBreak;
     data['clockedBy'] = clockedBy;
-    if (this.clockedByInfo != null) {
-      data['clockedByInfo'] = this.clockedByInfo!.toJson();
+    if (clockedByInfo != null) {
+      data['clockedByInfo'] = clockedByInfo!.toJson();
     }
     data['clockingMethod'] = clockingMethod;
     if (validate != null) {
@@ -166,22 +166,22 @@ class ClockedByInfo {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['firstname'] = this.firstname;
-    data['surname'] = this.surname;
-    data['gender'] = this.gender;
-    data['profilePicture'] = this.profilePicture;
-    data['dateOfBirth'] = this.dateOfBirth;
-    data['phone'] = this.phone;
-    data['email'] = this.email;
-    data['role'] = this.role;
-    data['accountId'] = this.accountId;
-    data['branchId'] = this.branchId;
-    data['level'] = this.level;
-    data['status'] = this.status;
-    data['lastUpdatedBy'] = this.lastUpdatedBy;
-    data['date'] = this.date;
-    data['last_login'] = this.lastLogin;
+    data['id'] = id;
+    data['firstname'] = firstname;
+    data['surname'] = surname;
+    data['gender'] = gender;
+    data['profilePicture'] = profilePicture;
+    data['dateOfBirth'] = dateOfBirth;
+    data['phone'] = phone;
+    data['email'] = email;
+    data['role'] = role;
+    data['accountId'] = accountId;
+    data['branchId'] = branchId;
+    data['level'] = level;
+    data['status'] = status;
+    data['lastUpdatedBy'] = lastUpdatedBy;
+    data['date'] = date;
+    data['last_login'] = lastLogin;
     return data;
   }
 }

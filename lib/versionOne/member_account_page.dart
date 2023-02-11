@@ -202,6 +202,7 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
               const SizedBox(
                 height: 24,
               ),
+              // Location section
               const Padding(
                 padding: EdgeInsets.only(left: 16),
                 child: Text(
@@ -249,7 +250,42 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                       : widget.member!.digitalAddress!),
               const SizedBox(
                 height: 24,
-              )
+              ),
+
+              widget.member!.updateDate != null
+                  ? Column(
+                      children: [
+                        Container(
+                          height: dividerHeight,
+                          color: dividerColor,
+                        ),
+                        const SizedBox(
+                          height: 24,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 16),
+                          child: Text(
+                            "Last Profile Update",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        profileItemView(
+                            title: "Update on",
+                            label: widget.member!.updateDate == null
+                                ? 'N/A'
+                                : DateUtil.formatStringDate(DateFormat.yMMMEd(),
+                                    date: DateTime.parse(
+                                        widget.member!.updateDate!))),
+                        profileItemView(
+                          title: "Updated by",
+                          label: widget.member!.updatedBy == 0
+                              ? 'Self'
+                              : 'Admin (${widget.member!.updatedByInfo!.firstname!} ${widget.member!.updatedByInfo!.surname!})',
+                        ),
+                      ],
+                    )
+                  : const SizedBox()
             ],
           ),
         ),
@@ -399,17 +435,21 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
             const SizedBox(
               width: 20,
             ),
-            Row(
-              children: [
-                Text(
-                  label,
-                  textAlign: TextAlign.end,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Icon(display ? Icons.visibility : Icons.visibility_off)
-              ],
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Icon(display ? Icons.visibility : Icons.visibility_off)
+                ],
+              ),
             ),
           ],
         ));

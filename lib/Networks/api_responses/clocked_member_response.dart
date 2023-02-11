@@ -42,12 +42,13 @@ class Attendee {
   String? identification;
   bool? selected = false;
 
-  Attendee(
-      {this.additionalInfo,
-      this.attendance,
-      this.lastSeen,
-      this.status,
-      this.identification});
+  Attendee({
+    this.additionalInfo,
+    this.attendance,
+    this.lastSeen,
+    this.status,
+    this.identification,
+  });
 
   Attendee.fromJson(Map<String, dynamic> json) {
     additionalInfo = json['additionalInfo'] != null
@@ -187,14 +188,15 @@ class BranchInfo {
   int? updatedBy;
   String? updateDate;
 
-  BranchInfo(
-      {this.id,
-      this.name,
-      this.accountId,
-      this.createdBy,
-      this.creationDate,
-      this.updatedBy,
-      this.updateDate});
+  BranchInfo({
+    this.id,
+    this.name,
+    this.accountId,
+    this.createdBy,
+    this.creationDate,
+    this.updatedBy,
+    this.updateDate,
+  });
 
   BranchInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];

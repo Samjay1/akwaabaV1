@@ -82,6 +82,7 @@ class MembersProvider extends ChangeNotifier {
 
   OrganizationType? selectOrganizationType;
 
+  final TextEditingController searchNameTEC = TextEditingController();
   final TextEditingController minAgeTEC = TextEditingController();
   final TextEditingController maxAgeTEC = TextEditingController();
 
@@ -234,6 +235,7 @@ class MembersProvider extends ChangeNotifier {
   Future<void> getSubGroups() async {
     setLoadingFilters(true);
     try {
+      selectedSubGroup = null;
       _subGroups = await GroupAPI.getSubGroups(
         groupId: selectedGroup!.id!,
       );
@@ -497,7 +499,8 @@ class MembersProvider extends ChangeNotifier {
     if (hasNextPage == true &&
         loading == false &&
         _loadingMore == false &&
-        restrictedMembersScrollController.position.extentAfter < 300) {
+        (restrictedMembersScrollController.position.pixels ==
+            restrictedMembersScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _indPage += 1; // increase page by 1
       try {
@@ -566,7 +569,7 @@ class MembersProvider extends ChangeNotifier {
             : selectedProfession!.id!.toString(),
       );
 
-      _tempIndividualMembers = _individualMembers;
+      //_tempIndividualMembers = _individualMembers;
 
       // check user type ('admin', 'member')
       if (await userType() == AppConstants.admin) {
@@ -581,7 +584,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -591,7 +594,8 @@ class MembersProvider extends ChangeNotifier {
     if (hasNextPage == true &&
         loading == false &&
         _loadingMore == false &&
-        indMembersScrollController.position.extentAfter < 300) {
+        (indMembersScrollController.position.pixels ==
+            indMembersScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _indPage += 1; // increase page by 1
       try {
@@ -637,7 +641,7 @@ class MembersProvider extends ChangeNotifier {
         if (members.isNotEmpty) {
           _individualMembers.addAll(members);
 
-          _tempIndividualMembers.addAll(_individualMembers);
+          // _tempIndividualMembers.addAll(_individualMembers);
 
           // get total members
           //totalIndMembers += _tempIndividualMembers.length;
@@ -722,7 +726,7 @@ class MembersProvider extends ChangeNotifier {
         businessRegistered: businessRegistered,
       );
 
-      _tempOrganizationalMembers = _organizationalMembers;
+      //_tempOrganizationalMembers = _organizationalMembers;
 
       // check user type ('admin', 'member')
       if (await userType() == AppConstants.admin) {
@@ -755,7 +759,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -765,7 +769,8 @@ class MembersProvider extends ChangeNotifier {
     if (hasNextPage == true &&
         loading == false &&
         _loadingMore == false &&
-        orgMembersScrollController.position.extentAfter < 300) {
+        (orgMembersScrollController.position.pixels ==
+            orgMembersScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _orgPage += 1; // increase page by 1
       try {
@@ -815,20 +820,20 @@ class MembersProvider extends ChangeNotifier {
         if (members.isNotEmpty) {
           _organizationalMembers.addAll(members);
 
-          _tempOrganizationalMembers.addAll(_organizationalMembers);
+          //_tempOrganizationalMembers.addAll(_organizationalMembers);
 
           // get total organizations
-          totalOrgs += _tempOrganizationalMembers.length;
+          totalOrgs += _organizationalMembers.length;
 
-          totalRegOrgs.addAll(_tempOrganizationalMembers);
+          totalRegOrgs.addAll(_organizationalMembers);
 
-          totalUnRegOrgs.addAll(_tempOrganizationalMembers);
+          totalUnRegOrgs.addAll(_organizationalMembers);
 
           // calc rest of the total registered organizations
-          totalRegOrgs.removeWhere((org) => org!.businessRegistered!);
+          totalRegOrgs.removeWhere((org) => !org!.businessRegistered!);
 
           // calc rest of the total unregistered organizations
-          totalUnRegOrgs.removeWhere((org) => !org!.businessRegistered!);
+          totalUnRegOrgs.removeWhere((org) => org!.businessRegistered!);
 
           debugPrint("Total reg: ${totalRegOrgs.length}");
 
@@ -859,8 +864,10 @@ class MembersProvider extends ChangeNotifier {
     selectedRegion = null;
     selectedDistrict = null;
     selectedStatus = null;
+    selectOrganizationType == null;
     minAgeTEC.clear();
     maxAgeTEC.clear();
+    search = '';
     isFilter = false;
     businessRegistered = null;
     selectOrganizationType = null;

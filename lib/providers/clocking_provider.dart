@@ -31,6 +31,8 @@ class ClockingProvider extends ChangeNotifier {
   List<Gender> _genders = [];
   List<Branch> _branches = [];
 
+  final TextEditingController searchNameTEC = TextEditingController();
+  final TextEditingController searchIDTEC = TextEditingController();
   final TextEditingController minAgeTEC = TextEditingController();
   final TextEditingController maxAgeTEC = TextEditingController();
 
@@ -81,7 +83,9 @@ class ClockingProvider extends ChangeNotifier {
   // pagination variables
   int _absenteesPage = 1;
   int _attendeesPage = 1;
-  bool hasNextPage = false;
+  bool hasNextAbsentees = false;
+  bool hasNextAttendees = false;
+  bool isSearch = false;
 
   String searchName = '';
   String searchIdentity = '';
@@ -232,6 +236,7 @@ class ClockingProvider extends ChangeNotifier {
   Future<void> getSubGroups() async {
     setLoadingFilters(true);
     try {
+      selectedSubGroup = null;
       _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
       debugPrint('Sub Groups: ${_subGroups.length}');
       setLoadingFilters(false);
@@ -272,9 +277,11 @@ class ClockingProvider extends ChangeNotifier {
         toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
 
-      _selectedAbsentees.clear();
+      hasNextAbsentees = response.next == null ? false : true;
 
-      hasNextPage = response.next == null ? false : true;
+      debugPrint('HasNextPage: $hasNextAbsentees');
+
+      _selectedAbsentees.clear();
 
       if (response.results != null || response.results!.isNotEmpty) {
         _absentees = response.results!
@@ -291,20 +298,25 @@ class ClockingProvider extends ChangeNotifier {
         _absentees.clear();
       }
 
-      getAllAttendees(
-        meetingEventModel: meetingEventModel,
-      );
+      if (!isSearch) {
+        getAllAttendees(
+          meetingEventModel: meetingEventModel,
+        );
+      } else {
+        setLoading(false);
+      }
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
 
-  // load more list of attendees of a meeting
+  // load more list of attendees of selected meeting
   Future<void> _loadMoreAbsentees() async {
-    if (hasNextPage == true &&
+    debugPrint('HasNextPage More: $hasNextAbsentees');
+    if (hasNextAbsentees &&
         (absenteesScrollController.position.pixels ==
             absenteesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
@@ -334,7 +346,8 @@ class ClockingProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
-          hasNextPage = response.next == null ? false : true;
+          hasNextAbsentees = response.next == null ? false : true;
+          //hasNextPage = response.next == null ? false : true;
           var newAbsenteesList = response.results!
               .where((absentee) => (absentee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)
@@ -347,7 +360,7 @@ class ClockingProvider extends ChangeNotifier {
               .toList();
           _absentees.addAll(newAbsenteesList);
         } else {
-          hasNextPage = false;
+          hasNextAbsentees = false;
         }
         setLoadingMore(false);
       } catch (err) {
@@ -363,6 +376,7 @@ class ClockingProvider extends ChangeNotifier {
     required MeetingEventModel meetingEventModel,
   }) async {
     try {
+      setLoading(true);
       _attendeesPage = 1;
       var response = await ClockingAPI.getAttendeesList(
         page: _attendeesPage,
@@ -386,7 +400,7 @@ class ClockingProvider extends ChangeNotifier {
         toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
 
-      hasNextPage = response.next == null ? false : true;
+      hasNextAttendees = response.next == null ? false : true;
 
       _selectedAttendees.clear();
 
@@ -411,14 +425,14 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Attendees: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
 
   // load more list of absentees of a meeting
   Future<void> _loadMoreAttendees() async {
-    if (hasNextPage == true &&
+    if (hasNextAttendees &&
         (attendeesScrollController.position.pixels ==
             attendeesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
@@ -448,7 +462,7 @@ class ClockingProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
-          hasNextPage = response.next == null ? false : true;
+          hasNextAttendees = response.next == null ? false : true;
           var newAtendeesList = response.results!
               .where((attendee) => (attendee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)
@@ -461,7 +475,7 @@ class ClockingProvider extends ChangeNotifier {
               .toList();
           _attendees.addAll(newAtendeesList);
         } else {
-          hasNextPage = false;
+          hasNextAttendees = false;
         }
         setLoadingMore(false);
       } catch (err) {
@@ -730,6 +744,9 @@ class ClockingProvider extends ChangeNotifier {
     clearFilters();
     _attendees.clear();
     _absentees.clear();
+    searchIDTEC.clear();
+    isSearch = false;
+    searchNameTEC.clear();
     _selectedAttendees.clear();
     _selectedAbsentees.clear();
   }

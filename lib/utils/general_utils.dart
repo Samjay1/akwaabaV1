@@ -127,6 +127,22 @@ String base64TokenEncoding(String token) {
   return encoded;
 }
 
+launchURL(String url) async {
+  if (Platform.isIOS) {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launch(url, forceSafariVC: false);
+    } else {
+      throw 'Could not launch $url';
+    }
+  } else {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+}
+
 // open whatsapp app
 openWhatsapp(BuildContext context, String phone, String message) async {
   var whatsappURl_android =

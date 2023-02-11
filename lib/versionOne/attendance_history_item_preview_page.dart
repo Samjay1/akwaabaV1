@@ -29,27 +29,27 @@ class _AttendanceHistoryItemPreviewPageState
   Widget build(BuildContext context) {
     attendanceHistoryProvider = context.watch<AttendanceHistoryProvider>();
     var overtime = DateUtil.getTimeStringFromDouble(
-      double.parse(
-          widget.attendanceHistory!.attendanceRecord!.meetings![0].overtime!),
+      double.parse(widget.attendanceHistory!.overtime!),
     );
 
-    var onTime = DateUtil.getHourStringFromDouble(
+    var onTime = DateUtil.getTimeStringFromDouble(
       double.parse(
-        widget.attendanceHistory!.attendanceRecord!.meetings![0].onTime!,
+        widget.attendanceHistory!.onTime!,
       ),
     );
 
     var undertime = DateUtil.getTimeStringFromDouble(
       double.parse(
-        widget.attendanceHistory!.attendanceRecord!.meetings![0].undertime!,
+        widget.attendanceHistory!.undertime!,
       ),
     );
 
-    var lateness = DateUtil.getHourStringFromDouble(
+    var lateness = DateUtil.getTimeStringFromDouble(
       double.parse(
-        widget.attendanceHistory!.attendanceRecord!.meetings![0].lateness!,
+        widget.attendanceHistory!.lateness!,
       ),
     );
+
     var attendeeName =
         "${widget.attendanceHistory!.attendanceRecord!.member!.firstname!} ${widget.attendanceHistory!.attendanceRecord!.member!.surname!}";
     return Scaffold(
@@ -211,8 +211,13 @@ class _AttendanceHistoryItemPreviewPageState
           attendanceRecordItemView(
               title: "Total Attendance",
               info: widget.attendanceHistory!.totalAttendance!),
-          attendanceRecordItemView(title: "On Time", info: '$onTime times'),
-          attendanceRecordItemView(title: "Lateness ", info: '$lateness times')
+          attendanceRecordItemView(title: "On Time", info: '$onTime hrs'),
+          attendanceRecordItemView(
+            title: double.parse(widget.attendanceHistory!.lateness!).isNegative
+                ? "Earliness"
+                : "Lateness",
+            info: '$lateness hrs',
+          )
         ],
       ),
     );

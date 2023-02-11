@@ -174,7 +174,7 @@ class MembersAPI {
     List<RestrictedMember> members = [];
 
     var url = Uri.parse(
-        '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=$memberId&filter_member=$search');
+        '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=$memberId&search=$search');
     try {
       http.Response response = await http
           .get(

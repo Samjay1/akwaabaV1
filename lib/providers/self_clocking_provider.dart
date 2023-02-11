@@ -53,6 +53,7 @@ class SelfClockingProvider extends ChangeNotifier {
   int _absenteesPage = 1;
   int _attendeesPage = 1;
   bool hasNextPage = true;
+  bool isSearch = false;
 
   String searchName = '';
   String searchIdentity = '';
@@ -162,9 +163,11 @@ class SelfClockingProvider extends ChangeNotifier {
         _absentees.clear();
       }
 
-      getAllAttendees(
-        meetingEventModel: meetingEventModel,
-      );
+      _absentees.isEmpty
+          ? getAllAttendees(
+              meetingEventModel: meetingEventModel,
+            )
+          : setLoading(false);
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');

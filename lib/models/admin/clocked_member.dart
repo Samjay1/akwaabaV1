@@ -45,52 +45,57 @@ class Member extends Equatable {
   ConstituencyInfo? electoralareaInfo;
   String? identification;
   bool? selected = false;
+  UpdatedByInfo? updatedByInfo;
+  int? updatedBy;
+  String? updateDate;
 
-  Member({
-    this.id,
-    this.clientId,
-    this.firstname,
-    this.middlename,
-    this.surname,
-    this.gender,
-    this.profilePicture,
-    this.phone,
-    this.email,
-    this.dateOfBirth,
-    this.religion,
-    this.nationality,
-    this.countryOfResidence,
-    this.stateProvince,
-    this.region,
-    this.district,
-    this.constituency,
-    this.electoralArea,
-    this.community,
-    this.hometown,
-    this.houseNoDigitalAddress,
-    this.digitalAddress,
-    this.level,
-    this.status,
-    this.accountType,
-    this.memberType,
-    this.date,
-    this.lastLogin,
-    this.referenceId,
-    this.branchId,
-    this.editable,
-    this.profileResume,
-    this.profileIdentification,
-    this.archived,
-    this.branchInfo,
-    this.categoryInfo,
-    this.countryInfo,
-    this.regionInfo,
-    this.districtInfo,
-    this.constituencyInfo,
-    this.electoralareaInfo,
-    this.identification,
-    this.selected,
-  });
+  Member(
+      {this.id,
+      this.clientId,
+      this.firstname,
+      this.middlename,
+      this.surname,
+      this.gender,
+      this.profilePicture,
+      this.phone,
+      this.email,
+      this.dateOfBirth,
+      this.religion,
+      this.nationality,
+      this.countryOfResidence,
+      this.stateProvince,
+      this.region,
+      this.district,
+      this.constituency,
+      this.electoralArea,
+      this.community,
+      this.hometown,
+      this.houseNoDigitalAddress,
+      this.digitalAddress,
+      this.level,
+      this.status,
+      this.accountType,
+      this.memberType,
+      this.date,
+      this.lastLogin,
+      this.referenceId,
+      this.branchId,
+      this.editable,
+      this.profileResume,
+      this.profileIdentification,
+      this.archived,
+      this.branchInfo,
+      this.categoryInfo,
+      this.countryInfo,
+      this.regionInfo,
+      this.districtInfo,
+      this.constituencyInfo,
+      this.electoralareaInfo,
+      this.identification,
+      this.selected,
+      this.updatedByInfo,
+      this.updatedBy,
+      this.updateDate});
 
   Member.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -152,6 +157,11 @@ class Member extends Equatable {
         ? ConstituencyInfo.fromJson(json['electoralareaInfo'])
         : null;
     identification = json['identification'];
+    updatedByInfo = json['updatedByInfo'] != null
+        ? UpdatedByInfo.fromJson(json['updatedByInfo'])
+        : null;
+    updatedBy = json['updatedBy'];
+    updateDate = json['updateDate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -212,6 +222,11 @@ class Member extends Equatable {
       data['electoralareaInfo'] = electoralareaInfo!.toJson();
     }
     data['identification'] = identification;
+    if (updatedByInfo != null) {
+      data['updatedByInfo'] = updatedByInfo!.toJson();
+    }
+    data['updatedBy'] = updatedBy;
+    data['updateDate'] = updateDate;
     return data;
   }
 
@@ -257,6 +272,83 @@ class Member extends Equatable {
       // categoryInfo,
       //selected,
     ];
+  }
+}
+
+class UpdatedByInfo {
+  int? id;
+  String? firstname;
+  String? surname;
+  int? gender;
+  String? profilePicture;
+  String? dateOfBirth;
+  String? phone;
+  String? email;
+  int? role;
+  int? accountId;
+  int? branchId;
+  int? level;
+  int? status;
+  int? lastUpdatedBy;
+  String? date;
+  String? lastLogin;
+
+  UpdatedByInfo(
+      {this.id,
+      this.firstname,
+      this.surname,
+      this.gender,
+      this.profilePicture,
+      this.dateOfBirth,
+      this.phone,
+      this.email,
+      this.role,
+      this.accountId,
+      this.branchId,
+      this.level,
+      this.status,
+      this.lastUpdatedBy,
+      this.date,
+      this.lastLogin});
+
+  UpdatedByInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    firstname = json['firstname'];
+    surname = json['surname'];
+    gender = json['gender'];
+    profilePicture = json['profilePicture'];
+    dateOfBirth = json['dateOfBirth'];
+    phone = json['phone'];
+    email = json['email'];
+    role = json['role'];
+    accountId = json['accountId'];
+    branchId = json['branchId'];
+    level = json['level'];
+    status = json['status'];
+    lastUpdatedBy = json['lastUpdatedBy'];
+    date = json['date'];
+    lastLogin = json['last_login'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['firstname'] = firstname;
+    data['surname'] = surname;
+    data['gender'] = gender;
+    data['profilePicture'] = profilePicture;
+    data['dateOfBirth'] = dateOfBirth;
+    data['phone'] = phone;
+    data['email'] = email;
+    data['role'] = role;
+    data['accountId'] = accountId;
+    data['branchId'] = branchId;
+    data['level'] = level;
+    data['status'] = status;
+    data['lastUpdatedBy'] = lastUpdatedBy;
+    data['date'] = date;
+    data['last_login'] = lastLogin;
+    return data;
   }
 }
 

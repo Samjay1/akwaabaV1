@@ -144,6 +144,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   ? const SizedBox()
                   : CupertinoSearchTextField(
                       padding: const EdgeInsets.all(AppPadding.p14),
+                      controller: attendanceHistoryProvider.searchNameTEC,
                       onChanged: (val) {
                         setState(() {
                           attendanceHistoryProvider.search = val;

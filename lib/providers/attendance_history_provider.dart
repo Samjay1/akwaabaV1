@@ -35,6 +35,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _tempMeetingEventMap =
       []; // store key -value pair with the index of meeting and meeting id
 
+  final TextEditingController searchNameTEC = TextEditingController();
   final TextEditingController minAgeTEC = TextEditingController();
   final TextEditingController maxAgeTEC = TextEditingController();
 
@@ -92,7 +93,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   int _page = 1;
   var limit = AppConstants.pageLimit;
   var isFirstLoadRunning = false;
-  var hasNextPage = true;
+  var hasNext = false;
   var isLoadMoreRunning = false;
 
   late ScrollController historyScrollController = ScrollController()
@@ -197,7 +198,9 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   }
 
   Future<void> refreshList() async {
-    if (selectedPastMeetingEvent == null) {
+    if (selectedMeetingEventIndexes.isEmpty ||
+        selectedStartDate == null ||
+        selectedEndDate == null) {
       showErrorToast('Please select a date and meeting or event to proceed');
       return;
     }
@@ -210,6 +213,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     if (selectedMemberCategory != null) {
       setLoadingFilters(true);
       try {
+        selectedSubGroup = null;
         _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
         debugPrint('Sub Groups: ${_subGroups.length}');
         setLoadingFilters(false);
@@ -252,7 +256,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error PMs: ${err.toString()}');
-      showErrorToast(err.toString());
+      // showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -323,6 +327,8 @@ class AttendanceHistoryProvider extends ChangeNotifier {
         toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
 
+      hasNext = response.next == null ? false : true;
+
       // filter list for only members excluding
       // admin if he is also a member
       _attendanceHistory = response.results!;
@@ -342,10 +348,9 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   // get more attendance history for a meeting
   Future<void> _loadMoreAttendanceHistory() async {
-    if (hasNextPage == true &&
-        loading == false &&
-        isLoadMoreRunning == false &&
-        historyScrollController.position.extentAfter < 300) {
+    if (hasNext &&
+        (historyScrollController.position.pixels ==
+            historyScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _page += 1;
       try {
@@ -383,13 +388,14 @@ class AttendanceHistoryProvider extends ChangeNotifier {
         );
 
         if (response.results!.isNotEmpty) {
+          hasNext = response.next == null ? false : true;
           _attendanceHistory.addAll(response.results!);
 
           _tempAttendanceHistory.addAll(_attendanceHistory);
 
           //debugPrint('Attendance History: ${_attendanceHistory.length}');
         } else {
-          hasNextPage = false;
+          hasNext = false;
         }
 
         setLoadingMore(false);
@@ -421,6 +427,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   Future<void> clearData() async {
     clearFilters();
+    searchNameTEC.clear();
     _tempMeetingEventMap.clear();
     _pastMeetingEvents.clear();
     _attendanceHistory.clear();

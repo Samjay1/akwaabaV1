@@ -104,7 +104,8 @@ class AttendanceProvider extends ChangeNotifier {
   int _attendeesPage = 1;
   var limit = AppConstants.pageLimit;
   var isFirstLoadRunning = false;
-  var hasNextPage = false;
+  bool hasNextAbsentees = false;
+  bool hasNextAttendees = false;
   var isLoadMoreRunning = false;
 
   String? userType;
@@ -336,8 +337,9 @@ class AttendanceProvider extends ChangeNotifier {
   // get list of subgroups
   Future<void> getSubGroups() async {
     setLoadingFilters(true);
-    selectedSubGroup = null;
+
     try {
+      selectedSubGroup = null;
       _subGroups = await GroupAPI.getSubGroups(groupId: selectedGroup!.id!);
       debugPrint('Sub Groups: ${_subGroups.length}');
       setLoadingFilters(false);
@@ -408,7 +410,7 @@ class AttendanceProvider extends ChangeNotifier {
         toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
 
-      hasNextPage = response.next == null ? false : true;
+      hasNextAttendees = response.next == null ? false : true;
 
       selectedAttendees.clear();
 
@@ -446,7 +448,7 @@ class AttendanceProvider extends ChangeNotifier {
 
   // load more list of absentees of past meeting
   Future<void> _loadMoreAttendees() async {
-    if (hasNextPage == true &&
+    if (hasNextAttendees &&
         (attendeesScrollController.position.pixels ==
             attendeesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
@@ -475,7 +477,7 @@ class AttendanceProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
-          hasNextPage = response.next == null ? false : true;
+          hasNextAttendees = response.next == null ? false : true;
 
           _attendees.addAll(response.results!);
           // calc rest of the total males and females
@@ -490,7 +492,7 @@ class AttendanceProvider extends ChangeNotifier {
             }
           }
         } else {
-          hasNextPage = false;
+          hasNextAttendees = false;
         }
         setLoadingMore(false);
       } catch (err) {
@@ -530,7 +532,7 @@ class AttendanceProvider extends ChangeNotifier {
       );
       selectedAbsentees.clear();
 
-      hasNextPage = response.next == null ? false : true;
+      hasNextAbsentees = response.next == null ? false : true;
 
       // get total number of absentees
       totalAbsentees = response.count!;
@@ -563,7 +565,7 @@ class AttendanceProvider extends ChangeNotifier {
 
   // load more list of absentees of past meeting
   Future<void> _loadMoreAbsentees() async {
-    if (hasNextPage == true &&
+    if (hasNextAbsentees &&
         (absenteesScrollController.position.pixels ==
             absenteesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
@@ -592,9 +594,9 @@ class AttendanceProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
-          _absentees.addAll(response.results!);
+          hasNextAbsentees = response.next == null ? false : true;
 
-          hasNextPage = response.next == null ? false : true;
+          _absentees.addAll(response.results!);
 
           // calc rest of the total males and females
           totalMaleAbsentees.clear();
@@ -608,7 +610,7 @@ class AttendanceProvider extends ChangeNotifier {
             }
           }
         } else {
-          hasNextPage = false;
+          hasNextAbsentees = false;
         }
 
         debugPrint("Total users: ${_absentees.length}");

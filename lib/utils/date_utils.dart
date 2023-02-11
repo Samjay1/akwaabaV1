@@ -47,7 +47,7 @@ class DateUtil {
 
   static String getTimeStringFromDouble(double value) {
     //if (value < 0) return 'Invalid Value';
-    if (value < 0) double.parse(value.toString().substring(1));
+    if (value < 0) value = double.parse(value.toString().substring(1));
     int flooredValue = value.floor();
     double decimalValue = value - flooredValue;
     String hourValue = getHourString(flooredValue);
@@ -57,9 +57,14 @@ class DateUtil {
 
   static String getHourStringFromDouble(double value) {
     //if (value < 0) return 'Invalid Value';
-    if (value < 0) double.parse(value.toString().substring(1));
-    int flooredValue = value.floor();
-    String hourValue = getHourString(flooredValue);
+    String hourValue = '';
+    if (value < 0) {
+      value = double.parse(value.toString().substring(1));
+      hourValue = getHourString(value.floor());
+    } else {
+      int flooredValue = value.floor();
+      hourValue = getHourString(flooredValue);
+    }
     return hourValue;
   }
 

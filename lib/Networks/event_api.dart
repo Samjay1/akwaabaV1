@@ -22,9 +22,11 @@ class EventAPI {
   late SharedPreferences prefs;
 
   static Future<List<MeetingEventModel>> getTodayMeetingEventList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? memberId = prefs.getInt('memberId');
     List<MeetingEventModel> todayMeetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both&filter_memberId=${memberId ?? ''}');
     try {
       http.Response response = await http.get(
         url,
@@ -102,9 +104,11 @@ class EventAPI {
   static Future<List<MeetingEventModel>> getUpcomingMeetingEventList({
     required int page,
   }) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? memberId = prefs.getInt('memberId');
     List<MeetingEventModel> upcomingMeetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both&page=$page');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both&page=$page&filter_memberId=${memberId ?? ''}');
     try {
       http.Response response = await http
           .get(

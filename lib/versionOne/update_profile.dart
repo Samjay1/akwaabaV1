@@ -8,6 +8,7 @@ import 'package:akwaaba/components/custom_progress_indicator.dart';
 import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
+import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
@@ -1150,6 +1151,19 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         },
                       ),
                     ),
+                    (selectedGroupList == null || selectedGroupList!.isEmpty)
+                        ? const SizedBox()
+                        : SizedBox(
+                            height: displayHeight(context) * 0.010,
+                          ),
+                    (selectedGroupList == null || selectedGroupList!.isEmpty)
+                        ? const SizedBox()
+                        : const TagWidget(
+                            text:
+                                'Please make sure to select subgroup(s) related to the group(s) you have selected.',
+                            color: Colors.green,
+                            textAlign: TextAlign.start,
+                          ),
                     SizedBox(
                       height: displayHeight(context) * 0.020,
                     ),

@@ -11,7 +11,7 @@ class AppConstants {
   static const int meetingTypeMeeting = 1;
   static const int meetingTypeEvent = 2;
   static const int timOutDuration = 60;
-  static const int searchTimerDuration = 300;
+  static const int searchTimerDuration = 500;
   static String? token;
 
   static int notificationChannelId = 001;
@@ -94,6 +94,13 @@ class AppConstants {
     var token = await getToken();
     return "https://super.akwaabasoftware.com/api/renew-subscription/token=$token/";
   }
+
+  // youtube tutorial links
+  static const String userTutorialUrl =
+      'https://www.youtube.com/playlist?list=PLFAuolFyRZkMz1ddw3i5jgcDtkpJdoSQC';
+
+  static const String adminTutorialUrl =
+      'https://www.youtube.com/playlist?list=PLFAuolFyRZkODj6ERq_Vn_6_T-TZKcmlE';
 
   static const String akwaabaConnectUrl =
       'https://connect.akwaabasoftware.com/';

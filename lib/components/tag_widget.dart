@@ -4,21 +4,27 @@ import 'package:flutter/material.dart';
 class TagWidget extends StatelessWidget {
   final Color? color;
   final String? text;
-  const TagWidget({Key? key, this.color, this.text}) : super(key: key);
+  final TextAlign? textAlign;
+  const TagWidget({
+    Key? key,
+    this.color,
+    this.text,
+    this.textAlign = TextAlign.center,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 7.0),
       decoration: BoxDecoration(
-        color: color!.withOpacity(0.2),
+        color: color!.withOpacity(0.1),
         borderRadius: BorderRadius.circular(AppRadius.borderRadius8),
       ),
       child: Text(
         text!,
-        textAlign: TextAlign.center,
+        textAlign: textAlign,
         style: TextStyle(
-          fontSize: AppSize.s14,
+          fontSize: AppSize.s15,
           color: color,
         ),
       ),

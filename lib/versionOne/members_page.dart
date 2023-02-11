@@ -102,6 +102,7 @@ class _MembersPageState extends State<MembersPage> {
                 Expanded(
                   child: CupertinoSearchTextField(
                     padding: const EdgeInsets.all(AppPadding.p14),
+                    controller: _membersProvider.searchNameTEC,
                     onChanged: (val) {
                       setState(() {
                         _membersProvider.search = val;

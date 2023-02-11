@@ -32,6 +32,8 @@ class PostClockingProvider extends ChangeNotifier {
   List<Gender> _genders = [];
   List<Branch> _branches = [];
 
+  final TextEditingController searchNameTEC = TextEditingController();
+  final TextEditingController searchIDTEC = TextEditingController();
   final TextEditingController minAgeTEC = TextEditingController();
   final TextEditingController maxAgeTEC = TextEditingController();
 
@@ -94,7 +96,9 @@ class PostClockingProvider extends ChangeNotifier {
   int _attendeesPage = 1;
   var limit = AppConstants.pageLimit;
   var isFirstLoadRunning = false;
-  var hasNextPage = false;
+  bool hasNextAbsentees = false;
+  bool hasNextAttendees = false;
+  bool isSearch = false;
   var isLoadMoreRunning = false;
 
   late ScrollController absenteesScrollController = ScrollController()
@@ -225,6 +229,7 @@ class PostClockingProvider extends ChangeNotifier {
   Future<void> getSubGroups() async {
     setLoadingFilters(true);
     try {
+      selectedSubGroup = null;
       _subGroups = await GroupAPI.getSubGroups(
         groupId: selectedGroup!.id!,
       );
@@ -302,7 +307,7 @@ class PostClockingProvider extends ChangeNotifier {
       );
       selectedAbsentees.clear();
 
-      hasNextPage = response.next == null ? false : true;
+      hasNextAbsentees = response.next == null ? false : true;
 
       if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
@@ -323,22 +328,24 @@ class PostClockingProvider extends ChangeNotifier {
         _absentees.clear();
       }
 
-      getAllAttendees(
-        meetingEventModel: meetingEventModel,
-      );
-
-      setLoading(false);
+      if (!isSearch) {
+        getAllAttendees(
+          meetingEventModel: meetingEventModel,
+        );
+      } else {
+        setLoading(false);
+      }
     } catch (err) {
       setLoading(false);
       debugPrint('Error CK: ${err.toString()}');
-      showErrorToast(err.toString());
+      // showErrorToast(err.toString());
     }
     notifyListeners();
   }
 
   // load more list of absentees of past meeting
   Future<void> _loadMoreAbsentees() async {
-    if (hasNextPage == true &&
+    if (hasNextAbsentees &&
         (absenteesScrollController.position.pixels ==
             absenteesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
@@ -369,7 +376,7 @@ class PostClockingProvider extends ChangeNotifier {
         );
 
         if (response.results!.isNotEmpty) {
-          hasNextPage = response.next == null ? false : true;
+          hasNextAbsentees = response.next == null ? false : true;
           _absentees.addAll(response.results!
               .where((absentee) => (absentee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)
@@ -381,7 +388,7 @@ class PostClockingProvider extends ChangeNotifier {
                           .applicantPhone))
               .toList());
         } else {
-          hasNextPage = false;
+          hasNextAbsentees = false;
         }
         setLoadingMore(false);
       } catch (err) {
@@ -397,6 +404,7 @@ class PostClockingProvider extends ChangeNotifier {
     required MeetingEventModel meetingEventModel,
   }) async {
     try {
+      setLoading(true);
       var userBranch =
           await getUserBranch(currentContext); // get current user branch
       _attendeesPage = 1;
@@ -421,7 +429,7 @@ class PostClockingProvider extends ChangeNotifier {
       );
       selectedAttendees.clear();
 
-      hasNextPage = response.next == null ? false : true;
+      hasNextAttendees = response.next == null ? false : true;
 
       if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
@@ -444,14 +452,14 @@ class PostClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error CK: ${err.toString()}');
-      showErrorToast(err.toString());
+      // showErrorToast(err.toString());
     }
     notifyListeners();
   }
 
   // load more list of absentees of past meeting
   Future<void> _loadMoreAttendees() async {
-    if (hasNextPage == true &&
+    if (hasNextAttendees &&
         (attendeesScrollController.position.pixels ==
             attendeesScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
@@ -481,7 +489,7 @@ class PostClockingProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
-          hasNextPage = response.next == null ? false : true;
+          hasNextAttendees = response.next == null ? false : true;
           _attendees.addAll(response.results!
               .where((atendee) => (atendee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)
@@ -493,7 +501,7 @@ class PostClockingProvider extends ChangeNotifier {
                           .applicantPhone))
               .toList());
         } else {
-          hasNextPage = false;
+          hasNextAttendees = false;
         }
         setLoadingMore(false);
       } catch (err) {
@@ -783,6 +791,8 @@ class PostClockingProvider extends ChangeNotifier {
     clearFilters();
     postClockTime = null;
     _attendees.clear();
+    searchIDTEC.clear();
+    searchNameTEC.clear();
     _selectedAttendees.clear();
     _selectedAbsentees.clear();
     _absentees.clear();

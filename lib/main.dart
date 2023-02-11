@@ -41,7 +41,6 @@ Future<void> main() async {
     debug: true,
     ignoreSsl: false,
   ); // initialize downloader here
-
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

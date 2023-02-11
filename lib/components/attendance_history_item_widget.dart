@@ -41,18 +41,17 @@ class _AttendanceHistoryItemWidgetState
     attendanceHistoryProvider = context.watch<AttendanceHistoryProvider>();
 
     var overtime = DateUtil.getTimeStringFromDouble(
-      double.parse(
-          widget.attendanceHistory!.attendanceRecord!.meetings![0].overtime!),
+      double.parse(widget.attendanceHistory!.overtime!),
     );
 
-    var undertime = DateUtil.getTimeStringFromDouble(
-      double.parse(
-          widget.attendanceHistory!.attendanceRecord!.meetings![0].undertime!),
-    );
+    // var undertime = DateUtil.getTimeStringFromDouble(
+    //   double.parse(widget.attendanceHistory!.undertime!),
+    // );
 
-    var lateness = DateUtil.getHourStringFromDouble(
+    var lateness = DateUtil.getTimeStringFromDouble(
       double.parse(
-          widget.attendanceHistory!.attendanceRecord!.meetings![0].lateness!),
+        widget.attendanceHistory!.lateness!,
+      ),
     );
 
     var attendeeName =
@@ -111,6 +110,7 @@ class _AttendanceHistoryItemWidgetState
                             ? const SizedBox()
                             : const Icon(
                                 Icons.chevron_right,
+                                color: primaryColor,
                               )
                       ],
                     ),
@@ -127,24 +127,25 @@ class _AttendanceHistoryItemWidgetState
                         SizedBox(
                           width: displayWidth(context) * 0.01,
                         ),
-                        widget.attendanceHistory!.attendanceRecord!.meetings!
-                                    .length ==
-                                1
-                            ? Text(
-                                widget.attendanceHistory!.attendanceRecord!
-                                    .meetings![0].meeting!.name!,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: textColorLight,
-                                ),
-                              )
-                            : Text(
-                                '${widget.attendanceHistory!.attendanceRecord!.meetings!.length} meetings',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: textColorLight,
-                                ),
-                              ),
+                        // widget.attendanceHistory!.attendanceRecord!.meetings!
+                        //             .length ==
+                        //         1
+                        //     ? Text(
+                        //         widget.attendanceHistory!.attendanceRecord!
+                        //             .meetings![0].meeting!.name!,
+                        //         style: const TextStyle(
+                        //           fontSize: 14,
+                        //           color: textColorLight,
+                        //         ),
+                        //       )
+                        //     :
+                        Text(
+                          '${attendanceHistoryProvider.selectedMeetingEventIndexes.length} meetings',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: textColorLight,
+                          ),
+                        ),
                         // Row(
                         //   children: [
                         //     Row(
@@ -233,15 +234,10 @@ class _AttendanceHistoryItemWidgetState
                       height: 4,
                     ),
                     Text(
-                      "Lateness: $undertime hrs",
-                      style:
-                          const TextStyle(fontSize: 14, color: textColorLight),
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      "Late: $lateness times",
+                      double.parse(widget.attendanceHistory!.lateness!)
+                              .isNegative
+                          ? 'Earliness: $lateness hrs'
+                          : 'Lateness: $lateness hrs',
                       style:
                           const TextStyle(fontSize: 14, color: textColorLight),
                     ),
