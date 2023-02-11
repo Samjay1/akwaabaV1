@@ -716,18 +716,18 @@ class MembersProvider extends ChangeNotifier {
         getMembersStatistics();
       }
 
-      totalRegOrgs = _tempOrganizationalMembers;
+      totalRegOrgs = _organizationalMembers;
 
-      totalUnRegOrgs = _tempOrganizationalMembers;
+      totalUnRegOrgs = _organizationalMembers;
 
       // calc total registered organizations
-      totalRegOrgs = _tempOrganizationalMembers
-          .where((org) => org!.businessRegistered!)
+      totalRegOrgs = _organizationalMembers
+          .where((org) => org.businessRegistered!)
           .toList();
 
       // calc total unregistered organizations
-      totalUnRegOrgs = _tempOrganizationalMembers
-          .where((org) => !org!.businessRegistered!)
+      totalUnRegOrgs = _organizationalMembers
+          .where((org) => !org.businessRegistered!)
           .toList();
 
       debugPrint('Org Members: ${_organizationalMembers.length}');
@@ -798,26 +798,24 @@ class MembersProvider extends ChangeNotifier {
         );
         if (response.results!.isNotEmpty) {
           hasNextPage = response.next == null ? false : true;
+
           _organizationalMembers.addAll(response.results!);
 
           //_tempOrganizationalMembers.addAll(_organizationalMembers);
 
-          // get total organizations
-          totalOrgs += _organizationalMembers.length;
+          totalRegOrgs.addAll(response.results!);
 
-          totalRegOrgs.addAll(_organizationalMembers);
+          totalUnRegOrgs.addAll(response.results!);
 
-          totalUnRegOrgs.addAll(_organizationalMembers);
+          debugPrint("Total reg: ${totalRegOrgs.length}");
+
+          debugPrint("Total unreg: ${totalUnRegOrgs.length}");
 
           // calc rest of the total registered organizations
           totalRegOrgs.removeWhere((org) => !org!.businessRegistered!);
 
           // calc rest of the total unregistered organizations
           totalUnRegOrgs.removeWhere((org) => org!.businessRegistered!);
-
-          debugPrint("Total reg: ${totalRegOrgs.length}");
-
-          debugPrint("Total unreg: ${totalUnRegOrgs.length}");
         } else {
           hasNextPage = false;
         }

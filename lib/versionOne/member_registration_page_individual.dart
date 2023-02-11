@@ -629,7 +629,7 @@ class _MemberRegistrationPageIndividualState
                 textInputAction: TextInputAction.next,
                 textInputType: TextInputType.phone,
                 applyValidation: true,
-                // maxLength: 10,
+                maxLength: 10,
               ),
             ),
             LabelWidgetContainer(
@@ -648,6 +648,7 @@ class _MemberRegistrationPageIndividualState
                   controller: _controllerWhatsappContact,
                   textInputType: TextInputType.phone,
                   applyValidation: false,
+                  maxLength: 10,
                 )),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -1257,18 +1258,24 @@ class _MemberRegistrationPageIndividualState
                         // }
                         Navigator.of(context).pop();
                         if (value == 'successful') {
-                          showNormalToast(
-                            "Registration Successful, Proceed to Login.",
-                          );
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const LoginPage(),
-                            ),
+                          showInfoDialog(
+                            'ok',
+                            context: context,
+                            title:
+                                'Welcome ${_controllerFirstName.text} ${_controllerSurname.text},',
+                            content:
+                                'Successfully submitted, check email/spam and contact admin for verification.',
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const LoginPage(),
+                                  ));
+                            },
                           );
                           return;
                         }
-
                         showErrorToast(value!);
                       });
                     }

@@ -137,22 +137,6 @@ class SelfClockingMemberItem extends StatelessWidget {
                                   onTap: () => Navigator.pop(context),
                                 );
                               } else {
-                                if ((!currentTime.isAtSameMomentAs(closeTime) &&
-                                        absentee!.attendance!.meetingEventId!
-                                            .hasBreakTime!) &&
-                                    (absentee!.attendance!.inTime != null &&
-                                        absentee!.attendance!.outTime ==
-                                            null)) {
-                                  showInfoDialog(
-                                    'ok',
-                                    context: context,
-                                    title: 'Hey there!',
-                                    content:
-                                        'Sorry time is not up for clocking out. \nPlease clockout when meeting ends.',
-                                    onTap: () => Navigator.pop(context),
-                                  );
-                                  return;
-                                }
                                 if ((currentTime.isAfter(closeTime) &&
                                         !absentee!.attendance!.meetingEventId!
                                             .hasOvertime!) &&
@@ -183,7 +167,9 @@ class SelfClockingMemberItem extends StatelessWidget {
                                       content: absentee!.attendance!.inTime ==
                                               null
                                           ? 'Are you sure you want to clock in?'
-                                          : 'Are you sure you want to clock out?',
+                                          : currentTime.isBefore(closeTime)
+                                              ? ' Are you sure you want to clock out before the closing time?'
+                                              : 'Are you sure you want to clock out?',
                                       onConfirmTap: () async {
                                         Navigator.pop(context);
                                         absentee!.attendance!.inTime == null

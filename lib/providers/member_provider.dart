@@ -34,6 +34,8 @@ class MemberProvider with ChangeNotifier {
   bool _clocking = false;
   var deviceRequestList;
 
+  String? bill;
+
   final TextEditingController excuseTEC = TextEditingController();
 
   bool get loading => _loading;
@@ -305,6 +307,19 @@ class MemberProvider with ChangeNotifier {
       setLoading(false);
     }
 
+    notifyListeners();
+  }
+
+  // get member outstanding bill
+  Future<void> getOutstandingBill() async {
+    setLoading(true);
+    try {
+      var result = await MemberAPI().getMemberOutstandingBill();
+      bill = result;
+    } catch (err) {
+      setLoading(false);
+      bill = 'Not found';
+    }
     notifyListeners();
   }
 }

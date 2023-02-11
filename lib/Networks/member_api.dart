@@ -195,6 +195,30 @@ class MemberAPI {
   }
 
   // get a  branch
+  Future<String> getMemberOutstandingBill() async {
+    String bill;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? memberId = prefs.getString('memberId');
+
+    var url = Uri.parse(
+      'https://cash.akwaabasoftware.com/api/outstanding-bill/$memberId',
+    );
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Outstanding Bill: ${jsonDecode(response.body)}");
+      bill = jsonDecode(response.body)['total_bill'];
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return bill;
+  }
+
+  // get a  branch
   Future<String> getIdentityNumber({
     required int memberId,
   }) async {
@@ -1224,7 +1248,9 @@ class MemberAPI {
       request.fields["community"] =
           community.toString().isNotEmpty ? community.toString() : '-';
       request.fields["digitalAddress"] = digitalAddress.toString();
-      request.fields["website"] = website;
+      if (website.isNotEmpty) {
+        request.fields["website"] = website;
+      }
       request.fields["businessDescription"] = businessDescription;
       if (groupIds != null) {
         request.fields["groupIds[]"] = groupIds.toString();
@@ -1239,7 +1265,7 @@ class MemberAPI {
       var response = await request.send();
 
       // listen for response
-      print('response.statusCode ${response.statusCode}');
+      debugPrint('response.statusCode ${response.statusCode}');
 
       // print('response.============> ${response}');
 

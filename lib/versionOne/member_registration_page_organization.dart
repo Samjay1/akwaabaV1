@@ -294,14 +294,17 @@ class _MemberRegistrationPageOrganizationState
             return;
           }
         }
-        if (!isURL(_controllerWebsite.text)) {
-          showErrorSnackBar(context, "Enter a valid website url");
-          return;
-        }
+        // if (!isURL(_controllerWebsite.text)) {
+        //   showErrorSnackBar(context, "Enter a valid website url");
+        //   return;
+        // }
         //currently on bio data page,
         //check these inputs -> first name, last name, DOB, gender, email, phone
-        pageViewController.animateToPage(1,
-            duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
+        pageViewController.animateToPage(
+          1,
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeIn,
+        );
         break;
       case 1:
         //currenty on
@@ -1111,14 +1114,21 @@ class _MemberRegistrationPageOrganizationState
                 ).then((value) {
                   Navigator.of(context).pop();
                   if (value == 'successful') {
-                    showNormalToast(
-                        "Registration Successful, Proceed to Login.");
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const LoginPage(),
-                        ));
+                    showInfoDialog(
+                      'ok',
+                      context: context,
+                      title: 'Welcome ${_controllerOrgName.text},',
+                      content:
+                          'Successfully submitted, check email/spam and contact admin for verification.',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const LoginPage(),
+                            ));
+                      },
+                    );
                     return;
                   }
                   //showErrorToast(value);

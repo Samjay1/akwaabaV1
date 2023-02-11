@@ -112,8 +112,8 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                         BorderRadius.circular(AppRadius.borderRadius8),
                   ),
                   child: const Text(
-                    "Hi there, you're welcome. \nPlease enter your ID to clock in or clock out. Have a nice day!",
-                    textAlign: TextAlign.start,
+                    "Hi there, you are welcome. \nPlease enter your ID to clock in or clock out. Have a nice day!",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: AppSize.s18,
                       color: Colors.white,
@@ -122,6 +122,28 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: displayHeight(context) * 0.03,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(AppPadding.p12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius:
+                        BorderRadius.circular(AppRadius.borderRadius8),
+                  ),
+                  child: const Text(
+                    "WARNING!! \nDON'T CLOCK FOR ANYBODY",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: AppSize.s18,
+                      color: Colors.red,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ),
+
                 SizedBox(
                   height: displayHeight(context) * 0.05,
                 ),

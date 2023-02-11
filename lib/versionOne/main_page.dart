@@ -156,6 +156,10 @@ class _MainPageState extends State<MainPage> {
               Provider.of<MemberProvider>(context, listen: false)
                   .setMemberProfileInfo(memberProfile: value!);
             });
+
+            // load outstanding bill
+            Provider.of<MemberProvider>(context, listen: false)
+                .getOutstandingBill();
           } else if (userType.compareTo("admin") == 0) {
             SharedPrefs().getAdminProfile().then((value) {
               Provider.of<ClientProvider>(context, listen: false)
@@ -870,6 +874,16 @@ class _MainPageState extends State<MainPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Text(
+                        "Your Outstanding Bill Is: GHS ${context.watch<MemberProvider>().bill}",
+                        style: const TextStyle(
+                          fontSize: AppSize.s15,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.01,
+                      ),
                       Text(
                         "Your Account Expires In:  ${clientAccountInfo.subscriptionInfo == null ? 'N/A' : DateUtil.convertToFutureTimeAgo(date: expiryDate!)}",
                         style: const TextStyle(
