@@ -108,19 +108,14 @@ class _MembersPageState extends State<MembersPage> {
                         _membersProvider.search = val;
                       });
                       _debouncer.run(() {
-                        if (userType == AppConstants.admin &&
-                            widget.isMemberuser) {
+                        if (userType == AppConstants.admin) {
                           widget.isMemberuser
                               ? _membersProvider.getAllIndividualMembers()
                               : _membersProvider.getAllOrganizations();
                         }
-                        if (userType == AppConstants.member &&
-                            widget.isMemberuser) {
+                        if (userType == AppConstants.member) {
                           widget.isMemberuser
                               ? _membersProvider.getAllRestrictedMembers()
-                              // _membersProvider.searchRestrictedMembers(
-                              //     searchText: val,
-                              //   )
                               : _membersProvider.getAllOrganizations();
                         }
                       });
@@ -131,14 +126,12 @@ class _MembersPageState extends State<MembersPage> {
                       setState(() {
                         _membersProvider.search = val;
                       });
-                      if (userType == AppConstants.admin &&
-                          widget.isMemberuser) {
+                      if (userType == AppConstants.admin) {
                         widget.isMemberuser
                             ? _membersProvider.getAllIndividualMembers()
                             : _membersProvider.getAllOrganizations();
                       }
-                      if (userType == AppConstants.member &&
-                          widget.isMemberuser) {
+                      if (userType == AppConstants.member) {
                         widget.isMemberuser
                             ? _membersProvider.getAllRestrictedMembers()
                             // _membersProvider.searchRestrictedMembers(

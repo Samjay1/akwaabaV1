@@ -266,15 +266,28 @@ class HomeProvider extends ChangeNotifier {
                 response.results![0].endBreak != null) {
               // user has started and ended a break
               // so show message
-              // ignore: use_build_context_synchronously
-              Navigator.pop(context);
-              showNormalToast('You\'ve already ended your break. Good Bye!');
+              if (context.mounted) {
+                Navigator.pop(context);
+                showNormalToast('You\'ve already ended your break. Good Bye!');
+              }
             }
           } else {
             showNormalToast(
-                'Hi there, you\'ve not clocked in. \nPlease clock-in before you can start your break.');
+              'Hi there, you\'ve not clocked in. \nPlease clock-in before you can start your break.',
+            );
           }
           //debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
+        } else {
+          if (context.mounted) {
+            showInfoDialog(
+              'ok',
+              context: context,
+              title: 'Hey there!',
+              content:
+                  'Sorry, you can\'t clock because you\'re not assigned to this meeting.',
+              onTap: () => Navigator.pop(context),
+            );
+          }
         }
       } else {
         if (response.results!.isNotEmpty) {

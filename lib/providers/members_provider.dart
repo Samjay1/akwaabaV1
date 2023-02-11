@@ -129,6 +129,7 @@ class MembersProvider extends ChangeNotifier {
   int _indPage = 1;
   int _orgPage = 1;
   bool hasNextPage = true;
+
   bool isFilter = false;
 
   late ScrollController restrictedMembersScrollController = ScrollController()
@@ -477,12 +478,15 @@ class MembersProvider extends ChangeNotifier {
               .memberProfile
               .user
               .id;
-      _restrictedMembers = await MembersAPI.getRestrictedMembers(
+      var response = await MembersAPI.getRestrictedMembers(
         page: _indPage,
         memberId: memberId,
         search: search ?? '',
       );
-      _tempRestrictedMembers = _restrictedMembers;
+      _restrictedMembers = response.results!;
+
+      hasNextPage = response.next == null ? false : true;
+      //_tempRestrictedMembers = _restrictedMembers;
       // get individual members stats
       getMembersStatistics();
       setLoading(false);
@@ -496,9 +500,7 @@ class MembersProvider extends ChangeNotifier {
 
   // load more list of restricted members
   Future<void> _loadMoreRestrictedMembers() async {
-    if (hasNextPage == true &&
-        loading == false &&
-        _loadingMore == false &&
+    if (hasNextPage &&
         (restrictedMembersScrollController.position.pixels ==
             restrictedMembersScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
@@ -509,11 +511,12 @@ class MembersProvider extends ChangeNotifier {
                 .memberProfile
                 .user
                 .id;
-        var members = await MembersAPI.getRestrictedMembers(
+        var response = await MembersAPI.getRestrictedMembers(
             page: _indPage, memberId: memberId, search: search ?? '');
-        if (members.isNotEmpty) {
-          _restrictedMembers.addAll(members);
-          _tempRestrictedMembers.addAll(members);
+        if (response.results!.isNotEmpty) {
+          hasNextPage = response.next == null ? false : true;
+          _restrictedMembers.addAll(response.results!);
+          //_tempRestrictedMembers.addAll(members);
         } else {
           hasNextPage = false;
         }
@@ -528,11 +531,10 @@ class MembersProvider extends ChangeNotifier {
 
   // initial loading of individual members
   Future<void> getAllIndividualMembers() async {
-    _individualMembers.clear();
     try {
       setLoading(true);
       _indPage = 1;
-      _individualMembers = await MembersAPI.getIndividualMembers(
+      var response = await MembersAPI.getIndividualMembers(
         page: _indPage,
         branchId: selectedBranch == null ? '' : selectedBranch!.id!.toString(),
         search: search ?? '',
@@ -569,6 +571,10 @@ class MembersProvider extends ChangeNotifier {
             : selectedProfession!.id!.toString(),
       );
 
+      _individualMembers = response.results!;
+
+      hasNextPage = response.next == null ? false : true;
+
       //_tempIndividualMembers = _individualMembers;
 
       // check user type ('admin', 'member')
@@ -591,15 +597,13 @@ class MembersProvider extends ChangeNotifier {
 
   // load more list of individual members
   Future<void> _loadMoreIndividualMembers() async {
-    if (hasNextPage == true &&
-        loading == false &&
-        _loadingMore == false &&
+    if (hasNextPage &&
         (indMembersScrollController.position.pixels ==
             indMembersScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _indPage += 1; // increase page by 1
       try {
-        var members = await MembersAPI.getIndividualMembers(
+        var response = await MembersAPI.getIndividualMembers(
           page: _indPage,
           branchId:
               selectedBranch == null ? '' : selectedBranch!.id!.toString(),
@@ -638,35 +642,9 @@ class MembersProvider extends ChangeNotifier {
               ? ''
               : selectedProfession!.id!.toString(),
         );
-        if (members.isNotEmpty) {
-          _individualMembers.addAll(members);
-
-          // _tempIndividualMembers.addAll(_individualMembers);
-
-          // get total members
-          //totalIndMembers += _tempIndividualMembers.length;
-
-          // totalMaleIndMembers.addAll(_tempIndividualMembers);
-
-          // totalFemaleIndMembers.addAll(_tempIndividualMembers);
-
-          // // calc rest of the total males
-          // totalMaleIndMembers
-          //     .removeWhere((member) => member!.gender == AppConstants.female);
-          // totalFemaleIndMembers
-          //     .removeWhere((member) => member!.gender == AppConstants.male);
-
-          // for (var member in _tempIndividualMembers) {
-          //   if (member!.gender == AppConstants.male) {
-          //     totalMaleIndMembers.add(member);
-          //   }
-          // }
-
-          // debugPrint("Total members: $totalIndMembers");
-
-          // debugPrint("Total males: $totalMaleIndMembers");
-
-          // debugPrint("Total females: $totalFemaleIndMembers");
+        if (response.results!.isNotEmpty) {
+          hasNextPage = response.next == null ? false : true;
+          _individualMembers.addAll(response.results!);
         } else {
           hasNextPage = false;
         }
@@ -681,14 +659,13 @@ class MembersProvider extends ChangeNotifier {
 
   // initial loading of organizational members
   Future<void> getAllOrganizations() async {
-    _organizationalMembers.clear();
+    setLoading(true);
     try {
-      setLoading(true);
       _orgPage = 1;
-      _organizationalMembers = await MembersAPI.getOrganizationalMembers(
+      var response = await MembersAPI.getOrganizationalMembers(
         page: _orgPage,
         branchId: selectedBranch == null ? '' : selectedBranch!.id!.toString(),
-        search: search ?? '',
+        search: searchNameTEC.text.isEmpty ? '' : searchNameTEC.text,
         groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
         subGroupId:
             selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
@@ -725,6 +702,10 @@ class MembersProvider extends ChangeNotifier {
             : selectOrganizationType!.id!.toString(),
         businessRegistered: businessRegistered,
       );
+
+      _organizationalMembers = response.results!;
+
+      hasNextPage = response.next == null ? false : true;
 
       //_tempOrganizationalMembers = _organizationalMembers;
 
@@ -766,19 +747,17 @@ class MembersProvider extends ChangeNotifier {
 
   // load more list of organizational members
   Future<void> _loadMoreOrganizationalMembers() async {
-    if (hasNextPage == true &&
-        loading == false &&
-        _loadingMore == false &&
+    if (hasNextPage &&
         (orgMembersScrollController.position.pixels ==
             orgMembersScrollController.position.maxScrollExtent)) {
       setLoadingMore(true); // show loading indicator
       _orgPage += 1; // increase page by 1
       try {
-        var members = await MembersAPI.getOrganizationalMembers(
+        var response = await MembersAPI.getOrganizationalMembers(
           page: _orgPage,
           branchId:
               selectedBranch == null ? '' : selectedBranch!.id!.toString(),
-          search: search ?? '',
+          search: searchNameTEC.text.isEmpty ? '' : searchNameTEC.text,
           groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
           subGroupId:
               selectedSubGroup == null ? '' : selectedSubGroup!.id!.toString(),
@@ -817,8 +796,9 @@ class MembersProvider extends ChangeNotifier {
               : selectOrganizationType!.id!.toString(),
           businessRegistered: businessRegistered,
         );
-        if (members.isNotEmpty) {
-          _organizationalMembers.addAll(members);
+        if (response.results!.isNotEmpty) {
+          hasNextPage = response.next == null ? false : true;
+          _organizationalMembers.addAll(response.results!);
 
           //_tempOrganizationalMembers.addAll(_organizationalMembers);
 
@@ -851,6 +831,7 @@ class MembersProvider extends ChangeNotifier {
   }
 
   void clearFilters({required bool isMember}) {
+    selectedBranch = null;
     selectedGroup = null;
     selectedSubGroup = null;
     selectedStartDate = null;

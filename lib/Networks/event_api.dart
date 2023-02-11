@@ -171,8 +171,10 @@ class EventAPI {
     required String filterDate,
   }) async {
     MeetingAttendanceResponse attendanceResponse;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? memberId = prefs.getInt('memberId');
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/attendance?filter_branch=${meetingEventModel.branchId}&filter_date=$filterDate&meetingEventId=${meetingEventModel.id}');
+        '${getBaseUrl()}/attendance/meeting-event/attendance?filter_branch=${meetingEventModel.branchId}&filter_date=$filterDate&meetingEventId=${meetingEventModel.id}&memberId=${memberId ?? ''}');
     try {
       http.Response response = await http
           .get(

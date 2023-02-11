@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
+import 'package:akwaaba/Networks/api_responses/ind_member_response.dart';
+import 'package:akwaaba/Networks/api_responses/org_member_response.dart';
+import 'package:akwaaba/Networks/api_responses/restricted_member_response.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/models/general/account_type.dart';
@@ -20,7 +23,7 @@ class MembersAPI {
   /// MEMBERS
 
   // get list of individual members
-  static Future<List<Member>> getIndividualMembers({
+  static Future<IndMemberResponse> getIndividualMembers({
     required int page,
     required String branchId,
     required String? memberCategoryId,
@@ -37,7 +40,7 @@ class MembersAPI {
     required String? professionStatus,
     required String? search,
   }) async {
-    List<Member> member = [];
+    IndMemberResponse memberResponse;
 
     var url;
     if (regionId == null || districtId == null) {
@@ -73,18 +76,20 @@ class MembersAPI {
         headers: await getAllHeaders(),
       );
       debugPrint("Ind Members Res: ${await returnResponse(response)}");
-      var res = await returnResponse(response);
-      if (res['results'] != null) {
-        member = <Member>[];
-        res['results'].forEach((v) {
-          member.add(Member.fromJson(v));
-        });
-      }
+      //var res = await returnResponse(response);
+      memberResponse =
+          IndMemberResponse.fromJson(await returnResponse(response));
+      // if (res['results'] != null) {
+      //   member = <Member>[];
+      //   res['results'].forEach((v) {
+      //     member.add(Member.fromJson(v));
+      //   });
+      // }
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return member;
+    return memberResponse;
   }
 
   // get an individual memeber
@@ -166,12 +171,12 @@ class MembersAPI {
   }
 
   // get list of restricted members
-  static Future<List<RestrictedMember>> getRestrictedMembers({
+  static Future<RestrictedMemberResponse> getRestrictedMembers({
     required int page,
     required int memberId,
     required String search,
   }) async {
-    List<RestrictedMember> members = [];
+    RestrictedMemberResponse memberResponse;
 
     var url = Uri.parse(
         '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=$memberId&search=$search');
@@ -188,18 +193,21 @@ class MembersAPI {
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Restrictions: ${await returnResponse(response)}");
-      var res = await returnResponse(response);
-      if (res['results'] != null) {
-        members = <RestrictedMember>[];
-        res['results'].forEach((v) {
-          members.add(RestrictedMember.fromJson(v));
-        });
-      }
+      //var res = await returnResponse(response);
+      memberResponse = RestrictedMemberResponse.fromJson(
+        await returnResponse(response),
+      );
+      // if (res['results'] != null) {
+      //   members = <RestrictedMember>[];
+      //   res['results'].forEach((v) {
+      //     members.add(RestrictedMember.fromJson(v));
+      //   });
+      // }
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return members;
+    return memberResponse;
   }
 
   // get individual and organization memebers stats
@@ -235,7 +243,7 @@ class MembersAPI {
   }
 
   // get list of organizational members
-  static Future<List<Organization>> getOrganizationalMembers({
+  static Future<OrgMemberResponse> getOrganizationalMembers({
     required int page,
     required String? branchId,
     required String? memberCategoryId,
@@ -254,7 +262,7 @@ class MembersAPI {
     required String? organizationType,
     required String? search,
   }) async {
-    List<Organization> organization = [];
+    OrgMemberResponse orgResponse;
 
     var url;
     if (regionId == null || districtId == null) {
@@ -295,18 +303,19 @@ class MembersAPI {
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Org Members Res: ${await returnResponse(response)}");
-      var res = await returnResponse(response);
-      if (res['results'] != null) {
-        organization = <Organization>[];
-        res['results'].forEach((v) {
-          organization.add(Organization.fromJson(v));
-        });
-      }
+      //var res = await returnResponse(response);
+      orgResponse = OrgMemberResponse.fromJson(await returnResponse(response));
+      // if (res['results'] != null) {
+      //   organization = <Organization>[];
+      //   res['results'].forEach((v) {
+      //     organization.add(Organization.fromJson(v));
+      //   });
+      // }
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return organization;
+    return orgResponse;
   }
 
   // get list of marital statuses
