@@ -247,6 +247,7 @@ class MemberProvider with ChangeNotifier {
       } else {
         setLoading(false);
         _identityNumber = value;
+        getOutstandingBill();
         //showNormalToast('Login successful');
         Provider.of<GeneralProvider>(context, listen: false)
             .setAdminStatus(isAdmin: false);
@@ -312,13 +313,12 @@ class MemberProvider with ChangeNotifier {
 
   // get member outstanding bill
   Future<void> getOutstandingBill() async {
-    setLoading(true);
     try {
       var result = await MemberAPI().getMemberOutstandingBill();
       bill = result;
     } catch (err) {
       setLoading(false);
-      bill = 'Not found';
+      bill = 'N/A';
     }
     notifyListeners();
   }

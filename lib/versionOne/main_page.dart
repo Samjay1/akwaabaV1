@@ -105,11 +105,18 @@ class _MainPageState extends State<MainPage> {
 
 // checks if account has expired and take appropriate action to log out user
   logoutUserIfAccountExpired() {
-    final clientProvider = Provider.of<ClientProvider>(context, listen: false);
+    ClientAccountInfo? clientAccountInfo;
+    userType == AppConstants.admin
+        ? clientAccountInfo =
+            Provider.of<ClientProvider>(context, listen: false).getUser
+        : clientAccountInfo =
+            Provider.of<MemberProvider>(context, listen: false)
+                .clientAccountInfo;
+
     //DateTime? expiryDate;
-    if (clientProvider.getUser.subscriptionInfo != null) {
-      DateTime expiryDate = DateTime.parse(clientProvider
-          .getUser.subscriptionInfo!.subscribedModules!.module3!.expiresOn!);
+    if (clientAccountInfo!.subscriptionInfo != null) {
+      DateTime expiryDate = DateTime.parse(clientAccountInfo
+          .subscriptionInfo!.subscribedModules!.module1!.expiresOn!);
       if (DateTime.now().isAtSameMomentAs(expiryDate) ||
           DateTime.now().isAfter(expiryDate)) {
         showInfoDialog(
@@ -156,10 +163,6 @@ class _MainPageState extends State<MainPage> {
               Provider.of<MemberProvider>(context, listen: false)
                   .setMemberProfileInfo(memberProfile: value!);
             });
-
-            // load outstanding bill
-            Provider.of<MemberProvider>(context, listen: false)
-                .getOutstandingBill();
           } else if (userType.compareTo("admin") == 0) {
             SharedPrefs().getAdminProfile().then((value) {
               Provider.of<ClientProvider>(context, listen: false)
@@ -168,7 +171,6 @@ class _MainPageState extends State<MainPage> {
               );
             });
           }
-
           logoutUserIfAccountExpired();
         } else {}
       });
@@ -308,8 +310,8 @@ class _MainPageState extends State<MainPage> {
               DateTime? expiryDate;
               if (data.getUser.subscriptionInfo != null) {
                 date = data.getUser.subscriptionInfo!.subscribedModules!
-                    .module3!.expiresOn!;
-                expiryDate = DateFormat('dd-MM-yyyy').parse(date);
+                    .module1!.expiresOn!;
+                expiryDate = DateTime.parse(date);
               }
               return data.getUser.subscriptionInfo != null
                   ? Container(
@@ -324,7 +326,7 @@ class _MainPageState extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Your Account Expires In:  ${(data.getUser.subscriptionInfo.subscribedModules == null && data.getUser.subscriptionInfo.subscribedModules.module3 != null) ? 'N/A' : DateUtil.convertToFutureTimeAgo(date: expiryDate!)}",
+                            "Your Account Expires In:  ${(data.getUser.subscriptionInfo.subscribedModules == null && data.getUser.subscriptionInfo.subscribedModules.module1 != null) ? 'N/A' : DateUtil.convertToFutureTimeAgo(date: expiryDate!)}",
                             style: const TextStyle(fontSize: AppSize.s15),
                             textAlign: TextAlign.start,
                           ),
@@ -810,8 +812,8 @@ class _MainPageState extends State<MainPage> {
     DateTime? expiryDate;
     if (clientAccountInfo.subscriptionInfo != null) {
       date = clientAccountInfo
-          .subscriptionInfo!.subscribedModules!.module3!.expiresOn!;
-      expiryDate = DateFormat('dd-MM-yyyy').parse(date);
+          .subscriptionInfo!.subscribedModules!.module1!.expiresOn!;
+      expiryDate = DateTime.parse(date);
     }
     debugPrint("Phone: $phone");
     return Drawer(

@@ -199,10 +199,12 @@ class MemberAPI {
     String bill;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? memberId = prefs.getString('memberId');
+    int? memberId = prefs.getInt('memberId');
+
+    debugPrint("MemberId: $memberId");
 
     var url = Uri.parse(
-      'https://cash.akwaabasoftware.com/api/outstanding-bill/$memberId',
+      'https://cash.akwaabasoftware.com/api/outstanding-bill/$memberId/',
     );
     try {
       http.Response response = await http.get(
