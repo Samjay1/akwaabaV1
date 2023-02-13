@@ -395,14 +395,16 @@ class _RestrictedMemberAccountPageState
             const SizedBox(
               width: 12,
             ),
-            Row(
-              children: [
-                Text(label),
-                const SizedBox(
-                  width: 12,
-                ),
-                Icon(display ? Icons.visibility : Icons.visibility_off)
-              ],
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: Text(label)),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  Icon(display ? Icons.visibility : Icons.visibility_off)
+                ],
+              ),
             ),
           ],
         ));

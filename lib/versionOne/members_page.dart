@@ -119,7 +119,6 @@ class _MembersPageState extends State<MembersPage> {
                               : _membersProvider.getAllOrganizations();
                         }
                       });
-
                       debugPrint('Search: ${_membersProvider.search}');
                     },
                     onSubmitted: (val) {
