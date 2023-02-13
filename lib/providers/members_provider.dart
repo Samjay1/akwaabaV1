@@ -376,7 +376,7 @@ class MembersProvider extends ChangeNotifier {
       debugPrint('Message: $message');
     } catch (err) {
       debugPrint('Error ESPE: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -389,7 +389,7 @@ class MembersProvider extends ChangeNotifier {
       showNormalToast('Profile editing disabled');
     } catch (err) {
       debugPrint('Error DSPE: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -408,7 +408,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(currentContext);
       debugPrint('Error DBPE: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -427,7 +427,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(currentContext);
       debugPrint('Error DBPE: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -448,7 +448,7 @@ class MembersProvider extends ChangeNotifier {
       totalOrgs = response.statistics!.allOrganizations!;
     } catch (err) {
       debugPrint('Error Client Stats: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
