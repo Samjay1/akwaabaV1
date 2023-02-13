@@ -103,7 +103,7 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-// checks if account has expired and take appropriate action to log out user
+  // checks if account has expired and take appropriate action to log out user
   logoutUserIfAccountExpired() {
     ClientAccountInfo? clientAccountInfo;
     userType == AppConstants.admin

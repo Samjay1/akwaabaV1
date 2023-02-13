@@ -180,8 +180,16 @@ class MembersAPI {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? memberId = prefs.getInt('memberId');
 
-    var url = Uri.parse(
-        '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=${memberId ?? ''}&search=$search');
+    var url;
+    if (search.isEmpty) {
+      url = Uri.parse(
+          '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=${memberId ?? ''}');
+    } else {
+      url = Uri.parse(
+          '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=${memberId ?? ''}&search=$search');
+    }
+
+    debugPrint("URL: $url");
     try {
       http.Response response = await http
           .get(
