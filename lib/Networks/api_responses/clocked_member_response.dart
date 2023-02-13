@@ -2,7 +2,7 @@ import 'package:akwaaba/models/admin/clocked_member.dart';
 import 'package:akwaaba/models/attendance/attendance.dart';
 
 class ClockedMembersResponse {
-  dynamic count;
+  int? count;
   String? next;
   String? previous;
   List<Attendee>? results;
@@ -38,7 +38,6 @@ class Attendee {
   Attendance? attendance;
   String? lastSeen;
   String? status;
-
   String? identification;
   bool? selected = false;
 

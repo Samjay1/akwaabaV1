@@ -173,13 +173,15 @@ class MembersAPI {
   // get list of restricted members
   static Future<RestrictedMemberResponse> getRestrictedMembers({
     required int page,
-    required int memberId,
     required String search,
   }) async {
     RestrictedMemberResponse memberResponse;
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? memberId = prefs.getInt('memberId');
+
     var url = Uri.parse(
-        '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=$memberId&search=$search');
+        '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=${memberId ?? ''}&search=$search');
     try {
       http.Response response = await http
           .get(
@@ -215,6 +217,8 @@ class MembersAPI {
     required int branchId,
   }) async {
     MemberStat stats;
+
+    debugPrint("Branch ID: $branchId");
 
     var url =
         Uri.parse('${getBaseUrl()}/members/statistics?branchId=$branchId');

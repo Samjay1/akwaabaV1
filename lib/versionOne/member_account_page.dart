@@ -254,6 +254,7 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
 
               widget.member!.updateDate != null
                   ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           height: dividerHeight,

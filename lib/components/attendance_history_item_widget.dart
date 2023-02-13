@@ -1,18 +1,14 @@
 import 'package:akwaaba/Networks/api_responses/attendance_history_response.dart';
 import 'package:akwaaba/components/custom_cached_image_widget.dart';
-import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/components/tag_widget_solid.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
-import 'package:akwaaba/models/attendance_history_item.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/utils/date_utils.dart';
-import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/versionOne/attendance_history_item_preview_page.dart';
 import 'package:akwaaba/utils/app_theme.dart';
-import 'package:akwaaba/utils/dimens.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -237,7 +233,18 @@ class _AttendanceHistoryItemWidgetState
                       double.parse(widget.attendanceHistory!.lateness!)
                               .isNegative
                           ? 'Earliness: $lateness hrs'
-                          : 'Lateness: $lateness hrs',
+                          : 'Earliness: 0.00 hrs',
+                      style:
+                          const TextStyle(fontSize: 14, color: textColorLight),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      !double.parse(widget.attendanceHistory!.lateness!)
+                              .isNegative
+                          ? 'Lateness: $lateness hrs'
+                          : 'Lateness: 0.00 hrs',
                       style:
                           const TextStyle(fontSize: 14, color: textColorLight),
                     ),

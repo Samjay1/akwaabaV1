@@ -2,6 +2,7 @@ import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/group_api.dart';
 import 'package:akwaaba/Networks/location_api.dart';
+import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/Networks/members_api.dart';
 import 'package:akwaaba/Networks/profile_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
@@ -44,7 +45,7 @@ class MembersProvider extends ChangeNotifier {
 
   List<Country> _countries = [];
   List<Region> _regions = [];
-  List<District> _districts = [];
+  List<District>? _districts = [];
 
   List<MemberStatus> _maritalStatuses = [];
   List<MemberStatus> _occupations = [];
@@ -110,7 +111,7 @@ class MembersProvider extends ChangeNotifier {
   List<OrganizationType> get organizationTypes => _organizationTypes;
   List<Country> get countries => _countries;
   List<Region> get regions => _regions;
-  List<District> get districts => _districts;
+  List<District> get districts => _districts!;
 
   List<RestrictedMember?> get restrictedMembers => _restrictedMembers;
   List<Member?> get individualMembers => _individualMembers;
@@ -174,7 +175,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
-      showErrorToast(err.toString());
+      // showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -189,7 +190,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error MC: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -211,7 +212,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Group: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -245,7 +246,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error SubGroup: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -260,7 +261,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -274,7 +275,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error C: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -283,24 +284,29 @@ class MembersProvider extends ChangeNotifier {
   Future<void> getRegions() async {
     try {
       _regions = await LocationAPI.getRegions();
-      getDistricts();
+      getMaritalStatuses();
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error R: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
 
   // get list of districts
   Future<void> getDistricts() async {
-    try {
-      _districts = await LocationAPI.getDistricts();
-      getMaritalStatuses();
-    } catch (err) {
-      setLoadingFilters(false);
-      debugPrint('Error D: ${err.toString()}');
-      showErrorToast(err.toString());
+    selectedDistrict = null;
+    if (selectedRegion != null) {
+      setLoadingFilters(true);
+      try {
+        _districts =
+            await MemberAPI().getDistrict(regionID: selectedRegion!.id!);
+        setLoadingFilters(false);
+      } catch (err) {
+        setLoadingFilters(false);
+        debugPrint('Error D: ${err.toString()}');
+        //showErrorToast(err.toString());
+      }
     }
     notifyListeners();
   }
@@ -313,7 +319,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error MS: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -326,7 +332,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Occupation: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -338,9 +344,8 @@ class MembersProvider extends ChangeNotifier {
       getEducations();
     } catch (err) {
       setLoadingFilters(false);
-
       debugPrint('Error Prof: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -353,7 +358,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Edu: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -463,7 +468,7 @@ class MembersProvider extends ChangeNotifier {
       totalOrgs = response.totalOrganizationMembers!;
     } catch (err) {
       debugPrint('Error Member Stats: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -473,14 +478,9 @@ class MembersProvider extends ChangeNotifier {
     try {
       setLoading(true);
       _indPage = 1;
-      var memberId =
-          await Provider.of<MemberProvider>(currentContext, listen: false)
-              .memberProfile
-              .user
-              .id;
+
       var response = await MembersAPI.getRestrictedMembers(
         page: _indPage,
-        memberId: memberId,
         search: search ?? '',
       );
       _restrictedMembers = response.results!;
@@ -493,7 +493,7 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Member Stats: ${err.toString()}');
-      showErrorToast(err.toString());
+      // showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -506,13 +506,8 @@ class MembersProvider extends ChangeNotifier {
       setLoadingMore(true); // show loading indicator
       _indPage += 1; // increase page by 1
       try {
-        var memberId =
-            await Provider.of<MemberProvider>(currentContext, listen: false)
-                .memberProfile
-                .user
-                .id;
         var response = await MembersAPI.getRestrictedMembers(
-            page: _indPage, memberId: memberId, search: search ?? '');
+            page: _indPage, search: search ?? '');
         if (response.results!.isNotEmpty) {
           hasNextPage = response.next == null ? false : true;
           _restrictedMembers.addAll(response.results!);
@@ -843,7 +838,7 @@ class MembersProvider extends ChangeNotifier {
     selectedRegion = null;
     selectedDistrict = null;
     selectedStatus = null;
-    selectOrganizationType == null;
+    selectOrganizationType = null;
     minAgeTEC.clear();
     maxAgeTEC.clear();
     search = '';

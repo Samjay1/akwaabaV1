@@ -131,7 +131,7 @@ class HomeProvider extends ChangeNotifier {
       );
       // debugPrint("Latitude: ${response.results![0].latitude}");
       // debugPrint("Longitude: ${response.results![0].longitude}");
-      if (response.results == null) {
+      if (response.results == null || response.results!.isEmpty) {
         if (context.mounted) {
           Navigator.of(context).pop();
           showInfoDialog(
@@ -146,15 +146,16 @@ class HomeProvider extends ChangeNotifier {
         return;
       }
 
-      double totalDistance = calculateDistance(
+      double calculatedRadius = calculateDistance(
         currentUserLocation.latitude,
         currentUserLocation.longitude,
         double.parse(response.results![0].latitude!),
         double.parse(response.results![0].longitude!),
       );
 
-      if (totalDistance <= response.results![0].radius!) {
+      if (calculatedRadius <= response.results![0].radius!) {
         if (context.mounted) {
+          debugPrint('You\'re within the radius of the premise');
           await getAttendanceList(
             context: context,
             meetingEventModel: meetingEventModel,
@@ -162,8 +163,6 @@ class HomeProvider extends ChangeNotifier {
             isBreak: isBreak,
           );
         }
-        debugPrint('Meeting Lat: ${response.results![0].latitude!}');
-        debugPrint('Meeting Lng: ${response.results![0].longitude!}');
       } else {
         if (context.mounted) {
           Navigator.of(context).pop();
@@ -178,6 +177,8 @@ class HomeProvider extends ChangeNotifier {
           );
         }
       }
+      debugPrint('Meeting Lat: ${response.results![0].latitude!}');
+      debugPrint('Meeting Lng: ${response.results![0].longitude!}');
     } catch (err) {
       Navigator.of(context).pop();
       debugPrint('Error MC: ${err.toString()}');
@@ -284,7 +285,7 @@ class HomeProvider extends ChangeNotifier {
               context: context,
               title: 'Hey there!',
               content:
-                  'Sorry, you can\'t clock because you\'re not assigned to this meeting.',
+                  'Sorry, you can\'t clock because you are not assigned to this meeting. Please contact your admin for asssistance.',
               onTap: () => Navigator.pop(context),
             );
           }
@@ -322,6 +323,18 @@ class HomeProvider extends ChangeNotifier {
             }
           }
           //debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
+        } else {
+          if (context.mounted) {
+            Navigator.pop(context);
+            showInfoDialog(
+              'ok',
+              context: context,
+              title: 'Hey there!',
+              content:
+                  'Sorry, you can\'t clock because you are not assigned to this meeting. Please contact your admin for asssistance.',
+              onTap: () => Navigator.pop(context),
+            );
+          }
         }
       }
     } catch (err) {

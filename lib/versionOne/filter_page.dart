@@ -114,9 +114,8 @@ class _FilterPageState extends State<FilterPage> {
         Provider.of<MembersProvider>(context, listen: false)
             .getOrganizationTypes();
       }
-      if (widget.isMemberUser) {
-        Provider.of<MembersProvider>(context, listen: false).getCoutries();
-      }
+      Provider.of<MembersProvider>(context, listen: false).getCoutries();
+
       Provider.of<MembersProvider>(context, listen: false)
           .getMemberCategories();
       setState(() {});
@@ -693,6 +692,7 @@ class _FilterPageState extends State<FilterPage> {
                                               _membersProvider.selectedRegion =
                                                   val as Region;
                                             });
+                                            _membersProvider.getDistricts();
                                           },
                                         ),
                                       ),

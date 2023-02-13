@@ -1032,7 +1032,7 @@ class _HomePageState extends State<HomePage> {
                                 context: context,
                                 title: 'Hey there!',
                                 content:
-                                    'Sorry meeting has ended, contact admin to clock you out.',
+                                    'Sorry meeting has ended, contact admin for assistance.',
                                 onTap: () => Navigator.pop(context),
                               );
                               return;
@@ -1048,7 +1048,7 @@ class _HomePageState extends State<HomePage> {
                                       ? 'Clock Out'
                                       : 'Clock In',
                                   content:
-                                      '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock-out?' : 'Are you sure you want to clock-in?'} \nMake sure you are within the meeting premises to continue.',
+                                      '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock out?' : 'Are you sure you want to clock in?'} \nMake sure you are within the meeting premises to continue.',
                                   onConfirmTap: () {
                                     Navigator.pop(context);
                                     Provider.of<HomeProvider>(context,
@@ -1115,7 +1115,7 @@ class _HomePageState extends State<HomePage> {
                                   context: context,
                                   title: 'Hey there!',
                                   content:
-                                      'You have to clock-in before starting your break. \nThank you!',
+                                      'You have to clock in before starting your break. \nThank you!',
                                   onTap: () => Navigator.pop(context),
                                 );
                               } else {

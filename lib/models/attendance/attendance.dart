@@ -17,7 +17,6 @@ class Attendance {
   String? startBreak;
   String? endBreak;
   int? clockedBy;
-
   ClockedByInfo? clockedByInfo;
   int? clockingMethod;
   dynamic validate;

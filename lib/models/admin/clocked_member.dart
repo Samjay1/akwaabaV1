@@ -1,4 +1,6 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
+import 'package:akwaaba/models/general/branch.dart';
+import 'package:akwaaba/models/general/member_category.dart';
 import 'package:equatable/equatable.dart';
 
 class Member extends Equatable {
@@ -33,69 +35,71 @@ class Member extends Equatable {
   String? referenceId;
   int? branchId;
   bool? editable;
-  dynamic profileResume;
-  dynamic profileIdentification;
+  String? profileResume;
+  String? profileIdentification;
   bool? archived;
-  BranchInfo? branchInfo;
-  CategoryInfo? categoryInfo;
+  Branch? branchInfo;
+  MemberCategory? categoryInfo;
   List<CountryInfo>? countryInfo;
   RegionInfo? regionInfo;
   DistrictInfo? districtInfo;
   ConstituencyInfo? constituencyInfo;
   ConstituencyInfo? electoralareaInfo;
   String? identification;
-  bool? selected = false;
-  UpdatedByInfo? updatedByInfo;
+  //UpdatedByInfo? updatedByInfo;
+  dynamic updatedByInfo;
   int? updatedBy;
   String? updateDate;
+  bool? selected = false;
 
-  Member(
-      {this.id,
-      this.clientId,
-      this.firstname,
-      this.middlename,
-      this.surname,
-      this.gender,
-      this.profilePicture,
-      this.phone,
-      this.email,
-      this.dateOfBirth,
-      this.religion,
-      this.nationality,
-      this.countryOfResidence,
-      this.stateProvince,
-      this.region,
-      this.district,
-      this.constituency,
-      this.electoralArea,
-      this.community,
-      this.hometown,
-      this.houseNoDigitalAddress,
-      this.digitalAddress,
-      this.level,
-      this.status,
-      this.accountType,
-      this.memberType,
-      this.date,
-      this.lastLogin,
-      this.referenceId,
-      this.branchId,
-      this.editable,
-      this.profileResume,
-      this.profileIdentification,
-      this.archived,
-      this.branchInfo,
-      this.categoryInfo,
-      this.countryInfo,
-      this.regionInfo,
-      this.districtInfo,
-      this.constituencyInfo,
-      this.electoralareaInfo,
-      this.identification,
-      this.selected,
-      this.updatedByInfo,
-      this.updatedBy,
-      this.updateDate});
+  Member({
+    this.id,
+    this.clientId,
+    this.firstname,
+    this.middlename,
+    this.surname,
+    this.gender,
+    this.profilePicture,
+    this.phone,
+    this.email,
+    this.dateOfBirth,
+    this.religion,
+    this.nationality,
+    this.countryOfResidence,
+    this.stateProvince,
+    this.region,
+    this.district,
+    this.constituency,
+    this.electoralArea,
+    this.community,
+    this.hometown,
+    this.houseNoDigitalAddress,
+    this.digitalAddress,
+    this.level,
+    this.status,
+    this.accountType,
+    this.memberType,
+    this.date,
+    this.lastLogin,
+    this.referenceId,
+    this.branchId,
+    this.editable,
+    this.profileResume,
+    this.profileIdentification,
+    this.archived,
+    this.branchInfo,
+    this.categoryInfo,
+    this.countryInfo,
+    this.regionInfo,
+    this.districtInfo,
+    this.constituencyInfo,
+    this.electoralareaInfo,
+    this.identification,
+    this.selected,
+    this.updatedByInfo,
+    this.updatedBy,
+    this.updateDate,
+  });
 
   Member.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -132,11 +136,10 @@ class Member extends Equatable {
     profileResume = json['profileResume'];
     profileIdentification = json['profileIdentification'];
     archived = json['archived'];
-    branchInfo = json['branchInfo'] != null
-        ? BranchInfo.fromJson(json['branchInfo'])
-        : null;
+    branchInfo =
+        json['branchInfo'] != null ? Branch.fromJson(json['branchInfo']) : null;
     categoryInfo = json['categoryInfo'] != null
-        ? CategoryInfo.fromJson(json['categoryInfo'])
+        ? MemberCategory.fromJson(json['categoryInfo'])
         : null;
     if (json['countryInfo'] != null) {
       countryInfo = <CountryInfo>[];
@@ -157,9 +160,11 @@ class Member extends Equatable {
         ? ConstituencyInfo.fromJson(json['electoralareaInfo'])
         : null;
     identification = json['identification'];
-    updatedByInfo = json['updatedByInfo'] != null
-        ? UpdatedByInfo.fromJson(json['updatedByInfo'])
-        : null;
+    updatedByInfo = json['updatedByInfo'];
+    // updatedByInfo =
+    //     (json['updatedByInfo'] != null || json['updatedByInfo'] != "")
+    //         ? UpdatedByInfo.fromJson(json['updatedByInfo'])
+    //         : null;
     updatedBy = json['updatedBy'];
     updateDate = json['updateDate'];
   }
@@ -222,9 +227,10 @@ class Member extends Equatable {
       data['electoralareaInfo'] = electoralareaInfo!.toJson();
     }
     data['identification'] = identification;
-    if (updatedByInfo != null) {
-      data['updatedByInfo'] = updatedByInfo!.toJson();
-    }
+    data['updatedByInfo'] = updatedByInfo;
+    // if (updatedByInfo != null) {
+    //   data['updatedByInfo'] = updatedByInfo!.toJson();
+    // }
     data['updatedBy'] = updatedBy;
     data['updateDate'] = updateDate;
     return data;

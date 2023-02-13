@@ -133,11 +133,11 @@ class _MemberRegistrationPageIndividualState
   }
 
   //LOCATION - COMMUNITY
-  var selectedCommunity;
-  var selectedCommunityID;
-  late List<ElectoralArea>? communityList = [];
-  void _getCommunityList({var regionID, var districtID}) async {
-    communityList = (await MemberAPI()
+  var selectedElectoralArea;
+  var selectedElectoralAreaID;
+  late List<ElectoralArea>? electoralAreaList = [];
+  void _getElectoralAreaList({var regionID, var districtID}) async {
+    electoralAreaList = (await MemberAPI()
         .getElectoralArea(regionID: regionID, districtID: districtID));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
           loadingLocation = false;
@@ -372,8 +372,8 @@ class _MemberRegistrationPageIndividualState
             return;
           }
 
-          if (selectedCommunityID == null) {
-            showErrorSnackBar(context, "Select your Community");
+          if (_controllerCommunity.text.isEmpty) {
+            showErrorSnackBar(context, "Enter your community name");
             return;
           }
         } else {
@@ -898,13 +898,13 @@ class _MemberRegistrationPageIndividualState
               ? LabelWidgetContainer(
                   label: "Electoral Area",
                   child: FormButton(
-                    label: selectedCommunity ?? "Select Electoral Area",
+                    label: selectedElectoralArea ?? "Select Electoral Area",
                     function: () {
-                      var newCommunityList = communityList
+                      var newCommunityList = electoralAreaList
                           ?.map((value) =>
                               {'name': value.location, 'id': value.id})
                           .toList();
-                      selectCommunity(newCommunityList);
+                      selectElectoralArea(newCommunityList);
                     },
                   ))
               : Container(),
@@ -1163,7 +1163,7 @@ class _MemberRegistrationPageIndividualState
                       'selectedRegion $selectedRegion'
                       'selectedDistrict $selectedDistrict'
                       'selectedConstituency $selectedConstituency'
-                      'selectedCommunity $selectedCommunity'
+                      'selectedElectoralArea $selectedElectoralArea'
                       ''
                       'selectedMarital $selectedMarital'
                       'selectedEducation $selectedEducation '
@@ -1231,7 +1231,7 @@ class _MemberRegistrationPageIndividualState
                               region: selectedRegionID,
                               district: selectedDistrictID,
                               constituency: selectedConstituencyID,
-                              electoralArea: selectedCommunityID,
+                              electoralArea: selectedElectoralAreaID,
                               community: _controllerCommunity.text.trim(),
                               digitalAddress: '-',
                               hometown: '-',
@@ -1393,7 +1393,7 @@ class _MemberRegistrationPageIndividualState
               'selectedDistrictID $selectedDistrict, $selectedDistrictID');
           _getConstituencyList(
               regionID: selectedRegionID, districtID: selectedDistrictID);
-          _getCommunityList(
+          _getElectoralAreaList(
               regionID: selectedRegionID, districtID: selectedDistrictID);
           loadingLocation = false;
         });
@@ -1416,16 +1416,16 @@ class _MemberRegistrationPageIndividualState
     });
   }
 
-  selectCommunity(options) {
+  selectElectoralArea(options) {
     displayCustomDropDown(
             options: options, context: context, listItemsIsMap: true)
         .then((value) {
       if (value != null) {
         setState(() {
-          selectedCommunity = value['name'];
-          selectedCommunityID = value['id'];
+          selectedElectoralArea = value['name'];
+          selectedElectoralAreaID = value['id'];
           debugPrint(
-              'selectedCommunity $selectedCommunity, $selectedCommunityID');
+              'selectedCommunity $selectedElectoralArea, $selectedElectoralAreaID');
         });
       }
     });

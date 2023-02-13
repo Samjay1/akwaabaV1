@@ -313,14 +313,18 @@ class PostClockingProvider extends ChangeNotifier {
         // filter list for only members excluding
         // admin if he is also a member
         _absentees = response.results!
-            .where((absentee) => (absentee.attendance!.memberId!.email !=
+            .where((absentee) => (absentee.attendance!.memberId!.firstname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .applicantEmail ||
-                absentee.attendance!.memberId!.phone !=
+                        .applicantFirstname ||
+                absentee.attendance!.memberId!.surname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .applicantPhone))
+                        .applicantSurname ||
+                absentee.attendance!.memberId!.email !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .applicantEmail))
             .toList();
 
         debugPrint('Absentees: ${_absentees.length}');
@@ -378,14 +382,18 @@ class PostClockingProvider extends ChangeNotifier {
         if (response.results!.isNotEmpty) {
           hasNextAbsentees = response.next == null ? false : true;
           _absentees.addAll(response.results!
-              .where((absentee) => (absentee.attendance!.memberId!.email !=
+              .where((absentee) => (absentee.attendance!.memberId!.firstname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantEmail ||
-                  absentee.attendance!.memberId!.phone !=
+                          .applicantFirstname ||
+                  absentee.attendance!.memberId!.surname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantPhone))
+                          .applicantSurname ||
+                  absentee.attendance!.memberId!.email !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantEmail))
               .toList());
         } else {
           hasNextAbsentees = false;
@@ -435,14 +443,18 @@ class PostClockingProvider extends ChangeNotifier {
         // filter list for only members excluding
         // admin if he is also a member
         _attendees = response.results!
-            .where((attendee) => (attendee.attendance!.memberId!.email !=
+            .where((attendee) => (attendee.attendance!.memberId!.firstname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .applicantEmail ||
-                attendee.attendance!.memberId!.phone !=
+                        .applicantFirstname ||
+                attendee.attendance!.memberId!.surname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .applicantPhone))
+                        .applicantSurname ||
+                attendee.attendance!.memberId!.email !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .applicantEmail))
             .toList();
       } else {
         _attendees.clear();
@@ -491,14 +503,18 @@ class PostClockingProvider extends ChangeNotifier {
         if (response.results!.isNotEmpty) {
           hasNextAttendees = response.next == null ? false : true;
           _attendees.addAll(response.results!
-              .where((atendee) => (atendee.attendance!.memberId!.email !=
+              .where((attendee) => (attendee.attendance!.memberId!.firstname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantEmail ||
-                  atendee.attendance!.memberId!.phone !=
+                          .applicantFirstname ||
+                  attendee.attendance!.memberId!.surname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantPhone))
+                          .applicantSurname ||
+                  attendee.attendance!.memberId!.email !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantEmail))
               .toList());
         } else {
           hasNextAttendees = false;

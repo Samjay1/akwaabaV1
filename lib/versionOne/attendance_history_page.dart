@@ -7,6 +7,7 @@ import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
+import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/models/general/branch.dart';
@@ -118,6 +119,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               isShowTopView
                   ? SizedBox(
@@ -161,7 +163,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                       },
                     ),
               SizedBox(
-                height: displayHeight(context) * 0.02,
+                height: displayHeight(context) * 0.01,
               ),
               _historyList(),
             ],

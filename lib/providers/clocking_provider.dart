@@ -283,16 +283,20 @@ class ClockingProvider extends ChangeNotifier {
 
       _selectedAbsentees.clear();
 
-      if (response.results != null || response.results!.isNotEmpty) {
+      if (response.results!.isNotEmpty) {
         _absentees = response.results!
-            .where((absentee) => (absentee.attendance!.memberId!.email !=
+            .where((absentee) => (absentee.attendance!.memberId!.firstname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .applicantEmail ||
-                absentee.attendance!.memberId!.phone !=
+                        .applicantFirstname ||
+                absentee.attendance!.memberId!.surname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .applicantPhone))
+                        .applicantSurname ||
+                absentee.attendance!.memberId!.email !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .applicantEmail))
             .toList();
       } else {
         _absentees.clear();
@@ -349,14 +353,18 @@ class ClockingProvider extends ChangeNotifier {
           hasNextAbsentees = response.next == null ? false : true;
           //hasNextPage = response.next == null ? false : true;
           var newAbsenteesList = response.results!
-              .where((absentee) => (absentee.attendance!.memberId!.email !=
+              .where((absentee) => (absentee.attendance!.memberId!.firstname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantEmail ||
-                  absentee.attendance!.memberId!.phone !=
+                          .applicantFirstname ||
+                  absentee.attendance!.memberId!.surname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantPhone))
+                          .applicantSurname ||
+                  absentee.attendance!.memberId!.email !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantEmail))
               .toList();
           _absentees.addAll(newAbsenteesList);
         } else {
@@ -404,18 +412,22 @@ class ClockingProvider extends ChangeNotifier {
 
       _selectedAttendees.clear();
 
-      if (response.results != null || response.results!.isNotEmpty) {
+      if (response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
         _attendees = response.results!
-            .where((attendee) => (attendee.attendance!.memberId!.email !=
+            .where((attendee) => (attendee.attendance!.memberId!.firstname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .applicantEmail ||
-                attendee.attendance!.memberId!.phone !=
+                        .applicantFirstname ||
+                attendee.attendance!.memberId!.surname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
                         .getUser!
-                        .applicantPhone))
+                        .applicantSurname ||
+                attendee.attendance!.memberId!.email !=
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .getUser!
+                        .applicantEmail))
             .toList();
       } else {
         _attendees.clear();
@@ -464,14 +476,18 @@ class ClockingProvider extends ChangeNotifier {
         if (response.results!.isNotEmpty) {
           hasNextAttendees = response.next == null ? false : true;
           var newAtendeesList = response.results!
-              .where((attendee) => (attendee.attendance!.memberId!.email !=
+              .where((attendee) => (attendee.attendance!.memberId!.firstname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantEmail ||
-                  attendee.attendance!.memberId!.phone !=
+                          .applicantFirstname ||
+                  attendee.attendance!.memberId!.surname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .getUser!
-                          .applicantPhone))
+                          .applicantSurname ||
+                  attendee.attendance!.memberId!.email !=
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .getUser!
+                          .applicantEmail))
               .toList();
           _attendees.addAll(newAtendeesList);
         } else {
@@ -496,6 +512,9 @@ class ClockingProvider extends ChangeNotifier {
     searchIdentity = '';
     minAgeTEC.clear();
     maxAgeTEC.clear();
+    getAllAbsentees(
+      meetingEventModel: selectedCurrentMeeting,
+    );
     notifyListeners();
   }
 

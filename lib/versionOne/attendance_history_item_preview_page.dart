@@ -44,6 +44,12 @@ class _AttendanceHistoryItemPreviewPageState
       ),
     );
 
+    var breakOverstay = DateUtil.getTimeStringFromDouble(
+      double.parse(
+        widget.attendanceHistory!.breakOverstay!,
+      ),
+    );
+
     var lateness = DateUtil.getTimeStringFromDouble(
       double.parse(
         widget.attendanceHistory!.lateness!,
@@ -66,7 +72,7 @@ class _AttendanceHistoryItemPreviewPageState
               const SizedBox(
                 height: 12,
               ),
-              meetingRecords(onTime, lateness),
+              meetingRecords(onTime, lateness, breakOverstay),
               widget.attendanceHistory!.attendanceRecord!.meetings!.length > 1
                   ? const SizedBox(
                       height: 12,
@@ -193,7 +199,7 @@ class _AttendanceHistoryItemPreviewPageState
     );
   }
 
-  Widget meetingRecords(var onTime, var lateness) {
+  Widget meetingRecords(var onTime, var lateness, var breakOverStay) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(8)),
@@ -215,8 +221,18 @@ class _AttendanceHistoryItemPreviewPageState
           attendanceRecordItemView(
             title: double.parse(widget.attendanceHistory!.lateness!).isNegative
                 ? "Earliness"
+                : "Earliness",
+            info: '$lateness hrs',
+          ),
+          attendanceRecordItemView(
+            title: !double.parse(widget.attendanceHistory!.lateness!).isNegative
+                ? "Lateness"
                 : "Lateness",
             info: '$lateness hrs',
+          ),
+          attendanceRecordItemView(
+            title: "BreakOverStay",
+            info: '$breakOverStay hrs',
           )
         ],
       ),

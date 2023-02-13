@@ -183,6 +183,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
   Future<void> getGroups() async {
     setLoadingFilters(true);
     try {
+      selectedGroup = null;
       var userBranch = await getUserBranch(currentContext);
       _groups = await GroupAPI.getGroups(
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,

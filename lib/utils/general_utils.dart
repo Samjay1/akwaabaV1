@@ -32,6 +32,8 @@ double calculateDistance(lat1, lon1, lat2, lon2) {
   var a = 0.5 -
       c((lat2 - lat1) * p) / 2 +
       c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+  debugPrint(
+      "Calculated radius of member to the meeting radius: ${12742 * asin(sqrt(a))}");
   return 12742 * asin(sqrt(a));
 }
 
