@@ -6,15 +6,18 @@ class User {
   String? phone;
   String? email;
   int? clientId;
+  int? branchId;
 
-  User(
-      {this.id,
-      this.firstname,
-      this.surname,
-      this.profilePicture,
-      this.phone,
-      this.email,
-      this.clientId});
+  User({
+    this.id,
+    this.firstname,
+    this.surname,
+    this.profilePicture,
+    this.phone,
+    this.email,
+    this.clientId,
+    this.branchId,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -24,6 +27,7 @@ class User {
     phone = json['phone'];
     email = json['email'];
     clientId = json['clientId'];
+    branchId = json['branchId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +39,7 @@ class User {
     data['phone'] = phone;
     data['email'] = email;
     data['clientId'] = clientId;
+    data['branchId'] = branchId;
     return data;
   }
 }

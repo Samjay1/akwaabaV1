@@ -2,6 +2,7 @@ import 'package:akwaaba/Networks/event_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +15,14 @@ class AllEventsProvider extends ChangeNotifier {
   List<MeetingEventModel> _tempUpcomingMeetingEventList = [];
   List<MeetingEventModel> _eventsList = [];
   List<MeetingEventModel> _meetingsList = [];
+  BuildContext? _context;
 
   // Retrieve all meetings
   List<MeetingEventModel> get upcomingMeetings => _upcomingMeetingEventList;
   List<MeetingEventModel> get eventsList => _eventsList;
   List<MeetingEventModel> get meetingsList => _meetingsList;
+
+  BuildContext get currentContext => _context!;
 
   bool get loading => _loading;
   bool get loadingMore => _loadingMore;
@@ -51,14 +55,19 @@ class AllEventsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  setCurrentContext(BuildContext context) {
+    _context = context;
+    notifyListeners();
+  }
+
   Future<void> getUpcomingMeetingEvents() async {
     _upcomingMeetingEventList.clear();
     setLoading(true);
     try {
       _page = 1;
+      var branch = await getUserBranch(currentContext);
       _upcomingMeetingEventList = await EventAPI.getUpcomingMeetingEventList(
-        page: _page,
-      );
+          page: _page, branchId: branch.id!);
       _tempUpcomingMeetingEventList = _upcomingMeetingEventList;
       _eventsList = _upcomingMeetingEventList
           .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
@@ -85,15 +94,15 @@ class AllEventsProvider extends ChangeNotifier {
       _page += 1; // increase page by 1
       try {
         var response;
+        var branch = await getUserBranch(currentContext);
         if (_filter) {
           response = await EventAPI.getMeetingsFromDate(
-            page: _page,
-            date: selectedDate!.toIso8601String().substring(0, 10),
-          );
+              page: _page,
+              date: selectedDate!.toIso8601String().substring(0, 10),
+              branchId: branch.id!);
         } else {
           response = await EventAPI.getUpcomingMeetingEventList(
-            page: _page,
-          );
+              page: _page, branchId: branch.id!);
         }
         if (response.isNotEmpty) {
           _upcomingMeetingEventList.addAll(response);
@@ -131,10 +140,11 @@ class AllEventsProvider extends ChangeNotifier {
     _upcomingMeetingEventList.clear();
     _page = 1;
     try {
+      var branch = await getUserBranch(currentContext);
       _upcomingMeetingEventList = await EventAPI.getMeetingsFromDate(
-        page: _page,
-        date: selectedDate!.toIso8601String().substring(0, 10),
-      );
+          page: _page,
+          date: selectedDate!.toIso8601String().substring(0, 10),
+          branchId: branch.id!);
       _tempUpcomingMeetingEventList = _upcomingMeetingEventList;
       _eventsList = _upcomingMeetingEventList
           .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)

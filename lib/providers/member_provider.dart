@@ -144,6 +144,7 @@ class MemberProvider with ChangeNotifier {
         getClientAccountInfo(
           context: context,
           clientId: _memberProfile!.user!.clientId!,
+          branchId: _memberProfile!.user!.branchId!,
           phoneEmail: phoneEmail,
           password: password,
         );
@@ -159,6 +160,7 @@ class MemberProvider with ChangeNotifier {
   Future<void> getClientAccountInfo({
     required BuildContext context,
     required int clientId,
+    required int branchId,
     required phoneEmail,
     required password,
   }) async {
@@ -178,9 +180,9 @@ class MemberProvider with ChangeNotifier {
         return;
       } else {
         _clientAccountInfo = value;
-        getClientBranch(
+        getMemberBranch(
           context: context,
-          branchId: 1,
+          branchId: branchId,
           phoneEmail: phoneEmail,
           password: password,
         );
@@ -191,7 +193,7 @@ class MemberProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getClientBranch({
+  Future<void> getMemberBranch({
     required BuildContext context,
     required int branchId,
     required phoneEmail,

@@ -305,11 +305,12 @@ class MemberAPI {
     };
   }
 
-  Future<MemberProfile> login(
-      {required BuildContext context,
-      required String phoneEmail,
-      required String password,
-      required bool checkDeviceInfo}) async {
+  Future<MemberProfile> login({
+    required BuildContext context,
+    required String phoneEmail,
+    required String password,
+    required bool checkDeviceInfo,
+  }) async {
     MemberProfile? memberProfile;
     try {
       prefs = await SharedPreferences.getInstance();
@@ -1403,6 +1404,35 @@ class MemberAPI {
       if (response.statusCode == 200) {
         debugPrint('UPDATE BIO MEMBER -------------- $decodedResponse');
 
+        return 'successful';
+      } else {
+        return 'failed';
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+  //UPDATE WHATSAPP NUMBER
+  static Future<String?> updateWhatsappContact({
+    required int memberId,
+    required String phone,
+  }) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      var data = {
+        "whatsapp": phone,
+      };
+
+      http.Response response = await http.patch(
+        Uri.parse('$regBaseUrl/members/user-contact-info/$memberId'),
+        body: json.encode(data),
+        headers: await getAllHeaders(),
+      );
+      var decodedResponse = jsonDecode(response.body);
+      debugPrint('UPDATE WHATSAPP MEMBER -------------- $decodedResponse');
+      if (response.statusCode == 200) {
         return 'successful';
       } else {
         return 'failed';

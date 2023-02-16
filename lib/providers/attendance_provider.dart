@@ -254,7 +254,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error MT: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -268,7 +268,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error MC: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -286,7 +286,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -300,7 +300,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Gender: ${err.toString()}');
-      showErrorToast(err.toString());
+      //howErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -319,7 +319,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Group: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -346,7 +346,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error SubGroup: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -360,12 +360,14 @@ class AttendanceProvider extends ChangeNotifier {
         page: 1,
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
       );
-      selectedPastMeetingEvent = _pastMeetingEvents[0];
+      if (_pastMeetingEvents.isNotEmpty) {
+        selectedPastMeetingEvent = _pastMeetingEvents[0];
+      }
       getMemberCategories();
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error PMs: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -677,7 +679,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }

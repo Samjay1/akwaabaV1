@@ -68,11 +68,13 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getTodayMeetingEvents() async {
+  Future<void> getTodayMeetingEvents({required BuildContext context}) async {
     setLoading(true);
     _todayMeetingEventList.clear();
     try {
-      _todayMeetingEventList = await EventAPI.getTodayMeetingEventList();
+      var branch = await getUserBranch(context);
+      _todayMeetingEventList =
+          await EventAPI.getTodayMeetingEventList(branchId: branch.id!);
       debugPrint("TODAY Meeting: ${_todayMeetingEventList.length}");
       if (_todayMeetingEventList.isNotEmpty) {
         for (var meeting in _todayMeetingEventList) {

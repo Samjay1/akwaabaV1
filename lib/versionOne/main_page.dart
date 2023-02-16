@@ -174,33 +174,33 @@ class _MainPageState extends State<MainPage> {
         }
 
         // Restrict access to app if client has subscribed to only database and attendance
-        // if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
-        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
-        //         null &&
-        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
-        //         null) {
-        //   showAppAccessDialog(
-        //     'ok',
-        //     dismissible: false,
-        //     context: context,
-        //     title: 'Hey there!',
-        //     content: RichText(
-        //       textAlign: TextAlign.center,
-        //       text: const TextSpan(children: [
-        //         TextSpan(
-        //           text:
-        //               'Sorry you don\'t have access to the services of this app, you must subscribe to the android and iOS module',
-        //           style: TextStyle(
-        //             letterSpacing: 1.0,
-        //             color: blackColor,
-        //             fontSize: AppSize.s18,
-        //           ),
-        //         ),
-        //       ]),
-        //     ),
-        //     onTap: logout,
-        //   );
-        // }
+        if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
+                null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+                null) {
+          showAppAccessDialog(
+            'ok',
+            dismissible: false,
+            context: context,
+            title: 'Hey there!',
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: const TextSpan(children: [
+                TextSpan(
+                  text:
+                      'Sorry you don\'t have access to the services of this app, you must subscribe to the android & iOS module',
+                  style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: blackColor,
+                    fontSize: AppSize.s18,
+                  ),
+                ),
+              ]),
+            ),
+            onTap: logout,
+          );
+        }
 
         // Restrict access to app if client has subscribed to only database
         if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
@@ -243,33 +243,33 @@ class _MainPageState extends State<MainPage> {
 
         /// user is assigned an invoice
         // Restrict access to app if member has subscribed to only database and attendance
-        // if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
-        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
-        //         null &&
-        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
-        //         null) {
-        //   showAppAccessDialog(
-        //     'ok',
-        //     dismissible: false,
-        //     context: context,
-        //     title: 'Hey there!',
-        //     content: RichText(
-        //       textAlign: TextAlign.center,
-        //       text: const TextSpan(children: [
-        //         TextSpan(
-        //           text:
-        //               'Sorry you don\'t have access to the services of this app, please contact admin for assistance',
-        //           style: TextStyle(
-        //             letterSpacing: 1.0,
-        //             color: blackColor,
-        //             fontSize: AppSize.s18,
-        //           ),
-        //         ),
-        //       ]),
-        //     ),
-        //     onTap: logout,
-        //   );
-        // }
+        if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
+                null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+                null) {
+          showAppAccessDialog(
+            'ok',
+            dismissible: false,
+            context: context,
+            title: 'Hey there!',
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: const TextSpan(children: [
+                TextSpan(
+                  text:
+                      'Sorry you don\'t have access to the services of this app, please contact admin for assistance',
+                  style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: blackColor,
+                    fontSize: AppSize.s18,
+                  ),
+                ),
+              ]),
+            ),
+            onTap: logout,
+          );
+        }
 
         // Restrict access to app if member has subscribed to only database
         if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&

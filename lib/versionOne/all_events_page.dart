@@ -33,6 +33,8 @@ class _AllEventsPageState extends State<AllEventsPage> {
 
   void loadAllMeetingEvents() async {
     Future.delayed(Duration.zero, () {
+      Provider.of<AllEventsProvider>(context, listen: false)
+          .setCurrentContext(context);
       if (Provider.of<AllEventsProvider>(context, listen: false)
           .upcomingMeetings
           .isEmpty) {

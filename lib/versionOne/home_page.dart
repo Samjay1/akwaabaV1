@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
             .todayMeetings
             .isEmpty) {
           Provider.of<HomeProvider>(context, listen: false)
-              .getTodayMeetingEvents();
+              .getTodayMeetingEvents(context: context);
           debugPrint('Loading fresh data:...');
         }
         setState(() {});
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> {
             .todayMeetings
             .isEmpty) {
           Provider.of<HomeProvider>(context, listen: false)
-              .getTodayMeetingEvents();
+              .getTodayMeetingEvents(context: context);
           debugPrint('Loading fresh data:...');
         }
         setState(() {});
@@ -240,8 +240,8 @@ class _HomePageState extends State<HomePage> {
                   )
                 : Expanded(
                     child: RefreshIndicator(
-                      onRefresh: () async =>
-                          await eventProvider.getTodayMeetingEvents(),
+                      onRefresh: () async => await eventProvider
+                          .getTodayMeetingEvents(context: context),
                       child: Consumer<HomeProvider>(
                         builder: (context, data, child) {
                           if (data.todayMeetings.isEmpty) {

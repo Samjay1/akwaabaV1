@@ -21,12 +21,14 @@ class EventAPI {
   static final baseUrl = 'https://db-api-v2.akwaabasoftware.com';
   late SharedPreferences prefs;
 
-  static Future<List<MeetingEventModel>> getTodayMeetingEventList() async {
+  static Future<List<MeetingEventModel>> getTodayMeetingEventList(
+      {required int branchId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? memberId = prefs.getInt('memberId');
     List<MeetingEventModel> todayMeetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both&filter_memberId=${memberId ?? ''}');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both&branchId=$branchId&filter_memberId=${memberId ?? ''}');
+    debugPrint("URL: ${url.toString()}");
     try {
       http.Response response = await http.get(
         url,
@@ -54,6 +56,7 @@ class EventAPI {
     List<MeetingEventModel> meetings = [];
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/meeting-event/schedule?filter_recuring=both&branchId=$branchId&page=$page&length=50');
+    debugPrint("URL: ${url.toString()}");
     try {
       http.Response response = await http.get(
         url,
@@ -74,13 +77,13 @@ class EventAPI {
     return meetings;
   }
 
-  static Future<List<MeetingEventModel>> getMeetingsFromDate({
-    required int page,
-    required String date,
-  }) async {
+  static Future<List<MeetingEventModel>> getMeetingsFromDate(
+      {required int page, required String date, required int branchId}) async {
     List<MeetingEventModel> meetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/date/$date?page=$page');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/date/$date?page=$page&branchId=$branchId');
+
+    debugPrint("URL: ${url.toString()}");
     try {
       http.Response response = await http.get(
         url,
@@ -101,14 +104,14 @@ class EventAPI {
     return meetings;
   }
 
-  static Future<List<MeetingEventModel>> getUpcomingMeetingEventList({
-    required int page,
-  }) async {
+  static Future<List<MeetingEventModel>> getUpcomingMeetingEventList(
+      {required int page, required int branchId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? memberId = prefs.getInt('memberId');
     List<MeetingEventModel> upcomingMeetings = [];
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both&page=$page&filter_memberId=${memberId ?? ''}');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both&page=$page&branchId=$branchId&filter_memberId=${memberId ?? ''}');
+    debugPrint("URL: ${url.toString()}");
     try {
       http.Response response = await http
           .get(
@@ -142,7 +145,9 @@ class EventAPI {
   }) async {
     CoordinatesResponse coordinateResponse;
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/location?meetingEventId=${meetingEventModel.id}');
+      '${getBaseUrl()}/attendance/meeting-event/location?meetingEventId=${meetingEventModel.id}',
+    );
+    debugPrint("URL: ${url.toString()}");
     try {
       http.Response response = await http
           .get(

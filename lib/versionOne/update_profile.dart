@@ -16,6 +16,7 @@ import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/download_util.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:file_picker/file_picker.dart';
@@ -593,9 +594,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
         }
         userType == AppConstants.member
             ? pageViewController.jumpToPage(2)
-            : pageViewController.animateToPage(1,
+            : pageViewController.animateToPage(
+                1,
                 duration: const Duration(milliseconds: 100),
-                curve: Curves.easeIn);
+                curve: Curves.easeIn,
+              );
         break;
       case 1:
         //currenty on grouping page
@@ -775,6 +778,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   }
 
   bool bioLoading = false;
+  bool whatsappLoading = false;
   bool profilePicLoading = false;
   Widget bioDataView() {
     return Form(
@@ -964,22 +968,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     margin: const EdgeInsets.only(top: 10),
                     child: const TextShimmerItem(),
                   ))
-              : LabelWidgetContainer(
-                  label: "Whatsapp Contact",
-                  child: FormTextField(
-                    controller: _controllerWhatsappContact,
-                    textInputType: TextInputType.phone,
-                    maxLength: 10,
-                    applyValidation: false,
-                  )),
-          delayLoading
-              ? Shimmer.fromColors(
-                  baseColor: greyColorShade300,
-                  highlightColor: greyColorShade100,
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    child: const TextShimmerItem(),
-                  ))
               : Form(
                   key: formGlobalKeyStatus,
                   child: LabelWidgetContainer(
@@ -988,14 +976,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         controller: _controllerIDNumber,
                       )),
                 ),
-          // bioLoading
-          //     ? const Align(
-          //         child: CircularProgressIndicator(),
-          //       )
-          //     : Container(),
-          const SizedBox(
-            height: 26,
-          ),
+          10.ph,
           CustomElevatedButton(
             label: 'Update Bio',
             showProgress: bioLoading,
@@ -1041,7 +1022,58 @@ class _UpdateProfileState extends State<UpdateProfile> {
               });
               //Navigator.pop(context);
             },
-          )
+          ),
+          26.ph,
+          delayLoading
+              ? Shimmer.fromColors(
+                  baseColor: greyColorShade300,
+                  highlightColor: greyColorShade100,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    child: const TextShimmerItem(),
+                  ))
+              : LabelWidgetContainer(
+                  label: "Whatsapp Contact",
+                  child: FormTextField(
+                    controller: _controllerWhatsappContact,
+                    textInputType: TextInputType.phone,
+                    maxLength: 10,
+                    applyValidation: false,
+                  )),
+          10.ph,
+          CustomElevatedButton(
+            label: 'Update Whatsapp Number',
+            showProgress: whatsappLoading,
+            function: () async {
+              debugPrint('Whatsapp ${_controllerWhatsappContact.text}');
+
+              if (_controllerWhatsappContact.text.isEmpty) {
+                showErrorSnackBar(context, "Enter your whatsapp contact");
+                return;
+              }
+
+              setState(() {
+                whatsappLoading = true;
+              });
+
+              MemberAPI.updateWhatsappContact(
+                memberId: await getMemberId(),
+                phone: _controllerWhatsappContact.text,
+              ).then((value) {
+                setState(() {
+                  whatsappLoading = false;
+                });
+                if (value == 'failed') {
+                  showErrorToast("Whatsapp contact update failed");
+                  return;
+                }
+                if (value == 'successful') {
+                  showNormalToast("Whatsapp contact Update Successful");
+                }
+              });
+              //Navigator.pop(context);
+            },
+          ),
         ],
       ),
     );
