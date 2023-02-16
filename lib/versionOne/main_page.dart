@@ -189,7 +189,7 @@ class _MainPageState extends State<MainPage> {
               text: const TextSpan(children: [
                 TextSpan(
                   text:
-                      'Sorry you don\'t have access to the services of this app, you must subscribe to the android & iOS module',
+                      'Sorry you don\'t have access to the services of this app, you must subscribe to the android & iOS module.',
                   style: TextStyle(
                     letterSpacing: 1.0,
                     color: blackColor,
@@ -218,7 +218,7 @@ class _MainPageState extends State<MainPage> {
               text: const TextSpan(children: [
                 TextSpan(
                   text:
-                      'Sorry you don\'t have access to the attendance and android & iOS services, you must subscribe to the attendance and android & iOS module',
+                      'Sorry you don\'t have access to the attendance and android & iOS services, you must subscribe to the attendance and android & iOS module.',
                   style: TextStyle(
                     letterSpacing: 1.0,
                     color: blackColor,
@@ -258,7 +258,7 @@ class _MainPageState extends State<MainPage> {
               text: const TextSpan(children: [
                 TextSpan(
                   text:
-                      'Sorry you don\'t have access to the services of this app, please contact admin for assistance',
+                      'Sorry you don\'t have access to the services of this app, please contact admin for assistance.',
                   style: TextStyle(
                     letterSpacing: 1.0,
                     color: blackColor,
@@ -287,7 +287,7 @@ class _MainPageState extends State<MainPage> {
               text: const TextSpan(children: [
                 TextSpan(
                   text:
-                      'Sorry you don\'t have access to the attendance and android & iOS services, please contact admin for assistance',
+                      'Sorry you don\'t have access to the attendance and android & iOS services, please contact admin for assistance.',
                   style: TextStyle(
                     letterSpacing: 1.0,
                     color: blackColor,
@@ -320,7 +320,7 @@ class _MainPageState extends State<MainPage> {
               text: const TextSpan(children: [
                 TextSpan(
                   text:
-                      'Sorry, this account has expired, contact admin for assistance',
+                      'Sorry, this account has expired, contact admin for assistance.',
                   style: TextStyle(
                     letterSpacing: 1.0,
                     color: blackColor,
