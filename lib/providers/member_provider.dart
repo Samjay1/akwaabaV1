@@ -18,6 +18,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/general/assigned_fee.dart';
 import '../models/general/deviceInfoModel.dart';
 import '../utils/widget_utils.dart';
 import '../versionOne/main_page.dart';
@@ -35,6 +36,8 @@ class MemberProvider with ChangeNotifier {
   var deviceRequestList;
 
   String? bill;
+  String? accountExpiryDate;
+  AssignedFee? assignedFee;
 
   final TextEditingController excuseTEC = TextEditingController();
 
@@ -234,7 +237,7 @@ class MemberProvider with ChangeNotifier {
         .getIdentityNumber(
       memberId: _memberProfile!.user!.id!,
     )
-        .then((value) {
+        .then((value) async {
       if (value == 'login_error') {
         setLoading(false);
         showErrorSnackBar(context, "Incorrect Login Details");
@@ -247,22 +250,39 @@ class MemberProvider with ChangeNotifier {
       } else {
         setLoading(false);
         _identityNumber = value;
-        getOutstandingBill();
+        await getAssignedFees(); // fetch assigned fees for a member
         //showNormalToast('Login successful');
-        Provider.of<GeneralProvider>(context, listen: false)
-            .setAdminStatus(isAdmin: false);
-        SharedPrefs().setUserType(userType: "member");
-        SharedPrefs()
-            .saveLoginCredentials(emailOrPhone: phoneEmail, password: password);
-        SharedPrefs().saveMemberInfo(memberProfile: _memberProfile!);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const MainPage(),
-          ),
-        );
+        if (context.mounted) {
+          Provider.of<GeneralProvider>(context, listen: false)
+              .setAdminStatus(isAdmin: false);
+          SharedPrefs().setUserType(userType: "member");
+          SharedPrefs().saveLoginCredentials(
+              emailOrPhone: phoneEmail, password: password);
+          SharedPrefs().saveMemberInfo(memberProfile: _memberProfile!);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const MainPage(),
+            ),
+          );
+        }
       }
     });
+    notifyListeners();
+  }
+
+  // get member assigned fees
+  Future<void> getAssignedFees() async {
+    try {
+      var result = await MemberAPI().getAssignedFees();
+      if (result != null) {
+        assignedFee = result;
+
+        getOutstandingBill();
+      }
+    } catch (err) {
+      setLoading(false);
+    }
     notifyListeners();
   }
 

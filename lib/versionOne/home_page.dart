@@ -9,6 +9,7 @@ import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/agenda_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
+import 'package:akwaaba/models/general/restriction.dart';
 import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
@@ -28,7 +29,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import '../components/label_widget_container.dart';
+import '../models/admin/admin_profile.dart';
 import '../providers/client_provider.dart';
+import '../utils/restriction_util.dart';
 import 'my_account_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -50,6 +53,10 @@ class _HomePageState extends State<HomePage> {
 
   late HomeProvider eventProvider;
 
+  bool hasAttendance = false;
+
+  AdminProfile? adminProfile;
+
   @override
   void initState() {
     super.initState();
@@ -63,8 +70,15 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         userType = value!;
       });
-      loadMeetingEventsByUserType(userType: userType);
     });
+    if (mounted) {
+      hasAttendance = await RestrictionUtil().hasAttendanceModule(context);
+      if (hasAttendance) {
+        loadMeetingEventsByUserType(userType: userType);
+      }
+      adminProfile = await SharedPrefs().getAdminProfile();
+    }
+
     checkForUpdate();
   }
 
@@ -165,10 +179,10 @@ class _HomePageState extends State<HomePage> {
                         ? Consumer<ClientProvider>(
                             builder: (context, data, child) {
                             return adminHeaderView(
-                              firstName: data.getUser?.applicantFirstname,
-                              surName: data.getUser?.applicantSurname,
-                              userId: data.getUser?.applicantEmail,
-                              profileImage: data.adminProfile?.profilePicture,
+                              firstName: adminProfile?.firstname,
+                              surName: adminProfile?.surname,
+                              userId: adminProfile?.email,
+                              profileImage: adminProfile?.profilePicture,
                             );
                           })
                         : const Text("Unknown User type"),
@@ -231,9 +245,16 @@ class _HomePageState extends State<HomePage> {
                       child: Consumer<HomeProvider>(
                         builder: (context, data, child) {
                           if (data.todayMeetings.isEmpty) {
-                            return const EmptyStateWidget(
-                              text:
-                                  'Currently, you do not have any \nmeeting or event.',
+                            return EmptyStateWidget(
+                              text: hasAttendance
+                                  ? 'Currently, you do not have any \nmeeting or event.'
+                                  : (userType == AppConstants.admin &&
+                                          !hasAttendance)
+                                      ? 'Sorry, you don\'t have access to today\'s meetings, you must subscribe to the attendance module. Thank you'
+                                      : (userType == AppConstants.member &&
+                                              !hasAttendance)
+                                          ? 'Sorry, you don\'t have access to today\'s meetings, please contact admin for assistance. Thank you'
+                                          : '',
                             );
                           }
                           if (userType == AppConstants.member) {

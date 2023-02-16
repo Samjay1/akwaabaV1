@@ -4,6 +4,7 @@ import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/dialogs_modals/contact_admin_dialog.dart';
+import 'package:akwaaba/dialogs_modals/renewal_dialog.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/general_provider.dart';
@@ -30,11 +31,13 @@ import 'package:akwaaba/versionOne/post_clocking_page.dart';
 import 'package:akwaaba/versionOne/view_leave_page.dart';
 import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/custom_cached_image_widget.dart';
+import '../utils/restriction_util.dart';
 import '../utils/shared_prefs.dart';
 import '../versionOne/attendance_report_page.dart';
 
@@ -72,6 +75,8 @@ class _MainPageState extends State<MainPage> {
 
   int _selectedBottomNavIndex = 0;
 
+  late MemberProvider _memberProvider;
+
   final List<Widget> children = [
     const HomePage(),
     const AllEventsPage(),
@@ -84,6 +89,8 @@ class _MainPageState extends State<MainPage> {
   String? token;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  ClientAccountInfo? clientAccountInfo;
 
   @override
   void initState() {
@@ -105,35 +112,235 @@ class _MainPageState extends State<MainPage> {
 
   // checks if account has expired and take appropriate action to log out user
   logoutUserIfAccountExpired() {
-    ClientAccountInfo? clientAccountInfo;
-    userType == AppConstants.admin
-        ? clientAccountInfo =
-            Provider.of<ClientProvider>(context, listen: false).getUser
-        : clientAccountInfo =
-            Provider.of<MemberProvider>(context, listen: false)
-                .clientAccountInfo;
+    DateTime? expiryDate;
+    if (userType == AppConstants.admin) {
+      clientAccountInfo =
+          Provider.of<ClientProvider>(context, listen: false).getUser;
+      if (clientAccountInfo!.subscriptionInfo != null) {
+        if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 !=
+                null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 !=
+                null) {
+          expiryDate = DateTime.parse(clientAccountInfo!
+              .subscriptionInfo!.subscribedModules!.module3!.expiresOn!);
+        }
 
-    //DateTime? expiryDate;
-    if (clientAccountInfo!.subscriptionInfo != null) {
-      DateTime expiryDate = DateTime.parse(clientAccountInfo
-          .subscriptionInfo!.subscribedModules!.module1!.expiresOn!);
-      if (DateTime.now().isAtSameMomentAs(expiryDate) ||
-          DateTime.now().isAfter(expiryDate)) {
-        showInfoDialog(
-          'ok',
-          context: context,
-          title: 'Hey there!',
-          content: userType == AppConstants.admin
-              ? 'Sorry, your account has expired. Please renew to continue enjoying our services.'
-              : 'Sorry, your account has expired. Please contact your admin for asssistance.',
-          onTap: () {
-            if (context.mounted) {
-              Navigator.pop(context);
-              SharedPrefs().logout(context);
-            }
-          },
-        );
+        // show dialog if client account has expired
+        if (expiryDate != null) {
+          if (DateTime.now().isAtSameMomentAs(expiryDate) ||
+              DateTime.now().isAfter(expiryDate)) {
+            showAppAccessDialog(
+              'ok',
+              dismissible: false,
+              context: context,
+              title: 'Hey there!',
+              content: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(children: [
+                  const TextSpan(
+                    text: 'Sorry, this account has expired,',
+                    style: TextStyle(
+                      letterSpacing: 1.0,
+                      color: blackColor,
+                      fontSize: AppSize.s18,
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' renew now',
+                    style: const TextStyle(
+                      decoration: TextDecoration.underline,
+                      letterSpacing: 1.0,
+                      color: Colors.blue,
+                      fontSize: AppSize.s18,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async => launchURL(
+                            await AppConstants.renewAccountRedirectUrl(),
+                          ),
+                  ),
+                  const TextSpan(
+                    text: ' to continue to enjoy the services.',
+                    style: TextStyle(
+                      letterSpacing: 1.0,
+                      color: blackColor,
+                      fontSize: AppSize.s18,
+                    ),
+                  )
+                ]),
+              ),
+              onTap: logout,
+            );
+          }
+        }
+
+        // Restrict access to app if client has subscribed to only database and attendance
+        // if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
+        //         null &&
+        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+        //         null) {
+        //   showAppAccessDialog(
+        //     'ok',
+        //     dismissible: false,
+        //     context: context,
+        //     title: 'Hey there!',
+        //     content: RichText(
+        //       textAlign: TextAlign.center,
+        //       text: const TextSpan(children: [
+        //         TextSpan(
+        //           text:
+        //               'Sorry you don\'t have access to the services of this app, you must subscribe to the android and iOS module',
+        //           style: TextStyle(
+        //             letterSpacing: 1.0,
+        //             color: blackColor,
+        //             fontSize: AppSize.s18,
+        //           ),
+        //         ),
+        //       ]),
+        //     ),
+        //     onTap: logout,
+        //   );
+        // }
+
+        // Restrict access to app if client has subscribed to only database
+        if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 ==
+                null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+                null) {
+          showAppAccessDialog(
+            'ok',
+            dismissible: false,
+            context: context,
+            title: 'Hey there!',
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: const TextSpan(children: [
+                TextSpan(
+                  text:
+                      'Sorry you don\'t have access to the attendance and android & iOS services, you must subscribe to the attendance and android & iOS module',
+                  style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: blackColor,
+                    fontSize: AppSize.s18,
+                  ),
+                ),
+              ]),
+            ),
+            onTap: logout,
+          );
+        }
       }
+    } else {
+      // check if user is not a subscriber or not assigned an invoice
+      if (_memberProvider.assignedFee == null) {
+        clientAccountInfo = Provider.of<MemberProvider>(context, listen: false)
+            .clientAccountInfo;
+        expiryDate = DateTime.parse(
+          clientAccountInfo!
+              .subscriptionInfo!.subscribedModules!.module1!.expiresOn!,
+        );
+
+        /// user is assigned an invoice
+        // Restrict access to app if member has subscribed to only database and attendance
+        // if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
+        //         null &&
+        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+        //         null) {
+        //   showAppAccessDialog(
+        //     'ok',
+        //     dismissible: false,
+        //     context: context,
+        //     title: 'Hey there!',
+        //     content: RichText(
+        //       textAlign: TextAlign.center,
+        //       text: const TextSpan(children: [
+        //         TextSpan(
+        //           text:
+        //               'Sorry you don\'t have access to the services of this app, please contact admin for assistance',
+        //           style: TextStyle(
+        //             letterSpacing: 1.0,
+        //             color: blackColor,
+        //             fontSize: AppSize.s18,
+        //           ),
+        //         ),
+        //       ]),
+        //     ),
+        //     onTap: logout,
+        //   );
+        // }
+
+        // Restrict access to app if member has subscribed to only database
+        if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 ==
+                null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+                null) {
+          showAppAccessDialog(
+            'ok',
+            dismissible: false,
+            context: context,
+            title: 'Hey there!',
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: const TextSpan(children: [
+                TextSpan(
+                  text:
+                      'Sorry you don\'t have access to the attendance and android & iOS services, please contact admin for assistance',
+                  style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: blackColor,
+                    fontSize: AppSize.s18,
+                  ),
+                ),
+              ]),
+            ),
+            onTap: logout,
+          );
+        }
+      }
+
+      if (_memberProvider.assignedFee != null &&
+          _memberProvider.assignedFee!.endDate != null) {
+        expiryDate = DateFormat('yyyy-MM-dd')
+            .parse(_memberProvider.assignedFee!.endDate!);
+      }
+
+      if (expiryDate != null) {
+        if (DateTime.now().isAtSameMomentAs(expiryDate) ||
+            DateTime.now().isAfter(expiryDate)) {
+          showAppAccessDialog(
+            'ok',
+            dismissible: false,
+            context: context,
+            title: 'Hey there!',
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: const TextSpan(children: [
+                TextSpan(
+                  text:
+                      'Sorry, this account has expired, contact admin for assistance',
+                  style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: blackColor,
+                    fontSize: AppSize.s18,
+                  ),
+                ),
+              ]),
+            ),
+            onTap: logout,
+          );
+        }
+      }
+    }
+    //DateTime? expiryDate;
+  }
+
+  void logout() {
+    if (context.mounted) {
+      Navigator.pop(context);
+      SharedPrefs().logout(context);
     }
   }
 
@@ -179,6 +386,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    _memberProvider = context.watch<MemberProvider>();
     Provider.of<MemberProvider>(context, listen: false).gettingDeviceInfo();
     return Scaffold(
       key: _scaffoldKey,
@@ -306,12 +514,13 @@ class _MainPageState extends State<MainPage> {
 
           Consumer<ClientProvider>(
             builder: (context, data, child) {
-              String date = '';
               DateTime? expiryDate;
               if (data.getUser.subscriptionInfo != null) {
-                date = data.getUser.subscriptionInfo!.subscribedModules!
-                    .module1!.expiresOn!;
-                expiryDate = DateTime.parse(date);
+                if (data.getUser.subscriptionInfo.subscribedModules.module1 !=
+                    null) {
+                  expiryDate = DateTime.parse(data.getUser.subscriptionInfo
+                      .subscribedModules.module1.expiresOn!);
+                }
               }
               return data.getUser.subscriptionInfo != null
                   ? Container(
@@ -326,15 +535,18 @@ class _MainPageState extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Your Account Expires In:  ${(data.getUser.subscriptionInfo.subscribedModules == null && data.getUser.subscriptionInfo.subscribedModules.module1 != null) ? 'N/A' : DateUtil.convertToFutureTimeAgo(date: expiryDate!)}",
-                            style: const TextStyle(fontSize: AppSize.s15),
+                            "Your Account Expires In: ${DateUtil.convertToFutureTimeAgo(date: expiryDate!)}",
+                            style: const TextStyle(
+                              fontSize: AppSize.s15,
+                              fontWeight: FontWeight.w600,
+                            ),
                             textAlign: TextAlign.start,
                           ),
                           SizedBox(
                             height: displayHeight(context) * 0.01,
                           ),
                           TagWidgetSolid(
-                            text: isActive(expiryDate!) ? 'Active' : 'Expired',
+                            text: isActive(expiryDate) ? 'Active' : 'Expired',
                             color: isActive(expiryDate) ? greenColor : redColor,
                           ),
                         ],
@@ -435,10 +647,20 @@ class _MainPageState extends State<MainPage> {
                           title: "Create Meetings/Event",
                           iconData: Icons.phone_android,
                           function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             var url =
                                 await AppConstants.createMeetingRedirectUrl();
-                            if (!mounted) return;
+
                             toggleDrawer();
+                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -454,6 +676,15 @@ class _MainPageState extends State<MainPage> {
                           title: "Update Meetings/Event",
                           iconData: Icons.phone_android,
                           function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             var url =
                                 await AppConstants.updateMeetingRedirectUrl();
                             if (!mounted) return;
@@ -524,8 +755,18 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "Attendance Report",
                           iconData: Icons.bar_chart,
-                          function: () {
+                          function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             toggleDrawer();
+                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -537,8 +778,18 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "Attendance History",
                           iconData: Icons.history,
-                          function: () {
+                          function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             toggleDrawer();
+                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -552,6 +803,15 @@ class _MainPageState extends State<MainPage> {
                           title: "Assign Leave/Excuse",
                           iconData: Icons.phone_android,
                           function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!hasAttendance) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             var url =
                                 await AppConstants.assignLeaveRedirectUrl();
                             if (!mounted) return;
@@ -571,6 +831,15 @@ class _MainPageState extends State<MainPage> {
                           title: "View Assigned Leave/Excuse",
                           iconData: Icons.phone_android,
                           function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             var url = await AppConstants.viewLeaveRedirectUrl();
                             if (!mounted) return;
                             toggleDrawer();
@@ -589,6 +858,15 @@ class _MainPageState extends State<MainPage> {
                           title: "Approve Device Request",
                           iconData: Icons.phone_android,
                           function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             var url = await AppConstants
                                 .approveDeviceRequestRedirectUrl();
                             if (!mounted) return;
@@ -808,13 +1086,15 @@ class _MainPageState extends State<MainPage> {
         ? formattedPhone('+233', clientAccountInfo.applicantPhone!)
         : formattedPhone(clientAccountInfo.countryInfo![0].code!,
             clientAccountInfo.applicantPhone!);
-    String date = '';
+
     DateTime? expiryDate;
-    if (clientAccountInfo.subscriptionInfo != null) {
-      date = clientAccountInfo
-          .subscriptionInfo!.subscribedModules!.module1!.expiresOn!;
-      expiryDate = DateTime.parse(date);
+
+    if (_memberProvider.assignedFee != null &&
+        _memberProvider.assignedFee!.endDate != null) {
+      expiryDate =
+          DateFormat('yyyy-MM-dd').parse(_memberProvider.assignedFee!.endDate!);
     }
+
     debugPrint("Phone: $phone");
     return Drawer(
       backgroundColor: whiteColor,
@@ -863,7 +1143,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
           // subscription info
-          clientAccountInfo.subscriptionInfo == null
+          _memberProvider.assignedFee == null
               ? const SizedBox()
               : Container(
                   margin: const EdgeInsets.all(AppPadding.p8),
@@ -877,9 +1157,10 @@ class _MainPageState extends State<MainPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Your Outstanding Bill Is: GHS ${context.watch<MemberProvider>().bill}",
+                        "Your Total Bill Is: GHS ${_memberProvider.assignedFee!.totalInvoice}",
                         style: const TextStyle(
                           fontSize: AppSize.s15,
+                          fontWeight: FontWeight.w600,
                         ),
                         textAlign: TextAlign.start,
                       ),
@@ -887,18 +1168,41 @@ class _MainPageState extends State<MainPage> {
                         height: displayHeight(context) * 0.01,
                       ),
                       Text(
-                        "Your Account Expires In:  ${clientAccountInfo.subscriptionInfo == null ? 'N/A' : DateUtil.convertToFutureTimeAgo(date: expiryDate!)}",
+                        "Your Outstanding Bill Is: GHS ${_memberProvider.bill ?? 'N/A'}",
+                        //"Your Outstanding Bill Is: GHS ${memberProvider.bill}",
                         style: const TextStyle(
                           fontSize: AppSize.s15,
+                          fontWeight: FontWeight.w600,
                         ),
                         textAlign: TextAlign.start,
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.01,
                       ),
+                      expiryDate == null
+                          ? const SizedBox()
+                          : Text(
+                              "Your Account Expires In: ${DateUtil.convertToFutureTimeAgo(date: expiryDate)}",
+                              style: const TextStyle(
+                                fontSize: AppSize.s15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.start,
+                            ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.01,
+                      ),
                       TagWidgetSolid(
-                        text: isActive(expiryDate!) ? 'Active' : 'Expired',
-                        color: isActive(expiryDate) ? greenColor : redColor,
+                        text: expiryDate == null
+                            ? 'Active'
+                            : isActive(expiryDate)
+                                ? 'Active'
+                                : 'Expired',
+                        color: expiryDate == null
+                            ? greenColor
+                            : isActive(expiryDate)
+                                ? greenColor
+                                : redColor,
                       ),
                     ],
                   ),
@@ -914,8 +1218,9 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "My Profile",
                           iconData: Icons.phone_android,
-                          function: () {
+                          function: () async {
                             toggleDrawer();
+                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -967,7 +1272,17 @@ class _MainPageState extends State<MainPage> {
                           title: "Apply Leave/Excuse",
                           iconData: Icons.phone_android,
                           function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             toggleDrawer();
+                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -980,7 +1295,17 @@ class _MainPageState extends State<MainPage> {
                           title: "View Leave/Absent Status ",
                           iconData: Icons.phone_android,
                           function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             toggleDrawer();
+                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -1008,8 +1333,18 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "Attendance Report",
                           iconData: Icons.bar_chart,
-                          function: () {
+                          function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             toggleDrawer();
+                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -1021,8 +1356,18 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "Attendance History",
                           iconData: Icons.history,
-                          function: () {
+                          function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             toggleDrawer();
+                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -1035,8 +1380,18 @@ class _MainPageState extends State<MainPage> {
                         drawerItemView(
                           title: "Request Device Activation",
                           iconData: Icons.phone_android,
-                          function: () {
+                          function: () async {
+                            var hasAttendance = await RestrictionUtil()
+                                .hasAttendanceModule(context);
+                            if (mounted) {
+                              if (!(hasAttendance)) {
+                                RestrictionUtil()
+                                    .showAdminAttendanceAlert(context);
+                                return;
+                              }
+                            }
                             toggleDrawer();
+                            if (!mounted) return;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -1186,8 +1541,66 @@ class _MainPageState extends State<MainPage> {
           unselectedItemColor: Colors.grey,
           selectedFontSize: 14,
           unselectedFontSize: 14,
-          onTap: (value) {
+          onTap: (value) async {
             setState(() => _selectedBottomNavIndex = value);
+            if (_selectedBottomNavIndex == 1) {
+              var hasAttendance =
+                  await RestrictionUtil().hasAttendanceModule(context);
+              if (mounted) {
+                if (!hasAttendance) {
+                  userType == AppConstants.admin
+                      ? showInfoDialog(
+                          'ok',
+                          dismissible: false,
+                          context: context,
+                          title: 'Hey there!',
+                          content:
+                              'Sorry, you don\'t have access to this attendance feature, you must subscribe to the attendance module. Thank you',
+                          onTap: () {
+                            Navigator.pop(context);
+                            setState(() => _selectedBottomNavIndex = 0);
+                          },
+                        )
+                      : showInfoDialog(
+                          'ok',
+                          dismissible: false,
+                          context: context,
+                          title: 'Hey there!',
+                          content:
+                              'Sorry, you don\'t have access to this attendance feature, please contact admin for assistance. Thank you',
+                          onTap: () {
+                            Navigator.pop(context);
+                            setState(() => _selectedBottomNavIndex = 0);
+                          },
+                        );
+
+                  return;
+                }
+              }
+            }
+            if (_selectedBottomNavIndex == 2) {
+              if (!mounted) return;
+              var hasAttendance =
+                  await RestrictionUtil().hasAttendanceModule(context);
+              if (mounted) {
+                if (!hasAttendance) {
+                  showInfoDialog(
+                    'ok',
+                    dismissible: false,
+                    context: context,
+                    title: 'Hey there!',
+                    content:
+                        'Sorry, you don\'t have access to this attendance feature, you must subscribe to the attendance module. Thank you',
+                    onTap: () {
+                      Navigator.pop(context);
+                      setState(() => _selectedBottomNavIndex = 0);
+                    },
+                  );
+                  //RestrictionUtil().showAdminAttendanceAlert(context);
+                  return;
+                }
+              }
+            }
           },
           items: List.generate(bottomNavItems.length, (index) {
             return

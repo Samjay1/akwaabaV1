@@ -232,8 +232,8 @@ class _AttendanceHistoryItemWidgetState
                     Text(
                       double.parse(widget.attendanceHistory!.lateness!)
                               .isNegative
-                          ? 'Earliness: $lateness hrs'
-                          : 'Earliness: 0.00 hrs',
+                          ? 'Productive: $lateness hrs'
+                          : 'Productive: 0.00 hrs',
                       style:
                           const TextStyle(fontSize: 14, color: textColorLight),
                     ),

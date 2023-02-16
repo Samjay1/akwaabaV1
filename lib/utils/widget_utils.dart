@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../dialogs_modals/renewal_dialog.dart';
 import 'app_theme.dart';
 
 /*
@@ -221,6 +222,32 @@ showInfoDialog(
       ),
     ),
   );
+}
+
+showAppAccessDialog(
+  String? cancelText, {
+  required BuildContext context,
+  bool? dismissible = true,
+  required String title,
+  required Widget content,
+  required Function() onTap,
+}) {
+  showDialog(
+      context: context,
+      barrierDismissible: dismissible!,
+      builder: (context) {
+        return AlertDialog(
+          insetPadding: const EdgeInsets.all(10),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          content: RenewalDialog(
+            title: 'Hey there!',
+            content: content,
+            onCancelTap: onTap,
+            cancelText: cancelText ?? 'ok',
+          ),
+        );
+      });
 }
 
 void showNormalSnackBar(BuildContext context, String message) {

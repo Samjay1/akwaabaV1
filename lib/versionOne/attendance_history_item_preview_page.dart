@@ -220,8 +220,8 @@ class _AttendanceHistoryItemPreviewPageState
           attendanceRecordItemView(title: "On Time", info: '$onTime hrs'),
           attendanceRecordItemView(
             title: double.parse(widget.attendanceHistory!.lateness!).isNegative
-                ? "Earliness"
-                : "Earliness",
+                ? "Productive"
+                : "Productive",
             info: '$lateness hrs',
           ),
           attendanceRecordItemView(

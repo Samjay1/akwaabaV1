@@ -167,7 +167,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error MC: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -185,7 +185,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -201,7 +201,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Gender: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -220,7 +220,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Group: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -243,7 +243,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error SubGroup: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -557,7 +557,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -601,7 +601,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -645,7 +645,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -691,7 +691,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -737,7 +737,7 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }

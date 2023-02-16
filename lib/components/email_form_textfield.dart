@@ -52,9 +52,10 @@ class EmailFormTextField extends StatelessWidget {
         // textCapitalization: TextCapitalization.characters,
         enabled: enableEdit,
         style: TextStyle(
-            color: enableEdit ? textColorPrimary : textColorLight,
-            fontWeight: FontWeight.w400,
-            fontSize: 16),
+          color: enableEdit ? textColorPrimary : textColorLight,
+          fontWeight: FontWeight.w400,
+          fontSize: 16,
+        ),
 
         decoration: InputDecoration(
           // isDense: true,

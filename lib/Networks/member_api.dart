@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import '../models/general/OrganisationType.dart';
+import '../models/general/assigned_fee.dart';
 import '../models/general/constiteuncy.dart';
 import '../models/general/country.dart';
 import '../models/general/group.dart';
@@ -194,14 +195,12 @@ class MemberAPI {
     return subGroups;
   }
 
-  // get a  branch
+  // get a outstanding bill for member
   Future<String> getMemberOutstandingBill() async {
     String bill;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? memberId = prefs.getInt('memberId');
-
-    debugPrint("MemberId: $memberId");
 
     var url = Uri.parse(
       'https://cash.akwaabasoftware.com/api/outstanding-bill/$memberId/',
@@ -218,6 +217,61 @@ class MemberAPI {
       throw FetchDataException('No Internet connection');
     }
     return bill;
+  }
+
+  // get a account expiry info for member
+  Future<String> getMemberAccountExpiry() async {
+    String bill;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? memberId = prefs.getInt('memberId');
+
+    var url = Uri.parse(
+      'https://cash.akwaabasoftware.com/api/account-expiry/$memberId/',
+    );
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+      debugPrint("Account expiry: ${jsonDecode(response.body)}");
+      bill = jsonDecode(response.body)['account_expiry'];
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return bill;
+  }
+
+  // get assigned fees for member
+  Future<AssignedFee?> getAssignedFees() async {
+    AssignedFee? assignedFee;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? memberId = prefs.getInt('memberId');
+
+    var url = Uri.parse(
+      'https://cash.akwaabasoftware.com/api/assigned-fees/?member_id=$memberId',
+    );
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
+
+      var feeList = jsonDecode(response.body)['data'];
+      if (feeList != null) {
+        assignedFee = AssignedFee.fromJson(feeList.first);
+      }
+      // assignedFee = jsonDecode(response.body)['data'].isEmpty
+      //     ? null
+      //     : AssignedFee.fromJson(jsonDecode(response.body)['data'].first);
+      debugPrint("Assigned Fee: ${assignedFee!.toJson()}");
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return assignedFee;
   }
 
   // get a  branch

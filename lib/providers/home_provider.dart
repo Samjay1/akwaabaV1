@@ -86,7 +86,7 @@ class HomeProvider extends ChangeNotifier {
       }
     } catch (err) {
       debugPrint('Error TM ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
 
     notifyListeners();
@@ -340,7 +340,7 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ATL: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
   }
 
@@ -365,7 +365,7 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -390,7 +390,7 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -422,7 +422,7 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
@@ -454,7 +454,7 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
