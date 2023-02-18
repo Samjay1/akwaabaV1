@@ -121,7 +121,9 @@ class _MainPageState extends State<MainPage> {
                 null &&
             clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 !=
                 null) {
-          expiryDate = DateTime.parse(clientAccountInfo!
+          // expiryDate = DateTime.parse(clientAccountInfo!
+          //     .subscriptionInfo!.subscribedModules!.module3!.expiresOn!);
+          expiryDate = DateFormat('dd-MM-yyyy').parse(clientAccountInfo!
               .subscriptionInfo!.subscribedModules!.module3!.expiresOn!);
         }
 
@@ -138,7 +140,8 @@ class _MainPageState extends State<MainPage> {
                 textAlign: TextAlign.center,
                 text: TextSpan(children: [
                   const TextSpan(
-                    text: 'Sorry, this account has expired,',
+                    text:
+                        "Sorry you don't have access to the services of this app. It's either you've not subscribe to the Android & iOS Module or your account has expired.",
                     style: TextStyle(
                       letterSpacing: 1.0,
                       color: blackColor,
@@ -146,26 +149,28 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   TextSpan(
-                    text: ' renew now',
-                    style: const TextStyle(
-                      decoration: TextDecoration.underline,
-                      letterSpacing: 1.0,
-                      color: Colors.blue,
-                      fontSize: AppSize.s18,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () async => launchURL(
-                            await AppConstants.renewAccountRedirectUrl(),
-                          ),
-                  ),
-                  const TextSpan(
-                    text: ' to continue to enjoy the services.',
-                    style: TextStyle(
-                      letterSpacing: 1.0,
-                      color: blackColor,
-                      fontSize: AppSize.s18,
-                    ),
-                  )
+                      text: 'Renew!',
+                      style: const TextStyle(
+                        decoration: TextDecoration.underline,
+                        letterSpacing: 1.0,
+                        color: Colors.blue,
+                        fontSize: AppSize.s18,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          var url =
+                              await AppConstants.renewAccountRedirectUrl();
+                          if (!mounted) return;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => WebViewPage(
+                                url: url,
+                                title: 'Make Payment',
+                              ),
+                            ),
+                          );
+                        }),
                 ]),
               ),
               onTap: logout,
@@ -174,33 +179,85 @@ class _MainPageState extends State<MainPage> {
         }
 
         // Restrict access to app if client has subscribed to only database and attendance
-        if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
-            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
-                null &&
-            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
-                null) {
-          showAppAccessDialog(
-            'ok',
-            dismissible: false,
-            context: context,
-            title: 'Hey there!',
-            content: RichText(
-              textAlign: TextAlign.center,
-              text: const TextSpan(children: [
-                TextSpan(
-                  text:
-                      'Sorry you don\'t have access to the services of this app, you must subscribe to the android & iOS module.',
-                  style: TextStyle(
-                    letterSpacing: 1.0,
-                    color: blackColor,
-                    fontSize: AppSize.s18,
-                  ),
-                ),
-              ]),
-            ),
-            onTap: logout,
-          );
-        }
+        // if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
+        //         null &&
+        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+        //         null) {
+        //   showAppAccessDialog(
+        //     'ok',
+        //     dismissible: false,
+        //     context: context,
+        //     title: 'Hey there!',
+        //     content: RichText(
+        //       textAlign: TextAlign.center,
+        //       text: TextSpan(children: [
+        //         const TextSpan(
+        //           text:
+        //               'Sorry you don\'t have access to the services of this app, you must subscribe to the android & iOS module.\n\nCall/WhatsApp Service Provider on ',
+        //           style: TextStyle(
+        //             letterSpacing: 1.0,
+        //             color: blackColor,
+        //             fontSize: AppSize.s18,
+        //           ),
+        //         ),
+        //         TextSpan(
+        //           text: AppConstants.supportNumber,
+        //           style: const TextStyle(
+        //             letterSpacing: 1.0,
+        //             decoration: TextDecoration.underline,
+        //             color: Colors.blue,
+        //             fontSize: AppSize.s18,
+        //           ),
+        //           recognizer: TapGestureRecognizer()
+        //             ..onTap = () {
+        //               showModalBottomSheet(
+        //                   shape: const RoundedRectangleBorder(
+        //                     borderRadius: BorderRadius.only(
+        //                       topLeft:
+        //                           Radius.circular(AppRadius.borderRadius16),
+        //                       topRight:
+        //                           Radius.circular(AppRadius.borderRadius16),
+        //                     ),
+        //                   ),
+        //                   context: context,
+        //                   builder: (context) {
+        //                     return ContactAdminDialog(
+        //                         title: 'Contact your service provider?',
+        //                         subtitle:
+        //                             'You can reach out to your service provider on',
+        //                         firstText: 'Call',
+        //                         secondText: 'Whatsapp',
+        //                         onCallTap: () {
+        //                           Navigator.of(context).pop();
+        //                           makePhoneCall(
+        //                             AppConstants.supportNumber,
+        //                           );
+        //                         },
+        //                         onWhatsappTap: () async {
+        //                           Navigator.of(context).pop();
+        //                           openWhatsapp(
+        //                             context,
+        //                             AppConstants.supportNumber,
+        //                             'Hello there, \n\nI need assistance with my account.',
+        //                           );
+        //                         });
+        //                   });
+        //             },
+        //         ),
+        //         const TextSpan(
+        //           text: ' for any assistance.',
+        //           style: TextStyle(
+        //             letterSpacing: 1.0,
+        //             color: blackColor,
+        //             fontSize: AppSize.s18,
+        //           ),
+        //         ),
+        //       ]),
+        //     ),
+        //     onTap: logout,
+        //   );
+        // }
 
         // Restrict access to app if client has subscribed to only database
         if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
@@ -232,81 +289,131 @@ class _MainPageState extends State<MainPage> {
         }
       }
     } else {
-      // check if user is not a subscriber or not assigned an invoice
-      if (_memberProvider.assignedFee == null) {
-        clientAccountInfo = Provider.of<MemberProvider>(context, listen: false)
-            .clientAccountInfo;
-        expiryDate = DateTime.parse(
-          clientAccountInfo!
-              .subscriptionInfo!.subscribedModules!.module1!.expiresOn!,
-        );
-
-        /// user is assigned an invoice
-        // Restrict access to app if member has subscribed to only database and attendance
-        if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
-            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
-                null &&
-            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
-                null) {
-          showAppAccessDialog(
-            'ok',
-            dismissible: false,
-            context: context,
-            title: 'Hey there!',
-            content: RichText(
-              textAlign: TextAlign.center,
-              text: const TextSpan(children: [
-                TextSpan(
-                  text:
-                      'Sorry you don\'t have access to the services of this app, please contact admin for assistance.',
-                  style: TextStyle(
-                    letterSpacing: 1.0,
-                    color: blackColor,
-                    fontSize: AppSize.s18,
-                  ),
-                ),
-              ]),
-            ),
-            onTap: logout,
-          );
-        }
-
-        // Restrict access to app if member has subscribed to only database
-        if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
-            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 ==
-                null &&
-            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
-                null) {
-          showAppAccessDialog(
-            'ok',
-            dismissible: false,
-            context: context,
-            title: 'Hey there!',
-            content: RichText(
-              textAlign: TextAlign.center,
-              text: const TextSpan(children: [
-                TextSpan(
-                  text:
-                      'Sorry you don\'t have access to the attendance and android & iOS services, please contact admin for assistance.',
-                  style: TextStyle(
-                    letterSpacing: 1.0,
-                    color: blackColor,
-                    fontSize: AppSize.s18,
-                  ),
-                ),
-              ]),
-            ),
-            onTap: logout,
-          );
-        }
-      }
-
       if (_memberProvider.assignedFee != null &&
           _memberProvider.assignedFee!.endDate != null) {
-        expiryDate = DateFormat('yyyy-MM-dd')
-            .parse(_memberProvider.assignedFee!.endDate!);
-      }
+        expiryDate = DateFormat('yyyy-MM-dd').parse(
+          _memberProvider.assignedFee!.endDate!,
+        );
+        // show expiry dialog for member assigned to an invoice
+        if (expiryDate != null) {
+          if (DateTime.now().isAtSameMomentAs(expiryDate) ||
+              DateTime.now().isAfter(expiryDate)) {
+            showAppAccessDialog(
+              'ok',
+              dismissible: false,
+              context: context,
+              title: 'Hey there!',
+              content: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(children: [
+                  const TextSpan(
+                    text:
+                        'Sorry you don\'t have access to the services of this app. Your account has expired. ',
+                    style: TextStyle(
+                      letterSpacing: 1.0,
+                      color: blackColor,
+                      fontSize: AppSize.s18,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'Renew!',
+                    style: const TextStyle(
+                      letterSpacing: 1.0,
+                      decoration: TextDecoration.underline,
+                      color: Colors.blue,
+                      fontSize: AppSize.s18,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const WebViewPage(
+                              url: AppConstants.akwaabaPaymentUrl,
+                              title: 'Make Payment',
+                            ),
+                          ),
+                        );
+                      },
+                  ),
+                ]),
+              ),
+              onTap: logout,
+            );
+          }
+        }
+      } else {
+        // check if user is not a subscriber or not assigned an invoice
+        clientAccountInfo = Provider.of<MemberProvider>(context, listen: false)
+            .clientAccountInfo;
+        if (clientAccountInfo != null &&
+            clientAccountInfo!.subscriptionInfo != null) {
+          expiryDate = DateTime.parse(
+            clientAccountInfo!
+                .subscriptionInfo!.subscribedModules!.module1!.expiresOn!,
+          );
 
+          /// user is assigned an invoice
+          // Restrict access to app if member has subscribed to only database and attendance
+          // if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+          //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
+          //         null &&
+          //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+          //         null) {
+          //   showAppAccessDialog(
+          //     'ok',
+          //     dismissible: false,
+          //     context: context,
+          //     title: 'Hey there!',
+          //     content: RichText(
+          //       textAlign: TextAlign.center,
+          //       text: const TextSpan(children: [
+          //         TextSpan(
+          //           text:
+          //               'Sorry you don\'t have access to the services of this app, please contact admin for assistance.',
+          //           style: TextStyle(
+          //             letterSpacing: 1.0,
+          //             color: blackColor,
+          //             fontSize: AppSize.s18,
+          //           ),
+          //         ),
+          //       ]),
+          //     ),
+          //     onTap: logout,
+          //   );
+          // }
+
+          // Restrict access to app if member has subscribed to only database
+          if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+              clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 ==
+                  null &&
+              clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+                  null) {
+            showAppAccessDialog(
+              'ok',
+              dismissible: false,
+              context: context,
+              title: 'Hey there!',
+              content: RichText(
+                textAlign: TextAlign.center,
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text:
+                        'Sorry you don\'t have access to the attendance and android & iOS services, please contact admin for assistance.',
+                    style: TextStyle(
+                      letterSpacing: 1.0,
+                      color: blackColor,
+                      fontSize: AppSize.s18,
+                    ),
+                  ),
+                ]),
+              ),
+              onTap: logout,
+            );
+          }
+        }
+      }
+      // show expiry dialog for member assigned to an invoice
       if (expiryDate != null) {
         if (DateTime.now().isAtSameMomentAs(expiryDate) ||
             DateTime.now().isAfter(expiryDate)) {
@@ -338,10 +445,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   void logout() {
-    if (context.mounted) {
-      Navigator.pop(context);
-      SharedPrefs().logout(context);
-    }
+    Navigator.pop(context);
+    SharedPrefs().logout(context);
   }
 
   initFunctions() async {
@@ -520,6 +625,10 @@ class _MainPageState extends State<MainPage> {
                     null) {
                   expiryDate = DateTime.parse(data.getUser.subscriptionInfo
                       .subscribedModules.module1.expiresOn!);
+                  // expiryDate = DateFormat('dd-MM-yyyy').parse(
+                  //   data.getUser.subscriptionInfo.subscribedModules.module1
+                  //       .expiresOn!,
+                  // );
                 }
               }
               return data.getUser.subscriptionInfo != null
@@ -1056,10 +1165,7 @@ class _MainPageState extends State<MainPage> {
                                     title: 'Logout',
                                     content:
                                         'Do you really want to logout? \n\nWe appreciate your time and can\'t wait to have you back!',
-                                    onConfirmTap: () async {
-                                      Navigator.pop(context); //close the popup
-                                      SharedPrefs().logout(context);
-                                    },
+                                    onConfirmTap: () => logout(),
                                     onCancelTap: () => Navigator.pop(context),
                                     confirmText: 'Confirm',
                                     cancelText: 'Cancel',
@@ -1157,7 +1263,7 @@ class _MainPageState extends State<MainPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Your Total Bill Is: GHS ${_memberProvider.assignedFee!.totalInvoice}",
+                        "Your Total Assigned Bill Is: GHS ${_memberProvider.assignedFee!.totalInvoice}",
                         style: const TextStyle(
                           fontSize: AppSize.s15,
                           fontWeight: FontWeight.w600,
@@ -1509,10 +1615,7 @@ class _MainPageState extends State<MainPage> {
                                     title: 'Logout',
                                     content:
                                         'Do you really want to logout? \n\nWe appreciate your time and can\'t wait to have you back!',
-                                    onConfirmTap: () {
-                                      Navigator.pop(context); //close the popup
-                                      SharedPrefs().logout(context);
-                                    },
+                                    onConfirmTap: () => logout(),
                                     onCancelTap: () => Navigator.pop(context),
                                     confirmText: 'Confirm',
                                     cancelText: 'Cancel',

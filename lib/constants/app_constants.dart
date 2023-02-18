@@ -14,6 +14,8 @@ class AppConstants {
   static const int searchTimerDuration = 500;
   static String? token;
 
+  static String supportNumber = '+233206007255';
+
   static int notificationChannelId = 001;
   static String notificationChannelKey = "Akwaaba";
   static String notificationChannelName = "Akwaaba notifications";

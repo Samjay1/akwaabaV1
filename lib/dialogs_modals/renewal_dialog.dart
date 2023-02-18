@@ -19,7 +19,7 @@ class RenewalDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: displayHeight(context) * 0.36,
+      height: displayHeight(context) * 0.40,
       width: displayWidth(context),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
