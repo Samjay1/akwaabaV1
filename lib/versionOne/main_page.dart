@@ -121,10 +121,10 @@ class _MainPageState extends State<MainPage> {
                 null &&
             clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 !=
                 null) {
-          // expiryDate = DateTime.parse(clientAccountInfo!
-          //     .subscriptionInfo!.subscribedModules!.module3!.expiresOn!);
-          expiryDate = DateFormat('dd-MM-yyyy').parse(clientAccountInfo!
-              .subscriptionInfo!.subscribedModules!.module3!.expiresOn!);
+          expiryDate = DateUtil.convertToDateTime(
+            date: clientAccountInfo!
+                .subscriptionInfo!.subscribedModules!.module1!.expiresOn!,
+          );
         }
 
         // show dialog if client account has expired
@@ -166,7 +166,7 @@ class _MainPageState extends State<MainPage> {
                             MaterialPageRoute(
                               builder: (_) => WebViewPage(
                                 url: url,
-                                title: 'Make Payment',
+                                title: 'Renew My Account',
                               ),
                             ),
                           );
@@ -291,9 +291,10 @@ class _MainPageState extends State<MainPage> {
     } else {
       if (_memberProvider.assignedFee != null &&
           _memberProvider.assignedFee!.endDate != null) {
-        expiryDate = DateFormat('yyyy-MM-dd').parse(
-          _memberProvider.assignedFee!.endDate!,
+        expiryDate = DateUtil.convertToDateTime(
+          date: _memberProvider.assignedFee!.endDate!,
         );
+
         // show expiry dialog for member assigned to an invoice
         if (expiryDate != null) {
           if (DateTime.now().isAtSameMomentAs(expiryDate) ||
@@ -348,8 +349,8 @@ class _MainPageState extends State<MainPage> {
             .clientAccountInfo;
         if (clientAccountInfo != null &&
             clientAccountInfo!.subscriptionInfo != null) {
-          expiryDate = DateTime.parse(
-            clientAccountInfo!
+          expiryDate = DateUtil.convertToDateTime(
+            date: clientAccountInfo!
                 .subscriptionInfo!.subscribedModules!.module1!.expiresOn!,
           );
 
@@ -623,12 +624,9 @@ class _MainPageState extends State<MainPage> {
               if (data.getUser.subscriptionInfo != null) {
                 if (data.getUser.subscriptionInfo.subscribedModules.module1 !=
                     null) {
-                  expiryDate = DateTime.parse(data.getUser.subscriptionInfo
-                      .subscribedModules.module1.expiresOn!);
-                  // expiryDate = DateFormat('dd-MM-yyyy').parse(
-                  //   data.getUser.subscriptionInfo.subscribedModules.module1
-                  //       .expiresOn!,
-                  // );
+                  expiryDate = DateUtil.convertToDateTime(
+                      date: data.getUser.subscriptionInfo.subscribedModules
+                          .module1.expiresOn!);
                 }
               }
               return data.getUser.subscriptionInfo != null
@@ -1197,8 +1195,8 @@ class _MainPageState extends State<MainPage> {
 
     if (_memberProvider.assignedFee != null &&
         _memberProvider.assignedFee!.endDate != null) {
-      expiryDate =
-          DateFormat('yyyy-MM-dd').parse(_memberProvider.assignedFee!.endDate!);
+      expiryDate = DateUtil.convertToDateTime(
+          date: _memberProvider.assignedFee!.endDate!);
     }
 
     debugPrint("Phone: $phone");

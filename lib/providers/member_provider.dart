@@ -12,7 +12,6 @@ import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:akwaaba/providers/general_provider.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -343,5 +342,14 @@ class MemberProvider with ChangeNotifier {
       bill = 'N/A';
     }
     notifyListeners();
+  }
+
+  void clearData() {
+    _clientAccountInfo = null;
+    //_memberProfile = null;
+    _branch = null;
+    _identityNumber = null;
+    assignedFee = null;
+    bill = null;
   }
 }

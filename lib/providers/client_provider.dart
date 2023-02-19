@@ -165,4 +165,10 @@ class ClientProvider extends ChangeNotifier {
     _adminProfile = adminProfile;
     notifyListeners();
   }
+
+  void clearData() {
+    _user = null;
+    _adminProfile = null;
+    _branch = null;
+  }
 }

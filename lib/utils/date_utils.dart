@@ -19,6 +19,18 @@ class DateUtil {
     return formattedDate.toString();
   }
 
+  // convert invalid dateformat to datetime
+  static DateTime convertToDateTime({required String date}) {
+    var splitted = date.split("-");
+    if (splitted[0].length == 2) {
+      return DateFormat('dd-MM-yyyy').parse(date);
+    } else if (splitted[0].length == 4) {
+      return DateFormat('yyyy-MM-dd').parse(date);
+    } else {
+      return DateTime.parse(date);
+    }
+  }
+
   // format start and close time to human readable form
   static String formate12hourTime({required String myTime}) {
     var hour = int.parse(myTime.substring(0, 2));
