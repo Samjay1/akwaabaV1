@@ -199,9 +199,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                       profileItemView(
                           title: "Reference Id",
                           label: "${myProfile?.referenceId}"),
-                      const SizedBox(
-                        height: 24,
-                      ),
                       Container(
                         height: dividerHeight,
                         color: dividerColor,
@@ -251,9 +248,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                                           .toString()
                                           .length -
                                       1)),
-                      const SizedBox(
-                        height: 24,
-                      ),
                       Container(
                         height: dividerHeight,
                         color: dividerColor,
@@ -312,9 +306,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                           label: myProfile?.digitalAddress == null
                               ? "-"
                               : "${myProfile?.digitalAddress}"),
-                      const SizedBox(
-                        height: 24,
-                      ),
                       Container(
                         height: dividerHeight,
                         color: dividerColor,
@@ -335,9 +326,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                           title: "Date Joined",
                           label: "$formatedDate",
                           display: true),
-                      const SizedBox(
-                        height: 24,
-                      ),
                       myProfile?.updatedBy != null
                           ? Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,9 +363,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                               ],
                             )
                           : const SizedBox(),
-                      const SizedBox(
-                        height: 24,
-                      ),
                     ],
                   )),
       ),

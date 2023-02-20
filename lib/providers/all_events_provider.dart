@@ -7,6 +7,8 @@ import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Networks/api_responses/meeting_event_response.dart';
+
 class AllEventsProvider extends ChangeNotifier {
   bool _loading = false;
   bool _filter = false;
@@ -95,7 +97,7 @@ class AllEventsProvider extends ChangeNotifier {
       setLoadingMore(true); // show loading indicator
       _page += 1; // increase page by 1
       try {
-        var response;
+        MeetingEventResponse? response;
         var branch = await getUserBranch(currentContext);
         _filter
             ? response = await EventAPI.getMeetingsFromDate(
@@ -107,9 +109,10 @@ class AllEventsProvider extends ChangeNotifier {
                 page: _page,
                 branchId: branch.id!,
               );
-        if (response.isNotEmpty) {
+        if (response.results!.isNotEmpty) {
           hasNext = response.next == null ? false : true;
-          _upcomingMeetingEventList.addAll(response);
+          _upcomingMeetingEventList.addAll(response.results!);
+          _tempUpcomingMeetingEventList.addAll(_upcomingMeetingEventList);
           _eventsList.addAll(_upcomingMeetingEventList
               .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
               .toList());
@@ -124,10 +127,10 @@ class AllEventsProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("Error --> $err");
-        showIndefiniteSnackBar(
-            context: currentContext,
-            message: err.toString(),
-            onPressed: () => _loadMoreEventMeetings());
+        // showIndefiniteSnackBar(
+        //     context: currentContext,
+        //     message: err.toString(),
+        //     onPressed: () => _loadMoreEventMeetings());
       }
     }
     notifyListeners();

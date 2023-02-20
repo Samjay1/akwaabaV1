@@ -258,7 +258,7 @@ void showIndefiniteSnackBar({
   final scaffold = ScaffoldMessenger.of(context);
   scaffold.showSnackBar(
     SnackBar(
-      backgroundColor: Colors.black38,
+      backgroundColor: Colors.black,
       content: Text(message),
       duration: const Duration(minutes: 10),
       action: SnackBarAction(label: 'Retry', onPressed: onPressed),

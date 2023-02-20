@@ -1,21 +1,62 @@
-import 'package:akwaaba/components/custom_cached_image_widget.dart';
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:akwaaba/components/custom_rect_cached_image_widget.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
-import 'package:akwaaba/utils/date_utils.dart';
+import 'package:akwaaba/utils/download_util.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
-class AgendaDialog extends StatelessWidget {
+class AgendaDialog extends StatefulWidget {
   final MeetingEventModel? meetingEventModel;
   const AgendaDialog({
     super.key,
     this.meetingEventModel,
   });
+
+  @override
+  State<AgendaDialog> createState() => _AgendaDialogState();
+}
+
+class _AgendaDialogState extends State<AgendaDialog> {
+  final ReceivePort _port = ReceivePort();
+
+  @override
+  void initState() {
+    _registerDownloadTask();
+    super.initState();
+  }
+
+  _registerDownloadTask() {
+    IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      String id = data[0];
+      DownloadTaskStatus status = data[1];
+      int progress = data[2];
+      setState(() {});
+    });
+    FlutterDownloader.registerCallback(downloadCallback);
+  }
+
+  @override
+  void dispose() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    super.dispose();
+  }
+
+  @pragma('vm:entry-point')
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    final SendPort? send =
+        IsolateNameServer.lookupPortByName('downloader_send_port');
+    send!.send([id, status, progress]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +82,7 @@ class AgendaDialog extends StatelessWidget {
           Align(
             alignment: Alignment.topLeft,
             child: Text(
-              meetingEventModel!.name!,
+              widget.meetingEventModel!.name!,
               style: const TextStyle(
                 color: blackColor,
                 fontWeight: FontWeight.bold,
@@ -75,12 +116,12 @@ class AgendaDialog extends StatelessWidget {
               child: SingleChildScrollView(
             child: Column(
               children: [
-                meetingEventModel!.agendaFile != ""
+                widget.meetingEventModel!.agendaFile != ""
                     ? SizedBox(
                         width: displayWidth(context),
-                        height: 200,
+                        height: 220,
                         child: CustomRectCachedImageWidget(
-                          url: meetingEventModel!.agendaFile!,
+                          url: widget.meetingEventModel!.agendaFile!,
                           height: 130,
                         ),
                       )
@@ -100,7 +141,7 @@ class AgendaDialog extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    meetingEventModel!.agenda!,
+                    widget.meetingEventModel!.agenda!,
                     style: const TextStyle(
                       color: blackColor,
                       fontWeight: FontWeight.w500,
@@ -108,6 +149,68 @@ class AgendaDialog extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: displayHeight(context) * 0.02,
+                ),
+                widget.meetingEventModel!.agendaFile != ""
+                    ? InkWell(
+                        onTap: () => DownloadUtil.downloadFile(
+                          url: widget.meetingEventModel!.agendaFile!,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: primaryColor,
+                          ),
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Download File',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              10.pw,
+                              const Icon(
+                                CupertinoIcons.cloud_download,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    // : const SizedBox(),
+                    : Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: greyColorShade300,
+                        ),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                            ),
+                            8.pw,
+                            const Text(
+                              'No attachment found',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
               ],
             ),
           )),
