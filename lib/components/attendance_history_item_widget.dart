@@ -48,6 +48,10 @@ class _AttendanceHistoryItemWidgetState
       double.parse(widget.attendanceHistory!.productiveHours!),
     );
 
+    var breakOverStay = DateUtil.getTimeStringFromDouble(
+      double.parse(widget.attendanceHistory!.breakOverstay!),
+    );
+
     var lateness = DateUtil.getTimeStringFromDouble(
       double.parse(
         widget.attendanceHistory!.lateness!,
@@ -235,6 +239,14 @@ class _AttendanceHistoryItemWidgetState
                     ),
                     Text(
                       'Productive: $productive hrs',
+                      style:
+                          const TextStyle(fontSize: 14, color: textColorLight),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      'Breakoverstay: $breakOverStay hrs',
                       style:
                           const TextStyle(fontSize: 14, color: textColorLight),
                     ),

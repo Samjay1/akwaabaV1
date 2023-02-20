@@ -657,9 +657,12 @@ class MembersProvider extends ChangeNotifier {
     setLoading(true);
     try {
       _orgPage = 1;
+      var userBranch = await getUserBranch(currentContext);
       var response = await MembersAPI.getOrganizationalMembers(
         page: _orgPage,
-        branchId: selectedBranch == null ? '' : selectedBranch!.id!.toString(),
+        branchId: selectedBranch == null
+            ? userBranch.id.toString()
+            : selectedBranch!.id!.toString(),
         search: searchNameTEC.text.isEmpty ? '' : searchNameTEC.text,
         groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
         subGroupId:
@@ -748,10 +751,12 @@ class MembersProvider extends ChangeNotifier {
       setLoadingMore(true); // show loading indicator
       _orgPage += 1; // increase page by 1
       try {
+        var userBranch = await getUserBranch(currentContext);
         var response = await MembersAPI.getOrganizationalMembers(
           page: _orgPage,
-          branchId:
-              selectedBranch == null ? '' : selectedBranch!.id!.toString(),
+          branchId: selectedBranch == null
+              ? userBranch.id.toString()
+              : selectedBranch!.id!.toString(),
           search: searchNameTEC.text.isEmpty ? '' : searchNameTEC.text,
           groupId: selectedGroup == null ? '' : selectedGroup!.id!.toString(),
           subGroupId:

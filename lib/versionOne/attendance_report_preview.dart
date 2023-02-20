@@ -11,7 +11,6 @@ import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/follow_up_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -410,78 +409,37 @@ class _AttendanceReportDetailsPageState
                 height: 16,
               ),
 
-              (userType == AppConstants.admin &&
-                      widget.attendee!.attendance!.inTime == null)
-                  ? Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // InkWell(
-                        //   onTap: () {
-                        //     showDialog(
-                        //       context: context,
-                        //       builder: (_) => AlertDialog(
-                        //         insetPadding: const EdgeInsets.all(10),
-                        //         backgroundColor: Colors.transparent,
-                        //         elevation: 0,
-                        //         content: ConfirmDialog(
-                        //           title: 'Cancel Clocking',
-                        //           content:
-                        //               'Are you sure you want to cancel clocking on behalf of $attendeeName?',
-                        //           onConfirmTap: () {
-                        //             Navigator.pop(context);
-                        //             Provider.of<AttendanceProvider>(context,
-                        //                     listen: false)
-                        //                 .cancelClocking(
-                        //               context: context,
-                        //               attendee: widget.attendee,
-                        //               time: null,
-                        //             );
-                        //           },
-                        //           onCancelTap: () => Navigator.pop(context),
-                        //           confirmText: 'Yes',
-                        //           cancelText: 'Cancel',
-                        //         ),
-                        //       ),
-                        //     );
-                        //   },
-                        //   child: Container(
-                        //     padding: const EdgeInsets.symmetric(
-                        //         vertical: 7, horizontal: 13),
-                        //     decoration: BoxDecoration(
-                        //         color: Colors.red,
-                        //         borderRadius: BorderRadius.circular(10)),
-                        //     child: const Text(
-                        //       "Cancel",
-                        //       style: TextStyle(color: Colors.black),
-                        //     ),
-                        //   ),
-                        // ),
-                        InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => FollowUpPage(
-                                    attendee: widget.attendee,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 7, horizontal: 13),
-                              decoration: BoxDecoration(
-                                  color: Colors.orange,
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: const Text(
-                                "Follow up",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            )),
-                      ],
-                    )
-                  : const SizedBox(),
+              // (userType == AppConstants.admin &&
+              //         widget.attendee!.attendance!.inTime == null)
+              //     ? Row(
+              //         mainAxisSize: MainAxisSize.max,
+              //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //         children: [
+              //           InkWell(
+              //               onTap: () {
+              //                 Navigator.push(
+              //                   context,
+              //                   MaterialPageRoute(
+              //                     builder: (_) => FollowUpPage(
+              //                       attendee: widget.attendee,
+              //                     ),
+              //                   ),
+              //                 );
+              //               },
+              //               child: Container(
+              //                 padding: const EdgeInsets.symmetric(
+              //                     vertical: 7, horizontal: 13),
+              //                 decoration: BoxDecoration(
+              //                     color: Colors.orange,
+              //                     borderRadius: BorderRadius.circular(10)),
+              //                 child: const Text(
+              //                   "Follow up",
+              //                   style: TextStyle(color: Colors.white),
+              //                 ),
+              //               )),
+              //         ],
+              //       )
+              //     : const SizedBox(),
             ],
           ),
         ),

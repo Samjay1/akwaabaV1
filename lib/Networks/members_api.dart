@@ -281,21 +281,21 @@ class MembersAPI {
       if (organizationType == null) {
         // remove district and region from url
         url = Uri.parse(
-            '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus&businessRegistered=$businessRegistered');
+            '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&branchId=$branchId&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus&businessRegistered=$businessRegistered');
       } else {
         // remove district and region from url
         url = Uri.parse(
-            '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus&organizationType=$organizationType&businessRegistered=$businessRegistered');
+            '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&branchId=$branchId&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus&organizationType=$organizationType&businessRegistered=$businessRegistered');
       }
     } else {
       if (organizationType == null) {
         // add district and region to url
         url = Uri.parse(
-            '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus&businessRegistered=$businessRegistered');
+            '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&branchId=$branchId&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus&businessRegistered=$businessRegistered');
       } else {
         // add district and region to url
         url = Uri.parse(
-            '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus&organizationType=$organizationType&businessRegistered=$businessRegistered');
+            '${getBaseUrl()}/members/user-organization/location?page=$page&search=$search&branchId=$branchId&filter_member_category=$memberCategoryId&groupId=$groupId&subgroupId=$subGroupId&dategte=$startDate&datelte=$endDate&Country=$countryId&region=$regionId&district=$districtId&maritalStatus=$maritalStatus&occupationalStatus=$occupationalStatus&educationalStatus=$educationalStatus&professionStatus=$professionStatus&organizationType=$organizationType&businessRegistered=$businessRegistered');
       }
     }
     debugPrint("URL: ${url.toString()}");

@@ -137,9 +137,7 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                   title: "Date Joined",
                   label: DateUtil.formatStringDate(DateFormat.yMMMEd(),
                       date: DateTime.parse(widget.member!.date!))),
-              const SizedBox(
-                height: 24,
-              ),
+
               Container(
                 height: dividerHeight,
                 color: dividerColor,
@@ -248,9 +246,6 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                   label: widget.member!.digitalAddress == null
                       ? 'N/A'
                       : widget.member!.digitalAddress!),
-              const SizedBox(
-                height: 24,
-              ),
 
               widget.member!.updatedBy != null
                   ? Column(
@@ -282,7 +277,10 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                           title: "Updated by",
                           label: widget.member!.updatedBy == 0
                               ? 'Self'
-                              : 'Admin (${widget.member!.updatedByInfo!.firstname!.capitalize()} ${widget.member!.updatedByInfo!.surname!.capitalize()})',
+                              : (widget.member!.updatedByInfo != null ||
+                                      widget.member!.updatedByInfo == '')
+                                  ? 'Admin'
+                                  : 'Admin (${widget.member!.updatedByInfo!.firstname!.capitalize()} ${widget.member!.updatedByInfo!.surname!.capitalize()})',
                         ),
                       ],
                     )

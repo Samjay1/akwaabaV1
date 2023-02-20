@@ -169,13 +169,13 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(
-                      height: displayHeight(context) * 0.008,
-                    ),
-                    Text(
-                      'ID: ${attendee!.identification}',
-                      style: const TextStyle(fontSize: 16, color: blackColor),
-                    ),
+                    // SizedBox(
+                    //   height: displayHeight(context) * 0.008,
+                    // ),
+                    // Text(
+                    //   'ID: ${attendee!.identification}',
+                    //   style: const TextStyle(fontSize: 16, color: blackColor),
+                    // ),
                     SizedBox(
                       height: displayHeight(context) * 0.008,
                     ),
