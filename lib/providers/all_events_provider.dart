@@ -207,6 +207,12 @@ class AllEventsProvider extends ChangeNotifier {
           .toList();
     }
     _upcomingMeetingEventList = results;
+    _eventsList = results
+        .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
+        .toList();
+    _meetingsList = results
+        .where((meeting) => meeting.type == AppConstants.meetingTypeMeeting)
+        .toList();
     notifyListeners();
   }
 }

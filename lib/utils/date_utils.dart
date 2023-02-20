@@ -21,6 +21,7 @@ class DateUtil {
 
   // convert invalid dateformat to datetime
   static DateTime convertToDateTime({required String date}) {
+    debugPrint("Date: $date");
     var splitted = date.split("-");
     if (splitted[0].length == 2) {
       return DateFormat('dd-MM-yyyy').parse(date);
