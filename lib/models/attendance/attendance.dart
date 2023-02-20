@@ -3,15 +3,20 @@ import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 //import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
 
+import '../general/meetingEventModel.dart';
+
 //import '../../Networks/api_responses/meeting_attendance_response.dart';
 
 class Attendance {
   int? id;
-  MeetingEventId? meetingEventId;
+  //MeetingEventId? meetingEventId;
+  MeetingEventModel? meetingEventId;
   Member? memberId;
   int? accountType;
   bool? inOrOut;
   dynamic justification;
+  String? breakOverstay;
+  String? productiveHours;
   String? inTime;
   String? outTime;
   String? startBreak;
@@ -32,6 +37,9 @@ class Attendance {
     this.memberId,
     this.accountType,
     this.inOrOut,
+    this.justification,
+    this.breakOverstay,
+    this.productiveHours,
     this.inTime,
     this.outTime,
     this.startBreak,
@@ -50,13 +58,15 @@ class Attendance {
   Attendance.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     meetingEventId = json['meetingEventId'] != null
-        ? MeetingEventId.fromJson(json['meetingEventId'])
+        ? MeetingEventModel.fromJson(json['meetingEventId'])
         : null;
     memberId =
         json['memberId'] != null ? Member.fromJson(json['memberId']) : null;
     accountType = json['accountType'];
     inOrOut = json['inOrOut'];
     justification = json['justification'];
+    breakOverstay = json['breakOverstay'];
+    productiveHours = json['productiveHours'];
     inTime = json['inTime'];
     outTime = json['outTime'];
     startBreak = json['startBreak'];
@@ -87,6 +97,8 @@ class Attendance {
     data['accountType'] = accountType;
     data['inOrOut'] = inOrOut;
     data['justification'] = justification;
+    data['breakOverstay'] = breakOverstay;
+    data['productiveHours'] = productiveHours;
     data['inTime'] = inTime;
     data['outTime'] = outTime;
     data['startBreak'] = startBreak;
@@ -164,7 +176,7 @@ class ClockedByInfo {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['firstname'] = firstname;
     data['surname'] = surname;

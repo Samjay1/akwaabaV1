@@ -49,6 +49,19 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
           .toLowerCase();
     }
 
+    var productiveHours = '0:00';
+    if (attendee!.attendance!.productiveHours != null) {
+      productiveHours = DateUtil.getTimeStringFromDouble(
+          double.parse(attendee!.attendance!.productiveHours!));
+    }
+
+    var breakOverStay = '0:00';
+    if (attendee!.attendance!.meetingEventId!.hasBreakTime! &&
+        attendee!.attendance!.breakOverstay != null) {
+      breakOverStay = DateUtil.getTimeStringFromDouble(
+          double.parse(attendee!.attendance!.breakOverstay!));
+    }
+
     var lastSeenDate = DateUtil.convertToAgo(
       date: DateTime.parse(attendee!.lastSeen!),
     );
@@ -182,7 +195,7 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                           : displayHeight(context) * 0.00,
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.005,
+                      height: displayHeight(context) * 0.003,
                     ),
                     attendee!.attendance!.meetingEventId!.hasBreakTime!
                         ? Row(
@@ -215,6 +228,37 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                           ? displayHeight(context) * 0.00
                           : displayHeight(context) * 0.007,
                     ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.005,
+                    ),
+                    attendee!.attendance!.meetingEventId!.hasBreakTime!
+                        ? Text(
+                            'Breakoverstay: $breakOverStay hrs',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: blackColor,
+                            ),
+                          )
+                        : const SizedBox(),
+                    SizedBox(
+                      height: displayHeight(context) * 0.005,
+                    ),
+                    (attendee!.attendance!.inTime != null &&
+                            attendee!.attendance!.outTime != null)
+                        ? Text(
+                            'Productive: $productiveHours hrs',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: blackColor,
+                            ),
+                          )
+                        : const SizedBox(),
+                    SizedBox(
+                      height: (attendee!.attendance!.inTime != null &&
+                              attendee!.attendance!.outTime != null)
+                          ? displayHeight(context) * 0.005
+                          : 0.00,
+                    ),
                     Text(
                       DateUtil.formatStringDate(DateFormat.yMMMEd(),
                           date: Provider.of<AttendanceProvider>(context,
@@ -226,7 +270,7 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.01,
+                      height: displayHeight(context) * 0.008,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

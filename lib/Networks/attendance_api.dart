@@ -58,6 +58,7 @@ class AttendanceAPI {
     required String search,
     required String status,
     required int? branchId,
+    required String? memberId,
     required String? memberCategoryId,
     required String? groupId,
     required String? subGroupId,
@@ -68,7 +69,7 @@ class AttendanceAPI {
     AttendanceHistoryResponse membersResponse;
 
     var url =
-        '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_activeStatus=$status&filter_from_age=$fromAge&filter_to_age=$toAge';
+        '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_memberIds=$memberId&filter_activeStatus=$status&filter_from_age=$fromAge&filter_to_age=$toAge';
     // loop through meeting Ids
     // and append them to url for query
     for (var id in meetingIds) {
@@ -79,6 +80,7 @@ class AttendanceAPI {
       debugPrint("URL: ${url.toString()}");
       debugPrint("page: $page");
       debugPrint("Meeting IDs: ${meetingIds.toString()}");
+      debugPrint("Member ID: $memberId");
       debugPrint("Search: $search");
       debugPrint("Status: $status");
       debugPrint("Start Date: $startDate");

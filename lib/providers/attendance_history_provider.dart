@@ -72,6 +72,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   BuildContext? _context;
   String? search = '';
+  String? memberId = '';
 
   List<AttendanceHistory?> get attendanceRecords => _attendanceHistory;
 
@@ -293,12 +294,18 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     var userBranch =
         await getUserBranch(currentContext); // get current user branch
     String? userType = await SharedPrefs().getUserType();
+
     // search with member name if account type is member else
-    search = userType == AppConstants.member
-        ? '${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.firstname} ${Provider.of<MemberProvider>(_context!, listen: false).memberProfile.user.surname}'
-        : search!.isNotEmpty
-            ? search!
-            : '';
+    search = search!.isNotEmpty ? search! : '';
+
+    memberId = userType == AppConstants.member
+        ? Provider.of<MemberProvider>(_context!, listen: false)
+            .memberProfile
+            .user
+            .id
+            .toString()
+        : '';
+
     try {
       _page = 1;
       var response = await AttendanceAPI.getAttendanceHistory(
@@ -312,6 +319,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
             ? ''
             : selectedEndDate!.toIso8601String().substring(0, 10),
         search: search!,
+        memberId: memberId,
         status: selectedStatus == 'Both'
             ? ''
             : selectedStatus == 'Active'
@@ -369,6 +377,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
               ? ''
               : selectedEndDate!.toIso8601String().substring(0, 10),
           search: search!,
+          memberId: memberId,
           status: selectedStatus == 'Both'
               ? ''
               : selectedStatus == 'Active'

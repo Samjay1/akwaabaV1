@@ -338,7 +338,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                       const SizedBox(
                         height: 24,
                       ),
-                      myProfile?.updatedByInfo != null
+                      myProfile?.updatedBy != null
                           ? Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

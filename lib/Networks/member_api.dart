@@ -1415,7 +1415,7 @@ class MemberAPI {
     }
   }
 
-  //GET MEMBER CONTACT INFO TO UPDATE WHATSAPP NUMBER
+  // GET MEMBER CONTACT INFO TO UPDATE WHATSAPP NUMBER
   static Future<String?> updateWhatsappContact({
     required int memberId,
     required String phone,
@@ -1451,6 +1451,46 @@ class MemberAPI {
           }
         }
 
+        //return 'successful';
+      } else {
+        return 'failed';
+      }
+    } on SocketException catch (_) {
+      showErrorToast("Network Error");
+      return 'network_error';
+    }
+  }
+
+  //GET MEMBER CONTACT INFO TO QUERY WHATSAPP NUMBER
+  static Future<String?> getWhatsappContact({
+    required int memberId,
+  }) async {
+    var regBaseUrl = 'https://db-api-v2.akwaabasoftware.com';
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$regBaseUrl/members/user-contact-info?memberId=$memberId'),
+        headers: await getAllHeaders(),
+      );
+      var decodedResponse = jsonDecode(response.body);
+      debugPrint('UPDATE WHATSAPP MEMBER -------------- $decodedResponse');
+      if (response.statusCode == 200) {
+        if (decodedResponse['results'].isNotEmpty) {
+          debugPrint(
+            'Contact Info Id -------------- ${decodedResponse['results'][0]['id']}',
+          );
+          http.Response response = await http.get(
+            Uri.parse(
+                '$regBaseUrl/members/user-contact-info/${decodedResponse['results'][0]['id']}'),
+            headers: await getAllHeaders(),
+          );
+          var result = jsonDecode(response.body);
+          debugPrint('Response -------------- ${result['data']['whatsapp']}');
+          if (response.statusCode == 200) {
+            return result['data']['whatsapp'];
+          } else {
+            return 'failed';
+          }
+        }
         //return 'successful';
       } else {
         return 'failed';

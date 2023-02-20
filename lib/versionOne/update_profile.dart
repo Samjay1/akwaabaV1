@@ -156,10 +156,18 @@ class _UpdateProfileState extends State<UpdateProfile> {
   void _getMyProfile() async {
     myProfile =
         (await MemberAPI().getFullProfileInfo(memberId: await getMemberId()));
+    _getWhatsappContact();
     Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
 
-  //LOCATION - COUNTRY
+  String? whatsapp;
+  void _getWhatsappContact() async {
+    whatsapp =
+        (await MemberAPI.getWhatsappContact(memberId: await getMemberId()))!;
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
+  }
+
+  // LOCATION - COUNTRY
   var selectedCountry;
   var selectedCountryID;
   late List<Country>? countryList = [];
@@ -170,7 +178,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
         }));
   }
 
-  //LOCATION - REGION
+  // LOCATION - REGION
   var selectedRegion;
   var selectedRegionID;
   late List<Region>? regionList = [];
@@ -497,7 +505,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               firstname: myProfile?.firstname,
               surname: myProfile?.surname,
               middlename: myProfile?.middlename,
-              whatsapp: '',
+              whatsapp: whatsapp,
               phone: myProfile?.phone,
               email: myProfile?.email,
               idNumber: myProfile?.referenceId,
@@ -510,7 +518,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               category: '${myProfile?.categoryInfo['category']}',
               categoryId: myProfile?.memberType);
 
-          print('singleton-----${singleDistrict?.location}');
+          debugPrint('singleton-----${singleDistrict?.location}');
           setLocationDefaultValues(
               country: myProfile?.countryOfResidence,
               countryId: myProfile?.nationality,
@@ -1045,8 +1053,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
             label: 'Update Whatsapp Number',
             showProgress: whatsappLoading,
             function: () async {
-              debugPrint('Whatsapp ${_controllerWhatsappContact.text}');
-
               if (_controllerWhatsappContact.text.isEmpty) {
                 showErrorSnackBar(context, "Enter your whatsapp contact");
                 return;

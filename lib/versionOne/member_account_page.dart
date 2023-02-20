@@ -252,7 +252,7 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                 height: 24,
               ),
 
-              widget.member!.updatedByInfo != null
+              widget.member!.updatedBy != null
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
