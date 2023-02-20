@@ -44,6 +44,10 @@ class _AttendanceHistoryItemWidgetState
     //   double.parse(widget.attendanceHistory!.undertime!),
     // );
 
+    var productive = DateUtil.getTimeStringFromDouble(
+      double.parse(widget.attendanceHistory!.productiveHours!),
+    );
+
     var lateness = DateUtil.getTimeStringFromDouble(
       double.parse(
         widget.attendanceHistory!.lateness!,
@@ -230,10 +234,7 @@ class _AttendanceHistoryItemWidgetState
                       height: 4,
                     ),
                     Text(
-                      double.parse(widget.attendanceHistory!.lateness!)
-                              .isNegative
-                          ? 'Productive: $lateness hrs'
-                          : 'Productive: 0.00 hrs',
+                      'Productive: $productive hrs',
                       style:
                           const TextStyle(fontSize: 14, color: textColorLight),
                     ),

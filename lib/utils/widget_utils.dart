@@ -250,6 +250,22 @@ showAppAccessDialog(
       });
 }
 
+void showIndefiniteSnackBar({
+  required BuildContext context,
+  required String message,
+  required Function() onPressed,
+}) {
+  final scaffold = ScaffoldMessenger.of(context);
+  scaffold.showSnackBar(
+    SnackBar(
+      backgroundColor: Colors.black38,
+      content: Text(message),
+      duration: const Duration(minutes: 10),
+      action: SnackBarAction(label: 'Retry', onPressed: onPressed),
+    ),
+  );
+}
+
 void showNormalSnackBar(BuildContext context, String message) {
   final scaffold = ScaffoldMessenger.of(context);
   scaffold.showSnackBar(

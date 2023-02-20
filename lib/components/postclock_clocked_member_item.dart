@@ -10,6 +10,7 @@ import 'package:akwaaba/providers/post_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,9 @@ class PostClockClockedMemberItem extends StatelessWidget {
     }
 
     var attendeeName =
-        "${attendee!.additionalInfo!.memberInfo!.firstname!} ${attendee!.additionalInfo!.memberInfo!.surname!}";
+        "${attendee!.attendance!.memberId!.firstname!.capitalize()} ${(attendee!.attendance!.memberId!.middlename == null || attendee!.attendance!.memberId!.middlename!.isEmpty) ? '' : attendee!.attendance!.memberId!.middlename!.capitalize()} ${attendee!.attendance!.memberId!.surname!.capitalize()}";
+    // var attendeeName =
+    //     "${attendee!.additionalInfo!.memberInfo!.firstname!} ${attendee!.additionalInfo!.memberInfo!.surname!}";
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),

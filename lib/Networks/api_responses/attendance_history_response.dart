@@ -431,17 +431,20 @@ class AttendanceHistory {
   String? overtime;
   String? undertime;
   String? breakOverstay;
+  String? productiveHours;
   String? totalAttendance;
 
-  AttendanceHistory(
-      {this.attendanceRecord,
-      this.status,
-      this.onTime,
-      this.lateness,
-      this.overtime,
-      this.undertime,
-      this.breakOverstay,
-      this.totalAttendance});
+  AttendanceHistory({
+    this.attendanceRecord,
+    this.status,
+    this.onTime,
+    this.lateness,
+    this.overtime,
+    this.undertime,
+    this.breakOverstay,
+    this.productiveHours,
+    this.totalAttendance,
+  });
 
   AttendanceHistory.fromJson(Map<String, dynamic> json) {
     attendanceRecord = json['history'] != null
@@ -453,6 +456,7 @@ class AttendanceHistory {
     overtime = json['overtime'];
     undertime = json['undertime'];
     breakOverstay = json['breakOverstay'];
+    productiveHours = json['productiveHours'];
     totalAttendance = json['totalAttendance'];
   }
 
@@ -469,6 +473,7 @@ class AttendanceHistory {
     data['overtime'] = overtime;
     data['undertime'] = undertime;
     data['breakOverstay'] = breakOverstay;
+    data['productiveHours'] = productiveHours;
     data['totalAttendance'] = totalAttendance;
     return data;
   }

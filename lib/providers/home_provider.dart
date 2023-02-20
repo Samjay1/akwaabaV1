@@ -10,8 +10,10 @@ import 'package:geolocator/geolocator.dart';
 class HomeProvider extends ChangeNotifier {
   String? _memberToken;
   bool _loading = false;
+  bool _loadingMore = false;
   bool _clocking = false;
   bool _submitting = false;
+  BuildContext? _context;
 
   List<int> meetingEventIds = [];
 
@@ -32,12 +34,27 @@ class HomeProvider extends ChangeNotifier {
 
   get currentUserLocation => _currentUserLocation;
   bool get loading => _loading;
+  bool get loadingMore => _loadingMore;
   bool get clocking => _clocking;
   bool get submitting => _submitting;
   get memberToken => _memberToken;
+  BuildContext get currentContext => _context!;
+
+  int _page = 1;
+  var isFirstLoadRunning = false;
+  var hasNext = false;
+  var isLoadMoreRunning = false;
+
+  late ScrollController scrollController = ScrollController()
+    ..addListener(_loadMoreTodayMeetingEvents);
 
   setLoading(bool loading) {
     _loading = loading;
+    notifyListeners();
+  }
+
+  setLoadingMore(bool loading) {
+    _loadingMore = loading;
     notifyListeners();
   }
 
@@ -57,6 +74,11 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  setCurrentContext(BuildContext context) {
+    _context = context;
+    notifyListeners();
+  }
+
   setToken({required String token}) {
     _memberToken = token;
     notifyListeners();
@@ -68,13 +90,17 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getTodayMeetingEvents({required BuildContext context}) async {
+  Future<void> getTodayMeetingEvents() async {
     setLoading(true);
-    _todayMeetingEventList.clear();
     try {
-      var branch = await getUserBranch(context);
-      _todayMeetingEventList =
-          await EventAPI.getTodayMeetingEventList(branchId: branch.id!);
+      _page = 1;
+      var branch = await getUserBranch(currentContext);
+      var response = await EventAPI.getTodayMeetingEventList(
+        branchId: branch.id!,
+        page: _page,
+      );
+      _todayMeetingEventList = response.results!;
+      hasNext = response.next == null ? false : true;
       debugPrint("TODAY Meeting: ${_todayMeetingEventList.length}");
       if (_todayMeetingEventList.isNotEmpty) {
         for (var meeting in _todayMeetingEventList) {
@@ -91,6 +117,38 @@ class HomeProvider extends ChangeNotifier {
       //showErrorToast(err.toString());
     }
 
+    notifyListeners();
+  }
+
+  // load more list of events or meetings
+  Future<void> _loadMoreTodayMeetingEvents() async {
+    if (hasNext &&
+        scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) {
+      setLoadingMore(true); // show loading indicator
+      _page += 1; // increase page by 1
+      try {
+        var branch = await getUserBranch(currentContext);
+        var response = await EventAPI.getTodayMeetingEventList(
+          branchId: branch.id!,
+          page: _page,
+        );
+        if (response.results!.isNotEmpty) {
+          hasNext = response.next == null ? false : true;
+          _todayMeetingEventList.addAll(response.results!);
+        } else {
+          hasNext = false;
+        }
+        setLoadingMore(false);
+      } catch (err) {
+        setLoadingMore(false);
+        debugPrint("Error --> $err");
+        showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: () => _loadMoreTodayMeetingEvents());
+      }
+    }
     notifyListeners();
   }
 
@@ -539,7 +597,7 @@ class HomeProvider extends ChangeNotifier {
   }
 
   void clearData() {
-    _upcomingMeetingEventList.clear();
     _todayMeetingEventList.clear();
+    _upcomingMeetingEventList.clear();
   }
 }

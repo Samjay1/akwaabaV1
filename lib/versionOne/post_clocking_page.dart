@@ -62,15 +62,16 @@ class _PostClockingPageState extends State<PostClockingPage> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      Provider.of<PostClockingProvider>(context, listen: false)
-          .setCurrentContext(context);
-      Provider.of<PostClockingProvider>(context, listen: false)
-          .getAllMeetingEvents();
       if (context.read<ClientProvider>().branch.id == 1) {
         Provider.of<PostClockingProvider>(context, listen: false).getBranches();
       }
       Provider.of<PostClockingProvider>(context, listen: false)
-          .getMemberCategories();
+          .setCurrentContext(context);
+      Provider.of<PostClockingProvider>(context, listen: false)
+          .getAllMeetingEvents();
+
+      // Provider.of<PostClockingProvider>(context, listen: false)
+      //     .getMemberCategories();
       setState(() {});
     });
     super.initState();
@@ -957,11 +958,13 @@ class _PostClockingPageState extends State<PostClockingPage> {
                 ),
                 decoration: const InputDecoration(border: InputBorder.none),
                 value: postClockingProvider.selectedPastMeetingEvent,
-                icon: Icon(
-                  CupertinoIcons.chevron_up_chevron_down,
-                  color: Colors.grey.shade500,
-                  size: 16,
-                ),
+                icon: postClockingProvider.loadingFilters
+                    ? const FilterLoader()
+                    : Icon(
+                        CupertinoIcons.chevron_up_chevron_down,
+                        color: Colors.grey.shade500,
+                        size: 16,
+                      ),
                 // Array list of items
                 items: postClockingProvider.pastMeetingEvents
                     .map((MeetingEventModel mc) {

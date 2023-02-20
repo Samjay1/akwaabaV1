@@ -3,12 +3,15 @@ import 'package:akwaaba/models/general/electoralArea.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/dimens.dart';
 import 'package:akwaaba/utils/size_helper.dart';
+import 'package:akwaaba/utils/string_extension.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:akwaaba/versionOne/update_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -97,7 +100,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
     _getMemberGroups();
     _getMemberSubGroups();
     Future.delayed(const Duration(seconds: 8)).then((value) {
-      print('1. Region ID ${myProfile?.region}'); // Don't touch
+      print('1. Region ID: ${myProfile?.region}'); // Don't touch
       _getSingleRegion(regionId: myProfile?.region);
       _getSingleDistrict(districtId: myProfile?.district);
       _getsingleConstituency(
@@ -335,6 +338,46 @@ class _MyAccountPageState extends State<MyAccountPage> {
                       const SizedBox(
                         height: 24,
                       ),
+                      myProfile?.updatedByInfo != null
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: dividerHeight,
+                                  color: dividerColor,
+                                ),
+                                const SizedBox(
+                                  height: 24,
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 16),
+                                  child: Text(
+                                    "Last Profile Update",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                profileItemView(
+                                    title: "Update on",
+                                    label: myProfile?.updateDate == null
+                                        ? 'N/A'
+                                        : DateUtil.formatStringDate(
+                                            DateFormat.yMMMEd(),
+                                            date: DateTime.parse(
+                                                myProfile!.updateDate!))),
+                                profileItemView(
+                                  title: "Updated by",
+                                  label: myProfile?.updatedBy == 0
+                                      ? 'Self'
+                                      : 'Admin (${myProfile?.updatedByInfo!.firstname!.capitalize()} ${myProfile?.updatedByInfo!.surname!.capitalize()})',
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
+                      const SizedBox(
+                        height: 24,
+                      ),
                     ],
                   )),
       ),
@@ -379,7 +422,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
             ),
           ),
           Text(
-            " ${myProfile?.firstname} ${myProfile?.surname} ",
+            " ${myProfile?.firstname!.capitalize()} ${(myProfile?.middlename == null || myProfile!.middlename!.isEmpty) ? '' : myProfile?.middlename!.capitalize()} ${myProfile?.surname!.capitalize()} ",
             style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 color: textColorPrimary,

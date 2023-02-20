@@ -1068,7 +1068,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   return;
                 }
                 if (value == 'successful') {
-                  showNormalToast("Whatsapp contact Update Successful");
+                  showNormalToast("Whatsapp contact update successful");
                 }
               });
               //Navigator.pop(context);

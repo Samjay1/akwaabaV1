@@ -252,7 +252,7 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                 height: 24,
               ),
 
-              widget.member!.updateDate != null
+              widget.member!.updatedByInfo != null
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -282,7 +282,7 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                           title: "Updated by",
                           label: widget.member!.updatedBy == 0
                               ? 'Self'
-                              : 'Admin (${widget.member!.updatedByInfo!.firstname!} ${widget.member!.updatedByInfo!.surname!})',
+                              : 'Admin (${widget.member!.updatedByInfo!.firstname!.capitalize()} ${widget.member!.updatedByInfo!.surname!.capitalize()})',
                         ),
                       ],
                     )

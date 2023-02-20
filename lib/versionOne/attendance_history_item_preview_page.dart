@@ -50,6 +50,10 @@ class _AttendanceHistoryItemPreviewPageState
       ),
     );
 
+    var productive = DateUtil.getTimeStringFromDouble(
+      double.parse(widget.attendanceHistory!.productiveHours!),
+    );
+
     var lateness = DateUtil.getTimeStringFromDouble(
       double.parse(
         widget.attendanceHistory!.lateness!,
@@ -72,7 +76,7 @@ class _AttendanceHistoryItemPreviewPageState
               const SizedBox(
                 height: 12,
               ),
-              meetingRecords(onTime, lateness, breakOverstay),
+              meetingRecords(onTime, lateness, breakOverstay, productive),
               widget.attendanceHistory!.attendanceRecord!.meetings!.length > 1
                   ? const SizedBox(
                       height: 12,
@@ -199,7 +203,8 @@ class _AttendanceHistoryItemPreviewPageState
     );
   }
 
-  Widget meetingRecords(var onTime, var lateness, var breakOverStay) {
+  Widget meetingRecords(
+      var onTime, var lateness, var breakOverStay, var productive) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(8)),
@@ -219,11 +224,7 @@ class _AttendanceHistoryItemPreviewPageState
               info: widget.attendanceHistory!.totalAttendance!),
           attendanceRecordItemView(title: "On Time", info: '$onTime hrs'),
           attendanceRecordItemView(
-            title: double.parse(widget.attendanceHistory!.lateness!).isNegative
-                ? "Productive"
-                : "Productive",
-            info: '$lateness hrs',
-          ),
+              title: "Productive", info: '$productive hrs'),
           attendanceRecordItemView(
             title: !double.parse(widget.attendanceHistory!.lateness!).isNegative
                 ? "Lateness"

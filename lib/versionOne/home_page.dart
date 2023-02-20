@@ -105,6 +105,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadMeetingEventsByUserType({var userType}) async {
+    Provider.of<HomeProvider>(context, listen: false)
+        .setCurrentContext(context);
     if (userType == AppConstants.member) {
       prefs = await SharedPreferences.getInstance();
       memberToken = prefs?.getString('token');
@@ -116,7 +118,7 @@ class _HomePageState extends State<HomePage> {
             .todayMeetings
             .isEmpty) {
           Provider.of<HomeProvider>(context, listen: false)
-              .getTodayMeetingEvents(context: context);
+              .getTodayMeetingEvents();
           debugPrint('Loading fresh data:...');
         }
         setState(() {});
@@ -129,7 +131,7 @@ class _HomePageState extends State<HomePage> {
             .todayMeetings
             .isEmpty) {
           Provider.of<HomeProvider>(context, listen: false)
-              .getTodayMeetingEvents(context: context);
+              .getTodayMeetingEvents();
           debugPrint('Loading fresh data:...');
         }
         setState(() {});
@@ -240,8 +242,8 @@ class _HomePageState extends State<HomePage> {
                   )
                 : Expanded(
                     child: RefreshIndicator(
-                      onRefresh: () async => await eventProvider
-                          .getTodayMeetingEvents(context: context),
+                      onRefresh: () async =>
+                          await eventProvider.getTodayMeetingEvents(),
                       child: Consumer<HomeProvider>(
                         builder: (context, data, child) {
                           if (data.todayMeetings.isEmpty) {
@@ -259,6 +261,7 @@ class _HomePageState extends State<HomePage> {
                           }
                           if (userType == AppConstants.member) {
                             return ListView.builder(
+                                controller: data.scrollController,
                                 itemCount: data.todayMeetings.length,
                                 itemBuilder: (context, index) {
                                   final item = data.todayMeetings[index];
@@ -268,6 +271,7 @@ class _HomePageState extends State<HomePage> {
                                 });
                           }
                           return ListView.builder(
+                              controller: data.scrollController,
                               itemCount: data.todayMeetings.length,
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) {

@@ -183,6 +183,7 @@ class PostClockingProvider extends ChangeNotifier {
 
   // get list of genders
   Future<void> getGenders() async {
+    setLoadingFilters(true);
     try {
       _genders = await GroupAPI.getGenders();
       debugPrint('Genders: ${_genders.length}');
@@ -238,39 +239,27 @@ class PostClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error SubGroup: ${err.toString()}');
-      showErrorToast(err.toString());
+      //showErrorToast(err.toString());
     }
     notifyListeners();
   }
 
   // get meetings from date specified
   Future<void> getAllMeetingEvents() async {
+    setLoadingFilters(true);
     try {
-      // _pastMeetingEvents = await EventAPI.getMeetingsFromDate(
-      //   page: 1,
-      //   date: selectedDate!.toIso8601String().substring(0, 10),
-      // );
       var userBranch = await getUserBranch(currentContext);
       _pastMeetingEvents = await EventAPI.getAllMeetings(
         page: 1,
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
       );
-
       if (_pastMeetingEvents.isNotEmpty) {
         selectedPastMeetingEvent = _pastMeetingEvents[0];
-      } else {
-        showInfoDialog(
-          'ok',
-          context: _context!,
-          title: 'Sorry!',
-          content:
-              'No meetings/events were held on this date. \nPlease try again with another date.',
-          onTap: () => Navigator.pop(_context!),
-        );
       }
+      setLoadingFilters(false);
       getMemberCategories();
-      getGenders();
     } catch (err) {
+      setLoadingFilters(false);
       //debugPrint('Error PMs: ${err.toString()}');
       showErrorToast(err.toString());
     }
@@ -806,6 +795,7 @@ class PostClockingProvider extends ChangeNotifier {
   Future<void> clearData() async {
     clearFilters();
     postClockTime = null;
+    _pastMeetingEvents.clear();
     _attendees.clear();
     searchIDTEC.clear();
     searchNameTEC.clear();

@@ -122,43 +122,39 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
               const SizedBox(
                 width: 8,
               ),
-              attendee!.additionalInfo!.memberInfo!.profilePicture != null
-                  ? Align(
-                      child: CustomCachedImageWidget(
-                        url: attendee!
-                            .additionalInfo!.memberInfo!.profilePicture!,
-                        height: 60,
-                      ),
-                    )
-                  : defaultProfilePic(height: 60),
+              Column(
+                children: [
+                  attendee!.additionalInfo!.memberInfo!.profilePicture != null
+                      ? Align(
+                          child: CustomCachedImageWidget(
+                            url: attendee!
+                                .additionalInfo!.memberInfo!.profilePicture!,
+                            height: 60,
+                          ),
+                        )
+                      : defaultProfilePic(height: 60),
+                  SizedBox(
+                    height: displayHeight(context) * 0.01,
+                  ),
+                  TagWidgetSolid(
+                    color: isLate ? Colors.red : Colors.green,
+                    text: isLate ? AppString.lateText : AppString.earlyText,
+                  ),
+                ],
+              ),
               const SizedBox(
-                width: 8,
+                width: 10,
               ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            attendeeName,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: displayWidth(context) * 0.02,
-                        ),
-                        TagWidgetSolid(
-                          color: isLate ? Colors.red : Colors.green,
-                          text:
-                              isLate ? AppString.lateText : AppString.earlyText,
-                        ),
-                      ],
+                    Text(
+                      attendeeName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     SizedBox(
                       height: displayHeight(context) * 0.008,
@@ -172,8 +168,10 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('IN : $formattedInTime'),
+                        Expanded(child: Text('IN : $formattedInTime')),
+                        16.pw,
                         Text('OUT :  $outTime')
                       ],
                     ),
@@ -184,21 +182,25 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                           : displayHeight(context) * 0.00,
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.003,
+                      height: displayHeight(context) * 0.005,
                     ),
                     attendee!.attendance!.meetingEventId!.hasBreakTime!
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'SB: $startBreakTime',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: blackColor,
+                              Expanded(
+                                child: Text(
+                                  'Break: $startBreakTime',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: blackColor,
+                                  ),
                                 ),
                               ),
+                              16.pw,
                               Text(
-                                'EB: $endBreakTime',
+                                'Resume: $endBreakTime',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: blackColor,
@@ -208,7 +210,10 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                           )
                         : const SizedBox(),
                     SizedBox(
-                      height: displayHeight(context) * 0.01,
+                      height: (attendee!.attendance!.startBreak == null &&
+                              attendee!.attendance!.endBreak == null)
+                          ? displayHeight(context) * 0.00
+                          : displayHeight(context) * 0.007,
                     ),
                     Text(
                       DateUtil.formatStringDate(DateFormat.yMMMEd(),

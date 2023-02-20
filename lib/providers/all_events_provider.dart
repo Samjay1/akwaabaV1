@@ -30,7 +30,7 @@ class AllEventsProvider extends ChangeNotifier {
 
   int _page = 1;
   var isFirstLoadRunning = false;
-  var hasNextPage = true;
+  var hasNext = true;
   var isLoadMoreRunning = false;
 
   DateTime? selectedDate;
@@ -61,13 +61,16 @@ class AllEventsProvider extends ChangeNotifier {
   }
 
   Future<void> getUpcomingMeetingEvents() async {
-    _upcomingMeetingEventList.clear();
     setLoading(true);
     try {
       _page = 1;
       var branch = await getUserBranch(currentContext);
-      _upcomingMeetingEventList = await EventAPI.getUpcomingMeetingEventList(
-          page: _page, branchId: branch.id!);
+      var response = await EventAPI.getUpcomingMeetingEventList(
+        page: _page,
+        branchId: branch.id!,
+      );
+      hasNext = response.next == null ? false : true;
+      _upcomingMeetingEventList = response.results!;
       _tempUpcomingMeetingEventList = _upcomingMeetingEventList;
       _eventsList = _upcomingMeetingEventList
           .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
@@ -86,25 +89,26 @@ class AllEventsProvider extends ChangeNotifier {
 
   // load more list of events or meetings
   Future<void> _loadMoreEventMeetings() async {
-    if (hasNextPage == true &&
-        loading == false &&
-        isLoadMoreRunning == false &&
-        scrollController.position.extentAfter < 300) {
+    if (hasNext &&
+        scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) {
       setLoadingMore(true); // show loading indicator
       _page += 1; // increase page by 1
       try {
         var response;
         var branch = await getUserBranch(currentContext);
-        if (_filter) {
-          response = await EventAPI.getMeetingsFromDate(
-              page: _page,
-              date: selectedDate!.toIso8601String().substring(0, 10),
-              branchId: branch.id!);
-        } else {
-          response = await EventAPI.getUpcomingMeetingEventList(
-              page: _page, branchId: branch.id!);
-        }
+        _filter
+            ? response = await EventAPI.getMeetingsFromDate(
+                page: _page,
+                date: selectedDate!.toIso8601String().substring(0, 10),
+                branchId: branch.id!,
+              )
+            : response = await EventAPI.getUpcomingMeetingEventList(
+                page: _page,
+                branchId: branch.id!,
+              );
         if (response.isNotEmpty) {
+          hasNext = response.next == null ? false : true;
           _upcomingMeetingEventList.addAll(response);
           _eventsList.addAll(_upcomingMeetingEventList
               .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
@@ -114,12 +118,16 @@ class AllEventsProvider extends ChangeNotifier {
                   (meeting) => meeting.type == AppConstants.meetingTypeMeeting)
               .toList());
         } else {
-          hasNextPage = false;
+          hasNext = false;
         }
         setLoadingMore(false);
       } catch (err) {
         setLoadingMore(false);
         debugPrint("Error --> $err");
+        showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: () => _loadMoreEventMeetings());
       }
     }
     notifyListeners();
@@ -137,14 +145,16 @@ class AllEventsProvider extends ChangeNotifier {
   // get meetins from date specified
   Future<void> getPastMeetingEvents() async {
     setLoading(true);
-    _upcomingMeetingEventList.clear();
     _page = 1;
     try {
       var branch = await getUserBranch(currentContext);
-      _upcomingMeetingEventList = await EventAPI.getMeetingsFromDate(
-          page: _page,
-          date: selectedDate!.toIso8601String().substring(0, 10),
-          branchId: branch.id!);
+      var response = await EventAPI.getMeetingsFromDate(
+        page: _page,
+        date: selectedDate!.toIso8601String().substring(0, 10),
+        branchId: branch.id!,
+      );
+      hasNext = response.next == null ? false : true;
+      _upcomingMeetingEventList = response.results!;
       _tempUpcomingMeetingEventList = _upcomingMeetingEventList;
       _eventsList = _upcomingMeetingEventList
           .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)

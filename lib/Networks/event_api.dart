@@ -7,27 +7,25 @@ import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart'
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/attendance/excuse_model.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/models/members/deviceRequestModel.dart';
-import 'package:akwaaba/utils/general_utils.dart';
-import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/members/member_profile.dart';
+import 'api_responses/meeting_event_response.dart';
 
 class EventAPI {
   static final baseUrl = 'https://db-api-v2.akwaabasoftware.com';
   late SharedPreferences prefs;
 
-  static Future<List<MeetingEventModel>> getTodayMeetingEventList(
-      {required int branchId}) async {
+  static Future<MeetingEventResponse> getTodayMeetingEventList(
+      {required int branchId, required int page}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? memberId = prefs.getInt('memberId');
-    List<MeetingEventModel> todayMeetings = [];
+
+    MeetingEventResponse eventResponse;
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both&branchId=$branchId&filter_memberId=${memberId ?? ''}');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both&page=$page&branchId=$branchId&filter_memberId=${memberId ?? ''}');
     debugPrint("URL: ${url.toString()}");
     try {
       http.Response response = await http.get(
@@ -35,18 +33,19 @@ class EventAPI {
         headers: await getAllHeaders(),
       );
       var decodedresponse = jsonDecode(response.body);
-      debugPrint("TODAY MeetingEventModel success: $decodedresponse");
-      Iterable meetingList = decodedresponse['results'];
-      todayMeetings = meetingList
-          .map(
-            (data) => MeetingEventModel.fromJson(data),
-          )
-          .toList();
+      eventResponse = MeetingEventResponse.fromJson(decodedresponse);
+      debugPrint("TODAY Meetings: $decodedresponse");
+      // Iterable meetingList = decodedresponse['results'];
+      // todayMeetings = meetingList
+      //     .map(
+      //       (data) => MeetingEventModel.fromJson(data),
+      //     )
+      //     .toList();
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return todayMeetings;
+    return eventResponse;
   }
 
   static Future<List<MeetingEventModel>> getAllMeetings({
@@ -77,9 +76,9 @@ class EventAPI {
     return meetings;
   }
 
-  static Future<List<MeetingEventModel>> getMeetingsFromDate(
+  static Future<MeetingEventResponse> getMeetingsFromDate(
       {required int page, required String date, required int branchId}) async {
-    List<MeetingEventModel> meetings = [];
+    MeetingEventResponse eventResponse;
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/meeting-event/schedule/date/$date?page=$page&branchId=$branchId');
 
@@ -89,28 +88,23 @@ class EventAPI {
         url,
         headers: await getAllHeaders(),
       );
-      var decodedresponse = jsonDecode(response.body);
-      debugPrint("Meeting From Date success: $decodedresponse");
-      Iterable meetingList = decodedresponse['results'];
-      meetings = meetingList
-          .map(
-            (data) => MeetingEventModel.fromJson(data),
-          )
-          .toList();
+      var decodedResponse = jsonDecode(response.body);
+      debugPrint("Meeting From Date success: $decodedResponse");
+      eventResponse = MeetingEventResponse.fromJson(decodedResponse);
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return meetings;
+    return eventResponse;
   }
 
-  static Future<List<MeetingEventModel>> getUpcomingMeetingEventList(
+  static Future<MeetingEventResponse> getUpcomingMeetingEventList(
       {required int page, required int branchId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? memberId = prefs.getInt('memberId');
-    List<MeetingEventModel> upcomingMeetings = [];
+    MeetingEventResponse eventResponse;
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?datatable_plugin&filter_recuring=both&page=$page&branchId=$branchId&filter_memberId=${memberId ?? ''}');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?filter_recuring=both&page=$page&branchId=$branchId&filter_memberId=${memberId ?? ''}');
     debugPrint("URL: ${url.toString()}");
     try {
       http.Response response = await http
@@ -126,17 +120,19 @@ class EventAPI {
           );
       var decodedresponse = jsonDecode(response.body);
       debugPrint("UPCOMING MeetingEventModel success: $decodedresponse");
-      Iterable dataList = decodedresponse['data'];
-      upcomingMeetings = dataList
-          .map(
-            (data) => MeetingEventModel.fromJson(data),
-          )
-          .toList();
+      eventResponse = MeetingEventResponse.fromJson(decodedresponse);
+
+      // Iterable dataList = decodedresponse['data'];
+      // upcomingMeetings = dataList
+      //     .map(
+      //       (data) => MeetingEventModel.fromJson(data),
+      //     )
+      //     .toList();
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     }
-    return upcomingMeetings;
+    return eventResponse;
   }
 
   // get coordinates for a meeting
