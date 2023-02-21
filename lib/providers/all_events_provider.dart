@@ -73,7 +73,7 @@ class AllEventsProvider extends ChangeNotifier {
       );
       hasNext = response.next == null ? false : true;
       _upcomingMeetingEventList = response.results!;
-      _tempUpcomingMeetingEventList = response.results!;
+      _tempUpcomingMeetingEventList = _upcomingMeetingEventList;
       _eventsList = _upcomingMeetingEventList
           .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
           .toList();
@@ -113,10 +113,10 @@ class AllEventsProvider extends ChangeNotifier {
           hasNext = response.next == null ? false : true;
           _upcomingMeetingEventList.addAll(response.results!);
           _tempUpcomingMeetingEventList.addAll(response.results!);
-          _eventsList.addAll(_upcomingMeetingEventList
+          _eventsList.addAll(response.results!
               .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
               .toList());
-          _meetingsList.addAll(_upcomingMeetingEventList
+          _meetingsList.addAll(response.results!
               .where(
                   (meeting) => meeting.type == AppConstants.meetingTypeMeeting)
               .toList());
@@ -158,7 +158,7 @@ class AllEventsProvider extends ChangeNotifier {
       );
       hasNext = response.next == null ? false : true;
       _upcomingMeetingEventList = response.results!;
-      _tempUpcomingMeetingEventList = response.results!;
+      _tempUpcomingMeetingEventList = _upcomingMeetingEventList;
       _eventsList = _upcomingMeetingEventList
           .where((meeting) => meeting.type == AppConstants.meetingTypeEvent)
           .toList();

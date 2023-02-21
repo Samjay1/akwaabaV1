@@ -170,7 +170,11 @@ class _AllEventsPageState extends State<AllEventsPage> {
                                     physics: const BouncingScrollPhysics(),
                                     //shrinkWrap: true,
                                     itemBuilder: (context, index) {
-                                      var item = data.upcomingMeetings[index];
+                                      var item = selectedEventType == 0
+                                          ? data.upcomingMeetings[index]
+                                          : selectedEventType == 1
+                                              ? data.eventsList[index]
+                                              : data.meetingsList[index];
                                       return upcomingEvents(
                                         meetingEvent: item,
                                       );
