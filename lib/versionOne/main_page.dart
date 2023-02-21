@@ -179,85 +179,85 @@ class _MainPageState extends State<MainPage> {
         }
 
         // Restrict access to app if client has subscribed to only database and attendance
-        // if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
-        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
-        //         null &&
-        //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
-        //         null) {
-        //   showAppAccessDialog(
-        //     'ok',
-        //     dismissible: false,
-        //     context: context,
-        //     title: 'Hey there!',
-        //     content: RichText(
-        //       textAlign: TextAlign.center,
-        //       text: TextSpan(children: [
-        //         const TextSpan(
-        //           text:
-        //               'Sorry you don\'t have access to the services of this app, you must subscribe to the android & iOS module.\n\nCall/WhatsApp Service Provider on ',
-        //           style: TextStyle(
-        //             letterSpacing: 1.0,
-        //             color: blackColor,
-        //             fontSize: AppSize.s18,
-        //           ),
-        //         ),
-        //         TextSpan(
-        //           text: AppConstants.supportNumber,
-        //           style: const TextStyle(
-        //             letterSpacing: 1.0,
-        //             decoration: TextDecoration.underline,
-        //             color: Colors.blue,
-        //             fontSize: AppSize.s18,
-        //           ),
-        //           recognizer: TapGestureRecognizer()
-        //             ..onTap = () {
-        //               showModalBottomSheet(
-        //                   shape: const RoundedRectangleBorder(
-        //                     borderRadius: BorderRadius.only(
-        //                       topLeft:
-        //                           Radius.circular(AppRadius.borderRadius16),
-        //                       topRight:
-        //                           Radius.circular(AppRadius.borderRadius16),
-        //                     ),
-        //                   ),
-        //                   context: context,
-        //                   builder: (context) {
-        //                     return ContactAdminDialog(
-        //                         title: 'Contact your service provider?',
-        //                         subtitle:
-        //                             'You can reach out to your service provider on',
-        //                         firstText: 'Call',
-        //                         secondText: 'Whatsapp',
-        //                         onCallTap: () {
-        //                           Navigator.of(context).pop();
-        //                           makePhoneCall(
-        //                             AppConstants.supportNumber,
-        //                           );
-        //                         },
-        //                         onWhatsappTap: () async {
-        //                           Navigator.of(context).pop();
-        //                           openWhatsapp(
-        //                             context,
-        //                             AppConstants.supportNumber,
-        //                             'Hello there, \n\nI need assistance with my account.',
-        //                           );
-        //                         });
-        //                   });
-        //             },
-        //         ),
-        //         const TextSpan(
-        //           text: ' for any assistance.',
-        //           style: TextStyle(
-        //             letterSpacing: 1.0,
-        //             color: blackColor,
-        //             fontSize: AppSize.s18,
-        //           ),
-        //         ),
-        //       ]),
-        //     ),
-        //     onTap: logout,
-        //   );
-        // }
+        if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
+                null &&
+            clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+                null) {
+          showAppAccessDialog(
+            'ok',
+            dismissible: false,
+            context: context,
+            title: 'Hey there!',
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(children: [
+                const TextSpan(
+                  text:
+                      'Sorry you don\'t have access to the services of this app, you must subscribe to the android & iOS module.\n\nCall/WhatsApp Service Provider on ',
+                  style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: blackColor,
+                    fontSize: AppSize.s18,
+                  ),
+                ),
+                TextSpan(
+                  text: AppConstants.supportNumber,
+                  style: const TextStyle(
+                    letterSpacing: 1.0,
+                    decoration: TextDecoration.underline,
+                    color: Colors.blue,
+                    fontSize: AppSize.s18,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      showModalBottomSheet(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft:
+                                  Radius.circular(AppRadius.borderRadius16),
+                              topRight:
+                                  Radius.circular(AppRadius.borderRadius16),
+                            ),
+                          ),
+                          context: context,
+                          builder: (context) {
+                            return ContactAdminDialog(
+                                title: 'Contact your service provider?',
+                                subtitle:
+                                    'You can reach out to your service provider on',
+                                firstText: 'Call',
+                                secondText: 'Whatsapp',
+                                onCallTap: () {
+                                  Navigator.of(context).pop();
+                                  makePhoneCall(
+                                    AppConstants.supportNumber,
+                                  );
+                                },
+                                onWhatsappTap: () async {
+                                  Navigator.of(context).pop();
+                                  openWhatsapp(
+                                    context,
+                                    AppConstants.supportNumber,
+                                    'Hello there, \n\nI need assistance with my account.',
+                                  );
+                                });
+                          });
+                    },
+                ),
+                const TextSpan(
+                  text: ' for any assistance.',
+                  style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: blackColor,
+                    fontSize: AppSize.s18,
+                  ),
+                ),
+              ]),
+            ),
+            onTap: logout,
+          );
+        }
 
         // Restrict access to app if client has subscribed to only database
         if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
@@ -272,10 +272,62 @@ class _MainPageState extends State<MainPage> {
             title: 'Hey there!',
             content: RichText(
               textAlign: TextAlign.center,
-              text: const TextSpan(children: [
-                TextSpan(
+              text: TextSpan(children: [
+                const TextSpan(
                   text:
-                      'Sorry you don\'t have access to the attendance and android & iOS services, you must subscribe to the attendance and android & iOS module.',
+                      'Sorry you don\'t have access to the attendance and android & iOS services, you must subscribe to the attendance and android & iOS module.\n\nCall/WhatsApp Service Provider on',
+                  style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: blackColor,
+                    fontSize: AppSize.s18,
+                  ),
+                ),
+                TextSpan(
+                  text: AppConstants.supportNumber,
+                  style: const TextStyle(
+                    letterSpacing: 1.0,
+                    decoration: TextDecoration.underline,
+                    color: Colors.blue,
+                    fontSize: AppSize.s18,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      showModalBottomSheet(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft:
+                                  Radius.circular(AppRadius.borderRadius16),
+                              topRight:
+                                  Radius.circular(AppRadius.borderRadius16),
+                            ),
+                          ),
+                          context: context,
+                          builder: (context) {
+                            return ContactAdminDialog(
+                                title: 'Contact your service provider?',
+                                subtitle:
+                                    'You can reach out to your service provider on',
+                                firstText: 'Call',
+                                secondText: 'Whatsapp',
+                                onCallTap: () {
+                                  Navigator.of(context).pop();
+                                  makePhoneCall(
+                                    AppConstants.supportNumber,
+                                  );
+                                },
+                                onWhatsappTap: () async {
+                                  Navigator.of(context).pop();
+                                  openWhatsapp(
+                                    context,
+                                    AppConstants.supportNumber,
+                                    'Hello there, \n\nI need assistance with my account.',
+                                  );
+                                });
+                          });
+                    },
+                ),
+                const TextSpan(
+                  text: ' for any assistance.',
                   style: TextStyle(
                     letterSpacing: 1.0,
                     color: blackColor,
@@ -354,35 +406,63 @@ class _MainPageState extends State<MainPage> {
                 .subscriptionInfo!.subscribedModules!.module1!.expiresOn!,
           );
 
+          // show expiry dialog for member assigned to an invoice
+          if (expiryDate != null) {
+            if (DateTime.now().isAtSameMomentAs(expiryDate) ||
+                DateTime.now().isAfter(expiryDate)) {
+              showAppAccessDialog(
+                'ok',
+                dismissible: false,
+                context: context,
+                title: 'Hey there!',
+                content: RichText(
+                  textAlign: TextAlign.center,
+                  text: const TextSpan(children: [
+                    TextSpan(
+                      text:
+                          'Sorry, this account has expired, contact admin for assistance.',
+                      style: TextStyle(
+                        letterSpacing: 1.0,
+                        color: blackColor,
+                        fontSize: AppSize.s18,
+                      ),
+                    ),
+                  ]),
+                ),
+                onTap: logout,
+              );
+            }
+          }
+
           /// user is assigned an invoice
           // Restrict access to app if member has subscribed to only database and attendance
-          // if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
-          //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
-          //         null &&
-          //     clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
-          //         null) {
-          //   showAppAccessDialog(
-          //     'ok',
-          //     dismissible: false,
-          //     context: context,
-          //     title: 'Hey there!',
-          //     content: RichText(
-          //       textAlign: TextAlign.center,
-          //       text: const TextSpan(children: [
-          //         TextSpan(
-          //           text:
-          //               'Sorry you don\'t have access to the services of this app, please contact admin for assistance.',
-          //           style: TextStyle(
-          //             letterSpacing: 1.0,
-          //             color: blackColor,
-          //             fontSize: AppSize.s18,
-          //           ),
-          //         ),
-          //       ]),
-          //     ),
-          //     onTap: logout,
-          //   );
-          // }
+          if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
+              clientAccountInfo!.subscriptionInfo!.subscribedModules!.module2 !=
+                  null &&
+              clientAccountInfo!.subscriptionInfo!.subscribedModules!.module3 ==
+                  null) {
+            showAppAccessDialog(
+              'ok',
+              dismissible: false,
+              context: context,
+              title: 'Hey there!',
+              content: RichText(
+                textAlign: TextAlign.center,
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text:
+                        'Sorry you don\'t have access to the services of this app, please contact admin for assistance.',
+                    style: TextStyle(
+                      letterSpacing: 1.0,
+                      color: blackColor,
+                      fontSize: AppSize.s18,
+                    ),
+                  ),
+                ]),
+              ),
+              onTap: logout,
+            );
+          }
 
           // Restrict access to app if member has subscribed to only database
           if (clientAccountInfo!.subscriptionInfo!.subscribedModules!.module1 != null &&
@@ -412,33 +492,6 @@ class _MainPageState extends State<MainPage> {
               onTap: logout,
             );
           }
-        }
-      }
-      // show expiry dialog for member assigned to an invoice
-      if (expiryDate != null) {
-        if (DateTime.now().isAtSameMomentAs(expiryDate) ||
-            DateTime.now().isAfter(expiryDate)) {
-          showAppAccessDialog(
-            'ok',
-            dismissible: false,
-            context: context,
-            title: 'Hey there!',
-            content: RichText(
-              textAlign: TextAlign.center,
-              text: const TextSpan(children: [
-                TextSpan(
-                  text:
-                      'Sorry, this account has expired, contact admin for assistance.',
-                  style: TextStyle(
-                    letterSpacing: 1.0,
-                    color: blackColor,
-                    fontSize: AppSize.s18,
-                  ),
-                ),
-              ]),
-            ),
-            onTap: logout,
-          );
         }
       }
     }

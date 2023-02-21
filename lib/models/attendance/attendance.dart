@@ -15,8 +15,7 @@ class Attendance {
   int? accountType;
   bool? inOrOut;
   dynamic justification;
-  String? breakOverstay;
-  String? productiveHours;
+
   String? inTime;
   String? outTime;
   String? startBreak;
@@ -38,8 +37,6 @@ class Attendance {
     this.accountType,
     this.inOrOut,
     this.justification,
-    this.breakOverstay,
-    this.productiveHours,
     this.inTime,
     this.outTime,
     this.startBreak,
@@ -65,8 +62,7 @@ class Attendance {
     accountType = json['accountType'];
     inOrOut = json['inOrOut'];
     justification = json['justification'];
-    breakOverstay = json['breakOverstay'];
-    productiveHours = json['productiveHours'];
+
     inTime = json['inTime'];
     outTime = json['outTime'];
     startBreak = json['startBreak'];
@@ -97,8 +93,7 @@ class Attendance {
     data['accountType'] = accountType;
     data['inOrOut'] = inOrOut;
     data['justification'] = justification;
-    data['breakOverstay'] = breakOverstay;
-    data['productiveHours'] = productiveHours;
+
     data['inTime'] = inTime;
     data['outTime'] = outTime;
     data['startBreak'] = startBreak;

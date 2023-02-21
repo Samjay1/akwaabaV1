@@ -10,6 +10,7 @@ import 'package:akwaaba/models/attendance/attendance.dart';
 import 'package:akwaaba/models/attendance/excuse_model.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/models/general/messaging_type.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,8 +69,14 @@ class AttendanceAPI {
   }) async {
     AttendanceHistoryResponse membersResponse;
 
-    var url =
-        '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_memberIds=$memberId&filter_activeStatus=$status&filter_from_age=$fromAge&filter_to_age=$toAge';
+    String? userType = await SharedPrefs().getUserType();
+
+    var url;
+    userType == AppConstants.member
+        ? url =
+            '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_memberIds=$memberId&filter_activeStatus=$status'
+        : url =
+            '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_memberIds=$memberId&filter_activeStatus=$status&filter_from_age=$fromAge&filter_to_age=$toAge';
     // loop through meeting Ids
     // and append them to url for query
     for (var id in meetingIds) {

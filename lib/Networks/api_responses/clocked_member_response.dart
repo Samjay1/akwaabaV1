@@ -38,6 +38,8 @@ class Attendee {
   Attendance? attendance;
   String? lastSeen;
   String? status;
+  String? breakOverstay;
+  String? productiveHours;
   String? identification;
   bool? selected = false;
 
@@ -46,6 +48,8 @@ class Attendee {
     this.attendance,
     this.lastSeen,
     this.status,
+    this.breakOverstay,
+    this.productiveHours,
     this.identification,
   });
 
@@ -58,7 +62,8 @@ class Attendee {
         : null;
     lastSeen = json['lastSeen'];
     status = json['status'];
-
+    breakOverstay = json['breakOverstay'];
+    productiveHours = json['productiveHours'];
     identification = json['identification'];
   }
 
@@ -72,7 +77,8 @@ class Attendee {
     }
     data['lastSeen'] = lastSeen;
     data['status'] = status;
-
+    data['breakOverstay'] = breakOverstay;
+    data['productiveHours'] = productiveHours;
     data['identification'] = identification;
     return data;
   }

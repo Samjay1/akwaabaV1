@@ -50,16 +50,16 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
     }
 
     var productiveHours = '0:00';
-    if (attendee!.attendance!.productiveHours != null) {
+    if (attendee!.productiveHours != null) {
       productiveHours = DateUtil.getTimeStringFromDouble(
-          double.parse(attendee!.attendance!.productiveHours!));
+          double.parse(attendee!.productiveHours!));
     }
 
     var breakOverStay = '0:00';
     if (attendee!.attendance!.meetingEventId!.hasBreakTime! &&
-        attendee!.attendance!.breakOverstay != null) {
+        attendee!.breakOverstay != null) {
       breakOverStay = DateUtil.getTimeStringFromDouble(
-          double.parse(attendee!.attendance!.breakOverstay!));
+          double.parse(attendee!.breakOverstay!));
     }
 
     var lastSeenDate = DateUtil.convertToAgo(

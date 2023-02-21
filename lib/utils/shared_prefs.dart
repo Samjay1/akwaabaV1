@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
+import 'package:akwaaba/providers/all_events_provider.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
@@ -116,6 +117,7 @@ class SharedPrefs {
 
   void logout(BuildContext context) {
     Provider.of<HomeProvider>(context, listen: false).clearData();
+    Provider.of<AllEventsProvider>(context, listen: false).clearData();
     Provider.of<MemberProvider>(context, listen: false).clearData();
     Provider.of<ClientProvider>(context, listen: false).clearData();
     clear();
