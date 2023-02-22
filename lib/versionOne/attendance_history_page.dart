@@ -1,5 +1,4 @@
 import 'package:akwaaba/components/attendance_history_item_widget.dart';
-import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';

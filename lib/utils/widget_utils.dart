@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/dialogs_modals/info_dialog.dart';
 import 'package:akwaaba/utils/size_helper.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';

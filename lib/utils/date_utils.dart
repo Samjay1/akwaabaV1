@@ -32,14 +32,30 @@ class DateUtil {
 
   static Future<TimeOfDay?> selectTime(BuildContext context) async {
     TimeOfDay? selectedTime;
-    final TimeOfDay? picked = await showTimePicker(
+    final TimeOfDay? timePicked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
     );
-    if (picked != null && picked != selectedTime) {
-      selectedTime = picked;
+    if (timePicked != null && timePicked != selectedTime) {
+      selectedTime = timePicked.replacing(hour: timePicked.hourOfPeriod);
     }
     return selectedTime;
+  }
+
+  static String convertTimeOfDayTo12hour(
+      {required TimeOfDay timeOfDay, required bool showAMPM}) {
+    if (showAMPM) {
+      debugPrint(timeOfDay.period.name);
+      return '${timeOfDay.hour}:${timeOfDay.minute < 9 ? '0${timeOfDay.minute}' : '${timeOfDay.minute}'} ${timeOfDay.period.name}';
+    } else {
+      return '${timeOfDay.hour}:${timeOfDay.minute < 9 ? '0${timeOfDay.minute}' : '${timeOfDay.minute}'}';
+    }
   }
 
   // format date

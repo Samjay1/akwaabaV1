@@ -52,6 +52,7 @@ class PostClockingProvider extends ChangeNotifier {
   MeetingEventModel? selectedPastMeetingEvent;
   DateTime? selectedDate;
   String? postClockTime;
+  String? displayClockTime;
 
   String searchName = '';
   String searchIdentity = '';

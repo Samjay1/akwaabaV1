@@ -1,8 +1,6 @@
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
-import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/custom_outlined_button.dart';
-import 'package:akwaaba/components/custom_time_picker.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/filter_loader.dart';
@@ -254,34 +252,55 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             SizedBox(
                               height: displayHeight(context) * 0.02,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Expanded(
-                                  child: CustomTimePicker(
-                                    hintText: 'Select Post Clock Time',
-                                    fillColor: blackColor,
-                                    textColor: whiteColor,
-                                    firstDate: DateTime(1970),
-                                    lastDate: DateTime.now(),
-                                    onChanged: (dateString) {
-                                      setState(() {
-                                        postClockingProvider.postClockTime =
-                                            dateString;
-                                      });
-                                      debugPrint(
-                                        "Selected PostClock Time: $dateString",
-                                      );
-                                    },
-                                    onSaved: (dateString) {
-                                      setState(() {
-                                        postClockingProvider.postClockTime =
-                                            dateString!;
-                                      });
-                                    },
-                                  ),
+                            InkWell(
+                              onTap: () async {
+                                var time = await DateUtil.selectTime(context);
+                                postClockingProvider.postClockTime =
+                                    DateUtil.convertTimeOfDayTo12hour(
+                                        timeOfDay: time!, showAMPM: false);
+                                postClockingProvider.displayClockTime =
+                                    DateUtil.convertTimeOfDayTo12hour(
+                                        timeOfDay: time, showAMPM: true);
+                                debugPrint(
+                                    "Selected: ${postClockingProvider.postClockTime}");
+                                debugPrint(
+                                    "Display: ${postClockingProvider.displayClockTime}");
+                                setState(() {});
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(AppPadding.p14),
+                                decoration: BoxDecoration(
+                                  color: blackColor,
+                                  borderRadius: BorderRadius.circular(
+                                      AppRadius.borderRadius8),
                                 ),
-                              ],
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.access_time,
+                                      color: whiteColor,
+                                      size: 24,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        postClockingProvider.displayClockTime ??
+                                            'Select Post Clock Time',
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: whiteColor,
+                                          fontSize: AppSize.s16,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                    const Icon(
+                                      CupertinoIcons.chevron_up_chevron_down,
+                                      color: whiteColor,
+                                      size: 16,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                             //// CustomElevatedButton(label: "Filter", function: (){}),\
 
