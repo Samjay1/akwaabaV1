@@ -97,12 +97,9 @@ class AllEventsProvider extends ChangeNotifier {
       _page = 1;
       var userBranch = await getUserBranch(currentContext);
       var response = await EventAPI.getUpcomingMeetingEventList(
-          page: _page,
-          branchId:
-              selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
-          date: selectedDate == null
-              ? ''
-              : selectedDate!.toIso8601String().substring(0, 10));
+        page: _page,
+        branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,
+      );
       hasNext = response.next == null ? false : true;
       _upcomingMeetingEventList = response.results!;
       _tempUpcomingMeetingEventList = _upcomingMeetingEventList;
@@ -144,9 +141,7 @@ class AllEventsProvider extends ChangeNotifier {
                 branchId: selectedBranch == null
                     ? userBranch.id!
                     : selectedBranch!.id!,
-                date: selectedDate == null
-                    ? ''
-                    : selectedDate!.toIso8601String().substring(0, 10));
+              );
         if (response.results!.isNotEmpty) {
           hasNext = response.next == null ? false : true;
           _upcomingMeetingEventList.addAll(response.results!);
@@ -180,7 +175,7 @@ class AllEventsProvider extends ChangeNotifier {
       showErrorToast('Please select date to proceed');
       return;
     }
-    getUpcomingMeetingEvents();
+    getPastMeetingEvents();
   }
 
   // get meetins from date specified
