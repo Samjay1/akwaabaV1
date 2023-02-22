@@ -277,8 +277,7 @@ class _MemberAccountPageState extends State<MemberAccountPage> {
                           title: "Updated by",
                           label: widget.member!.updatedBy == 0
                               ? 'Self'
-                              : (widget.member!.updatedByInfo != null ||
-                                      widget.member!.updatedByInfo == '')
+                              : (widget.member!.updatedByInfo == null)
                                   ? 'Admin'
                                   : 'Admin (${widget.member!.updatedByInfo!.firstname!.capitalize()} ${widget.member!.updatedByInfo!.surname!.capitalize()})',
                         ),

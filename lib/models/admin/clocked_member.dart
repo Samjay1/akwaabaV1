@@ -46,8 +46,8 @@ class Member extends Equatable {
   ConstituencyInfo? constituencyInfo;
   ConstituencyInfo? electoralareaInfo;
   String? identification;
-  //UpdatedByInfo? updatedByInfo;
-  dynamic updatedByInfo;
+  UpdatedByInfo? updatedByInfo;
+  //dynamic updatedByInfo;
   int? updatedBy;
   String? updateDate;
   bool? selected = false;
@@ -160,11 +160,10 @@ class Member extends Equatable {
         ? ConstituencyInfo.fromJson(json['electoralareaInfo'])
         : null;
     identification = json['identification'];
-    updatedByInfo = json['updatedByInfo'];
-    // updatedByInfo =
-    //     (json['updatedByInfo'] != null || json['updatedByInfo'] != "")
-    //         ? UpdatedByInfo.fromJson(json['updatedByInfo'])
-    //         : null;
+    //updatedByInfo = json['updatedByInfo'];
+    updatedByInfo = json['updatedByInfo'] != null
+        ? UpdatedByInfo.fromJson(json['updatedByInfo'])
+        : null;
     updatedBy = json['updatedBy'];
     updateDate = json['updateDate'];
   }
@@ -227,10 +226,10 @@ class Member extends Equatable {
       data['electoralareaInfo'] = electoralareaInfo!.toJson();
     }
     data['identification'] = identification;
-    data['updatedByInfo'] = updatedByInfo;
-    // if (updatedByInfo != null) {
-    //   data['updatedByInfo'] = updatedByInfo!.toJson();
-    // }
+    // data['updatedByInfo'] = updatedByInfo;
+    if (updatedByInfo != null) {
+      data['updatedByInfo'] = updatedByInfo!.toJson();
+    }
     data['updatedBy'] = updatedBy;
     data['updateDate'] = updateDate;
     return data;

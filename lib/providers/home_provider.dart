@@ -1,8 +1,10 @@
 import 'package:akwaaba/Networks/event_api.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/location/location_services.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -94,6 +96,7 @@ class HomeProvider extends ChangeNotifier {
     setLoading(true);
     try {
       _page = 1;
+      var userType = await SharedPrefs().getUserType();
       var branch = await getUserBranch(currentContext);
       var response = await EventAPI.getTodayMeetingEventList(
         branchId: branch.id!,
@@ -103,11 +106,15 @@ class HomeProvider extends ChangeNotifier {
       hasNext = response.next == null ? false : true;
       debugPrint("TODAY Meeting: ${_todayMeetingEventList.length}");
       if (_todayMeetingEventList.isNotEmpty) {
-        for (var meeting in _todayMeetingEventList) {
-          await checkClockedMeetings(
-            meetingEventModel: meeting,
-            branchId: meeting.branchId!,
-          );
+        if (userType == AppConstants.member) {
+          for (var meeting in _todayMeetingEventList) {
+            await checkClockedMeetings(
+              meetingEventModel: meeting,
+              branchId: meeting.branchId!,
+            );
+          }
+        } else {
+          setLoading(false);
         }
       } else {
         setLoading(false);

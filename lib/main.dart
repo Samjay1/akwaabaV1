@@ -45,6 +45,13 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    // statusBarColor: Colors.transparent, // set color of status bar
+    // statusBarIconBrightness: Brightness.dark, // set color of status bar icon
+    systemNavigationBarColor: Colors.white, // set color of navigation bar
+    systemNavigationBarIconBrightness:
+        Brightness.dark, // set color of icons on the navigation bar
+  )); //
   FirebaseMessaging.onBackgroundMessage(_registerBackgroundMessageHandler);
   FirebaseMessaging.onMessageOpenedApp.listen(_registerMessageOpenedHandler);
   runApp(

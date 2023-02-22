@@ -40,8 +40,10 @@ double calculateDistance(lat1, lon1, lat2, lon2) {
 Future<void> makePhoneCall(String phoneNumber) async {
   final Uri launchUri = Uri(
     scheme: 'tel',
-    path: phoneNumber,
+    //path: phoneNumber,
+    path: '+$phoneNumber',
   );
+
   await launchUrl(launchUri);
 }
 
