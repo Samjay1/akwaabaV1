@@ -52,7 +52,7 @@ class DateUtil {
       {required TimeOfDay timeOfDay, required bool showAMPM}) {
     if (showAMPM) {
       debugPrint(timeOfDay.period.name);
-      return '${timeOfDay.hour}:${timeOfDay.minute < 9 ? '0${timeOfDay.minute}' : '${timeOfDay.minute}'} ${timeOfDay.period.name}';
+      return '${timeOfDay.hour}:${timeOfDay.minute < 9 ? '0${timeOfDay.minute}' : '${timeOfDay.minute}'} ${timeOfDay.period.name.toUpperCase()}';
     } else {
       return '${timeOfDay.hour}:${timeOfDay.minute < 9 ? '0${timeOfDay.minute}' : '${timeOfDay.minute}'}';
     }

@@ -7,7 +7,6 @@ import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/phone_form_textfield.dart';
 import 'package:akwaaba/components/tag_widget.dart';
-import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -19,13 +18,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:multiselect/multiselect.dart';
 import '../components/custom_cached_image_widget.dart';
 import '../components/custom_dropdown_multiselect.dart';
 import '../components/email_form_textfield.dart';
-import '../models/general/abstractGroup.dart';
 import '../models/general/abstractModel.dart';
-import '../models/general/abstractSubGroup.dart';
 import '../models/general/branch.dart';
 import '../models/general/constiteuncy.dart';
 import '../models/general/country.dart';
@@ -199,14 +195,14 @@ class _MemberRegistrationPageIndividualState
     loadingGroup = false;
   }
 
-  //GROUPING - GROUP
+  // GROUPING - GROUP
   var selectedGroup;
   var selectedGroupID;
   late List<Group>? groupList = [];
   late List<String>? selectedGroupList = [];
   late String selectedGroupOption;
   void _getGroupList({required var branchID, var token}) async {
-    groupList = (await MemberAPI().getGroup(branchID: branchID));
+    groupList = (await MemberAPI().getGroup(branchID: branchID, token: token));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
     loadingGroup = false;
   }
@@ -230,7 +226,8 @@ class _MemberRegistrationPageIndividualState
   late String selectedSubGroupOption = '';
   late List<SubGroup>? subGroupList = [];
   void _getSubGroupList({required var branchID, var token}) async {
-    subGroupList = (await MemberAPI().getSubGroup(branchID: branchID));
+    subGroupList =
+        (await MemberAPI().getSubGroup(branchID: branchID, token: token));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
@@ -258,14 +255,13 @@ class _MemberRegistrationPageIndividualState
   @override
   void initState() {
     super.initState();
+    _getToken(clientID: widget.clientID);
     _getCountryList();
     _getRegionList();
     _getMaritalList();
     _getEducationList();
     _getOccupationList();
     _getProfessionList();
-    _getToken(clientID: widget.clientID);
-
     pageViewController.addListener(() {
       if (pageViewController.page?.round() != currentIndex) {
         setState(() {

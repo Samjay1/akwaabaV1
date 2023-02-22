@@ -129,7 +129,7 @@ class _MemberRegistrationPageOrganizationState
   late String selectedGroupOption;
   late List<Group>? groupList = [];
   void _getGroupList({required var branchID, var token}) async {
-    groupList = await MemberAPI().getGroup(branchID: branchID);
+    groupList = await MemberAPI().getGroup(branchID: branchID, token: token);
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
     loadingGroup = false;
   }
@@ -153,7 +153,8 @@ class _MemberRegistrationPageOrganizationState
   late String selectedSubGroupOption = '';
   late List<SubGroup>? subGroupList = [];
   void _getSubGroupList({required var branchID, var token}) async {
-    subGroupList = (await MemberAPI().getSubGroup(branchID: branchID));
+    subGroupList =
+        (await MemberAPI().getSubGroup(branchID: branchID, token: token));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
@@ -232,6 +233,7 @@ class _MemberRegistrationPageOrganizationState
   var token;
   void _getToken({required var clientID}) async {
     token = (await MemberAPI().getToken(clientID: clientID));
+    debugPrint("Token: $token");
     Future.delayed(const Duration(seconds: 2)).then((value) => setState(() {}));
     _getBranchList(token: token);
     _getOrganisationTypeList(token: token);
@@ -241,10 +243,9 @@ class _MemberRegistrationPageOrganizationState
   @override
   void initState() {
     super.initState();
+    _getToken(clientID: widget.clientID);
     _getCountryList();
     _getRegionList();
-    _getToken(clientID: widget.clientID);
-
     pageViewController.addListener(() {
       if (pageViewController.page?.round() != currentIndex) {
         setState(() {
@@ -1174,9 +1175,9 @@ class _MemberRegistrationPageOrganizationState
         setState(() {
           selectedBranch = value['name'];
           selectedBranchID = value['id'];
-          debugPrint('selectedBranchdf $selectedBranchID, $selectedBranch');
-          _getSubGroupList(token: token, branchID: selectedBranchID);
+          debugPrint('selectedBranch $selectedBranchID, $selectedBranch');
           _getGroupList(token: token, branchID: selectedBranchID);
+          _getSubGroupList(token: token, branchID: selectedBranchID);
           loadingGroup = true;
         });
       }

@@ -158,8 +158,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
         (await MemberAPI().getFullProfileInfo(memberId: await getMemberId()));
     _getWhatsappContact();
     if (myProfile != null) {
-      _getGroupList(branchID: myProfile!.branchId);
-      _getSubGroupList(branchID: myProfile!.branchId);
+      _getGroupList(branchID: myProfile!.branchId, token: token);
+      _getSubGroupList(branchID: myProfile!.branchId, token: token);
     }
     Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
@@ -342,8 +342,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
   late List<String>? selectedGroupList = [];
   late String selectedGroupOption;
   late List<Group>? groupList = [];
-  void _getGroupList({required var branchID}) async {
-    groupList = (await MemberAPI().getGroup(branchID: branchID));
+  void _getGroupList({required var branchID, required var token}) async {
+    groupList = (await MemberAPI().getGroup(branchID: branchID, token: token));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
     loadingGroup = false;
   }
@@ -366,8 +366,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
   late List<String>? selectedSubGroupList = [];
   late String selectedSubGroupOption = '';
   late List<SubGroup>? subGroupList = [];
-  void _getSubGroupList({required var branchID}) async {
-    subGroupList = (await MemberAPI().getSubGroup(branchID: branchID));
+  void _getSubGroupList({required var branchID, required var token}) async {
+    subGroupList =
+        (await MemberAPI().getSubGroup(branchID: branchID, token: token));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
@@ -468,6 +469,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   @override
   void initState() {
     _registerDownloadTask();
+    getToken();
     _getMyProfile();
     _getCountryList();
     _getRegionList();
@@ -475,7 +477,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
     _getEducationList();
     _getOccupationList();
     _getProfessionList();
-    getToken();
 
     Future.delayed(const Duration(seconds: 8)).then((value) => setState(() {
           debugPrint(
@@ -2054,8 +2055,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
           selectedBranch = value['name'];
           selectedBranchID = value['id'];
           debugPrint('selectedBranchdf $selectedBranchID, $selectedBranch');
-          _getSubGroupList(branchID: selectedBranchID);
-          _getGroupList(branchID: selectedBranchID);
+          _getSubGroupList(branchID: selectedBranchID, token: token);
+          _getGroupList(branchID: selectedBranchID, token: token);
           _getMemberGroups();
           _getMemberSubGroups();
           loadingGroup = true;
