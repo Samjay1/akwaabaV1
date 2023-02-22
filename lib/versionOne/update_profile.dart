@@ -157,6 +157,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
     myProfile =
         (await MemberAPI().getFullProfileInfo(memberId: await getMemberId()));
     _getWhatsappContact();
+    if (myProfile != null) {
+      _getGroupList(branchID: myProfile!.branchId);
+      _getSubGroupList(branchID: myProfile!.branchId);
+    }
     Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
 
@@ -338,8 +342,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
   late List<String>? selectedGroupList = [];
   late String selectedGroupOption;
   late List<Group>? groupList = [];
-  void _getGroupList({required var branchID, var token}) async {
-    groupList = (await MemberAPI().getGroup(branchID: branchID, token: token));
+  void _getGroupList({required var branchID}) async {
+    groupList = (await MemberAPI().getGroup(branchID: branchID));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
     loadingGroup = false;
   }
@@ -362,9 +366,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
   late List<String>? selectedSubGroupList = [];
   late String selectedSubGroupOption = '';
   late List<SubGroup>? subGroupList = [];
-  void _getSubGroupList({required var branchID, var token}) async {
-    subGroupList =
-        (await MemberAPI().getSubGroup(branchID: branchID, token: token));
+  void _getSubGroupList({required var branchID}) async {
+    subGroupList = (await MemberAPI().getSubGroup(branchID: branchID));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
@@ -418,13 +421,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
     _getCategoryList(token: token);
     _getMemberGroups();
     _getMemberSubGroups();
-    if (myProfile != null) {
-      _getGroupList(branchID: myProfile!.branchId, token: token);
-      _getSubGroupList(branchID: myProfile!.branchId, token: token);
-    }
   }
 
-  //LOCATION - REGION
+  // LOCATION - REGION
   Region? singleRegion;
   void _getSingleRegion({required regionId}) async {
     Region? singleRegionVal =
@@ -435,7 +434,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
     print('2. singleRegion?.location ${singleRegion?.location}');
   }
 
-  //LOCATION - DISTRICT
+  // LOCATION - DISTRICT
   District? singleDistrict;
   void _getSingleDistrict({required districtId}) async {
     print('1. singleDistrict?.location');
@@ -447,7 +446,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
         }));
   }
 
-  //LOCATION - CONSTITUENCY
+  // LOCATION - CONSTITUENCY
   Constituency? singleConstituency;
   void _getsingleConstituency({required ConstId}) async {
     singleConstituency =
@@ -455,7 +454,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
     Future.delayed(const Duration(seconds: 2)).then((value) => setState(() {}));
   }
 
-  //LOCATION - ELECTORAL AREA
+  // LOCATION - ELECTORAL AREA
   ElectoralArea? singleElectoral;
   void _getsingleElectoralArea({required electoralId}) async {
     singleElectoral =
@@ -479,7 +478,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
     getToken();
 
     Future.delayed(const Duration(seconds: 8)).then((value) => setState(() {
-          print('kjRegion ID ${myProfile?.region} ${singleRegion?.location}');
+          debugPrint(
+            'Region ID ${myProfile?.region} ${singleRegion?.location}',
+          );
 
           SharedPrefs().getUserType().then((value) => setState(() {
                 userType = value;
@@ -2053,8 +2054,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
           selectedBranch = value['name'];
           selectedBranchID = value['id'];
           debugPrint('selectedBranchdf $selectedBranchID, $selectedBranch');
-          _getSubGroupList(token: token, branchID: selectedBranchID);
-          _getGroupList(token: token, branchID: selectedBranchID);
+          _getSubGroupList(branchID: selectedBranchID);
+          _getGroupList(branchID: selectedBranchID);
           _getMemberGroups();
           _getMemberSubGroups();
           loadingGroup = true;

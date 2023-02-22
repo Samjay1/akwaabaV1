@@ -22,6 +22,7 @@ import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/providers/client_provider.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/versionOne/attendance_report_filter_page.dart';
@@ -654,24 +655,21 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
         children: [
           LabelWidgetContainer(
             label: "Date",
-            child: CustomDatePicker(
-              hintText: 'Select Date',
-              firstDate: DateTime(1970),
-              lastDate: DateTime.now(),
-              onChanged: (dateString) {
-                setState(() {
-                  attendanceProvider.selectedDate = DateTime.parse(dateString);
-                });
-              },
-              onSaved: (dateString) {
-                setState(() {
-                  attendanceProvider.selectedDate = DateTime.parse(dateString!);
-                });
+            child: FormButton(
+              label: attendanceProvider.selectedDate == null
+                  ? "Select Date"
+                  : attendanceProvider.selectedDate!
+                      .toIso8601String()
+                      .substring(0, 10),
+              function: () async {
+                attendanceProvider.selectedDate = await DateUtil.selectDate(
+                  context: context,
+                  firstDate: DateTime(1970),
+                  lastDate: DateTime.now(),
+                );
+                setState(() {});
               },
             ),
-          ),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
           ),
           Consumer<ClientProvider>(
             builder: (context, data, child) {

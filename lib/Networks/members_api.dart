@@ -173,6 +173,7 @@ class MembersAPI {
   // get list of restricted members
   static Future<RestrictedMemberResponse> getRestrictedMembers({
     required int page,
+    required int branchId,
     required String search,
   }) async {
     RestrictedMemberResponse memberResponse;
@@ -183,10 +184,10 @@ class MembersAPI {
     var url;
     if (search.isEmpty) {
       url = Uri.parse(
-          '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=${memberId ?? ''}');
+          '${getBaseUrl()}/members/access/assignment/get-members?page=$page&branchId=$branchId&accountTypeId=1&memberId=${memberId ?? ''}');
     } else {
       url = Uri.parse(
-          '${getBaseUrl()}/members/access/assignment/get-members?page=$page&memberId=${memberId ?? ''}&search=$search');
+          '${getBaseUrl()}/members/access/assignment/get-members?page=$page&branchId=$branchId&accountTypeId=1&memberId=${memberId ?? ''}&search=$search');
     }
 
     debugPrint("URL: $url");

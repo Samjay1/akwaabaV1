@@ -28,7 +28,7 @@ class _FormButtonState extends State<FormButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 24, left: 1, right: 1),
+      padding: const EdgeInsets.only(bottom: 20, left: 1, right: 1),
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),

@@ -816,9 +816,11 @@ class MemberAPI {
 
 //  GROUP AND SUB GROUPS REQUEST
 
-  Future<List<Group>?> getGroup({required var token, var branchID}) async {
+  Future<List<Group>?> getGroup({required var branchID}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
       http.Response response = await http.get(
           Uri.parse('$mybaseUrl/members/groupings/group?branchId=$branchID'),
           headers: {
@@ -841,10 +843,11 @@ class MemberAPI {
     }
   }
 
-  Future<List<SubGroup>?> getSubGroup(
-      {required var token, var branchID}) async {
+  Future<List<SubGroup>?> getSubGroup({required var branchID}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('token');
       http.Response response = await http.get(
           Uri.parse(
               '$mybaseUrl/members/groupings/sub-group?branchId=$branchID'),
@@ -896,7 +899,7 @@ class MemberAPI {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
-          Uri.parse('$mybaseUrl/members/user-status/profession'),
+          Uri.parse('$mybaseUrl/members/user-status/profession?memberId=0'),
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);

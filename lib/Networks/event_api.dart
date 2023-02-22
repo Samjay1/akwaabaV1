@@ -98,13 +98,16 @@ class EventAPI {
     return eventResponse;
   }
 
-  static Future<MeetingEventResponse> getUpcomingMeetingEventList(
-      {required int page, required int branchId}) async {
+  static Future<MeetingEventResponse> getUpcomingMeetingEventList({
+    required int page,
+    required int branchId,
+    required String date,
+  }) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? memberId = prefs.getInt('memberId');
     MeetingEventResponse eventResponse;
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?filter_recuring=both&page=$page&branchId=$branchId&filter_memberId=${memberId ?? ''}');
+        '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?filter_recuring=both&page=$page&branchId=$branchId&filter_date=$date&filter_memberId=${memberId ?? ''}');
     debugPrint("URL: ${url.toString()}");
     try {
       http.Response response = await http

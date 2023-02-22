@@ -11,7 +11,7 @@ class AppConstants {
   static const int meetingTypeMeeting = 1;
   static const int meetingTypeEvent = 2;
   static const int timOutDuration = 60;
-  static const int searchTimerDuration = 500;
+  static const int searchTimerDuration = 600;
   static String? token;
 
   static String supportNumber = '+233206007255';

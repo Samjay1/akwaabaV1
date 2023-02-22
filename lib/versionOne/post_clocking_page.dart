@@ -6,6 +6,7 @@ import 'package:akwaaba/components/custom_time_picker.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
 import 'package:akwaaba/components/filter_loader.dart';
+import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
 import 'package:akwaaba/components/postclock_clocked_member_item.dart';
@@ -21,6 +22,7 @@ import 'package:akwaaba/models/general/member_category.dart';
 import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/post_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/search_util.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
@@ -86,7 +88,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
             setState(() {
               isShowTopView = true;
             });
-
             break;
           case ScrollDirection.reverse:
             setState(() {
@@ -163,7 +164,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
                               },
                               onChanged: (val) {
                                 setState(() {
-                                  // search absentees by name
                                   postClockingProvider.searchName = val;
                                 });
                                 val.isEmpty
@@ -987,26 +987,21 @@ class _PostClockingPageState extends State<PostClockingPage> {
           ),
           LabelWidgetContainer(
             label: "Date",
-            child: CustomDatePicker(
-              hintText: 'Select Date',
-              firstDate: DateTime(1970),
-              lastDate: DateTime.now(),
-              onChanged: (dateString) {
-                setState(() {
-                  postClockingProvider.selectedDate =
-                      DateTime.parse(dateString);
-                });
-              },
-              onSaved: (dateString) {
-                setState(() {
-                  postClockingProvider.selectedDate =
-                      DateTime.parse(dateString!);
-                });
+            child: FormButton(
+              label: postClockingProvider.selectedDate == null
+                  ? "Select Date"
+                  : postClockingProvider.selectedDate!
+                      .toIso8601String()
+                      .substring(0, 10),
+              function: () async {
+                postClockingProvider.selectedDate = await DateUtil.selectDate(
+                  context: context,
+                  firstDate: DateTime(1970),
+                  lastDate: DateTime.now(),
+                );
+                setState(() {});
               },
             ),
-          ),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
           ),
           Consumer<ClientProvider>(
             builder: (context, data, child) {
@@ -1276,7 +1271,7 @@ class _PostClockingPageState extends State<PostClockingPage> {
             children: [
               Expanded(
                 child: InkWell(
-                    onTap: () => postClockingProvider.clearData(),
+                    onTap: () => postClockingProvider.clearFilters(),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 10),

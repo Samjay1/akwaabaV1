@@ -18,6 +18,7 @@ import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/providers/members_provider.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -368,21 +369,21 @@ class _FilterPageState extends State<FilterPage> {
                           Expanded(
                             child: LabelWidgetContainer(
                               label: "Start Period",
-                              child: CustomDatePicker(
-                                hintText: 'Start Period',
-                                firstDate: DateTime(1970),
-                                lastDate: DateTime.now(),
-                                onChanged: (dateString) {
-                                  setState(() {
-                                    _membersProvider.selectedStartDate =
-                                        DateTime.parse(dateString);
-                                  });
-                                },
-                                onSaved: (dateString) {
-                                  setState(() {
-                                    _membersProvider.selectedStartDate =
-                                        DateTime.parse(dateString!);
-                                  });
+                              child: FormButton(
+                                label:
+                                    _membersProvider.selectedStartDate == null
+                                        ? "Select Start Period"
+                                        : _membersProvider.selectedStartDate!
+                                            .toIso8601String()
+                                            .substring(0, 10),
+                                function: () async {
+                                  _membersProvider.selectedStartDate =
+                                      await DateUtil.selectDate(
+                                    context: context,
+                                    firstDate: DateTime(1970),
+                                    lastDate: DateTime.now(),
+                                  );
+                                  setState(() {});
                                 },
                               ),
                             ),
@@ -393,21 +394,20 @@ class _FilterPageState extends State<FilterPage> {
                           Expanded(
                             child: LabelWidgetContainer(
                               label: "End Period",
-                              child: CustomDatePicker(
-                                hintText: 'End Period',
-                                firstDate: DateTime(1970),
-                                lastDate: DateTime.now(),
-                                onChanged: (dateString) {
-                                  setState(() {
-                                    _membersProvider.selectedEndDate =
-                                        DateTime.parse(dateString);
-                                  });
-                                },
-                                onSaved: (dateString) {
-                                  setState(() {
-                                    _membersProvider.selectedEndDate =
-                                        DateTime.parse(dateString!);
-                                  });
+                              child: FormButton(
+                                label: _membersProvider.selectedEndDate == null
+                                    ? "Select End Period"
+                                    : _membersProvider.selectedEndDate!
+                                        .toIso8601String()
+                                        .substring(0, 10),
+                                function: () async {
+                                  _membersProvider.selectedEndDate =
+                                      await DateUtil.selectDate(
+                                    context: context,
+                                    firstDate: DateTime(1970),
+                                    lastDate: DateTime.now(),
+                                  );
+                                  setState(() {});
                                 },
                               ),
                             ),
@@ -415,9 +415,9 @@ class _FilterPageState extends State<FilterPage> {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: displayHeight(context) * 0.02,
-                    ),
+                    // SizedBox(
+                    //   height: displayHeight(context) * 0.02,
+                    // ),
                     //
                     // LabelWidgetContainer(
                     //   label: "Pick Age Bracket",

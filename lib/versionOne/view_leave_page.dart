@@ -4,6 +4,7 @@ import 'package:akwaaba/components/custom_date_picker.dart';
 import 'package:akwaaba/components/custom_elevated_button.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
+import 'package:akwaaba/components/form_button.dart';
 import 'package:akwaaba/components/form_textfield.dart';
 import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
@@ -11,6 +12,7 @@ import 'package:akwaaba/constants/app_dimens.dart';
 import 'package:akwaaba/models/general/leave_status.dart';
 import 'package:akwaaba/providers/leave_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -75,6 +77,7 @@ class _ViewLeavePageState extends State<ViewLeavePage> {
                 height: displayHeight(context) * 0.02,
               ),
               CupertinoSearchTextField(
+                padding: const EdgeInsets.all(AppPadding.p14),
                 onChanged: (val) {
                   setState(() {
                     _leaveProvider.search = val;
@@ -175,21 +178,20 @@ class _ViewLeavePageState extends State<ViewLeavePage> {
               Expanded(
                 child: LabelWidgetContainer(
                   label: "Start Date",
-                  child: CustomDatePicker(
-                    hintText: 'Select Start Date',
-                    firstDate: DateTime(1970),
-                    lastDate: DateTime.now(),
-                    onChanged: (dateString) {
-                      setState(() {
-                        _leaveProvider.selectedStartDate =
-                            DateTime.parse(dateString);
-                      });
-                      debugPrint(
-                          "Selected Start Date: ${_leaveProvider.selectedStartDate!.toIso8601String().substring(0, 10)}");
-                    },
-                    onSaved: (dateString) {
+                  child: FormButton(
+                    label: _leaveProvider.selectedStartDate == null
+                        ? "Select Start Date"
+                        : _leaveProvider.selectedStartDate!
+                            .toIso8601String()
+                            .substring(0, 10),
+                    function: () async {
                       _leaveProvider.selectedStartDate =
-                          DateTime.parse(dateString!);
+                          await DateUtil.selectDate(
+                        context: context,
+                        firstDate: DateTime(1970),
+                        lastDate: DateTime.now(),
+                      );
+                      setState(() {});
                     },
                   ),
                 ),
@@ -200,21 +202,20 @@ class _ViewLeavePageState extends State<ViewLeavePage> {
               Expanded(
                 child: LabelWidgetContainer(
                   label: "End Date",
-                  child: CustomDatePicker(
-                    hintText: 'Select End Date',
-                    firstDate: DateTime(1970),
-                    lastDate: DateTime(2050),
-                    onChanged: (dateString) {
-                      setState(() {
-                        _leaveProvider.selectedEndDate =
-                            DateTime.parse(dateString);
-                      });
-                      debugPrint(
-                          "Selected End Date: ${_leaveProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
-                    },
-                    onSaved: (dateString) {
-                      _leaveProvider.selectedStartDate =
-                          DateTime.parse(dateString!);
+                  child: FormButton(
+                    label: _leaveProvider.selectedEndDate == null
+                        ? "Select End Date"
+                        : _leaveProvider.selectedEndDate!
+                            .toIso8601String()
+                            .substring(0, 10),
+                    function: () async {
+                      _leaveProvider.selectedEndDate =
+                          await DateUtil.selectDate(
+                        context: context,
+                        firstDate: DateTime(1970),
+                        lastDate: DateTime.now(),
+                      );
+                      setState(() {});
                     },
                   ),
                 ),

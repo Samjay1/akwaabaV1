@@ -72,11 +72,17 @@ class AttendanceAPI {
     String? userType = await SharedPrefs().getUserType();
 
     var url;
-    userType == AppConstants.member
-        ? url =
-            '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_memberIds=$memberId&filter_activeStatus=$status'
-        : url =
-            '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_memberIds=$memberId&filter_activeStatus=$status&filter_from_age=$fromAge&filter_to_age=$toAge';
+    if (userType == AppConstants.member) {
+      url =
+          '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_memberIds=$memberId&filter_activeStatus=$status';
+    } else {
+      (fromAge!.isNotEmpty && toAge!.isNotEmpty)
+          ? url =
+              '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_activeStatus=$status&filter_from_age=$fromAge&filter_to_age=$toAge'
+          : url =
+              '${getBaseUrl()}/attendance/meeting-event/member-attendance-history?page=$page&filter_start_date=$startDate&filter_end_date=$endDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_search=$search&filter_activeStatus=$status';
+    }
+
     // loop through meeting Ids
     // and append them to url for query
     for (var id in meetingIds) {

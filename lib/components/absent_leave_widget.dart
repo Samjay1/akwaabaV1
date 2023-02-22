@@ -128,14 +128,14 @@ class AbsentLeaveWidget extends StatelessWidget {
                           width: displayWidth(context) * 0.02,
                         ),
                         TagWidget(
-                          text: absentLeave!.state!.name == 'Unassigned'
+                          text: absentLeave!.state!.name == 'Unapproved'
                               ? 'Pending'
                               : absentLeave!.state!.name == 'Approved'
                                   ? 'Approved'
                                   : 'Cancelled',
                           color: absentLeave!.state!.name == 'Approved'
                               ? Colors.green
-                              : absentLeave!.state!.name == 'Unassigned'
+                              : absentLeave!.state!.name == 'Unapproved'
                                   ? Colors.blue
                                   : Colors.red,
                         ),

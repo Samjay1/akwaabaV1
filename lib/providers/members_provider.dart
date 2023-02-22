@@ -478,11 +478,9 @@ class MembersProvider extends ChangeNotifier {
     try {
       setLoading(true);
       _indPage = 1;
-
+      var userBranch = await getUserBranch(currentContext);
       var response = await MembersAPI.getRestrictedMembers(
-        page: _indPage,
-        search: search ?? '',
-      );
+          page: _indPage, search: search ?? '', branchId: userBranch.id!);
       _restrictedMembers = response.results!;
 
       hasNextPage = response.next == null ? false : true;
@@ -506,8 +504,12 @@ class MembersProvider extends ChangeNotifier {
       setLoadingMore(true); // show loading indicator
       _indPage += 1; // increase page by 1
       try {
+        var userBranch = await getUserBranch(currentContext);
         var response = await MembersAPI.getRestrictedMembers(
-            page: _indPage, search: search ?? '');
+          page: _indPage,
+          search: search ?? '',
+          branchId: userBranch.id!,
+        );
         if (response.results!.isNotEmpty) {
           hasNextPage = response.next == null ? false : true;
           _restrictedMembers.addAll(response.results!);

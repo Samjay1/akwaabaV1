@@ -137,6 +137,7 @@ class AttendanceHistoryProvider extends ChangeNotifier {
 
   // get list of member categories
   Future<void> getMemberCategories() async {
+    setLoadingFilters(true);
     try {
       _memberCategories = await GroupAPI.getMemberCategories();
       debugPrint('Member Categories: ${_memberCategories.length}');
@@ -234,7 +235,6 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     try {
       var userBranch = await getUserBranch(currentContext);
       var userType = await SharedPrefs().getUserType();
-      debugPrint("BID: ${userBranch.name}");
       _pastMeetingEvents = await EventAPI.getAllMeetings(
         page: 1,
         branchId: selectedBranch == null ? userBranch.id! : selectedBranch!.id!,

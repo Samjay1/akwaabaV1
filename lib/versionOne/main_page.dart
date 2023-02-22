@@ -417,10 +417,62 @@ class _MainPageState extends State<MainPage> {
                 title: 'Hey there!',
                 content: RichText(
                   textAlign: TextAlign.center,
-                  text: const TextSpan(children: [
-                    TextSpan(
+                  text: TextSpan(children: [
+                    const TextSpan(
                       text:
-                          'Sorry, this account has expired, contact admin for assistance.',
+                          'Sorry, this account has expired, please contact admin on ',
+                      style: TextStyle(
+                        letterSpacing: 1.0,
+                        color: blackColor,
+                        fontSize: AppSize.s18,
+                      ),
+                    ),
+                    TextSpan(
+                      text: clientAccountInfo!.applicantPhone,
+                      style: const TextStyle(
+                        letterSpacing: 1.0,
+                        decoration: TextDecoration.underline,
+                        color: Colors.blue,
+                        fontSize: AppSize.s18,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          showModalBottomSheet(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft:
+                                      Radius.circular(AppRadius.borderRadius16),
+                                  topRight:
+                                      Radius.circular(AppRadius.borderRadius16),
+                                ),
+                              ),
+                              context: context,
+                              builder: (context) {
+                                return ContactAdminDialog(
+                                    title: 'Contact your admin?',
+                                    subtitle:
+                                        'You can reach out to your admin on',
+                                    firstText: 'Call',
+                                    secondText: 'Whatsapp',
+                                    onCallTap: () {
+                                      Navigator.of(context).pop();
+                                      makePhoneCall(
+                                        clientAccountInfo!.applicantPhone!,
+                                      );
+                                    },
+                                    onWhatsappTap: () async {
+                                      Navigator.of(context).pop();
+                                      openWhatsapp(
+                                        context,
+                                        clientAccountInfo!.applicantPhone!,
+                                        'Hello there, \n\nI need assistance with my account.',
+                                      );
+                                    });
+                              });
+                        },
+                    ),
+                    const TextSpan(
+                      text: ' for assistance.',
                       style: TextStyle(
                         letterSpacing: 1.0,
                         color: blackColor,
@@ -448,10 +500,62 @@ class _MainPageState extends State<MainPage> {
               title: 'Hey there!',
               content: RichText(
                 textAlign: TextAlign.center,
-                text: const TextSpan(children: [
-                  TextSpan(
+                text: TextSpan(children: [
+                  const TextSpan(
                     text:
-                        'Sorry you don\'t have access to the services of this app, please contact admin for assistance.',
+                        'Sorry you don\'t have access to the services of this app, please contact admin on ',
+                    style: TextStyle(
+                      letterSpacing: 1.0,
+                      color: blackColor,
+                      fontSize: AppSize.s18,
+                    ),
+                  ),
+                  TextSpan(
+                    text: clientAccountInfo!.applicantPhone,
+                    style: const TextStyle(
+                      letterSpacing: 1.0,
+                      decoration: TextDecoration.underline,
+                      color: Colors.blue,
+                      fontSize: AppSize.s18,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        showModalBottomSheet(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft:
+                                    Radius.circular(AppRadius.borderRadius16),
+                                topRight:
+                                    Radius.circular(AppRadius.borderRadius16),
+                              ),
+                            ),
+                            context: context,
+                            builder: (context) {
+                              return ContactAdminDialog(
+                                  title: 'Contact your admin?',
+                                  subtitle:
+                                      'You can reach out to your admin on',
+                                  firstText: 'Call',
+                                  secondText: 'Whatsapp',
+                                  onCallTap: () {
+                                    Navigator.of(context).pop();
+                                    makePhoneCall(
+                                      clientAccountInfo!.applicantPhone!,
+                                    );
+                                  },
+                                  onWhatsappTap: () async {
+                                    Navigator.of(context).pop();
+                                    openWhatsapp(
+                                      context,
+                                      clientAccountInfo!.applicantPhone!,
+                                      'Hello there, \n\nI need assistance with my account.',
+                                    );
+                                  });
+                            });
+                      },
+                  ),
+                  const TextSpan(
+                    text: ' for assistance.',
                     style: TextStyle(
                       letterSpacing: 1.0,
                       color: blackColor,
@@ -477,10 +581,62 @@ class _MainPageState extends State<MainPage> {
               title: 'Hey there!',
               content: RichText(
                 textAlign: TextAlign.center,
-                text: const TextSpan(children: [
-                  TextSpan(
+                text: TextSpan(children: [
+                  const TextSpan(
                     text:
-                        'Sorry you don\'t have access to the attendance and android & iOS services, please contact admin for assistance.',
+                        'Sorry you don\'t have access to the attendance and android & iOS services, please contact admin on ',
+                    style: TextStyle(
+                      letterSpacing: 1.0,
+                      color: blackColor,
+                      fontSize: AppSize.s18,
+                    ),
+                  ),
+                  TextSpan(
+                    text: clientAccountInfo!.applicantPhone,
+                    style: const TextStyle(
+                      letterSpacing: 1.0,
+                      decoration: TextDecoration.underline,
+                      color: Colors.blue,
+                      fontSize: AppSize.s18,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        showModalBottomSheet(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft:
+                                    Radius.circular(AppRadius.borderRadius16),
+                                topRight:
+                                    Radius.circular(AppRadius.borderRadius16),
+                              ),
+                            ),
+                            context: context,
+                            builder: (context) {
+                              return ContactAdminDialog(
+                                  title: 'Contact your admin?',
+                                  subtitle:
+                                      'You can reach out to your admin on',
+                                  firstText: 'Call',
+                                  secondText: 'Whatsapp',
+                                  onCallTap: () {
+                                    Navigator.of(context).pop();
+                                    makePhoneCall(
+                                      clientAccountInfo!.applicantPhone!,
+                                    );
+                                  },
+                                  onWhatsappTap: () async {
+                                    Navigator.of(context).pop();
+                                    openWhatsapp(
+                                      context,
+                                      clientAccountInfo!.applicantPhone!,
+                                      'Hello there, \n\nI need assistance with my account.',
+                                    );
+                                  });
+                            });
+                      },
+                  ),
+                  const TextSpan(
+                    text: ' for assistance.',
                     style: TextStyle(
                       letterSpacing: 1.0,
                       color: blackColor,

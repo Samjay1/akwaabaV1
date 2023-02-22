@@ -12,6 +12,36 @@ class DateUtil {
     return formattedDate.toString();
   }
 
+  static Future<DateTime?> selectDate({
+    required BuildContext context,
+    DateTime? firstDate,
+    DateTime? lastDate,
+  }) async {
+    DateTime? selectedDate;
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Refer step 1
+      firstDate: firstDate ?? DateTime(1970),
+      lastDate: lastDate ?? DateTime(2050),
+    );
+    if (picked != null && picked != selectedDate) {
+      selectedDate = picked;
+    }
+    return selectedDate;
+  }
+
+  static Future<TimeOfDay?> selectTime(BuildContext context) async {
+    TimeOfDay? selectedTime;
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null && picked != selectedTime) {
+      selectedTime = picked;
+    }
+    return selectedTime;
+  }
+
   // format date
   static String formatStringDate(DateFormat dateFormat,
       {required DateTime date}) {

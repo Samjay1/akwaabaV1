@@ -19,6 +19,7 @@ import 'package:akwaaba/models/general/subgroup.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
+import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/search_util.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
@@ -185,21 +186,20 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               Expanded(
                 child: LabelWidgetContainer(
                   label: "Start Date",
-                  child: CustomDatePicker(
-                    hintText: 'Select Start Date',
-                    firstDate: DateTime(1970),
-                    lastDate: DateTime.now(),
-                    onChanged: (dateString) {
-                      setState(() {
-                        attendanceHistoryProvider.selectedStartDate =
-                            DateTime.parse(dateString);
-                      });
-                      debugPrint(
-                          "Selected Start Date: ${attendanceHistoryProvider.selectedStartDate!.toIso8601String().substring(0, 10)}");
-                    },
-                    onSaved: (dateString) {
+                  child: FormButton(
+                    label: attendanceHistoryProvider.selectedStartDate == null
+                        ? "Select Start Date"
+                        : attendanceHistoryProvider.selectedStartDate!
+                            .toIso8601String()
+                            .substring(0, 10),
+                    function: () async {
                       attendanceHistoryProvider.selectedStartDate =
-                          DateTime.parse(dateString!);
+                          await DateUtil.selectDate(
+                        context: context,
+                        firstDate: DateTime(1970),
+                        lastDate: DateTime.now(),
+                      );
+                      setState(() {});
                     },
                   ),
                 ),
@@ -210,21 +210,20 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               Expanded(
                 child: LabelWidgetContainer(
                   label: "End Date",
-                  child: CustomDatePicker(
-                    hintText: 'Select End Date',
-                    firstDate: DateTime(1970),
-                    lastDate: DateTime.now(),
-                    onChanged: (dateString) {
-                      setState(() {
-                        attendanceHistoryProvider.selectedEndDate =
-                            DateTime.parse(dateString);
-                      });
-                      debugPrint(
-                          "Selected End Date: ${attendanceHistoryProvider.selectedEndDate!.toIso8601String().substring(0, 10)}");
-                    },
-                    onSaved: (dateString) {
+                  child: FormButton(
+                    label: attendanceHistoryProvider.selectedEndDate == null
+                        ? "Select End Date"
+                        : attendanceHistoryProvider.selectedEndDate!
+                            .toIso8601String()
+                            .substring(0, 10),
+                    function: () async {
                       attendanceHistoryProvider.selectedEndDate =
-                          DateTime.parse(dateString!);
+                          await DateUtil.selectDate(
+                        context: context,
+                        firstDate: DateTime(1970),
+                        lastDate: DateTime.now(),
+                      );
+                      setState(() {});
                     },
                   ),
                 ),

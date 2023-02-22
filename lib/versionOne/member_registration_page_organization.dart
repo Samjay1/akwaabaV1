@@ -129,7 +129,7 @@ class _MemberRegistrationPageOrganizationState
   late String selectedGroupOption;
   late List<Group>? groupList = [];
   void _getGroupList({required var branchID, var token}) async {
-    groupList = await MemberAPI().getGroup(branchID: branchID, token: token);
+    groupList = await MemberAPI().getGroup(branchID: branchID);
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
     loadingGroup = false;
   }
@@ -153,8 +153,7 @@ class _MemberRegistrationPageOrganizationState
   late String selectedSubGroupOption = '';
   late List<SubGroup>? subGroupList = [];
   void _getSubGroupList({required var branchID, var token}) async {
-    subGroupList =
-        (await MemberAPI().getSubGroup(branchID: branchID, token: token));
+    subGroupList = (await MemberAPI().getSubGroup(branchID: branchID));
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 

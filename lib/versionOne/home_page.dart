@@ -159,54 +159,34 @@ class _HomePageState extends State<HomePage> {
               height: 24,
             ),
 
-            eventProvider.loading
-                ? Shimmer.fromColors(
-                    baseColor: greyColorShade300,
-                    highlightColor: greyColorShade100,
-                    child: const ProfileShimmerItem(),
-                  )
-                : userType.compareTo(AppConstants.member) == 0
-                    ? Consumer<MemberProvider>(
-                        builder: (context, data, child) {
-                          return memberHeaderView(
-                            firstName: data.memberProfile.user.firstname,
-                            surName: data.memberProfile.user.surname,
-                            userId: data.identityNumber,
-                            profileImage:
-                                data.memberProfile.user.profilePicture,
-                          );
-                        },
-                      )
-                    : userType.compareTo(AppConstants.admin) == 0
-                        ? Consumer<ClientProvider>(
-                            builder: (context, data, child) {
-                            return adminHeaderView(
-                              firstName: adminProfile?.firstname,
-                              surName: adminProfile?.surname,
-                              userId: adminProfile?.email,
-                              profileImage: adminProfile?.profilePicture,
-                            );
-                          })
-                        : const Text("Unknown User type"),
-            // TODO: Uncomment it when recent clocking API is available
-            // userType.compareTo("member") == 0
-            //     ? Consumer<MemberProvider>(
-            //         builder: (context, data, child) {
-            //           return headerView(
-            //               firstName: data.memberProfile.firstname,
-            //               surName: data.memberProfile.surname,
-            //               profileImage: data.memberProfile.profilePicture);
-            //         },
+            // eventProvider.loading
+            //     ? Shimmer.fromColors(
+            //         baseColor: greyColorShade300,
+            //         highlightColor: greyColorShade100,
+            //         child: const ProfileShimmerItem(),
             //       )
-            //     : userType.compareTo("admin") == 0
-            //         ? Consumer<ClientProvider>(
-            //             builder: (context, data, child) {
-            //             return adminHeaderView(
-            //                 firstName: data.getUser?.firstName,
-            //                 surName: data.getUser?.surName,
-            //                 profileImage: data.getUser?.profilePicture);
-            //           })
-            //         : const Text("Unknown User type"),
+            //     :
+            userType.compareTo(AppConstants.member) == 0
+                ? Consumer<MemberProvider>(
+                    builder: (context, data, child) {
+                      return memberHeaderView(
+                        firstName: data.memberProfile.user.firstname,
+                        surName: data.memberProfile.user.surname,
+                        userId: data.identityNumber,
+                        profileImage: data.memberProfile.user.profilePicture,
+                      );
+                    },
+                  )
+                : userType.compareTo(AppConstants.admin) == 0
+                    ? Consumer<ClientProvider>(builder: (context, data, child) {
+                        return adminHeaderView(
+                          firstName: adminProfile?.firstname,
+                          surName: adminProfile?.surname,
+                          userId: adminProfile?.email,
+                          profileImage: adminProfile?.profilePicture,
+                        );
+                      })
+                    : const Text("Unknown User type"),
 
             const SizedBox(
               height: 36,
