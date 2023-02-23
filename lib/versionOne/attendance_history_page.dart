@@ -229,9 +229,6 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               ),
             ],
           ),
-          SizedBox(
-            height: displayHeight(context) * 0.02,
-          ),
           Consumer<ClientProvider>(
             builder: (context, data, child) {
               return ((data.branch != null) &&

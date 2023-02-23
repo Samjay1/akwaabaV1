@@ -47,7 +47,6 @@ class Member extends Equatable {
   ConstituencyInfo? electoralareaInfo;
   String? identification;
   UpdatedByInfo? updatedByInfo;
-  //dynamic updatedByInfo;
   int? updatedBy;
   String? updateDate;
   bool? selected = false;
@@ -159,13 +158,14 @@ class Member extends Equatable {
     electoralareaInfo = json['electoralareaInfo'] != null
         ? ConstituencyInfo.fromJson(json['electoralareaInfo'])
         : null;
-    identification = json['identification'];
-    //updatedByInfo = json['updatedByInfo'];
-    updatedByInfo = json['updatedByInfo'] != null
-        ? UpdatedByInfo.fromJson(json['updatedByInfo'])
-        : null;
     updatedBy = json['updatedBy'];
     updateDate = json['updateDate'];
+    updatedByInfo = json['updatedByInfo'] is String
+        ? null
+        : json['updatedByInfo'] != null
+            ? UpdatedByInfo.fromJson(json['updatedByInfo'])
+            : null;
+    identification = json['identification'];
   }
 
   Map<String, dynamic> toJson() {
@@ -226,7 +226,6 @@ class Member extends Equatable {
       data['electoralareaInfo'] = electoralareaInfo!.toJson();
     }
     data['identification'] = identification;
-    // data['updatedByInfo'] = updatedByInfo;
     if (updatedByInfo != null) {
       data['updatedByInfo'] = updatedByInfo!.toJson();
     }
@@ -298,23 +297,24 @@ class UpdatedByInfo {
   String? date;
   String? lastLogin;
 
-  UpdatedByInfo(
-      {this.id,
-      this.firstname,
-      this.surname,
-      this.gender,
-      this.profilePicture,
-      this.dateOfBirth,
-      this.phone,
-      this.email,
-      this.role,
-      this.accountId,
-      this.branchId,
-      this.level,
-      this.status,
-      this.lastUpdatedBy,
-      this.date,
-      this.lastLogin});
+  UpdatedByInfo({
+    this.id,
+    this.firstname,
+    this.surname,
+    this.gender,
+    this.profilePicture,
+    this.dateOfBirth,
+    this.phone,
+    this.email,
+    this.role,
+    this.accountId,
+    this.branchId,
+    this.level,
+    this.status,
+    this.lastUpdatedBy,
+    this.date,
+    this.lastLogin,
+  });
 
   UpdatedByInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];

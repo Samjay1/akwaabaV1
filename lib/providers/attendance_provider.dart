@@ -412,9 +412,9 @@ class AttendanceProvider extends ChangeNotifier {
         toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
       );
 
-      hasNextAttendees = response.next == null ? false : true;
-
       selectedAttendees.clear();
+
+      hasNextAttendees = response.next == null ? false : true;
 
       resetStatsData();
 
@@ -435,8 +435,7 @@ class AttendanceProvider extends ChangeNotifier {
               attendee!.attendance!.memberId!.gender == AppConstants.female)
           .toList();
 
-      debugPrint('Atendees: ${_attendees.length}');
-
+      //debugPrint('Atendees: ${_attendees.length}');
       getAllAbsentees(
         meetingEventModel: meetingEventModel,
       );
