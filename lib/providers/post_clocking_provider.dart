@@ -302,20 +302,20 @@ class PostClockingProvider extends ChangeNotifier {
       if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
-        _absentees = response.results!
-            .where((absentee) => (absentee.attendance!.memberId!.firstname !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .firstname ||
-                absentee.attendance!.memberId!.surname !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .surname ||
-                absentee.attendance!.memberId!.email !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .email))
-            .toList();
+        _absentees = response.results!;
+        _absentees.removeWhere((absentee) =>
+            absentee!.attendance!.memberId!.firstname ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .firstname ||
+            absentee.attendance!.memberId!.surname ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .surname ||
+            absentee.attendance!.memberId!.email ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .email);
 
         debugPrint('Absentees: ${_absentees.length}');
       } else {
@@ -371,20 +371,22 @@ class PostClockingProvider extends ChangeNotifier {
 
         if (response.results!.isNotEmpty) {
           hasNextAbsentees = response.next == null ? false : true;
-          _absentees.addAll(response.results!
-              .where((absentee) => (absentee.attendance!.memberId!.firstname !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .firstname ||
-                  absentee.attendance!.memberId!.surname !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .surname ||
-                  absentee.attendance!.memberId!.email !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .email))
-              .toList());
+          var newAbsenteesList = response.results!;
+          newAbsenteesList.removeWhere((absentee) =>
+              absentee.attendance!.memberId!.firstname ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .firstname ||
+              absentee.attendance!.memberId!.surname ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .surname ||
+              absentee.attendance!.memberId!.email ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .email);
+
+          _absentees.addAll(newAbsenteesList);
         } else {
           hasNextAbsentees = false;
         }
@@ -432,20 +434,21 @@ class PostClockingProvider extends ChangeNotifier {
       if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
-        _attendees = response.results!
-            .where((attendee) => (attendee.attendance!.memberId!.firstname !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .firstname ||
-                attendee.attendance!.memberId!.surname !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .surname ||
-                attendee.attendance!.memberId!.email !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .email))
-            .toList();
+        _attendees = response.results!;
+
+        _attendees.removeWhere((attendee) =>
+            attendee!.attendance!.memberId!.firstname ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .firstname ||
+            attendee.attendance!.memberId!.surname ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .surname ||
+            attendee.attendance!.memberId!.email ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .email);
       } else {
         _attendees.clear();
       }
@@ -492,20 +495,22 @@ class PostClockingProvider extends ChangeNotifier {
         );
         if (response.results!.isNotEmpty) {
           hasNextAttendees = response.next == null ? false : true;
-          _attendees.addAll(response.results!
-              .where((attendee) => (attendee.attendance!.memberId!.firstname !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .firstname ||
-                  attendee.attendance!.memberId!.surname !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .surname ||
-                  attendee.attendance!.memberId!.email !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .email))
-              .toList());
+          var newAttendeesList = response.results!;
+
+          newAttendeesList.removeWhere((attendee) =>
+              attendee.attendance!.memberId!.firstname ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .firstname ||
+              attendee.attendance!.memberId!.surname ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .surname ||
+              attendee.attendance!.memberId!.email ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .email);
+          _attendees.addAll(newAttendeesList);
         } else {
           hasNextAttendees = false;
         }

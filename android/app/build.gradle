@@ -45,7 +45,6 @@ android {
         applicationId "com.akwaaba.app.akwaaba"
         // You can update the following values to match your application needs. 
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-
         minSdkVersion 19
         multiDexEnabled true
         targetSdkVersion flutter.targetSdkVersion
@@ -53,13 +52,28 @@ android {
         versionName flutterVersionName
     }
 
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
-        }
-    }
+    signingConfigs {
+       release {
+           keyAlias localProperties['keyAlias']
+           keyPassword localProperties['keyPassword']
+           storeFile localProperties['storeFile'] ? file(localProperties['storeFile']) : null
+           storePassword localProperties['storePassword']
+       }
+   }
+
+   buildTypes {
+       release {
+           signingConfig signingConfigs.release
+       }
+   }
+
+    // buildTypes {
+    //     release {
+    //         // TODO: Add your own signing config for the release build.
+    //         // Signing with the debug keys for now, so `flutter run --release` works.
+    //         signingConfig signingConfigs.debug
+    //     }
+    // }
 
     dependencies {
          coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'

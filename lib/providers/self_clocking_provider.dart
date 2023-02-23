@@ -149,20 +149,20 @@ class SelfClockingProvider extends ChangeNotifier {
       _selectedAbsentees.clear();
 
       if (response.results != null || response.results!.isNotEmpty) {
-        _absentees = response.results!
-            .where((absentee) => (absentee.attendance!.memberId!.firstname !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .firstname ||
-                absentee.attendance!.memberId!.surname !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .surname ||
-                absentee.attendance!.memberId!.email !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .email))
-            .toList();
+        _absentees = response.results!;
+        _absentees.removeWhere((absentee) =>
+            absentee!.attendance!.memberId!.firstname ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .firstname ||
+            absentee.attendance!.memberId!.surname ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .surname ||
+            absentee.attendance!.memberId!.email ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .email);
       } else {
         _absentees.clear();
       }
@@ -205,20 +205,20 @@ class SelfClockingProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
-          var newAbsenteesList = response.results!
-              .where((absentee) => (absentee.attendance!.memberId!.firstname !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .firstname ||
-                  absentee.attendance!.memberId!.surname !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .surname ||
-                  absentee.attendance!.memberId!.email !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .email))
-              .toList();
+          var newAbsenteesList = response.results!;
+          newAbsenteesList.removeWhere((absentee) =>
+              absentee.attendance!.memberId!.firstname ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .firstname ||
+              absentee.attendance!.memberId!.surname ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .surname ||
+              absentee.attendance!.memberId!.email ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .email);
           _absentees.addAll(newAbsenteesList);
         } else {
           hasNextPage = false;
@@ -258,20 +258,20 @@ class SelfClockingProvider extends ChangeNotifier {
       if (response.results != null || response.results!.isNotEmpty) {
         // filter list for only members excluding
         // admin if he is also a member
-        _attendees = response.results!
-            .where((attendee) => (attendee.attendance!.memberId!.firstname !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .firstname ||
-                attendee.attendance!.memberId!.surname !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .surname ||
-                attendee.attendance!.memberId!.email !=
-                    Provider.of<ClientProvider>(_context!, listen: false)
-                        .adminProfile!
-                        .email))
-            .toList();
+        _attendees = response.results!;
+        _attendees.removeWhere((attendee) =>
+            attendee!.attendance!.memberId!.firstname ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .firstname ||
+            attendee.attendance!.memberId!.surname ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .surname ||
+            attendee.attendance!.memberId!.email ==
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .email);
       } else {
         _attendees.clear();
       }
@@ -312,20 +312,20 @@ class SelfClockingProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
-          var newAtendeesList = response.results!
-              .where((attendee) => (attendee.attendance!.memberId!.firstname !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .firstname ||
-                  attendee.attendance!.memberId!.surname !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .surname ||
-                  attendee.attendance!.memberId!.email !=
-                      Provider.of<ClientProvider>(_context!, listen: false)
-                          .adminProfile!
-                          .email))
-              .toList();
+          var newAtendeesList = response.results!;
+          newAtendeesList.removeWhere((attendee) =>
+              attendee.attendance!.memberId!.firstname ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .firstname ||
+              attendee.attendance!.memberId!.surname ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .surname ||
+              attendee.attendance!.memberId!.email ==
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .email);
           _attendees.addAll(newAtendeesList);
         } else {
           hasNextPage = false;
