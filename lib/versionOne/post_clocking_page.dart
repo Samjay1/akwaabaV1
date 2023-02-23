@@ -69,7 +69,6 @@ class _PostClockingPageState extends State<PostClockingPage> {
           .setCurrentContext(context);
       Provider.of<PostClockingProvider>(context, listen: false)
           .getAllMeetingEvents();
-
       // Provider.of<PostClockingProvider>(context, listen: false)
       //     .getMemberCategories();
       setState(() {});

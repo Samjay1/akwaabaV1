@@ -152,16 +152,16 @@ class SelfClockingProvider extends ChangeNotifier {
         _absentees = response.results!
             .where((absentee) => (absentee.attendance!.memberId!.firstname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantFirstname ||
+                        .adminProfile!
+                        .firstname ||
                 absentee.attendance!.memberId!.surname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantSurname ||
+                        .adminProfile!
+                        .surname ||
                 absentee.attendance!.memberId!.email !=
                     Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantEmail))
+                        .adminProfile!
+                        .email))
             .toList();
       } else {
         _absentees.clear();
@@ -208,16 +208,16 @@ class SelfClockingProvider extends ChangeNotifier {
           var newAbsenteesList = response.results!
               .where((absentee) => (absentee.attendance!.memberId!.firstname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantFirstname ||
+                          .adminProfile!
+                          .firstname ||
                   absentee.attendance!.memberId!.surname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantSurname ||
+                          .adminProfile!
+                          .surname ||
                   absentee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantEmail))
+                          .adminProfile!
+                          .email))
               .toList();
           _absentees.addAll(newAbsenteesList);
         } else {
@@ -261,16 +261,16 @@ class SelfClockingProvider extends ChangeNotifier {
         _attendees = response.results!
             .where((attendee) => (attendee.attendance!.memberId!.firstname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantFirstname ||
+                        .adminProfile!
+                        .firstname ||
                 attendee.attendance!.memberId!.surname !=
                     Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantSurname ||
+                        .adminProfile!
+                        .surname ||
                 attendee.attendance!.memberId!.email !=
                     Provider.of<ClientProvider>(_context!, listen: false)
-                        .getUser!
-                        .applicantEmail))
+                        .adminProfile!
+                        .email))
             .toList();
       } else {
         _attendees.clear();
@@ -315,16 +315,16 @@ class SelfClockingProvider extends ChangeNotifier {
           var newAtendeesList = response.results!
               .where((attendee) => (attendee.attendance!.memberId!.firstname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantFirstname ||
+                          .adminProfile!
+                          .firstname ||
                   attendee.attendance!.memberId!.surname !=
                       Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantSurname ||
+                          .adminProfile!
+                          .surname ||
                   attendee.attendance!.memberId!.email !=
                       Provider.of<ClientProvider>(_context!, listen: false)
-                          .getUser!
-                          .applicantEmail))
+                          .adminProfile!
+                          .email))
               .toList();
           _attendees.addAll(newAtendeesList);
         } else {
