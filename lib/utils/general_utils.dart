@@ -151,6 +151,7 @@ launchURL(String url) async {
 
 // open whatsapp app
 openWhatsapp(BuildContext context, String phone, String message) async {
+  phone = '+233${phone.startsWith("0") ? phone.substring(1) : phone}';
   var whatsappURl_android =
       Uri.parse("whatsapp://send?phone=$phone&text=$message");
   //var whatsappURl_android = Uri.parse("https://wa.me/$phone");
