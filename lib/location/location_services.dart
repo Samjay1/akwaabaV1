@@ -1,3 +1,4 @@
+import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationServices {
@@ -62,10 +63,11 @@ class LocationServices {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
 
+    await SharedPrefs().setBackgroundLocationEnabled(enable: true);
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      desiredAccuracy: LocationAccuracy.best,
     );
   }
 }

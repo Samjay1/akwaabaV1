@@ -97,6 +97,7 @@ class HomeProvider extends ChangeNotifier {
     try {
       _page = 1;
       var userType = await SharedPrefs().getUserType();
+
       var branch = await getUserBranch(currentContext);
       var response = await EventAPI.getTodayMeetingEventList(
         branchId: branch.id!,
@@ -191,7 +192,8 @@ class HomeProvider extends ChangeNotifier {
     //setClocking(true);
     try {
       showLoadingDialog(context);
-      getCurrentUserLocation();
+
+      await getCurrentUserLocation();
 
       var response = await EventAPI.getMeetingCoordinates(
         meetingEventModel: meetingEventModel,

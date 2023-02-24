@@ -2,6 +2,7 @@ import 'package:akwaaba/components/tag_widget.dart';
 import 'package:akwaaba/components/tag_widget_solid.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/dialogs_modals/background_location_dialog.dart';
 import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/dialogs_modals/contact_admin_dialog.dart';
 import 'package:akwaaba/dialogs_modals/renewal_dialog.dart';
@@ -670,7 +671,7 @@ class _MainPageState extends State<MainPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
 
-    SharedPrefs().getUserType().then((value) {
+    SharedPrefs().getUserType().then((value) async {
       debugPrint("User type from main page $value");
       setState(() {
         userType = value!;
@@ -685,6 +686,12 @@ class _MainPageState extends State<MainPage> {
               Provider.of<MemberProvider>(context, listen: false)
                   .setMemberProfileInfo(memberProfile: value!);
             });
+
+            SharedPrefs().isBackgroundLocationEnabled().then((enabled) {
+              if (!enabled!) {
+                showBackgroundLocationDialog();
+              }
+            });
           } else if (userType.compareTo("admin") == 0) {
             SharedPrefs().getAdminProfile().then((value) {
               Provider.of<ClientProvider>(context, listen: false)
@@ -697,6 +704,14 @@ class _MainPageState extends State<MainPage> {
         } else {}
       });
     });
+  }
+
+// display dialog explaining why background location is important for clocking
+  void showBackgroundLocationDialog() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => const BackgroundLocationDialog());
   }
 
   @override

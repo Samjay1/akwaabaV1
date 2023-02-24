@@ -35,7 +35,7 @@ Future<void> main() async {
 
   await initFirebaseApp();
 
-  LocationServices().getUserCurrentLocation();
+  //LocationServices().getUserCurrentLocation();
 
   await FlutterDownloader.initialize(
     debug: true,

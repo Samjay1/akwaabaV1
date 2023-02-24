@@ -22,10 +22,7 @@ class SharedPrefs {
 
   SharedPrefs.internal();
 
-  logOut() async {
-    var sd = await sharedPreferences;
-    sd.clear();
-  }
+  final String locationKey = 'bg_location';
 
   setUserType({required String userType}) async {
     var sd = await sharedPreferences;
@@ -39,6 +36,18 @@ class SharedPrefs {
     } else {
       return "";
     }
+  }
+
+  setBackgroundLocationEnabled({required bool enable}) async {
+    var sd = await sharedPreferences;
+    sd.setBool(locationKey, enable);
+  }
+
+  Future<bool?> isBackgroundLocationEnabled() async {
+    var sd = await sharedPreferences;
+    var status = sd.getBool(locationKey);
+    status == null ? status = false : status = status;
+    return status;
   }
 
   Future<void> saveMemberInfo({required MemberProfile memberProfile}) async {
@@ -110,6 +119,11 @@ class SharedPrefs {
     }
   }
 
+  logOut() async {
+    var sd = await sharedPreferences;
+    sd.clear();
+  }
+
   Future<bool> clear() async {
     var sd = await sharedPreferences;
     return sd.clear();
@@ -121,6 +135,7 @@ class SharedPrefs {
     Provider.of<MemberProvider>(context, listen: false).clearData();
     Provider.of<ClientProvider>(context, listen: false).clearData();
     clear();
+    setBackgroundLocationEnabled(enable: true);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

@@ -38,6 +38,8 @@ class _MemberWidgetState extends State<MemberWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var fullName =
+        "${widget.member!.firstname == null ? '' : widget.member!.firstname!.capitalize()} ${(widget.member!.middlename == null || widget.member!.middlename!.isEmpty) ? '' : widget.member!.middlename!.capitalize()} ${widget.member!.surname == null ? '' : widget.member!.surname!.capitalize()}";
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Card(
@@ -138,7 +140,7 @@ class _MemberWidgetState extends State<MemberWidget> {
                     children: [
                       Expanded(
                           child: Text(
-                        "${widget.member!.firstname!.capitalize()} ${widget.member!.middlename!.isEmpty ? '' : widget.member!.middlename!.capitalize()} ${widget.member!.surname!.capitalize()}",
+                        fullName,
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600),
                         maxLines: 2,
