@@ -89,7 +89,8 @@ class _RestrictedMemberWidgetState extends State<RestrictedMemberWidget> {
                             ),
                             GestureDetector(
                               onTap: () => makePhoneCall(
-                                  widget.restrictedMember!.member!.phone!),
+                                widget.restrictedMember!.member!.phone!,
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: SvgPicture.asset(
@@ -102,9 +103,13 @@ class _RestrictedMemberWidgetState extends State<RestrictedMemberWidget> {
                             ),
                             GestureDetector(
                               onTap: () => openWhatsapp(
-                                  context,
-                                  widget.restrictedMember!.member!.phone!,
-                                  "Hello"),
+                                context,
+                                widget.restrictedMember!.contacts == null
+                                    ? widget.restrictedMember!.member!.phone!
+                                    : widget.restrictedMember!.contacts!
+                                        .contact!.whatsapp!,
+                                'Hello there!',
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: SvgPicture.asset(

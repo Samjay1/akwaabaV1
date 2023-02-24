@@ -108,6 +108,8 @@ class EventAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/meeting-event/schedule/upcoming?filter_recuring=both&page=$page&branchId=$branchId&filter_memberId=${memberId ?? ''}');
     debugPrint("URL: ${url.toString()}");
+    debugPrint("Page: $page");
+    debugPrint("Branch: $branchId");
     try {
       http.Response response = await http
           .get(

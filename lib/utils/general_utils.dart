@@ -38,19 +38,21 @@ double calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 Future<void> makePhoneCall(String phoneNumber) async {
-  final Uri launchUri = Uri(
-    scheme: 'tel',
-    //path: phoneNumber,
-    path: '+$phoneNumber',
+  // final Uri launchUri = Uri(
+  //   scheme: 'tel',
+  //   path: phoneNumber,
+  //   //path: '+$phoneNumber',
+  // );
+  final Uri launchUri = Uri.parse(
+    'tel:$phoneNumber',
   );
-
   await launchUrl(launchUri);
 }
 
 String formattedPhone(String code, String phone) {
   return phone.startsWith("0")
-      ? '${code.substring(1)}${phone.substring(1, phone.length)}'
-      : '${code.substring(1)}$phone';
+      ? '$code${phone.substring(1, phone.length)}'
+      : '$code$phone';
 }
 
 // open email app

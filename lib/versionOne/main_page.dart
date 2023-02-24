@@ -1395,10 +1395,7 @@ class _MainPageState extends State<MainPage> {
     required ClientAccountInfo clientAccountInfo,
     required String branch,
   }) {
-    var phone = clientAccountInfo.countryInfo == null
-        ? formattedPhone('+233', clientAccountInfo.applicantPhone!)
-        : formattedPhone(clientAccountInfo.countryInfo![0].code!,
-            clientAccountInfo.applicantPhone!);
+    var phone = clientAccountInfo.applicantPhone!;
 
     DateTime? expiryDate;
 

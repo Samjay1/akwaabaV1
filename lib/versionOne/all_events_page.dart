@@ -45,9 +45,6 @@ class _AllEventsPageState extends State<AllEventsPage> {
     Future.delayed(Duration.zero, () {
       Provider.of<AllEventsProvider>(context, listen: false)
           .setCurrentContext(context);
-      if (context.read<ClientProvider>().branch.id == 1) {
-        Provider.of<AllEventsProvider>(context, listen: false).getBranches();
-      }
       if (Provider.of<AllEventsProvider>(context, listen: false)
           .upcomingMeetings
           .isEmpty) {
@@ -55,6 +52,10 @@ class _AllEventsPageState extends State<AllEventsPage> {
         Provider.of<AllEventsProvider>(context, listen: false)
             .getUpcomingMeetingEvents();
       }
+      if (context.read<ClientProvider>().branch.id == 1) {
+        Provider.of<AllEventsProvider>(context, listen: false).getBranches();
+      }
+
       setState(() {});
     });
   }

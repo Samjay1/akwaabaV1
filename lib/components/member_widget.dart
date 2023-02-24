@@ -115,7 +115,10 @@ class _MemberWidgetState extends State<MemberWidget> {
                       ),
                       GestureDetector(
                         onTap: () => openWhatsapp(
-                            context, widget.member!.phone!, "Hello"),
+                          context,
+                          widget.member!.phone!,
+                          "Hello",
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SvgPicture.asset(
