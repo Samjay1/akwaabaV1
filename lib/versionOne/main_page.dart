@@ -686,12 +686,6 @@ class _MainPageState extends State<MainPage> {
               Provider.of<MemberProvider>(context, listen: false)
                   .setMemberProfileInfo(memberProfile: value!);
             });
-
-            SharedPrefs().isBackgroundLocationEnabled().then((enabled) {
-              if (!enabled!) {
-                showBackgroundLocationDialog();
-              }
-            });
           } else if (userType.compareTo("admin") == 0) {
             SharedPrefs().getAdminProfile().then((value) {
               Provider.of<ClientProvider>(context, listen: false)
@@ -701,7 +695,12 @@ class _MainPageState extends State<MainPage> {
             });
           }
           logoutUserIfAccountExpired();
-        } else {}
+          SharedPrefs().isBackgroundLocationEnabled().then((enabled) {
+            if (!enabled!) {
+              showBackgroundLocationDialog();
+            }
+          });
+        }
       });
     });
   }
