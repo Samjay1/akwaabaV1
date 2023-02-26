@@ -290,10 +290,9 @@ class MemberProvider with ChangeNotifier {
   Future gettingDeviceInfo() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     //Android
-    AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
-    IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
 
     if (Platform.isAndroid) {
+      AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
       var deviceInfoObj = {
         'systemDevice': 3,
         'deviceType': androidDeviceInfo.brand,
@@ -304,6 +303,7 @@ class MemberProvider with ChangeNotifier {
 
       deviceInfoModel = DeviceInfoModel.fromJson(deviceInfoObj);
     } else if (Platform.isIOS) {
+      IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
       var deviceInfoObj = {
         'systemDevice': 2,
         'deviceType': iosDeviceInfo.systemVersion,

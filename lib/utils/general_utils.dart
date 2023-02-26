@@ -65,8 +65,8 @@ openEmailAppWithSubject(
   if (await canLaunchUrl(mail)) {
     await launchUrl(mail);
   } else {
-    //email app is not opened
-    throw 'Caould not launch email app';
+    // email app is not opened
+    throw 'Could not launch email app';
   }
 }
 

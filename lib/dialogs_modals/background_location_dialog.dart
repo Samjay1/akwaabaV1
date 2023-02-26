@@ -13,7 +13,7 @@ class BackgroundLocationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text(
-        'Background Location',
+        'Location Permission',
         style: TextStyle(
           color: blackColor,
           fontWeight: FontWeight.w600,
@@ -21,7 +21,7 @@ class BackgroundLocationDialog extends StatelessWidget {
         ),
       ),
       content: Text(
-        "Akwaaba collects location data to allow users to join meetings or events they are assigned to, based on the premise of the meetings, even when the app is closed or not in use. \n\nThis data is used to clock in and out of meetings and events, as well as start and end break if and only if a break is scheduled for the assigned meeting.",
+        "Akwaaba collects location data to allow users to join meetings or events they are assigned to, based on the premise of the meetings, only when the app is in use. \n\nThis data is used to clock in and out of meetings and events, as well as start and end break for an assigned meeting.",
         style: TextStyle(
           color: blackColor.withOpacity(0.8),
           fontWeight: FontWeight.w500,

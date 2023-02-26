@@ -72,8 +72,8 @@ class _ApplyLeavePageState extends State<ApplyLeavePage> {
                           _leaveProvider.selectedStartDate =
                               await DateUtil.selectDate(
                             context: context,
-                            firstDate: DateTime(1970),
-                            lastDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2050),
                           );
                           setState(() {});
                         },
@@ -96,8 +96,8 @@ class _ApplyLeavePageState extends State<ApplyLeavePage> {
                           _leaveProvider.selectedEndDate =
                               await DateUtil.selectDate(
                             context: context,
-                            firstDate: DateTime(1970),
-                            lastDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2050),
                           );
                           setState(() {});
                         },
