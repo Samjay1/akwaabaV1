@@ -184,7 +184,7 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(child: Text('IN : $formattedInTime')),
-                        8.pw,
+                        12.pw,
                         Text('OUT :  $outTime')
                       ],
                     ),
