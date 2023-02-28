@@ -1,6 +1,0 @@
-version: "Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)"
-options: "a476c36133618e1a56f10dcef7148ccd657109596ec41fd8d4dba4ada4af7fb2"
-build_start_time: [1677508282, 48090934]
-build_end_time: [1677508287, 475942134]
-inputs:
-  "/Users/icode/.pub-cache/hosted/pub.dev/open_mail_app-0.4.5/ios/Classes/SwiftOpenMailAppPlugin.swift": [1674769256, 180037021]
