@@ -84,23 +84,27 @@ class _HomePageState extends State<HomePage> {
 
   // check if there is a new update
   void checkForUpdate() async {
-    var updateInfo = await InAppUpdate.checkForUpdate();
-    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-      // Logic to perform an update
-      if (updateInfo.immediateUpdateAllowed) {
-        // Perform an immediate update
-        var appUpdateResult = await InAppUpdate.performImmediateUpdate();
-        if (appUpdateResult == AppUpdateResult.success) {
-          // App Update Successful
-        }
-      } else if (updateInfo.flexibleUpdateAllowed) {
-        // Perform an flexible update
-        var appUpdateResult = await InAppUpdate.startFlexibleUpdate();
-        if (appUpdateResult == AppUpdateResult.success) {
-          // App Update Successful
-          InAppUpdate.completeFlexibleUpdate();
+    try {
+      var updateInfo = await InAppUpdate.checkForUpdate();
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        // Logic to perform an update
+        if (updateInfo.immediateUpdateAllowed) {
+          // Perform an immediate update
+          var appUpdateResult = await InAppUpdate.performImmediateUpdate();
+          if (appUpdateResult == AppUpdateResult.success) {
+            // App Update Successful
+          }
+        } else if (updateInfo.flexibleUpdateAllowed) {
+          // Perform an flexible update
+          var appUpdateResult = await InAppUpdate.startFlexibleUpdate();
+          if (appUpdateResult == AppUpdateResult.success) {
+            // App Update Successful
+            InAppUpdate.completeFlexibleUpdate();
+          }
         }
       }
+    } catch (err) {
+      debugPrint('InAppUpdate error: $err');
     }
   }
 

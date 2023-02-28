@@ -64,7 +64,6 @@ class _MembersPageState extends State<MembersPage> {
             : Provider.of<MembersProvider>(context, listen: false)
                 .getAllOrganizations();
       }
-
       debugPrint("isMemberuser: ${widget.isMemberuser}");
       debugPrint("Type: $userType");
 
@@ -80,7 +79,7 @@ class _MembersPageState extends State<MembersPage> {
 
   @override
   void dispose() {
-    if (mounted) {
+    if (context.mounted) {
       _membersProvider.clearData();
     }
     super.dispose();

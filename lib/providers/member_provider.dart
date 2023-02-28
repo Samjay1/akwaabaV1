@@ -8,8 +8,10 @@ import 'package:akwaaba/fcm/messaging_service.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
+import 'package:akwaaba/models/members/deviceRequestModel.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:akwaaba/providers/general_provider.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +34,8 @@ class MemberProvider with ChangeNotifier {
   bool _showLoginProgressIndicator = false;
   bool _loading = false;
   bool _clocking = false;
-  var deviceRequestList;
+  //List<DeviceRequestModel> deviceRequestList;
+  List<DeviceRequestModel> _deviceRequestList = [];
 
   String? bill;
   String? accountExpiryDate;
@@ -46,6 +49,7 @@ class MemberProvider with ChangeNotifier {
   get memberProfile => _memberProfile;
   get clientAccountInfo => _clientAccountInfo;
   get identityNumber => _identityNumber;
+  List<DeviceRequestModel> get deviceRequestList => _deviceRequestList;
   get branch => _branch;
   get showLoginProgressIndicator => _showLoginProgressIndicator;
 
@@ -123,13 +127,17 @@ class MemberProvider with ChangeNotifier {
   }) async {
     setLoading(true);
     try {
+      DeviceInfoModel? deviceInfoModel = await getDeviceInfo();
       SharedPreferences prefs = await SharedPreferences.getInstance();
       if (context.mounted) {
         _memberProfile = await MemberAPI().login(
           context: context,
           phoneEmail: phoneEmail,
           password: password,
-          checkDeviceInfo: false,
+          checkDeviceInfo: true,
+          systemDevice: deviceInfoModel!.systemDevice,
+          deviceType: deviceInfoModel.deviceType,
+          deviceId: deviceInfoModel.deviceId,
         );
         if (_memberProfile != null && _memberProfile!.nonFieldErrors != null) {
           setLoading(false);
@@ -321,14 +329,13 @@ class MemberProvider with ChangeNotifier {
       required BuildContext context}) async {
     setLoading(true);
     try {
-// print('UserProvider token $token');
-      deviceRequestList = await MemberAPI()
+      // print('UserProvider token $token');
+      _deviceRequestList = await MemberAPI()
           .getDeviceRequestList(context, memberToken, memberID);
       setLoading(false);
     } catch (err) {
       setLoading(false);
     }
-
     notifyListeners();
   }
 

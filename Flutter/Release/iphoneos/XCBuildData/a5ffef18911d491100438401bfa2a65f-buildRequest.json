@@ -1,0 +1,149 @@
+{
+  "_buildCommand2" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildAndRun"
+  },
+  "buildCommand" : "build",
+  "configuredTargets" : [
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98d41ce0bf2141365ff0288286787936d9"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e985fd5cdb9993b1816141f0c012ffa62bd"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9898fccba7a2febdedb43dddbf2e949fc3"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e989d0a1858a86fd6e6731ed20f88a1e515"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98d3f65728b12dd217475d1283ee417937"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98bf75f71a2aa7fdc38a7d7d70e6c200c1"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98d57b8bce60a0f11113f4cff532db68d3"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e987f74324bfc5c78140e34d510e26e00c1"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98e2ca95742fe9145d6e85576b86908ca0"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98a408a4c1f668e62161cdeba76f57d50c"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98020791fd2e7b7ddc8fb2658339c42e16"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98566ec9a1d71c4629f4f85ecb735ce614"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e983da17a3564c774dfaa331fa07754d2bc"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e989da425bb6d6d5d8dbb95e4afffb82217"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98903a8828c5d37934c685c350618a74ae"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e985b927256c1d05efb42fd796c41f580d2"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98f49b18868e69e442795477541dae1d9f"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98839a1650b1f10605b2db52456c9e6468"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98e5199a3f70555689be7018ee7f9f878d"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9821d372cc1e7c7587a12aeda843619e39"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98d3c8dfff2c580c352f83d3850ad17775"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98718890dfdac589615663a02d43d9af3e"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e981f000f066404b97b12e9c4ca84d38d0f"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e980062393f91a1d2d94e3e5ed3a5aa5da9"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98825514bafb6450e842de3a77f4e6e776"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9830037b09fee48cfce1f8562d753688c8"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98312b4bc59bbbe2c06c205bf4da6737f5"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98f10882e1684b8a3dfdec597bc0a47af3"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98c46180aea4e87057640961e6db37df0d"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9828cab1f188854e0a973e6ff6905c5ffe"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e983786431ce548989b846bbf1a7384f58e"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9872eabefc63c14dfe52fb0c95ad90294e"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98355cff7d758029119bc2218cc297bc97"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98903e66fa03d6d27edaa18126a82c20fd"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e988efdc4dd0ac29b43123295eca853f4ed"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98d41ce0bf2141365ff0288286787936d9"
+    }
+  ],
+  "containerPath" : "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/Pods.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "configurationName" : "Release",
+    "overrides" : {
+      "commandLine" : {
+        "table" : {
+          "BUILD_LIBRARY_FOR_DISTRIBUTION" : "YES",
+          "ONLY_ACTIVE_ARCH" : "NO",
+          "SDKROOT" : "iphoneos15.2",
+          "SYMROOT" : "/Users/icode/Desktop/FlutterProjects/akwaabaV1/Flutter/Release/iphoneos"
+        }
+      },
+      "synthesized" : {
+        "table" : {
+          "ACTION" : "build",
+          "ENABLE_PREVIEWS" : "NO"
+        }
+      }
+    }
+  },
+  "schemeCommand" : "launch",
+  "shouldCollectMetrics" : false,
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : false,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : false
+}

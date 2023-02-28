@@ -115,7 +115,9 @@ class _ClockingPageState extends State<ClockingPage> {
 
   @override
   void dispose() {
-    clockingProvider.clearData();
+    if (context.mounted) {
+      clockingProvider.clearData();
+    }
     super.dispose();
   }
 

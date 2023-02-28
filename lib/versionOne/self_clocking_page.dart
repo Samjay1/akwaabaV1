@@ -1,41 +1,20 @@
-import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
-import 'package:akwaaba/components/custom_elevated_button.dart';
-import 'package:akwaaba/components/custom_outlined_button.dart';
-import 'package:akwaaba/components/custom_progress_indicator.dart';
-import 'package:akwaaba/components/custom_tab_widget.dart';
 import 'package:akwaaba/components/empty_state_widget.dart';
 import 'package:akwaaba/components/event_shimmer_item.dart';
-import 'package:akwaaba/components/form_button.dart';
-import 'package:akwaaba/components/label_widget_container.dart';
 import 'package:akwaaba/components/pagination_loader.dart';
 import 'package:akwaaba/components/self_clocking_member_item.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
-import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
-import 'package:akwaaba/models/admin/clocked_member.dart';
-import 'package:akwaaba/models/general/branch.dart';
-import 'package:akwaaba/models/general/gender.dart';
-import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
-import 'package:akwaaba/models/general/member_category.dart';
-import 'package:akwaaba/models/general/subgroup.dart';
-import 'package:akwaaba/providers/client_provider.dart';
-import 'package:akwaaba/providers/clocking_provider.dart';
 import 'package:akwaaba/providers/self_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
 import 'package:akwaaba/utils/search_util.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/size_helper.dart';
-import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-
-import '../components/clocked_member_item.dart';
-import '../components/clocking_member_item.dart';
-import '../components/form_textfield.dart';
 
 class SelfClockingPage extends StatefulWidget {
   final MeetingEventModel meetingEventModel;

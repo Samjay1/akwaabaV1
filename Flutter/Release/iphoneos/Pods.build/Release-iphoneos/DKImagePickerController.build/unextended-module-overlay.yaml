@@ -1,0 +1,14 @@
+{
+  'version': 0,
+  'use-external-names': 'false',
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': "/Users/icode/Desktop/FlutterProjects/akwaabaV1/Flutter/Release/iphoneos/Release-iphoneos/DKImagePickerController/DKImagePickerController.framework/Modules"
+    'contents': [{
+      'type': 'file',
+      'name': "module.modulemap",
+      'external-contents': "/Users/icode/Desktop/FlutterProjects/akwaabaV1/Flutter/Release/iphoneos/Pods.build/Release-iphoneos/DKImagePickerController.build/unextended-module.modulemap",
+    }]
+  }]
+}

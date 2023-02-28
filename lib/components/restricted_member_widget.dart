@@ -110,7 +110,7 @@ class _RestrictedMemberWidgetState extends State<RestrictedMemberWidget> {
                                     ? widget.restrictedMember!.member!.phone!
                                     : widget.restrictedMember!.contacts!
                                         .contact!.whatsapp!,
-                                'Hello there!',
+                                'Hello ${widget.restrictedMember!.member!.firstname},',
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),

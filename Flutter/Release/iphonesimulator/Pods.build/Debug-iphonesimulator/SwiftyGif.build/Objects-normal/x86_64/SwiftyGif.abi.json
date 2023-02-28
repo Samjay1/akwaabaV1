@@ -1,0 +1,4456 @@
+{
+  "kind": "Root",
+  "name": "TopLevel",
+  "printedName": "TopLevel",
+  "children": [
+    {
+      "kind": "Import",
+      "name": "Foundation",
+      "printedName": "Foundation",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "ImageIO",
+      "printedName": "ImageIO",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftOnoneSupport",
+      "printedName": "SwiftOnoneSupport",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftyGif",
+      "printedName": "SwiftyGif",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif",
+      "declAttributes": [
+        "Exported"
+      ]
+    },
+    {
+      "kind": "Import",
+      "name": "UIKit",
+      "printedName": "UIKit",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "_Concurrency",
+      "printedName": "_Concurrency",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "Foundation",
+      "printedName": "Foundation",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "ImageIO",
+      "printedName": "ImageIO",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftOnoneSupport",
+      "printedName": "SwiftOnoneSupport",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftyGif",
+      "printedName": "SwiftyGif",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif",
+      "declAttributes": [
+        "Exported"
+      ]
+    },
+    {
+      "kind": "Import",
+      "name": "UIKit",
+      "printedName": "UIKit",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "_Concurrency",
+      "printedName": "_Concurrency",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "Foundation",
+      "printedName": "Foundation",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "ImageIO",
+      "printedName": "ImageIO",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftOnoneSupport",
+      "printedName": "SwiftOnoneSupport",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftyGif",
+      "printedName": "SwiftyGif",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif",
+      "declAttributes": [
+        "Exported"
+      ]
+    },
+    {
+      "kind": "Import",
+      "name": "UIKit",
+      "printedName": "UIKit",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "_Concurrency",
+      "printedName": "_Concurrency",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Function",
+      "name": "objc_getAssociatedWeakObject",
+      "printedName": "objc_getAssociatedWeakObject(_:_:)",
+      "children": [
+        {
+          "kind": "TypeNominal",
+          "name": "Optional",
+          "printedName": "AnyObject?",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "ProtocolComposition",
+              "printedName": "AnyObject"
+            }
+          ],
+          "usr": "s:Sq"
+        },
+        {
+          "kind": "TypeNominal",
+          "name": "ProtocolComposition",
+          "printedName": "AnyObject"
+        },
+        {
+          "kind": "TypeNominal",
+          "name": "UnsafeRawPointer",
+          "printedName": "Swift.UnsafeRawPointer",
+          "usr": "s:SV"
+        }
+      ],
+      "declKind": "Func",
+      "usr": "s:9SwiftyGif28objc_getAssociatedWeakObjectyyXlSgyXl_SVtF",
+      "mangledName": "$s9SwiftyGif28objc_getAssociatedWeakObjectyyXlSgyXl_SVtF",
+      "moduleName": "SwiftyGif",
+      "funcSelfKind": "NonMutating"
+    },
+    {
+      "kind": "Function",
+      "name": "objc_setAssociatedWeakObject",
+      "printedName": "objc_setAssociatedWeakObject(_:_:_:)",
+      "children": [
+        {
+          "kind": "TypeNominal",
+          "name": "Void",
+          "printedName": "()"
+        },
+        {
+          "kind": "TypeNominal",
+          "name": "ProtocolComposition",
+          "printedName": "AnyObject"
+        },
+        {
+          "kind": "TypeNominal",
+          "name": "UnsafeRawPointer",
+          "printedName": "Swift.UnsafeRawPointer",
+          "usr": "s:SV"
+        },
+        {
+          "kind": "TypeNominal",
+          "name": "Optional",
+          "printedName": "AnyObject?",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "ProtocolComposition",
+              "printedName": "AnyObject"
+            }
+          ],
+          "usr": "s:Sq"
+        }
+      ],
+      "declKind": "Func",
+      "usr": "s:9SwiftyGif28objc_setAssociatedWeakObjectyyyXl_SVyXlSgtF",
+      "mangledName": "$s9SwiftyGif28objc_setAssociatedWeakObjectyyyXl_SVyXlSgtF",
+      "moduleName": "SwiftyGif",
+      "funcSelfKind": "NonMutating"
+    },
+    {
+      "kind": "Import",
+      "name": "Foundation",
+      "printedName": "Foundation",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "ImageIO",
+      "printedName": "ImageIO",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftOnoneSupport",
+      "printedName": "SwiftOnoneSupport",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftyGif",
+      "printedName": "SwiftyGif",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif",
+      "declAttributes": [
+        "Exported"
+      ]
+    },
+    {
+      "kind": "Import",
+      "name": "UIKit",
+      "printedName": "UIKit",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "_Concurrency",
+      "printedName": "_Concurrency",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "TypeDecl",
+      "name": "SwiftyGifManager",
+      "printedName": "SwiftyGifManager",
+      "children": [
+        {
+          "kind": "Var",
+          "name": "defaultManager",
+          "printedName": "defaultManager",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "SwiftyGifManager",
+              "printedName": "SwiftyGif.SwiftyGifManager",
+              "usr": "s:9SwiftyGif0aB7ManagerC"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:9SwiftyGif0aB7ManagerC07defaultC0ACvpZ",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC07defaultC0ACvpZ",
+          "moduleName": "SwiftyGif",
+          "static": true,
+          "declAttributes": [
+            "HasInitialValue",
+            "Final",
+            "HasStorage"
+          ],
+          "hasStorage": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "SwiftyGifManager",
+                  "printedName": "SwiftyGif.SwiftyGifManager",
+                  "usr": "s:9SwiftyGif0aB7ManagerC"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0aB7ManagerC07defaultC0ACvgZ",
+              "mangledName": "$s9SwiftyGif0aB7ManagerC07defaultC0ACvgZ",
+              "moduleName": "SwiftyGif",
+              "static": true,
+              "implicit": true,
+              "declAttributes": [
+                "Final"
+              ],
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "SwiftyGifManager",
+                  "printedName": "SwiftyGif.SwiftyGifManager",
+                  "usr": "s:9SwiftyGif0aB7ManagerC"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0aB7ManagerC07defaultC0ACvsZ",
+              "mangledName": "$s9SwiftyGif0aB7ManagerC07defaultC0ACvsZ",
+              "moduleName": "SwiftyGif",
+              "static": true,
+              "implicit": true,
+              "declAttributes": [
+                "Final"
+              ],
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0aB7ManagerC07defaultC0ACvMZ",
+              "mangledName": "$s9SwiftyGif0aB7ManagerC07defaultC0ACvMZ",
+              "moduleName": "SwiftyGif",
+              "static": true,
+              "implicit": true,
+              "declAttributes": [
+                "Final"
+              ],
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "haveCache",
+          "printedName": "haveCache",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:9SwiftyGif0aB7ManagerC9haveCacheSbvp",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC9haveCacheSbvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "HasStorage"
+          ],
+          "hasStorage": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Bool",
+                  "printedName": "Swift.Bool",
+                  "usr": "s:Sb"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0aB7ManagerC9haveCacheSbvg",
+              "mangledName": "$s9SwiftyGif0aB7ManagerC9haveCacheSbvg",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Bool",
+                  "printedName": "Swift.Bool",
+                  "usr": "s:Sb"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0aB7ManagerC9haveCacheSbvs",
+              "mangledName": "$s9SwiftyGif0aB7ManagerC9haveCacheSbvs",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0aB7ManagerC9haveCacheSbvM",
+              "mangledName": "$s9SwiftyGif0aB7ManagerC9haveCacheSbvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "remoteCache",
+          "printedName": "remoteCache",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Dictionary",
+              "printedName": "[Foundation.URL : Foundation.Data]",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "URL",
+                  "printedName": "Foundation.URL",
+                  "usr": "s:10Foundation3URLV"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Data",
+                  "printedName": "Foundation.Data",
+                  "usr": "s:10Foundation4DataV"
+                }
+              ],
+              "usr": "s:SD"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:9SwiftyGif0aB7ManagerC11remoteCacheSDy10Foundation3URLVAE4DataVGvp",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC11remoteCacheSDy10Foundation3URLVAE4DataVGvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "HasInitialValue",
+            "HasStorage"
+          ],
+          "hasStorage": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Dictionary",
+                  "printedName": "[Foundation.URL : Foundation.Data]",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "URL",
+                      "printedName": "Foundation.URL",
+                      "usr": "s:10Foundation3URLV"
+                    },
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Data",
+                      "printedName": "Foundation.Data",
+                      "usr": "s:10Foundation4DataV"
+                    }
+                  ],
+                  "usr": "s:SD"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0aB7ManagerC11remoteCacheSDy10Foundation3URLVAE4DataVGvg",
+              "mangledName": "$s9SwiftyGif0aB7ManagerC11remoteCacheSDy10Foundation3URLVAE4DataVGvg",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Dictionary",
+                  "printedName": "[Foundation.URL : Foundation.Data]",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "URL",
+                      "printedName": "Foundation.URL",
+                      "usr": "s:10Foundation3URLV"
+                    },
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Data",
+                      "printedName": "Foundation.Data",
+                      "usr": "s:10Foundation4DataV"
+                    }
+                  ],
+                  "usr": "s:SD"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0aB7ManagerC11remoteCacheSDy10Foundation3URLVAE4DataVGvs",
+              "mangledName": "$s9SwiftyGif0aB7ManagerC11remoteCacheSDy10Foundation3URLVAE4DataVGvs",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0aB7ManagerC11remoteCacheSDy10Foundation3URLVAE4DataVGvM",
+              "mangledName": "$s9SwiftyGif0aB7ManagerC11remoteCacheSDy10Foundation3URLVAE4DataVGvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Constructor",
+          "name": "init",
+          "printedName": "init(memoryLimit:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "SwiftyGifManager",
+              "printedName": "SwiftyGif.SwiftyGifManager",
+              "usr": "s:9SwiftyGif0aB7ManagerC"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Constructor",
+          "usr": "s:9SwiftyGif0aB7ManagerC11memoryLimitACSi_tcfc",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC11memoryLimitACSi_tcfc",
+          "moduleName": "SwiftyGif",
+          "init_kind": "Designated"
+        },
+        {
+          "kind": "Function",
+          "name": "startTimerIfNeeded",
+          "printedName": "startTimerIfNeeded()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0aB7ManagerC18startTimerIfNeededyyF",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC18startTimerIfNeededyyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "stopTimer",
+          "printedName": "stopTimer()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0aB7ManagerC9stopTimeryyF",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC9stopTimeryyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "addImageView",
+          "printedName": "addImageView(_:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0aB7ManagerC12addImageViewySbSo07UIImageF0CF",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC12addImageViewySbSo07UIImageF0CF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "deleteImageView",
+          "printedName": "deleteImageView(_:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0aB7ManagerC15deleteImageViewyySo07UIImageF0CF",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC15deleteImageViewyySo07UIImageF0CF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "updateCacheSize",
+          "printedName": "updateCacheSize(for:add:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0aB7ManagerC15updateCacheSize3for3addySo11UIImageViewC_SbtF",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC15updateCacheSize3for3addySo11UIImageViewC_SbtF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "clear",
+          "printedName": "clear()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0aB7ManagerC5clearyyF",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC5clearyyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "containsImageView",
+          "printedName": "containsImageView(_:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0aB7ManagerC17containsImageViewySbSo07UIImageF0CF",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC17containsImageViewySbSo07UIImageF0CF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "hasCache",
+          "printedName": "hasCache(_:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0aB7ManagerC8hasCacheySbSo11UIImageViewCF",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC8hasCacheySbSo11UIImageViewCF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "updateImageView",
+          "printedName": "updateImageView()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0aB7ManagerC15updateImageViewyyF",
+          "mangledName": "$s9SwiftyGif0aB7ManagerC15updateImageViewyyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "ObjC"
+          ],
+          "funcSelfKind": "NonMutating"
+        }
+      ],
+      "declKind": "Class",
+      "usr": "s:9SwiftyGif0aB7ManagerC",
+      "mangledName": "$s9SwiftyGif0aB7ManagerC",
+      "moduleName": "SwiftyGif",
+      "isOpen": true
+    },
+    {
+      "kind": "Import",
+      "name": "Foundation",
+      "printedName": "Foundation",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "ImageIO",
+      "printedName": "ImageIO",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftOnoneSupport",
+      "printedName": "SwiftOnoneSupport",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftyGif",
+      "printedName": "SwiftyGif",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif",
+      "declAttributes": [
+        "Exported"
+      ]
+    },
+    {
+      "kind": "Import",
+      "name": "UIKit",
+      "printedName": "UIKit",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "_Concurrency",
+      "printedName": "_Concurrency",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "TypeDecl",
+      "name": "GifParseError",
+      "printedName": "GifParseError",
+      "children": [
+        {
+          "kind": "Var",
+          "name": "invalidFilename",
+          "printedName": "invalidFilename",
+          "children": [
+            {
+              "kind": "TypeFunc",
+              "name": "Function",
+              "printedName": "(SwiftyGif.GifParseError.Type) -> SwiftyGif.GifParseError",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "GifParseError",
+                  "printedName": "SwiftyGif.GifParseError",
+                  "usr": "s:9SwiftyGif0B10ParseErrorO"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Metatype",
+                  "printedName": "SwiftyGif.GifParseError.Type",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "GifParseError",
+                      "printedName": "SwiftyGif.GifParseError",
+                      "usr": "s:9SwiftyGif0B10ParseErrorO"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "declKind": "EnumElement",
+          "usr": "s:9SwiftyGif0B10ParseErrorO15invalidFilenameyA2CmF",
+          "mangledName": "$s9SwiftyGif0B10ParseErrorO15invalidFilenameyA2CmF",
+          "moduleName": "SwiftyGif",
+          "fixedbinaryorder": 0
+        },
+        {
+          "kind": "Var",
+          "name": "noImages",
+          "printedName": "noImages",
+          "children": [
+            {
+              "kind": "TypeFunc",
+              "name": "Function",
+              "printedName": "(SwiftyGif.GifParseError.Type) -> SwiftyGif.GifParseError",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "GifParseError",
+                  "printedName": "SwiftyGif.GifParseError",
+                  "usr": "s:9SwiftyGif0B10ParseErrorO"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Metatype",
+                  "printedName": "SwiftyGif.GifParseError.Type",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "GifParseError",
+                      "printedName": "SwiftyGif.GifParseError",
+                      "usr": "s:9SwiftyGif0B10ParseErrorO"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "declKind": "EnumElement",
+          "usr": "s:9SwiftyGif0B10ParseErrorO8noImagesyA2CmF",
+          "mangledName": "$s9SwiftyGif0B10ParseErrorO8noImagesyA2CmF",
+          "moduleName": "SwiftyGif",
+          "fixedbinaryorder": 1
+        },
+        {
+          "kind": "Var",
+          "name": "noProperties",
+          "printedName": "noProperties",
+          "children": [
+            {
+              "kind": "TypeFunc",
+              "name": "Function",
+              "printedName": "(SwiftyGif.GifParseError.Type) -> SwiftyGif.GifParseError",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "GifParseError",
+                  "printedName": "SwiftyGif.GifParseError",
+                  "usr": "s:9SwiftyGif0B10ParseErrorO"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Metatype",
+                  "printedName": "SwiftyGif.GifParseError.Type",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "GifParseError",
+                      "printedName": "SwiftyGif.GifParseError",
+                      "usr": "s:9SwiftyGif0B10ParseErrorO"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "declKind": "EnumElement",
+          "usr": "s:9SwiftyGif0B10ParseErrorO12noPropertiesyA2CmF",
+          "mangledName": "$s9SwiftyGif0B10ParseErrorO12noPropertiesyA2CmF",
+          "moduleName": "SwiftyGif",
+          "fixedbinaryorder": 2
+        },
+        {
+          "kind": "Var",
+          "name": "noGifDictionary",
+          "printedName": "noGifDictionary",
+          "children": [
+            {
+              "kind": "TypeFunc",
+              "name": "Function",
+              "printedName": "(SwiftyGif.GifParseError.Type) -> SwiftyGif.GifParseError",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "GifParseError",
+                  "printedName": "SwiftyGif.GifParseError",
+                  "usr": "s:9SwiftyGif0B10ParseErrorO"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Metatype",
+                  "printedName": "SwiftyGif.GifParseError.Type",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "GifParseError",
+                      "printedName": "SwiftyGif.GifParseError",
+                      "usr": "s:9SwiftyGif0B10ParseErrorO"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "declKind": "EnumElement",
+          "usr": "s:9SwiftyGif0B10ParseErrorO02noB10DictionaryyA2CmF",
+          "mangledName": "$s9SwiftyGif0B10ParseErrorO02noB10DictionaryyA2CmF",
+          "moduleName": "SwiftyGif",
+          "fixedbinaryorder": 3
+        },
+        {
+          "kind": "Var",
+          "name": "noTimingInfo",
+          "printedName": "noTimingInfo",
+          "children": [
+            {
+              "kind": "TypeFunc",
+              "name": "Function",
+              "printedName": "(SwiftyGif.GifParseError.Type) -> SwiftyGif.GifParseError",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "GifParseError",
+                  "printedName": "SwiftyGif.GifParseError",
+                  "usr": "s:9SwiftyGif0B10ParseErrorO"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Metatype",
+                  "printedName": "SwiftyGif.GifParseError.Type",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "GifParseError",
+                      "printedName": "SwiftyGif.GifParseError",
+                      "usr": "s:9SwiftyGif0B10ParseErrorO"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "declKind": "EnumElement",
+          "usr": "s:9SwiftyGif0B10ParseErrorO12noTimingInfoyA2CmF",
+          "mangledName": "$s9SwiftyGif0B10ParseErrorO12noTimingInfoyA2CmF",
+          "moduleName": "SwiftyGif",
+          "fixedbinaryorder": 4
+        },
+        {
+          "kind": "Function",
+          "name": "==",
+          "printedName": "==(_:_:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "GifParseError",
+              "printedName": "SwiftyGif.GifParseError",
+              "usr": "s:9SwiftyGif0B10ParseErrorO"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "GifParseError",
+              "printedName": "SwiftyGif.GifParseError",
+              "usr": "s:9SwiftyGif0B10ParseErrorO"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0B10ParseErrorO2eeoiySbAC_ACtFZ",
+          "mangledName": "$s9SwiftyGif0B10ParseErrorO2eeoiySbAC_ACtFZ",
+          "moduleName": "SwiftyGif",
+          "static": true,
+          "implicit": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "hash",
+          "printedName": "hash(into:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Hasher",
+              "printedName": "Swift.Hasher",
+              "paramValueOwnership": "InOut",
+              "usr": "s:s6HasherV"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:9SwiftyGif0B10ParseErrorO4hash4intoys6HasherVz_tF",
+          "mangledName": "$s9SwiftyGif0B10ParseErrorO4hash4intoys6HasherVz_tF",
+          "moduleName": "SwiftyGif",
+          "implicit": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Var",
+          "name": "hashValue",
+          "printedName": "hashValue",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:9SwiftyGif0B10ParseErrorO9hashValueSivp",
+          "mangledName": "$s9SwiftyGif0B10ParseErrorO9hashValueSivp",
+          "moduleName": "SwiftyGif",
+          "implicit": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Int",
+                  "printedName": "Swift.Int",
+                  "usr": "s:Si"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0B10ParseErrorO9hashValueSivg",
+              "mangledName": "$s9SwiftyGif0B10ParseErrorO9hashValueSivg",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "accessorKind": "get"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "errorDescription",
+          "printedName": "errorDescription",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "Swift.String?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "String",
+                  "printedName": "Swift.String",
+                  "usr": "s:SS"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:9SwiftyGif0B10ParseErrorO16errorDescriptionSSSgvp",
+          "mangledName": "$s9SwiftyGif0B10ParseErrorO16errorDescriptionSSSgvp",
+          "moduleName": "SwiftyGif",
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "Swift.String?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "String",
+                      "printedName": "Swift.String",
+                      "usr": "s:SS"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:9SwiftyGif0B10ParseErrorO16errorDescriptionSSSgvg",
+              "mangledName": "$s9SwiftyGif0B10ParseErrorO16errorDescriptionSSSgvg",
+              "moduleName": "SwiftyGif",
+              "accessorKind": "get"
+            }
+          ]
+        }
+      ],
+      "declKind": "Enum",
+      "usr": "s:9SwiftyGif0B10ParseErrorO",
+      "mangledName": "$s9SwiftyGif0B10ParseErrorO",
+      "moduleName": "SwiftyGif",
+      "isEnumExhaustive": true,
+      "conformances": [
+        {
+          "kind": "Conformance",
+          "name": "Hashable",
+          "printedName": "Hashable",
+          "usr": "s:SH",
+          "mangledName": "$sSH"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Error",
+          "printedName": "Error",
+          "usr": "s:s5ErrorP",
+          "mangledName": "$ss5ErrorP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Equatable",
+          "printedName": "Equatable",
+          "usr": "s:SQ",
+          "mangledName": "$sSQ"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Sendable",
+          "printedName": "Sendable",
+          "usr": "s:s8SendableP",
+          "mangledName": "$ss8SendableP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "LocalizedError",
+          "printedName": "LocalizedError",
+          "usr": "s:10Foundation14LocalizedErrorP",
+          "mangledName": "$s10Foundation14LocalizedErrorP"
+        }
+      ]
+    },
+    {
+      "kind": "Import",
+      "name": "Foundation",
+      "printedName": "Foundation",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "ImageIO",
+      "printedName": "ImageIO",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftOnoneSupport",
+      "printedName": "SwiftOnoneSupport",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "SwiftyGif",
+      "printedName": "SwiftyGif",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif",
+      "declAttributes": [
+        "Exported"
+      ]
+    },
+    {
+      "kind": "Import",
+      "name": "UIKit",
+      "printedName": "UIKit",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "Import",
+      "name": "_Concurrency",
+      "printedName": "_Concurrency",
+      "declKind": "Import",
+      "moduleName": "SwiftyGif"
+    },
+    {
+      "kind": "TypeDecl",
+      "name": "SwiftyGifDelegate",
+      "printedName": "SwiftyGifDelegate",
+      "children": [
+        {
+          "kind": "Function",
+          "name": "gifDidStart",
+          "printedName": "gifDidStart(sender:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "c:@M@SwiftyGif@objc(pl)SwiftyGifDelegate(im)gifDidStartWithSender:",
+          "mangledName": "$s9SwiftyGif0aB8DelegateP11gifDidStart6senderySo11UIImageViewC_tF",
+          "moduleName": "SwiftyGif",
+          "genericSig": "<τ_0_0 where τ_0_0 : SwiftyGif.SwiftyGifDelegate>",
+          "sugared_genericSig": "<Self where Self : SwiftyGif.SwiftyGifDelegate>",
+          "protocolReq": true,
+          "objc_name": "gifDidStartWithSender:",
+          "declAttributes": [
+            "Optional",
+            "ObjC"
+          ],
+          "reqNewWitnessTableEntry": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "gifDidLoop",
+          "printedName": "gifDidLoop(sender:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "c:@M@SwiftyGif@objc(pl)SwiftyGifDelegate(im)gifDidLoopWithSender:",
+          "mangledName": "$s9SwiftyGif0aB8DelegateP10gifDidLoop6senderySo11UIImageViewC_tF",
+          "moduleName": "SwiftyGif",
+          "genericSig": "<τ_0_0 where τ_0_0 : SwiftyGif.SwiftyGifDelegate>",
+          "sugared_genericSig": "<Self where Self : SwiftyGif.SwiftyGifDelegate>",
+          "protocolReq": true,
+          "objc_name": "gifDidLoopWithSender:",
+          "declAttributes": [
+            "Optional",
+            "ObjC"
+          ],
+          "reqNewWitnessTableEntry": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "gifDidStop",
+          "printedName": "gifDidStop(sender:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "c:@M@SwiftyGif@objc(pl)SwiftyGifDelegate(im)gifDidStopWithSender:",
+          "mangledName": "$s9SwiftyGif0aB8DelegateP10gifDidStop6senderySo11UIImageViewC_tF",
+          "moduleName": "SwiftyGif",
+          "genericSig": "<τ_0_0 where τ_0_0 : SwiftyGif.SwiftyGifDelegate>",
+          "sugared_genericSig": "<Self where Self : SwiftyGif.SwiftyGifDelegate>",
+          "protocolReq": true,
+          "objc_name": "gifDidStopWithSender:",
+          "declAttributes": [
+            "Optional",
+            "ObjC"
+          ],
+          "reqNewWitnessTableEntry": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "gifURLDidFinish",
+          "printedName": "gifURLDidFinish(sender:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "c:@M@SwiftyGif@objc(pl)SwiftyGifDelegate(im)gifURLDidFinishWithSender:",
+          "mangledName": "$s9SwiftyGif0aB8DelegateP15gifURLDidFinish6senderySo11UIImageViewC_tF",
+          "moduleName": "SwiftyGif",
+          "genericSig": "<τ_0_0 where τ_0_0 : SwiftyGif.SwiftyGifDelegate>",
+          "sugared_genericSig": "<Self where Self : SwiftyGif.SwiftyGifDelegate>",
+          "protocolReq": true,
+          "objc_name": "gifURLDidFinishWithSender:",
+          "declAttributes": [
+            "Optional",
+            "ObjC"
+          ],
+          "reqNewWitnessTableEntry": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "gifURLDidFail",
+          "printedName": "gifURLDidFail(sender:url:error:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "URL",
+              "printedName": "Foundation.URL",
+              "usr": "s:10Foundation3URLV"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "Swift.Error?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Error",
+                  "printedName": "Swift.Error",
+                  "usr": "s:s5ErrorP"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "c:@M@SwiftyGif@objc(pl)SwiftyGifDelegate(im)gifURLDidFailWithSender:url:error:",
+          "mangledName": "$s9SwiftyGif0aB8DelegateP13gifURLDidFail6sender3url5errorySo11UIImageViewC_10Foundation3URLVs5Error_pSgtF",
+          "moduleName": "SwiftyGif",
+          "genericSig": "<τ_0_0 where τ_0_0 : SwiftyGif.SwiftyGifDelegate>",
+          "sugared_genericSig": "<Self where Self : SwiftyGif.SwiftyGifDelegate>",
+          "protocolReq": true,
+          "objc_name": "gifURLDidFailWithSender:url:error:",
+          "declAttributes": [
+            "Optional",
+            "ObjC"
+          ],
+          "reqNewWitnessTableEntry": true,
+          "funcSelfKind": "NonMutating"
+        }
+      ],
+      "declKind": "Protocol",
+      "usr": "c:@M@SwiftyGif@objc(pl)SwiftyGifDelegate",
+      "mangledName": "$s9SwiftyGif0aB8DelegateP",
+      "moduleName": "SwiftyGif",
+      "genericSig": "<τ_0_0 : AnyObject>",
+      "sugared_genericSig": "<Self : AnyObject>",
+      "declAttributes": [
+        "ObjC"
+      ]
+    },
+    {
+      "kind": "TypeDecl",
+      "name": "Float",
+      "printedName": "Float",
+      "children": [
+        {
+          "kind": "Var",
+          "name": "highestNoFrameSkipping",
+          "printedName": "highestNoFrameSkipping",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "usr": "s:Sf"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:Sf9SwiftyGifE22highestNoFrameSkippingSfvpZ",
+          "mangledName": "$sSf9SwiftyGifE22highestNoFrameSkippingSfvpZ",
+          "moduleName": "SwiftyGif",
+          "static": true,
+          "declAttributes": [
+            "HasInitialValue",
+            "HasStorage"
+          ],
+          "isLet": true,
+          "hasStorage": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:Sf9SwiftyGifE22highestNoFrameSkippingSfvgZ",
+              "mangledName": "$sSf9SwiftyGifE22highestNoFrameSkippingSfvgZ",
+              "moduleName": "SwiftyGif",
+              "static": true,
+              "implicit": true,
+              "accessorKind": "get"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "default",
+          "printedName": "default",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "usr": "s:Sf"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:Sf9SwiftyGifE7defaultSfvpZ",
+          "mangledName": "$sSf9SwiftyGifE7defaultSfvpZ",
+          "moduleName": "SwiftyGif",
+          "static": true,
+          "declAttributes": [
+            "HasInitialValue",
+            "HasStorage"
+          ],
+          "isLet": true,
+          "hasStorage": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:Sf9SwiftyGifE7defaultSfvgZ",
+              "mangledName": "$sSf9SwiftyGifE7defaultSfvgZ",
+              "moduleName": "SwiftyGif",
+              "static": true,
+              "implicit": true,
+              "accessorKind": "get"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "lowForManyGifs",
+          "printedName": "lowForManyGifs",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "usr": "s:Sf"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:Sf9SwiftyGifE14lowForManyGifsSfvpZ",
+          "mangledName": "$sSf9SwiftyGifE14lowForManyGifsSfvpZ",
+          "moduleName": "SwiftyGif",
+          "static": true,
+          "declAttributes": [
+            "HasInitialValue",
+            "HasStorage"
+          ],
+          "isLet": true,
+          "hasStorage": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:Sf9SwiftyGifE14lowForManyGifsSfvgZ",
+              "mangledName": "$sSf9SwiftyGifE14lowForManyGifsSfvgZ",
+              "moduleName": "SwiftyGif",
+              "static": true,
+              "implicit": true,
+              "accessorKind": "get"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "lowForTooManyGifs",
+          "printedName": "lowForTooManyGifs",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "usr": "s:Sf"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:Sf9SwiftyGifE17lowForTooManyGifsSfvpZ",
+          "mangledName": "$sSf9SwiftyGifE17lowForTooManyGifsSfvpZ",
+          "moduleName": "SwiftyGif",
+          "static": true,
+          "declAttributes": [
+            "HasInitialValue",
+            "HasStorage"
+          ],
+          "isLet": true,
+          "hasStorage": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:Sf9SwiftyGifE17lowForTooManyGifsSfvgZ",
+              "mangledName": "$sSf9SwiftyGifE17lowForTooManyGifsSfvgZ",
+              "moduleName": "SwiftyGif",
+              "static": true,
+              "implicit": true,
+              "accessorKind": "get"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "superLowForSlideShow",
+          "printedName": "superLowForSlideShow",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "usr": "s:Sf"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:Sf9SwiftyGifE20superLowForSlideShowSfvpZ",
+          "mangledName": "$sSf9SwiftyGifE20superLowForSlideShowSfvpZ",
+          "moduleName": "SwiftyGif",
+          "static": true,
+          "declAttributes": [
+            "HasInitialValue",
+            "HasStorage"
+          ],
+          "isLet": true,
+          "hasStorage": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:Sf9SwiftyGifE20superLowForSlideShowSfvgZ",
+              "mangledName": "$sSf9SwiftyGifE20superLowForSlideShowSfvgZ",
+              "moduleName": "SwiftyGif",
+              "static": true,
+              "implicit": true,
+              "accessorKind": "get"
+            }
+          ]
+        }
+      ],
+      "declKind": "Struct",
+      "usr": "s:Sf",
+      "mangledName": "$sSf",
+      "moduleName": "Swift",
+      "declAttributes": [
+        "Frozen"
+      ],
+      "isExternal": true,
+      "conformances": [
+        {
+          "kind": "Conformance",
+          "name": "Decodable",
+          "printedName": "Decodable",
+          "usr": "s:Se",
+          "mangledName": "$sSe"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Encodable",
+          "printedName": "Encodable",
+          "usr": "s:SE",
+          "mangledName": "$sSE"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CustomReflectable",
+          "printedName": "CustomReflectable",
+          "usr": "s:s17CustomReflectableP",
+          "mangledName": "$ss17CustomReflectableP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_CustomPlaygroundQuickLookable",
+          "printedName": "_CustomPlaygroundQuickLookable",
+          "usr": "s:s30_CustomPlaygroundQuickLookableP",
+          "mangledName": "$ss30_CustomPlaygroundQuickLookableP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_CVarArgPassedAsDouble",
+          "printedName": "_CVarArgPassedAsDouble",
+          "usr": "s:s22_CVarArgPassedAsDoubleP",
+          "mangledName": "$ss22_CVarArgPassedAsDoubleP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_CVarArgAligned",
+          "printedName": "_CVarArgAligned",
+          "usr": "s:s15_CVarArgAlignedP",
+          "mangledName": "$ss15_CVarArgAlignedP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CVarArg",
+          "printedName": "CVarArg",
+          "usr": "s:s7CVarArgP",
+          "mangledName": "$ss7CVarArgP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "LosslessStringConvertible",
+          "printedName": "LosslessStringConvertible",
+          "usr": "s:s25LosslessStringConvertibleP",
+          "mangledName": "$ss25LosslessStringConvertibleP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CustomStringConvertible",
+          "printedName": "CustomStringConvertible",
+          "usr": "s:s23CustomStringConvertibleP",
+          "mangledName": "$ss23CustomStringConvertibleP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CustomDebugStringConvertible",
+          "printedName": "CustomDebugStringConvertible",
+          "usr": "s:s28CustomDebugStringConvertibleP",
+          "mangledName": "$ss28CustomDebugStringConvertibleP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "TextOutputStreamable",
+          "printedName": "TextOutputStreamable",
+          "usr": "s:s20TextOutputStreamableP",
+          "mangledName": "$ss20TextOutputStreamableP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "BinaryFloatingPoint",
+          "printedName": "BinaryFloatingPoint",
+          "children": [
+            {
+              "kind": "TypeWitness",
+              "name": "RawSignificand",
+              "printedName": "RawSignificand",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "UInt32",
+                  "printedName": "Swift.UInt32",
+                  "usr": "s:s6UInt32V"
+                }
+              ]
+            },
+            {
+              "kind": "TypeWitness",
+              "name": "RawExponent",
+              "printedName": "RawExponent",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "UInt",
+                  "printedName": "Swift.UInt",
+                  "usr": "s:Su"
+                }
+              ]
+            }
+          ],
+          "usr": "s:SB",
+          "mangledName": "$sSB"
+        },
+        {
+          "kind": "Conformance",
+          "name": "ExpressibleByFloatLiteral",
+          "printedName": "ExpressibleByFloatLiteral",
+          "children": [
+            {
+              "kind": "TypeWitness",
+              "name": "FloatLiteralType",
+              "printedName": "FloatLiteralType",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ]
+            }
+          ],
+          "usr": "s:s25ExpressibleByFloatLiteralP",
+          "mangledName": "$ss25ExpressibleByFloatLiteralP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "FloatingPoint",
+          "printedName": "FloatingPoint",
+          "children": [
+            {
+              "kind": "TypeWitness",
+              "name": "Exponent",
+              "printedName": "Exponent",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Int",
+                  "printedName": "Swift.Int",
+                  "usr": "s:Si"
+                }
+              ]
+            }
+          ],
+          "usr": "s:SF",
+          "mangledName": "$sSF"
+        },
+        {
+          "kind": "Conformance",
+          "name": "SignedNumeric",
+          "printedName": "SignedNumeric",
+          "usr": "s:s13SignedNumericP",
+          "mangledName": "$ss13SignedNumericP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Numeric",
+          "printedName": "Numeric",
+          "children": [
+            {
+              "kind": "TypeWitness",
+              "name": "Magnitude",
+              "printedName": "Magnitude",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ]
+            }
+          ],
+          "usr": "s:Sj",
+          "mangledName": "$sSj"
+        },
+        {
+          "kind": "Conformance",
+          "name": "AdditiveArithmetic",
+          "printedName": "AdditiveArithmetic",
+          "usr": "s:s18AdditiveArithmeticP",
+          "mangledName": "$ss18AdditiveArithmeticP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_ExpressibleByBuiltinIntegerLiteral",
+          "printedName": "_ExpressibleByBuiltinIntegerLiteral",
+          "usr": "s:s35_ExpressibleByBuiltinIntegerLiteralP",
+          "mangledName": "$ss35_ExpressibleByBuiltinIntegerLiteralP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "ExpressibleByIntegerLiteral",
+          "printedName": "ExpressibleByIntegerLiteral",
+          "children": [
+            {
+              "kind": "TypeWitness",
+              "name": "IntegerLiteralType",
+              "printedName": "IntegerLiteralType",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Int64",
+                  "printedName": "Swift.Int64",
+                  "usr": "s:s5Int64V"
+                }
+              ]
+            }
+          ],
+          "usr": "s:s27ExpressibleByIntegerLiteralP",
+          "mangledName": "$ss27ExpressibleByIntegerLiteralP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_ExpressibleByBuiltinFloatLiteral",
+          "printedName": "_ExpressibleByBuiltinFloatLiteral",
+          "usr": "s:s33_ExpressibleByBuiltinFloatLiteralP",
+          "mangledName": "$ss33_ExpressibleByBuiltinFloatLiteralP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Hashable",
+          "printedName": "Hashable",
+          "usr": "s:SH",
+          "mangledName": "$sSH"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Equatable",
+          "printedName": "Equatable",
+          "usr": "s:SQ",
+          "mangledName": "$sSQ"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_HasCustomAnyHashableRepresentation",
+          "printedName": "_HasCustomAnyHashableRepresentation",
+          "usr": "s:s35_HasCustomAnyHashableRepresentationP",
+          "mangledName": "$ss35_HasCustomAnyHashableRepresentationP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Sendable",
+          "printedName": "Sendable",
+          "usr": "s:s8SendableP",
+          "mangledName": "$ss8SendableP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Strideable",
+          "printedName": "Strideable",
+          "children": [
+            {
+              "kind": "TypeWitness",
+              "name": "Stride",
+              "printedName": "Stride",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ]
+            }
+          ],
+          "usr": "s:Sx",
+          "mangledName": "$sSx"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Comparable",
+          "printedName": "Comparable",
+          "usr": "s:SL",
+          "mangledName": "$sSL"
+        },
+        {
+          "kind": "Conformance",
+          "name": "SIMDScalar",
+          "printedName": "SIMDScalar",
+          "children": [
+            {
+              "kind": "TypeWitness",
+              "name": "SIMDMaskScalar",
+              "printedName": "SIMDMaskScalar",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Int32",
+                  "printedName": "Swift.Int32",
+                  "usr": "s:s5Int32V"
+                }
+              ]
+            },
+            {
+              "kind": "TypeWitness",
+              "name": "SIMD2Storage",
+              "printedName": "SIMD2Storage",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "SIMD2Storage",
+                  "printedName": "Swift.Float.SIMD2Storage",
+                  "usr": "s:Sf12SIMD2StorageV"
+                }
+              ]
+            },
+            {
+              "kind": "TypeWitness",
+              "name": "SIMD4Storage",
+              "printedName": "SIMD4Storage",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "SIMD4Storage",
+                  "printedName": "Swift.Float.SIMD4Storage",
+                  "usr": "s:Sf12SIMD4StorageV"
+                }
+              ]
+            },
+            {
+              "kind": "TypeWitness",
+              "name": "SIMD8Storage",
+              "printedName": "SIMD8Storage",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "SIMD8Storage",
+                  "printedName": "Swift.Float.SIMD8Storage",
+                  "usr": "s:Sf12SIMD8StorageV"
+                }
+              ]
+            },
+            {
+              "kind": "TypeWitness",
+              "name": "SIMD16Storage",
+              "printedName": "SIMD16Storage",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "SIMD16Storage",
+                  "printedName": "Swift.Float.SIMD16Storage",
+                  "usr": "s:Sf13SIMD16StorageV"
+                }
+              ]
+            },
+            {
+              "kind": "TypeWitness",
+              "name": "SIMD32Storage",
+              "printedName": "SIMD32Storage",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "SIMD32Storage",
+                  "printedName": "Swift.Float.SIMD32Storage",
+                  "usr": "s:Sf13SIMD32StorageV"
+                }
+              ]
+            },
+            {
+              "kind": "TypeWitness",
+              "name": "SIMD64Storage",
+              "printedName": "SIMD64Storage",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "SIMD64Storage",
+                  "printedName": "Swift.Float.SIMD64Storage",
+                  "usr": "s:Sf13SIMD64StorageV"
+                }
+              ]
+            }
+          ],
+          "usr": "s:s10SIMDScalarP",
+          "mangledName": "$ss10SIMDScalarP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_ObjectiveCBridgeable",
+          "printedName": "_ObjectiveCBridgeable",
+          "children": [
+            {
+              "kind": "TypeWitness",
+              "name": "_ObjectiveCType",
+              "printedName": "_ObjectiveCType",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "NSNumber",
+                  "printedName": "Foundation.NSNumber",
+                  "usr": "c:objc(cs)NSNumber"
+                }
+              ]
+            }
+          ],
+          "usr": "s:s21_ObjectiveCBridgeableP",
+          "mangledName": "$ss21_ObjectiveCBridgeableP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_FormatSpecifiable",
+          "printedName": "_FormatSpecifiable",
+          "children": [
+            {
+              "kind": "TypeWitness",
+              "name": "_Arg",
+              "printedName": "_Arg",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ]
+            }
+          ],
+          "usr": "s:10Foundation18_FormatSpecifiableP",
+          "mangledName": "$s10Foundation18_FormatSpecifiableP"
+        }
+      ]
+    },
+    {
+      "kind": "TypeDecl",
+      "name": "UIImage",
+      "printedName": "UIImage",
+      "children": [
+        {
+          "kind": "Constructor",
+          "name": "init",
+          "printedName": "init(imageData:levelOfIntegrity:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "UIKit.UIImage?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "UIImage",
+                  "printedName": "UIKit.UIImage",
+                  "usr": "c:objc(cs)UIImage"
+                }
+              ],
+              "usr": "s:Sq"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Data",
+              "printedName": "Foundation.Data",
+              "usr": "s:10Foundation4DataV"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "hasDefaultArg": true,
+              "usr": "s:Sf"
+            }
+          ],
+          "declKind": "Constructor",
+          "usr": "s:So7UIImageC9SwiftyGifE9imageData16levelOfIntegrityABSg10Foundation0E0V_SftKcfc",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE9imageData16levelOfIntegrityABSg10Foundation0E0V_SftKcfc",
+          "moduleName": "SwiftyGif",
+          "throwing": true,
+          "init_kind": "Convenience"
+        },
+        {
+          "kind": "Constructor",
+          "name": "init",
+          "printedName": "init(imageName:levelOfIntegrity:bundle:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "UIKit.UIImage?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "UIImage",
+                  "printedName": "UIKit.UIImage",
+                  "usr": "c:objc(cs)UIImage"
+                }
+              ],
+              "usr": "s:Sq"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "String",
+              "printedName": "Swift.String",
+              "usr": "s:SS"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "hasDefaultArg": true,
+              "usr": "s:Sf"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Bundle",
+              "printedName": "Foundation.Bundle",
+              "hasDefaultArg": true,
+              "usr": "c:objc(cs)NSBundle"
+            }
+          ],
+          "declKind": "Constructor",
+          "usr": "s:So7UIImageC9SwiftyGifE9imageName16levelOfIntegrity6bundleABSgSS_SfSo8NSBundleCtKcfc",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE9imageName16levelOfIntegrity6bundleABSgSS_SfSo8NSBundleCtKcfc",
+          "moduleName": "SwiftyGif",
+          "throwing": true,
+          "init_kind": "Convenience"
+        },
+        {
+          "kind": "Constructor",
+          "name": "init",
+          "printedName": "init(gifData:levelOfIntegrity:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "UIImage",
+              "printedName": "UIKit.UIImage",
+              "usr": "c:objc(cs)UIImage"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Data",
+              "printedName": "Foundation.Data",
+              "usr": "s:10Foundation4DataV"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "hasDefaultArg": true,
+              "usr": "s:Sf"
+            }
+          ],
+          "declKind": "Constructor",
+          "usr": "s:So7UIImageC9SwiftyGifE7gifData16levelOfIntegrityAB10Foundation0E0V_SftKcfc",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE7gifData16levelOfIntegrityAB10Foundation0E0V_SftKcfc",
+          "moduleName": "SwiftyGif",
+          "throwing": true,
+          "init_kind": "Convenience"
+        },
+        {
+          "kind": "Constructor",
+          "name": "init",
+          "printedName": "init(gifName:levelOfIntegrity:bundle:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "UIImage",
+              "printedName": "UIKit.UIImage",
+              "usr": "c:objc(cs)UIImage"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "String",
+              "printedName": "Swift.String",
+              "usr": "s:SS"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "hasDefaultArg": true,
+              "usr": "s:Sf"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Bundle",
+              "printedName": "Foundation.Bundle",
+              "hasDefaultArg": true,
+              "usr": "c:objc(cs)NSBundle"
+            }
+          ],
+          "declKind": "Constructor",
+          "usr": "s:So7UIImageC9SwiftyGifE7gifName16levelOfIntegrity6bundleABSS_SfSo8NSBundleCtKcfc",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE7gifName16levelOfIntegrity6bundleABSS_SfSo8NSBundleCtKcfc",
+          "moduleName": "SwiftyGif",
+          "throwing": true,
+          "init_kind": "Convenience"
+        },
+        {
+          "kind": "Function",
+          "name": "setGifFromData",
+          "printedName": "setGifFromData(_:levelOfIntegrity:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Data",
+              "printedName": "Foundation.Data",
+              "usr": "s:10Foundation4DataV"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "usr": "s:Sf"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So7UIImageC9SwiftyGifE03setC8FromData_16levelOfIntegrityy10Foundation0F0V_SftKF",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE03setC8FromData_16levelOfIntegrityy10Foundation0F0V_SftKF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "throwing": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "setGif",
+          "printedName": "setGif(_:bundle:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "String",
+              "printedName": "Swift.String",
+              "usr": "s:SS"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Bundle",
+              "printedName": "Foundation.Bundle",
+              "hasDefaultArg": true,
+              "usr": "c:objc(cs)NSBundle"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So7UIImageC9SwiftyGifE03setC0_6bundleySS_So8NSBundleCtKF",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE03setC0_6bundleySS_So8NSBundleCtKF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "throwing": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "framesCount",
+          "printedName": "framesCount()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So7UIImageC9SwiftyGifE11framesCountSiyF",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE11framesCountSiyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "setGif",
+          "printedName": "setGif(_:levelOfIntegrity:bundle:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "String",
+              "printedName": "Swift.String",
+              "usr": "s:SS"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "usr": "s:Sf"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Bundle",
+              "printedName": "Foundation.Bundle",
+              "hasDefaultArg": true,
+              "usr": "c:objc(cs)NSBundle"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So7UIImageC9SwiftyGifE03setC0_16levelOfIntegrity6bundleySS_SfSo8NSBundleCtKF",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE03setC0_16levelOfIntegrity6bundleySS_SfSo8NSBundleCtKF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "throwing": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "clear",
+          "printedName": "clear()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So7UIImageC9SwiftyGifE5clearyyF",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE5clearyyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Var",
+          "name": "imageSource",
+          "printedName": "imageSource",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "ImageIO.CGImageSource?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "CGImageSource",
+                  "printedName": "ImageIO.CGImageSource",
+                  "usr": "c:@T@CGImageSourceRef"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So7UIImageC9SwiftyGifE11imageSourceSo07CGImageE3RefaSgvp",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE11imageSourceSo07CGImageE3RefaSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "ImageIO.CGImageSource?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "CGImageSource",
+                      "printedName": "ImageIO.CGImageSource",
+                      "usr": "c:@T@CGImageSourceRef"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE11imageSourceSo07CGImageE3RefaSgvg",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE11imageSourceSo07CGImageE3RefaSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "ImageIO.CGImageSource?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "CGImageSource",
+                      "printedName": "ImageIO.CGImageSource",
+                      "usr": "c:@T@CGImageSourceRef"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE11imageSourceSo07CGImageE3RefaSgvs",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE11imageSourceSo07CGImageE3RefaSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE11imageSourceSo07CGImageE3RefaSgvM",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE11imageSourceSo07CGImageE3RefaSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "displayRefreshFactor",
+          "printedName": "displayRefreshFactor",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "Swift.Int?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Int",
+                  "printedName": "Swift.Int",
+                  "usr": "s:Si"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So7UIImageC9SwiftyGifE20displayRefreshFactorSiSgvp",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE20displayRefreshFactorSiSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "Swift.Int?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Int",
+                      "printedName": "Swift.Int",
+                      "usr": "s:Si"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE20displayRefreshFactorSiSgvg",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE20displayRefreshFactorSiSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "Swift.Int?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Int",
+                      "printedName": "Swift.Int",
+                      "usr": "s:Si"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE20displayRefreshFactorSiSgvs",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE20displayRefreshFactorSiSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE20displayRefreshFactorSiSgvM",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE20displayRefreshFactorSiSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "imageSize",
+          "printedName": "imageSize",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "Swift.Int?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Int",
+                  "printedName": "Swift.Int",
+                  "usr": "s:Si"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So7UIImageC9SwiftyGifE9imageSizeSiSgvp",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE9imageSizeSiSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "Swift.Int?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Int",
+                      "printedName": "Swift.Int",
+                      "usr": "s:Si"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE9imageSizeSiSgvg",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE9imageSizeSiSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "Swift.Int?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Int",
+                      "printedName": "Swift.Int",
+                      "usr": "s:Si"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE9imageSizeSiSgvs",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE9imageSizeSiSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE9imageSizeSiSgvM",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE9imageSizeSiSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "imageCount",
+          "printedName": "imageCount",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "Swift.Int?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Int",
+                  "printedName": "Swift.Int",
+                  "usr": "s:Si"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So7UIImageC9SwiftyGifE10imageCountSiSgvp",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE10imageCountSiSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "Swift.Int?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Int",
+                      "printedName": "Swift.Int",
+                      "usr": "s:Si"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE10imageCountSiSgvg",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE10imageCountSiSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "Swift.Int?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Int",
+                      "printedName": "Swift.Int",
+                      "usr": "s:Si"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE10imageCountSiSgvs",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE10imageCountSiSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE10imageCountSiSgvM",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE10imageCountSiSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "displayOrder",
+          "printedName": "displayOrder",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "[Swift.Int]?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Array",
+                  "printedName": "[Swift.Int]",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Int",
+                      "printedName": "Swift.Int",
+                      "usr": "s:Si"
+                    }
+                  ],
+                  "usr": "s:Sa"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So7UIImageC9SwiftyGifE12displayOrderSaySiGSgvp",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE12displayOrderSaySiGSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "[Swift.Int]?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Array",
+                      "printedName": "[Swift.Int]",
+                      "children": [
+                        {
+                          "kind": "TypeNominal",
+                          "name": "Int",
+                          "printedName": "Swift.Int",
+                          "usr": "s:Si"
+                        }
+                      ],
+                      "usr": "s:Sa"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE12displayOrderSaySiGSgvg",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE12displayOrderSaySiGSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "[Swift.Int]?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Array",
+                      "printedName": "[Swift.Int]",
+                      "children": [
+                        {
+                          "kind": "TypeNominal",
+                          "name": "Int",
+                          "printedName": "Swift.Int",
+                          "usr": "s:Si"
+                        }
+                      ],
+                      "usr": "s:Sa"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE12displayOrderSaySiGSgvs",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE12displayOrderSaySiGSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE12displayOrderSaySiGSgvM",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE12displayOrderSaySiGSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "imageData",
+          "printedName": "imageData",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "Foundation.Data?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Data",
+                  "printedName": "Foundation.Data",
+                  "usr": "s:10Foundation4DataV"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So7UIImageC9SwiftyGifE9imageData10Foundation0E0VSgvp",
+          "mangledName": "$sSo7UIImageC9SwiftyGifE9imageData10Foundation0E0VSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "Foundation.Data?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Data",
+                      "printedName": "Foundation.Data",
+                      "usr": "s:10Foundation4DataV"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE9imageData10Foundation0E0VSgvg",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE9imageData10Foundation0E0VSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "Foundation.Data?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Data",
+                      "printedName": "Foundation.Data",
+                      "usr": "s:10Foundation4DataV"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE9imageData10Foundation0E0VSgvs",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE9imageData10Foundation0E0VSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So7UIImageC9SwiftyGifE9imageData10Foundation0E0VSgvM",
+              "mangledName": "$sSo7UIImageC9SwiftyGifE9imageData10Foundation0E0VSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        }
+      ],
+      "declKind": "Class",
+      "usr": "c:objc(cs)UIImage",
+      "moduleName": "UIKit",
+      "isOpen": true,
+      "intro_iOS": "2.0",
+      "objc_name": "UIImage",
+      "declAttributes": [
+        "Available",
+        "ObjC",
+        "Dynamic"
+      ],
+      "superclassUsr": "c:objc(cs)NSObject",
+      "isExternal": true,
+      "inheritsConvenienceInitializers": true,
+      "superclassNames": [
+        "ObjectiveC.NSObject"
+      ],
+      "conformances": [
+        {
+          "kind": "Conformance",
+          "name": "Equatable",
+          "printedName": "Equatable",
+          "usr": "s:SQ",
+          "mangledName": "$sSQ"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Hashable",
+          "printedName": "Hashable",
+          "usr": "s:SH",
+          "mangledName": "$sSH"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CVarArg",
+          "printedName": "CVarArg",
+          "usr": "s:s7CVarArgP",
+          "mangledName": "$ss7CVarArgP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_KeyValueCodingAndObservingPublishing",
+          "printedName": "_KeyValueCodingAndObservingPublishing",
+          "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+          "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_KeyValueCodingAndObserving",
+          "printedName": "_KeyValueCodingAndObserving",
+          "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+          "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CustomStringConvertible",
+          "printedName": "CustomStringConvertible",
+          "usr": "s:s23CustomStringConvertibleP",
+          "mangledName": "$ss23CustomStringConvertibleP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CustomDebugStringConvertible",
+          "printedName": "CustomDebugStringConvertible",
+          "usr": "s:s28CustomDebugStringConvertibleP",
+          "mangledName": "$ss28CustomDebugStringConvertibleP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_ExpressibleByImageLiteral",
+          "printedName": "_ExpressibleByImageLiteral",
+          "usr": "s:s26_ExpressibleByImageLiteralP",
+          "mangledName": "$ss26_ExpressibleByImageLiteralP"
+        }
+      ]
+    },
+    {
+      "kind": "TypeDecl",
+      "name": "UIImageView",
+      "printedName": "UIImageView",
+      "children": [
+        {
+          "kind": "Function",
+          "name": "setImage",
+          "printedName": "setImage(_:manager:loopCount:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImage",
+              "printedName": "UIKit.UIImage",
+              "usr": "c:objc(cs)UIImage"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "SwiftyGifManager",
+              "printedName": "SwiftyGif.SwiftyGifManager",
+              "hasDefaultArg": true,
+              "usr": "s:9SwiftyGif0aB7ManagerC"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "hasDefaultArg": true,
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE8setImage_7manager9loopCountySo0A0C_AC0cD7ManagerCSitF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE8setImage_7manager9loopCountySo0A0C_AC0cD7ManagerCSitF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Constructor",
+          "name": "init",
+          "printedName": "init(gifImage:manager:loopCount:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImage",
+              "printedName": "UIKit.UIImage",
+              "usr": "c:objc(cs)UIImage"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "SwiftyGifManager",
+              "printedName": "SwiftyGif.SwiftyGifManager",
+              "hasDefaultArg": true,
+              "usr": "s:9SwiftyGif0aB7ManagerC"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "hasDefaultArg": true,
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Constructor",
+          "usr": "s:So11UIImageViewC9SwiftyGifE8gifImage7manager9loopCountABSo0A0C_AC0cD7ManagerCSitcfc",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE8gifImage7manager9loopCountABSo0A0C_AC0cD7ManagerCSitcfc",
+          "moduleName": "SwiftyGif",
+          "declAttributes": [
+            "Custom"
+          ],
+          "init_kind": "Convenience"
+        },
+        {
+          "kind": "Constructor",
+          "name": "init",
+          "printedName": "init(gifURL:manager:loopCount:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "UIImageView",
+              "printedName": "UIKit.UIImageView",
+              "usr": "c:objc(cs)UIImageView"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "URL",
+              "printedName": "Foundation.URL",
+              "usr": "s:10Foundation3URLV"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "SwiftyGifManager",
+              "printedName": "SwiftyGif.SwiftyGifManager",
+              "hasDefaultArg": true,
+              "usr": "s:9SwiftyGif0aB7ManagerC"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "hasDefaultArg": true,
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Constructor",
+          "usr": "s:So11UIImageViewC9SwiftyGifE6gifURL7manager9loopCountAB10Foundation0F0V_AC0cD7ManagerCSitcfc",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE6gifURL7manager9loopCountAB10Foundation0F0V_AC0cD7ManagerCSitcfc",
+          "moduleName": "SwiftyGif",
+          "declAttributes": [
+            "Custom"
+          ],
+          "init_kind": "Convenience"
+        },
+        {
+          "kind": "Function",
+          "name": "setGifImage",
+          "printedName": "setGifImage(_:manager:loopCount:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "UIImage",
+              "printedName": "UIKit.UIImage",
+              "usr": "c:objc(cs)UIImage"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "SwiftyGifManager",
+              "printedName": "SwiftyGif.SwiftyGifManager",
+              "hasDefaultArg": true,
+              "usr": "s:9SwiftyGif0aB7ManagerC"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "hasDefaultArg": true,
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE03setD5Image_7manager9loopCountySo0A0C_AC0cD7ManagerCSitF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE03setD5Image_7manager9loopCountySo0A0C_AC0cD7ManagerCSitF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "setGifFromURL",
+          "printedName": "setGifFromURL(_:manager:loopCount:levelOfIntegrity:session:showLoader:customLoader:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "Foundation.URLSessionDataTask?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "URLSessionDataTask",
+                  "printedName": "Foundation.URLSessionDataTask",
+                  "usr": "c:objc(cs)NSURLSessionDataTask"
+                }
+              ],
+              "usr": "s:Sq"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "URL",
+              "printedName": "Foundation.URL",
+              "usr": "s:10Foundation3URLV"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "SwiftyGifManager",
+              "printedName": "SwiftyGif.SwiftyGifManager",
+              "hasDefaultArg": true,
+              "usr": "s:9SwiftyGif0aB7ManagerC"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "hasDefaultArg": true,
+              "usr": "s:Si"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Float",
+              "printedName": "Swift.Float",
+              "hasDefaultArg": true,
+              "usr": "s:Sf"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "URLSession",
+              "printedName": "Foundation.URLSession",
+              "hasDefaultArg": true,
+              "usr": "c:objc(cs)NSURLSession"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "hasDefaultArg": true,
+              "usr": "s:Sb"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "UIKit.UIView?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "UIView",
+                  "printedName": "UIKit.UIView",
+                  "usr": "c:objc(cs)UIView"
+                }
+              ],
+              "hasDefaultArg": true,
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE03setD7FromURL_7manager9loopCount16levelOfIntegrity7session10showLoader06customP0So20NSURLSessionDataTaskCSg10Foundation0G0V_AC0cD7ManagerCSiSfSo0R0CSbSo6UIViewCSgtF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE03setD7FromURL_7manager9loopCount16levelOfIntegrity7session10showLoader06customP0So20NSURLSessionDataTaskCSg10Foundation0G0V_AC0cD7ManagerCSiSfSo0R0CSbSo6UIViewCSgtF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom",
+            "DiscardableResult"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "startAnimatingGif",
+          "printedName": "startAnimatingGif()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE014startAnimatingD0yyF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE014startAnimatingD0yyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "stopAnimatingGif",
+          "printedName": "stopAnimatingGif()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE013stopAnimatingD0yyF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE013stopAnimatingD0yyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "isAnimatingGif",
+          "printedName": "isAnimatingGif()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE011isAnimatingD0SbyF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE011isAnimatingD0SbyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "showFrameForIndexDelta",
+          "printedName": "showFrameForIndexDelta(_:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE22showFrameForIndexDeltayySiF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE22showFrameForIndexDeltayySiF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "showFrameAtIndex",
+          "printedName": "showFrameAtIndex(_:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE16showFrameAtIndexyySiF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE16showFrameAtIndexyySiF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "updateCache",
+          "printedName": "updateCache()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE11updateCacheyyF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE11updateCacheyyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "updateCurrentImage",
+          "printedName": "updateCurrentImage()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE18updateCurrentImageyyF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE18updateCurrentImageyyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "currentFrameIndex",
+          "printedName": "currentFrameIndex()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE17currentFrameIndexSiyF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE17currentFrameIndexSiyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "frameAtIndex",
+          "printedName": "frameAtIndex(index:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "UIImage",
+              "printedName": "UIKit.UIImage",
+              "usr": "c:objc(cs)UIImage"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE12frameAtIndex5indexSo0A0CSi_tF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE12frameAtIndex5indexSo0A0CSi_tF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "isDiscarded",
+          "printedName": "isDiscarded(_:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "UIKit.UIView?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "UIView",
+                  "printedName": "UIKit.UIView",
+                  "usr": "c:objc(cs)UIView"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE11isDiscardedySbSo6UIViewCSgF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE11isDiscardedySbSo6UIViewCSgF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "isDisplayedInScreen",
+          "printedName": "isDisplayedInScreen(_:)",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            },
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "UIKit.UIView?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "UIView",
+                  "printedName": "UIKit.UIView",
+                  "usr": "c:objc(cs)UIView"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE19isDisplayedInScreenySbSo6UIViewCSgF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE19isDisplayedInScreenySbSo6UIViewCSgF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Function",
+          "name": "clear",
+          "printedName": "clear()",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Void",
+              "printedName": "()"
+            }
+          ],
+          "declKind": "Func",
+          "usr": "s:So11UIImageViewC9SwiftyGifE5clearyyF",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE5clearyyF",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "funcSelfKind": "NonMutating"
+        },
+        {
+          "kind": "Var",
+          "name": "gifImage",
+          "printedName": "gifImage",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "UIKit.UIImage?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "UIImage",
+                  "printedName": "UIKit.UIImage",
+                  "usr": "c:objc(cs)UIImage"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So11UIImageViewC9SwiftyGifE8gifImageSo0A0CSgvp",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE8gifImageSo0A0CSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "UIKit.UIImage?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "UIImage",
+                      "printedName": "UIKit.UIImage",
+                      "usr": "c:objc(cs)UIImage"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE8gifImageSo0A0CSgvg",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE8gifImageSo0A0CSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "UIKit.UIImage?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "UIImage",
+                      "printedName": "UIKit.UIImage",
+                      "usr": "c:objc(cs)UIImage"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE8gifImageSo0A0CSgvs",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE8gifImageSo0A0CSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE8gifImageSo0A0CSgvM",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE8gifImageSo0A0CSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "currentImage",
+          "printedName": "currentImage",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "UIKit.UIImage?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "UIImage",
+                  "printedName": "UIKit.UIImage",
+                  "usr": "c:objc(cs)UIImage"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So11UIImageViewC9SwiftyGifE12currentImageSo0A0CSgvp",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE12currentImageSo0A0CSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "UIKit.UIImage?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "UIImage",
+                      "printedName": "UIKit.UIImage",
+                      "usr": "c:objc(cs)UIImage"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE12currentImageSo0A0CSgvg",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE12currentImageSo0A0CSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "UIKit.UIImage?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "UIImage",
+                      "printedName": "UIKit.UIImage",
+                      "usr": "c:objc(cs)UIImage"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE12currentImageSo0A0CSgvs",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE12currentImageSo0A0CSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE12currentImageSo0A0CSgvM",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE12currentImageSo0A0CSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "loopCount",
+          "printedName": "loopCount",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Int",
+              "printedName": "Swift.Int",
+              "usr": "s:Si"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So11UIImageViewC9SwiftyGifE9loopCountSivp",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE9loopCountSivp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Int",
+                  "printedName": "Swift.Int",
+                  "usr": "s:Si"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE9loopCountSivg",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE9loopCountSivg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Int",
+                  "printedName": "Swift.Int",
+                  "usr": "s:Si"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE9loopCountSivs",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE9loopCountSivs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE9loopCountSivM",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE9loopCountSivM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "animationManager",
+          "printedName": "animationManager",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "SwiftyGif.SwiftyGifManager?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "SwiftyGifManager",
+                  "printedName": "SwiftyGif.SwiftyGifManager",
+                  "usr": "s:9SwiftyGif0aB7ManagerC"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So11UIImageViewC9SwiftyGifE16animationManagerAC0cdF0CSgvp",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE16animationManagerAC0cdF0CSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "SwiftyGif.SwiftyGifManager?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "SwiftyGifManager",
+                      "printedName": "SwiftyGif.SwiftyGifManager",
+                      "usr": "s:9SwiftyGif0aB7ManagerC"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE16animationManagerAC0cdF0CSgvg",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE16animationManagerAC0cdF0CSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "SwiftyGif.SwiftyGifManager?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "SwiftyGifManager",
+                      "printedName": "SwiftyGif.SwiftyGifManager",
+                      "usr": "s:9SwiftyGif0aB7ManagerC"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE16animationManagerAC0cdF0CSgvs",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE16animationManagerAC0cdF0CSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE16animationManagerAC0cdF0CSgvM",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE16animationManagerAC0cdF0CSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "delegate",
+          "printedName": "delegate",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Optional",
+              "printedName": "SwiftyGif.SwiftyGifDelegate?",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "SwiftyGifDelegate",
+                  "printedName": "SwiftyGif.SwiftyGifDelegate",
+                  "usr": "c:@M@SwiftyGif@objc(pl)SwiftyGifDelegate"
+                }
+              ],
+              "usr": "s:Sq"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So11UIImageViewC9SwiftyGifE8delegateAC0cD8Delegate_pSgvp",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE8delegateAC0cD8Delegate_pSgvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "SwiftyGif.SwiftyGifDelegate?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "SwiftyGifDelegate",
+                      "printedName": "SwiftyGif.SwiftyGifDelegate",
+                      "usr": "c:@M@SwiftyGif@objc(pl)SwiftyGifDelegate"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE8delegateAC0cD8Delegate_pSgvg",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE8delegateAC0cD8Delegate_pSgvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Optional",
+                  "printedName": "SwiftyGif.SwiftyGifDelegate?",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "SwiftyGifDelegate",
+                      "printedName": "SwiftyGif.SwiftyGifDelegate",
+                      "usr": "c:@M@SwiftyGif@objc(pl)SwiftyGifDelegate"
+                    }
+                  ],
+                  "usr": "s:Sq"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE8delegateAC0cD8Delegate_pSgvs",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE8delegateAC0cD8Delegate_pSgvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE8delegateAC0cD8Delegate_pSgvM",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE8delegateAC0cD8Delegate_pSgvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        },
+        {
+          "kind": "Var",
+          "name": "displaying",
+          "printedName": "displaying",
+          "children": [
+            {
+              "kind": "TypeNominal",
+              "name": "Bool",
+              "printedName": "Swift.Bool",
+              "usr": "s:Sb"
+            }
+          ],
+          "declKind": "Var",
+          "usr": "s:So11UIImageViewC9SwiftyGifE10displayingSbvp",
+          "mangledName": "$sSo11UIImageViewC9SwiftyGifE10displayingSbvp",
+          "moduleName": "SwiftyGif",
+          "isOpen": true,
+          "declAttributes": [
+            "Custom"
+          ],
+          "accessors": [
+            {
+              "kind": "Accessor",
+              "name": "Get",
+              "printedName": "Get()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Bool",
+                  "printedName": "Swift.Bool",
+                  "usr": "s:Sb"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE10displayingSbvg",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE10displayingSbvg",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "get"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Set",
+              "printedName": "Set()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                },
+                {
+                  "kind": "TypeNominal",
+                  "name": "Bool",
+                  "printedName": "Swift.Bool",
+                  "usr": "s:Sb"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE10displayingSbvs",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE10displayingSbvs",
+              "moduleName": "SwiftyGif",
+              "isOpen": true,
+              "accessorKind": "set"
+            },
+            {
+              "kind": "Accessor",
+              "name": "Modify",
+              "printedName": "Modify()",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Void",
+                  "printedName": "()"
+                }
+              ],
+              "declKind": "Accessor",
+              "usr": "s:So11UIImageViewC9SwiftyGifE10displayingSbvM",
+              "mangledName": "$sSo11UIImageViewC9SwiftyGifE10displayingSbvM",
+              "moduleName": "SwiftyGif",
+              "implicit": true,
+              "isOpen": true,
+              "accessorKind": "_modify"
+            }
+          ]
+        }
+      ],
+      "declKind": "Class",
+      "usr": "c:objc(cs)UIImageView",
+      "moduleName": "UIKit",
+      "isOpen": true,
+      "intro_iOS": "2.0",
+      "objc_name": "UIImageView",
+      "declAttributes": [
+        "Custom",
+        "Available",
+        "ObjC",
+        "Dynamic"
+      ],
+      "superclassUsr": "c:objc(cs)UIView",
+      "isExternal": true,
+      "inheritsConvenienceInitializers": true,
+      "superclassNames": [
+        "UIKit.UIView",
+        "UIKit.UIResponder",
+        "ObjectiveC.NSObject"
+      ],
+      "conformances": [
+        {
+          "kind": "Conformance",
+          "name": "Equatable",
+          "printedName": "Equatable",
+          "usr": "s:SQ",
+          "mangledName": "$sSQ"
+        },
+        {
+          "kind": "Conformance",
+          "name": "Hashable",
+          "printedName": "Hashable",
+          "usr": "s:SH",
+          "mangledName": "$sSH"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CVarArg",
+          "printedName": "CVarArg",
+          "usr": "s:s7CVarArgP",
+          "mangledName": "$ss7CVarArgP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_KeyValueCodingAndObservingPublishing",
+          "printedName": "_KeyValueCodingAndObservingPublishing",
+          "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+          "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "_KeyValueCodingAndObserving",
+          "printedName": "_KeyValueCodingAndObserving",
+          "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+          "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CustomStringConvertible",
+          "printedName": "CustomStringConvertible",
+          "usr": "s:s23CustomStringConvertibleP",
+          "mangledName": "$ss23CustomStringConvertibleP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "CustomDebugStringConvertible",
+          "printedName": "CustomDebugStringConvertible",
+          "usr": "s:s28CustomDebugStringConvertibleP",
+          "mangledName": "$ss28CustomDebugStringConvertibleP"
+        },
+        {
+          "kind": "Conformance",
+          "name": "__DefaultCustomPlaygroundQuickLookable",
+          "printedName": "__DefaultCustomPlaygroundQuickLookable",
+          "usr": "s:s38__DefaultCustomPlaygroundQuickLookableP",
+          "mangledName": "$ss38__DefaultCustomPlaygroundQuickLookableP"
+        }
+      ]
+    }
+  ],
+  "json_format_version": 6
+}

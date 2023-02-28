@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/models/members/member_profile.dart';
 import 'package:akwaaba/providers/all_events_provider.dart';
+import 'package:akwaaba/providers/attendance_history_provider.dart';
+import 'package:akwaaba/providers/attendance_provider.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/home_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
+import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/versionOne/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -129,11 +132,18 @@ class SharedPrefs {
     return sd.clear();
   }
 
-  void logout(BuildContext context) {
+  clearProviderDate(BuildContext context) {
     Provider.of<HomeProvider>(context, listen: false).clearData();
     Provider.of<AllEventsProvider>(context, listen: false).clearData();
+    Provider.of<MembersProvider>(context, listen: false).clearData();
+    Provider.of<AttendanceProvider>(context, listen: false).clearData();
+    Provider.of<AttendanceHistoryProvider>(context, listen: false).clearData();
     Provider.of<MemberProvider>(context, listen: false).clearData();
     Provider.of<ClientProvider>(context, listen: false).clearData();
+  }
+
+  void logout(BuildContext context) {
+    clearProviderDate(context);
     clear();
     setBackgroundLocationEnabled(enable: true);
     Navigator.pushReplacement(

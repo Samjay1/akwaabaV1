@@ -158,7 +158,7 @@ class _AttendanceReportDetailsPageState
                           openWhatsapp(
                             context,
                             attendeePhone,
-                            'Hello, \n\nI\'m experiencing an issue and I need an assistance.',
+                            'Hello',
                           );
                         },
                         icon: Image.asset(

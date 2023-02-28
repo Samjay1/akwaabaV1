@@ -1,0 +1,27 @@
+version: "Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)"
+options: "849bfc578f625055c42290e13cadddf22fbdf37b370dfafab58bf583b4d54b60"
+build_start_time: [1677508170, 810298919]
+build_end_time: [1677508184, 24315834]
+inputs:
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/Heartbeat.swift"
+  : [1677503282, 349866390]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatController.swift"
+  : [1677503282, 352046489]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatStorage.swift"
+  : [1677503282, 355111122]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatsBundle.swift"
+  : [1677503282, 356092929]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatsPayload.swift"
+  : [1677503282, 361324548]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/RingBuffer.swift"
+  : [1677503282, 350571632]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/Storage.swift"
+  : [1677503282, 348786354]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/StorageFactory.swift"
+  : [1677503282, 361785411]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/WeakContainer.swift"
+  : [1677503282, 360605239]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/_ObjC_HeartbeatController.swift"
+  : [1677503282, 351187229]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/_ObjC_HeartbeatsPayload.swift"
+  : [1677503282, 354526519]

@@ -115,9 +115,6 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
 
   @override
   void initState() {
-    Provider.of<AttendanceProvider>(context, listen: false)
-        .setCurrentContext(context);
-
     SharedPrefs().getUserType().then((value) {
       setState(() {
         userType = value!;
@@ -125,6 +122,8 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
     });
 
     Future.delayed(Duration.zero, () {
+      Provider.of<AttendanceProvider>(context, listen: false)
+          .setCurrentContext(context);
       // check if admin is main branch admin or not
       if (userType == AppConstants.admin &&
           Provider.of<ClientProvider>(context, listen: false).branch.id ==
@@ -158,7 +157,9 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
 
   @override
   void dispose() {
-    attendanceProvider.clearData();
+    if (context.mounted) {
+      attendanceProvider.clearData();
+    }
     super.dispose();
   }
 

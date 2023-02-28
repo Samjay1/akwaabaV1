@@ -6,7 +6,5 @@
 	<string>development</string>
 	<key>com.apple.developer.networking.wifi-info</key>
 	<true/>
-	<key>com.apple.developer.usernotifications.communication</key>
-	<true/>
 </dict>
 </plist>

@@ -101,7 +101,9 @@ class _PostClockingPageState extends State<PostClockingPage> {
 
   @override
   void dispose() {
-    postClockingProvider.clearData();
+    if (context.mounted) {
+      postClockingProvider.clearData();
+    }
     super.dispose();
   }
 

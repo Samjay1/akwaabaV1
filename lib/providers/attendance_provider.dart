@@ -709,14 +709,13 @@ class AttendanceProvider extends ChangeNotifier {
     searchIdentity = '';
     totalAttendees = 0;
     totalAbsentees = 0;
-
     totalMaleAttendees.clear();
     totalFemaleAttendees.clear();
     totalMaleAbsentees.clear();
     totalFemaleAbsentees.clear();
     _pastMeetingEvents.clear();
     _attendees.clear();
-    _selectedAttendees.clear();
     _absentees.clear();
+    _selectedAttendees.clear();
   }
 }

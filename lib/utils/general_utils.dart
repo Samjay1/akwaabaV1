@@ -4,10 +4,12 @@ import 'dart:math';
 
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/general/branch.dart';
+import 'package:akwaaba/models/general/deviceInfoModel.dart';
 import 'package:akwaaba/providers/client_provider.dart';
 import 'package:akwaaba/providers/member_provider.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:open_mail_app/open_mail_app.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +25,34 @@ String generateRandomString(int len) {
   const _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   return List.generate(len, (index) => _chars[r.nextInt(_chars.length)]).join();
+}
+
+Future<DeviceInfoModel?> getDeviceInfo() async {
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  DeviceInfoModel? deviceInfoModel;
+  //If platform is Android
+  if (Platform.isAndroid) {
+    AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
+    var deviceInfoObj = {
+      'systemDevice': 3,
+      'deviceType': androidDeviceInfo.brand,
+      'deviceId': androidDeviceInfo.id
+    };
+
+    debugPrint('Running on $deviceInfoObj'); // deviceType
+
+    deviceInfoModel = DeviceInfoModel.fromJson(deviceInfoObj);
+  } else if (Platform.isIOS) {
+    IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+    var deviceInfoObj = {
+      'systemDevice': 2,
+      'deviceType': iosDeviceInfo.systemVersion,
+      'deviceId': iosDeviceInfo.identifierForVendor
+    };
+    debugPrint('Running on ${iosDeviceInfo.utsname.machine}');
+    deviceInfoModel = DeviceInfoModel.fromJson(deviceInfoObj);
+  }
+  return deviceInfoModel;
 }
 
 // calculate the distance between two locations

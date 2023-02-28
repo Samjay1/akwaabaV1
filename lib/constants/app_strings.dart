@@ -12,4 +12,7 @@ class AppString {
   static const String lateText = 'Late';
   static const String acountTypeInd = '1';
   static const String acountTypeOrg = '2';
+  static const String heyThereTitle = 'Hey there!';
+  static const String deviceNotAllowedMsg =
+      'Sorry this mobile device is not assigned to your account for clocking. \nRequest device activation and contact your admin to activate it before you can clock.';
 }

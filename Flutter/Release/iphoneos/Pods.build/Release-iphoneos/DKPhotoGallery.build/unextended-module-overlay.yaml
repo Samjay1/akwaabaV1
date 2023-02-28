@@ -1,0 +1,14 @@
+{
+  'version': 0,
+  'use-external-names': 'false',
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': "/Users/icode/Desktop/FlutterProjects/akwaabaV1/Flutter/Release/iphoneos/Release-iphoneos/DKPhotoGallery/DKPhotoGallery.framework/Modules"
+    'contents': [{
+      'type': 'file',
+      'name': "module.modulemap",
+      'external-contents': "/Users/icode/Desktop/FlutterProjects/akwaabaV1/Flutter/Release/iphoneos/Pods.build/Release-iphoneos/DKPhotoGallery.build/unextended-module.modulemap",
+    }]
+  }]
+}

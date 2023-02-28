@@ -311,6 +311,9 @@ class MemberAPI {
     required String phoneEmail,
     required String password,
     required bool checkDeviceInfo,
+    required int systemDevice,
+    required String deviceType,
+    required String deviceId,
   }) async {
     MemberProfile? memberProfile;
     try {
@@ -318,7 +321,10 @@ class MemberAPI {
       var data = {
         'phone_email': phoneEmail,
         'password': password,
-        "checkDeviceInfo": checkDeviceInfo
+        "checkDeviceInfo": checkDeviceInfo,
+        "systemDevice": systemDevice,
+        "deviceType": deviceType,
+        "deviceId": deviceId
       };
 
       debugPrint("Data: $data");

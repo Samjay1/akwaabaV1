@@ -1,0 +1,43 @@
+version: "Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)"
+options: "849bfc578f625055c42290e13cadddf22fbdf37b370dfafab58bf583b4d54b60"
+build_start_time: [1677508105, 120435953]
+build_end_time: [1677508125, 284892082]
+inputs:
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/DKPhotoGallery.swift": [1677503281, 927317619]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/DKPhotoGalleryContentVC.swift": [1677503281, 928310871]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/DKPhotoGalleryItem.swift": [1677503281, 930880308]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/DKPhotoGalleryScrollView.swift": [1677503281, 948126316]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/DKPhotoIncrementalIndicator.swift": [1677503281, 929307460]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/DKPhotoPreviewFactory.swift": [1677503281, 921500444]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/DKPhotoBasePreviewVC.swift": [1677503281, 934694766]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/DKPhotoContentAnimationView.swift": [1677503281, 946121692]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/DKPhotoProgressIndicator.swift": [1677503281, 946577548]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/DKPhotoProgressIndicatorProtocol.swift"
+  : [1677503281, 943682193]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/ImagePreview/DKPhotoBaseImagePreviewVC.swift"
+  : [1677503281, 941475391]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/ImagePreview/DKPhotoImageDownloader.swift"
+  : [1677503281, 938471317]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/ImagePreview/DKPhotoImagePreviewVC.swift"
+  : [1677503281, 939172744]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/ImagePreview/DKPhotoImageUtility.swift"
+  : [1677503281, 939906597]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/ImagePreview/DKPhotoImageView.swift"
+  : [1677503281, 940402269]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/PDFPreview/DKPDFView.swift": [1677503281, 944499969]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/PDFPreview/DKPhotoPDFPreviewVC.swift"
+  : [1677503281, 945577144]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/PlayerPreview/DKPhotoPlayerPreviewVC.swift"
+  : [1677503281, 934071063]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/PlayerPreview/DKPlayerView.swift": [1677503281, 933222770]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/QRCode/DKPhotoQRCodeResultVC.swift": [1677503281, 943218231]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/QRCode/DKPhotoWebVC.swift": [1677503281, 942597389]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Resource/DKPhotoGalleryResource.swift": [1677503281, 972314119]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Transition/DKPhotoGalleryInteractiveTransition.swift"
+  : [1677503281, 923513889]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Transition/DKPhotoGalleryTransitionController.swift"
+  : [1677503281, 922459602]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Transition/DKPhotoGalleryTransitionDismiss.swift"
+  : [1677503281, 924724817]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKPhotoGallery/DKPhotoGallery/Transition/DKPhotoGalleryTransitionPresent.swift"
+  : [1677503281, 924187183]

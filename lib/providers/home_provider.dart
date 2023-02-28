@@ -1,5 +1,6 @@
 import 'package:akwaaba/Networks/event_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/location/location_services.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/utils/date_utils.dart';
@@ -424,6 +425,20 @@ class HomeProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
+      if (response.nonFieldErrors != null ||
+          response.nonFieldErrors!.isNotEmpty) {
+        if (context.mounted) {
+          Navigator.pop(context);
+          showInfoDialog(
+            'ok',
+            context: context,
+            title: AppString.heyThereTitle,
+            content: response.nonFieldErrors![0],
+            onTap: () => Navigator.pop(context),
+          );
+        }
+        return;
+      }
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
       meetingEventModel.startBreak = response.startBreak;
       meetingEventModel.endBreak = response.endBreak;
@@ -449,6 +464,20 @@ class HomeProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
+      if (response.nonFieldErrors != null ||
+          response.nonFieldErrors!.isNotEmpty) {
+        if (context.mounted) {
+          Navigator.pop(context);
+          showInfoDialog(
+            'ok',
+            context: context,
+            title: AppString.heyThereTitle,
+            content: response.nonFieldErrors![0],
+            onTap: () => Navigator.pop(context),
+          );
+        }
+        return;
+      }
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
       meetingEventModel.startBreak = response.startBreak;
       meetingEventModel.endBreak = response.endBreak;
@@ -475,6 +504,21 @@ class HomeProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
+
+      if (response.nonFieldErrors != null ||
+          response.nonFieldErrors!.isNotEmpty) {
+        if (context.mounted) {
+          Navigator.pop(context);
+          showInfoDialog(
+            'ok',
+            context: context,
+            title: AppString.heyThereTitle,
+            content: response.nonFieldErrors![0],
+            onTap: () => Navigator.pop(context),
+          );
+        }
+        return;
+      }
 
       if (response.message == null) {
         showErrorToast(response.nonFieldErrors![0]);
@@ -507,7 +551,20 @@ class HomeProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
-      //showNormalToast('Welcome Back!');
+      if (response.nonFieldErrors != null ||
+          response.nonFieldErrors!.isNotEmpty) {
+        if (context.mounted) {
+          Navigator.pop(context);
+          showInfoDialog(
+            'ok',
+            context: context,
+            title: AppString.heyThereTitle,
+            content: response.nonFieldErrors![0],
+            onTap: () => Navigator.pop(context),
+          );
+        }
+        return;
+      }
       if (response.message == null) {
         showErrorToast(response.nonFieldErrors![0]);
       } else {

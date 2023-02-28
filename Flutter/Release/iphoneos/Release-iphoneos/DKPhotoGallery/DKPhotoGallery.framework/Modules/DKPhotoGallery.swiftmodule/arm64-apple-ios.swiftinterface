@@ -1,0 +1,410 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)
+// swift-module-flags: -target arm64-apple-ios9.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name DKPhotoGallery
+import AVFoundation
+import AVKit
+@_exported import DKPhotoGallery
+import Foundation
+import MobileCoreServices
+import PDFKit
+import Photos
+import SDWebImage
+import Swift
+import SwiftyGif
+import UIKit
+import WebKit
+import _Concurrency
+@objc @available(iOS 11.0, *)
+@_Concurrency.MainActor(unsafe) open class DKPDFView : UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public var url: Foundation.URL? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var document: PDFKit.PDFDocument? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) final public let openButton: UIKit.UIButton
+  @objc dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class DKPhotoBaseImagePreviewVC : DKPhotoGallery.DKPhotoBasePreviewVC {
+  @_Concurrency.MainActor(unsafe) override public func createContentView() -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) override public func updateContentView(with content: Any)
+  @_Concurrency.MainActor(unsafe) override public func snapshotImage() -> UIKit.UIImage?
+  @_Concurrency.MainActor(unsafe) override public func showError()
+  @_Concurrency.MainActor(unsafe) override public func hidesError()
+  @_Concurrency.MainActor(unsafe) override public func contentSize() -> CoreGraphics.CGSize
+  @_Concurrency.MainActor(unsafe) override public func defaultPreviewActions() -> [UIKit.UIPreviewActionItem]
+  @_Concurrency.MainActor(unsafe) override public func defaultLongPressActions() -> [UIKit.UIAlertAction]
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public enum DKPhotoPreviewType {
+  case photo, video
+  @available(iOS 11.0, *)
+  case pdf
+  public static func == (a: DKPhotoGallery.DKPhotoPreviewType, b: DKPhotoGallery.DKPhotoPreviewType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public protocol DKPhotoBasePreviewDataSource : ObjectiveC.NSObjectProtocol {
+  func createContentView() -> UIKit.UIView
+  func updateContentView(with content: Any)
+  func contentSize() -> CoreGraphics.CGSize
+  func fetchContent(withProgressBlock progressBlock: @escaping ((_ progress: Swift.Float) -> Swift.Void), completeBlock: @escaping ((_ data: Any?, _ error: Swift.Error?) -> Swift.Void))
+  func snapshotImage() -> UIKit.UIImage?
+  func showError()
+  func hidesError()
+  func enableZoom() -> Swift.Bool
+  func enableIndicatorView() -> Swift.Bool
+  func defaultPreviewActions() -> [UIKit.UIPreviewActionItem]
+  func defaultLongPressActions() -> [UIKit.UIAlertAction]
+  var previewType: DKPhotoGallery.DKPhotoPreviewType { get }
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor(unsafe) open class DKPhotoBasePreviewVC : UIKit.UIViewController, UIKit.UIScrollViewDelegate, DKPhotoGallery.DKPhotoBasePreviewDataSource {
+  @objc @_Concurrency.MainActor(unsafe) open var item: DKPhotoGallery.DKPhotoGalleryItem! {
+    get
+  }
+  @objc @_Concurrency.MainActor(unsafe) open var contentView: UIKit.UIView! {
+    get
+  }
+  @objc @_Concurrency.MainActor(unsafe) open var customLongPressActions: [UIKit.UIAlertAction]?
+  @objc @_Concurrency.MainActor(unsafe) open var customPreviewActions: [Any]?
+  @objc @_Concurrency.MainActor(unsafe) open var singleTapBlock: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func loadView()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) open func photoPreviewWillAppear()
+  @_Concurrency.MainActor(unsafe) open func photoPreviewWillDisappear()
+  @_Concurrency.MainActor(unsafe) open func resetScale()
+  @_Concurrency.MainActor(unsafe) open func showTips(_ message: Swift.String)
+  @_Concurrency.MainActor(unsafe) open func setNeedsUpdateContent()
+  @_Concurrency.MainActor(unsafe) open func prepareForReuse()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var previewActionItems: [UIKit.UIPreviewActionItem] {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var shouldAutorotate: Swift.Bool {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var supportedInterfaceOrientations: UIKit.UIInterfaceOrientationMask {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var prefersStatusBarHidden: Swift.Bool {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarUpdateAnimation: UIKit.UIStatusBarAnimation {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc public func viewForZooming(in scrollView: UIKit.UIScrollView) -> UIKit.UIView?
+  @_Concurrency.MainActor(unsafe) @objc public func scrollViewDidZoom(_ scrollView: UIKit.UIScrollView)
+  @_Concurrency.MainActor(unsafe) public func createContentView() -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func updateContentView(with content: Any)
+  @_Concurrency.MainActor(unsafe) public func contentSize() -> CoreGraphics.CGSize
+  @_Concurrency.MainActor(unsafe) public func fetchContent(withProgressBlock progressBlock: @escaping ((_ progress: Swift.Float) -> Swift.Void), completeBlock: @escaping ((_ data: Any?, _ error: Swift.Error?) -> Swift.Void))
+  @_Concurrency.MainActor(unsafe) public func snapshotImage() -> UIKit.UIImage?
+  @_Concurrency.MainActor(unsafe) public func showError()
+  @_Concurrency.MainActor(unsafe) public func hidesError()
+  @_Concurrency.MainActor(unsafe) public func enableZoom() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) public func enableIndicatorView() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) public func defaultPreviewActions() -> [UIKit.UIPreviewActionItem]
+  @_Concurrency.MainActor(unsafe) public func defaultLongPressActions() -> [UIKit.UIAlertAction]
+  @_Concurrency.MainActor(unsafe) public var previewType: DKPhotoGallery.DKPhotoPreviewType {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class DKPhotoContentAnimationView : UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var contentMode: UIKit.UIView.ContentMode {
+    @_Concurrency.MainActor(unsafe) @objc get
+    @_Concurrency.MainActor(unsafe) @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var backgroundColor: UIKit.UIColor? {
+    @_Concurrency.MainActor(unsafe) @objc get
+    @_Concurrency.MainActor(unsafe) @objc set
+  }
+  @objc deinit
+}
+@objc public protocol DKPhotoGalleryDelegate : ObjectiveC.NSObjectProtocol {
+  @objc optional func photoGallery(_ gallery: DKPhotoGallery.DKPhotoGallery, didShow index: Swift.Int)
+}
+@objc public protocol DKPhotoGalleryIncrementalDataSource : ObjectiveC.NSObjectProtocol {
+  @objc optional func numberOfItems(in gallery: DKPhotoGallery.DKPhotoGallery) -> Swift.Int
+  @objc func photoGallery(_ gallery: DKPhotoGallery.DKPhotoGallery, itemsBefore item: DKPhotoGallery.DKPhotoGalleryItem?, resultHandler: @escaping ((_ items: [DKPhotoGallery.DKPhotoGalleryItem]?, _ error: Swift.Error?) -> Swift.Void))
+  @objc func photoGallery(_ gallery: DKPhotoGallery.DKPhotoGallery, itemsAfter item: DKPhotoGallery.DKPhotoGalleryItem?, resultHandler: @escaping ((_ items: [DKPhotoGallery.DKPhotoGalleryItem]?, _ error: Swift.Error?) -> Swift.Void))
+}
+@objc public enum DKPhotoGallerySingleTapMode : Swift.Int {
+  case dismiss, toggleControlView
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor(unsafe) open class DKPhotoGallery : UIKit.UINavigationController, UIKit.UIViewControllerTransitioningDelegate {
+  @objc @_Concurrency.MainActor(unsafe) open var items: [DKPhotoGallery.DKPhotoGalleryItem]?
+  @objc @_Concurrency.MainActor(unsafe) open var incrementalDataSource: DKPhotoGallery.DKPhotoGalleryIncrementalDataSource?
+  @objc @_Concurrency.MainActor(unsafe) open var finishedBlock: ((_ index: Swift.Int, _ item: DKPhotoGallery.DKPhotoGalleryItem) -> UIKit.UIImageView?)?
+  @objc @_Concurrency.MainActor(unsafe) open var presentingFromImageView: UIKit.UIImageView?
+  @objc @_Concurrency.MainActor(unsafe) open var presentationIndex: Swift.Int
+  @objc @_Concurrency.MainActor(unsafe) open var singleTapMode: DKPhotoGallery.DKPhotoGallerySingleTapMode
+  @objc @_Concurrency.MainActor(unsafe) weak open var galleryDelegate: DKPhotoGallery.DKPhotoGalleryDelegate?
+  @objc @_Concurrency.MainActor(unsafe) open var customLongPressActions: [UIKit.UIAlertAction]?
+  @objc @_Concurrency.MainActor(unsafe) open var customPreviewActions: [Any]?
+  @objc @_Concurrency.MainActor(unsafe) open var footerView: UIKit.UIView? {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) open var transitionController: DKPhotoGallery.DKPhotoGalleryTransitionController?
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidDisappear(_ animated: Swift.Bool)
+  @objc @_Concurrency.MainActor(unsafe) open func dismissGallery()
+  @objc @_Concurrency.MainActor(unsafe) open func currentContentView() -> UIKit.UIView
+  @objc @_Concurrency.MainActor(unsafe) open func currentContentVC() -> DKPhotoGallery.DKPhotoBasePreviewVC
+  @objc @_Concurrency.MainActor(unsafe) open func currentIndex() -> Swift.Int
+  @objc @_Concurrency.MainActor(unsafe) open func updateNavigation()
+  @objc @_Concurrency.MainActor(unsafe) open func handleSingleTap()
+  @objc @_Concurrency.MainActor(unsafe) open func toggleControlView()
+  @objc @_Concurrency.MainActor(unsafe) open func showsControlView()
+  @objc @_Concurrency.MainActor(unsafe) open func hidesControlView()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var previewActionItems: [UIKit.UIPreviewActionItem] {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func pushViewController(_ viewController: UIKit.UIViewController, animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func popViewController(animated: Swift.Bool) -> UIKit.UIViewController?
+  @_Concurrency.MainActor(unsafe) public class func setPreferredStatusBarStyle(statusBarStyle: UIKit.UIStatusBarStyle)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @available(iOS 5.0, *)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(navigationBarClass: Swift.AnyClass?, toolbarClass: Swift.AnyClass?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(rootViewController: UIKit.UIViewController)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc deinit
+}
+extension UIKit.UIViewController {
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func present(photoGallery gallery: DKPhotoGallery.DKPhotoGallery, completion: (() -> Swift.Void)? = nil)
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor(unsafe) open class DKPhotoGalleryContentVC : UIKit.UIViewController, UIKit.UIScrollViewDelegate {
+  @_Concurrency.MainActor(unsafe) public var pageChangeBlock: ((_ index: Swift.Int) -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) public var prepareToShow: ((_ previewVC: DKPhotoGallery.DKPhotoBasePreviewVC) -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) open var currentIndex: Swift.Int {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var currentVC: DKPhotoGallery.DKPhotoBasePreviewVC {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var currentContentView: UIKit.UIView {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) open var footerView: UIKit.UIView? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var shouldAutorotate: Swift.Bool {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var supportedInterfaceOrientations: UIKit.UIInterfaceOrientationMask {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc public func scrollViewWillEndDragging(_ scrollView: UIKit.UIScrollView, withVelocity velocity: CoreGraphics.CGPoint, targetContentOffset: Swift.UnsafeMutablePointer<CoreGraphics.CGPoint>)
+  @_Concurrency.MainActor(unsafe) @objc public func scrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public let DKPhotoGalleryItemExtraInfoKeyRemoteImageOriginalURL: Swift.String
+public let DKPhotoGalleryItemExtraInfoKeyRemoteImageOriginalSize: Swift.String
+@_inheritsConvenienceInitializers @objc public class DKPhotoGalleryItemConstant : ObjectiveC.NSObject {
+  @objc public class func extraInfoKeyRemoteImageOriginalURL() -> Swift.String
+  @objc public class func extraInfoKeyRemoteImageOriginalSize() -> Swift.String
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc open class DKPhotoGalleryItem : ObjectiveC.NSObject {
+  @objc open var thumbnail: UIKit.UIImage?
+  @objc open var image: UIKit.UIImage?
+  @objc open var imageURL: Foundation.URL?
+  @objc open var videoURL: Foundation.URL?
+  @objc open var pdfURL: Foundation.URL?
+  @objc open var asset: Photos.PHAsset?
+  @objc open var assetLocalIdentifier: Swift.String?
+  @objc open var extraInfo: [Swift.String : Any]?
+  @objc convenience public init(image: UIKit.UIImage)
+  @objc convenience public init(imageURL: Foundation.URL)
+  @objc convenience public init(videoURL: Foundation.URL)
+  @available(iOS 11.0, *)
+  @objc convenience public init(pdfURL: Foundation.URL)
+  @objc convenience public init(asset: Photos.PHAsset)
+  @objc public class func items(withImageURLs URLs: [Foundation.URL]) -> [DKPhotoGallery.DKPhotoGalleryItem]
+  @objc public class func items(withImageURLStrings URLStrings: [Swift.String]) -> [DKPhotoGallery.DKPhotoGalleryItem]
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class DKPhotoGalleryResource {
+  public class func localizedStringWithKey(_ key: Swift.String, value: Swift.String? = nil) -> Swift.String
+  @objc public static var customLocalizationBlock: ((_ title: Swift.String) -> Swift.String?)?
+  public class func downloadFailedImage() -> UIKit.UIImage
+  public class func closeVideoImage() -> UIKit.UIImage
+  public class func videoPlayImage() -> UIKit.UIImage
+  public class func videoToolbarPlayImage() -> UIKit.UIImage
+  public class func videoToolbarPauseImage() -> UIKit.UIImage
+  public class func videoPlayControlBackgroundImage() -> UIKit.UIImage
+  public class func videoTimeSliderImage() -> UIKit.UIImage
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class DKPhotoGalleryTransitionController : UIKit.UIPresentationController, UIKit.UIViewControllerTransitioningDelegate {
+  @_Concurrency.MainActor(unsafe) open var gallery: DKPhotoGallery.DKPhotoGallery!
+  @_Concurrency.MainActor(unsafe) @objc public func animationController(forPresented presented: UIKit.UIViewController, presenting: UIKit.UIViewController, source: UIKit.UIViewController) -> UIKit.UIViewControllerAnimatedTransitioning?
+  @_Concurrency.MainActor(unsafe) @objc public func animationController(forDismissed dismissed: UIKit.UIViewController) -> UIKit.UIViewControllerAnimatedTransitioning?
+  @_Concurrency.MainActor(unsafe) @objc public func interactionControllerForDismissal(using animator: UIKit.UIViewControllerAnimatedTransitioning) -> UIKit.UIViewControllerInteractiveTransitioning?
+  @_Concurrency.MainActor(unsafe) @objc public func interactionControllerForPresentation(using animator: UIKit.UIViewControllerAnimatedTransitioning) -> UIKit.UIViewControllerInteractiveTransitioning?
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor(unsafe) open class DKPhotoGalleryTransitionDismiss : ObjectiveC.NSObject, UIKit.UIViewControllerAnimatedTransitioning {
+  @_Concurrency.MainActor(unsafe) @objc open func transitionDuration(using transitionContext: UIKit.UIViewControllerContextTransitioning?) -> Foundation.TimeInterval
+  @_Concurrency.MainActor(unsafe) @objc open func animateTransition(using transitionContext: UIKit.UIViewControllerContextTransitioning)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor(unsafe) open class DKPhotoGalleryTransitionPresent : ObjectiveC.NSObject, UIKit.UIViewControllerAnimatedTransitioning {
+  @_Concurrency.MainActor(unsafe) @objc open func transitionDuration(using transitionContext: UIKit.UIViewControllerContextTransitioning?) -> Foundation.TimeInterval
+  @_Concurrency.MainActor(unsafe) @objc open func animateTransition(using transitionContext: UIKit.UIViewControllerContextTransitioning)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_Concurrency.MainActor(unsafe) open class DKPhotoImageView : UIKit.UIImageView {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(image: UIKit.UIImage? = nil, highlightedImage: UIKit.UIImage? = nil)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc deinit
+}
+public enum DKPhotoIncrementalIndicatorDirection {
+  case left, right
+  public static func == (a: DKPhotoGallery.DKPhotoIncrementalIndicatorDirection, b: DKPhotoGallery.DKPhotoIncrementalIndicatorDirection) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers @available(iOS 11.0, *)
+@_Concurrency.MainActor(unsafe) open class DKPhotoPDFPreviewVC : DKPhotoGallery.DKPhotoBasePreviewVC {
+  @_Concurrency.MainActor(unsafe) public var closeBlock: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) public var autoHidesControlView: Swift.Bool
+  @_Concurrency.MainActor(unsafe) public var tapToToggleControlView: Swift.Bool
+  @_Concurrency.MainActor(unsafe) public var beginPlayBlock: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) override open func prepareForReuse()
+  @_Concurrency.MainActor(unsafe) override open func createContentView() -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) override open func contentSize() -> CoreGraphics.CGSize
+  @_Concurrency.MainActor(unsafe) override open func fetchContent(withProgressBlock progressBlock: @escaping ((Swift.Float) -> Swift.Void), completeBlock: @escaping ((Any?, Swift.Error?) -> Swift.Void))
+  @_Concurrency.MainActor(unsafe) override open func updateContentView(with content: Any)
+  @_Concurrency.MainActor(unsafe) override open func enableZoom() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) override public func enableIndicatorView() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) override open var previewType: DKPhotoGallery.DKPhotoPreviewType {
+    @_Concurrency.MainActor(unsafe) get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class DKPhotoPlayerPreviewVC : DKPhotoGallery.DKPhotoBasePreviewVC {
+  @_Concurrency.MainActor(unsafe) public var closeBlock: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) public var autoHidesControlView: Swift.Bool
+  @_Concurrency.MainActor(unsafe) public var tapToToggleControlView: Swift.Bool
+  @_Concurrency.MainActor(unsafe) public var beginPlayBlock: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) public var isControlHidden: Swift.Bool {
+    get
+    set
+  }
+  @objc deinit
+  @_Concurrency.MainActor(unsafe) override open func photoPreviewWillAppear()
+  @_Concurrency.MainActor(unsafe) override open func photoPreviewWillDisappear()
+  @_Concurrency.MainActor(unsafe) override open func prepareForReuse()
+  @_Concurrency.MainActor(unsafe) override open func createContentView() -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) override open func contentSize() -> CoreGraphics.CGSize
+  @_Concurrency.MainActor(unsafe) override open func fetchContent(withProgressBlock progressBlock: @escaping ((Swift.Float) -> Swift.Void), completeBlock: @escaping ((Any?, Swift.Error?) -> Swift.Void))
+  @_Concurrency.MainActor(unsafe) override open func updateContentView(with content: Any)
+  @_Concurrency.MainActor(unsafe) override open func enableZoom() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) override public func enableIndicatorView() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) override open var previewType: DKPhotoGallery.DKPhotoPreviewType {
+    @_Concurrency.MainActor(unsafe) get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+}
+@objc extension DKPhotoGallery.DKPhotoBasePreviewVC {
+  @objc @_Concurrency.MainActor(unsafe) dynamic public class func photoPreviewClass(with item: DKPhotoGallery.DKPhotoGalleryItem) -> DKPhotoGallery.DKPhotoBasePreviewVC.Type
+  @objc @_Concurrency.MainActor(unsafe) dynamic public class func photoPreviewVC(with item: DKPhotoGallery.DKPhotoGalleryItem) -> DKPhotoGallery.DKPhotoBasePreviewVC
+}
+public protocol DKPhotoProgressIndicatorProtocol : ObjectiveC.NSObjectProtocol {
+  init(with view: UIKit.UIView)
+  func startIndicator()
+  func stopIndicator()
+  func setIndicatorProgress(_ progress: Swift.Float)
+}
+@objc @_Concurrency.MainActor(unsafe) open class DKPlayerView : UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public var url: Foundation.URL? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var asset: AVFoundation.AVAsset? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var playerItem: AVFoundation.AVPlayerItem? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var closeBlock: (() -> Swift.Void)? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var beginPlayBlock: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) public var isControlHidden: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var isPlaying: Swift.Bool {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var autoHidesControlView: Swift.Bool
+  @_Concurrency.MainActor(unsafe) public var tapToToggleControlView: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var isFinishedPlaying: Swift.Bool
+  @_Concurrency.MainActor(unsafe) final public let playButton: UIKit.UIButton
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open class var layerClass: Swift.AnyClass {
+    @_Concurrency.MainActor(unsafe) @objc get
+  }
+  @_Concurrency.MainActor(unsafe) public init(frame: CoreGraphics.CGRect, controlParentView: UIKit.UIView?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc deinit
+  @objc @_Concurrency.MainActor(unsafe) public func playAndHidesControlView()
+  @_Concurrency.MainActor(unsafe) public func play()
+  @objc @_Concurrency.MainActor(unsafe) public func pause()
+  @_Concurrency.MainActor(unsafe) public func stop()
+  @_Concurrency.MainActor(unsafe) public func updateContextBackground(alpha: CoreGraphics.CGFloat)
+  @_Concurrency.MainActor(unsafe) public func reset()
+  @objc override dynamic open func observeValue(forKeyPath keyPath: Swift.String?, of object: Any?, change: [Foundation.NSKeyValueChangeKey : Any]?, context: Swift.UnsafeMutableRawPointer?)
+}
+extension DKPhotoGallery.DKPhotoPreviewType : Swift.Equatable {}
+extension DKPhotoGallery.DKPhotoPreviewType : Swift.Hashable {}
+extension DKPhotoGallery.DKPhotoGallerySingleTapMode : Swift.Equatable {}
+extension DKPhotoGallery.DKPhotoGallerySingleTapMode : Swift.Hashable {}
+extension DKPhotoGallery.DKPhotoGallerySingleTapMode : Swift.RawRepresentable {}
+extension DKPhotoGallery.DKPhotoIncrementalIndicatorDirection : Swift.Equatable {}
+extension DKPhotoGallery.DKPhotoIncrementalIndicatorDirection : Swift.Hashable {}

@@ -40,7 +40,7 @@ class _ViewLeavePageState extends State<ViewLeavePage> {
 
   @override
   void dispose() {
-    _leaveProvider.clearData();
+    if (context.mounted) _leaveProvider.clearData();
     super.dispose();
   }
 

@@ -1,0 +1,11 @@
+version: "Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)"
+options: "da54c9dd498e160ab491d8178cd7fdaf9d58c8cd62abcb33b8ebfca5a4f5e775"
+build_start_time: [1677508358, 700827121]
+build_end_time: [1677508374, 774629116]
+inputs:
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/SwiftyGif/SwiftyGif/NSImage+SwiftyGif.swift": [1677503284, 646792411]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/SwiftyGif/SwiftyGif/NSImageView+SwiftyGif.swift": [1677503284, 653605937]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/SwiftyGif/SwiftyGif/ObjcAssociatedWeakObject.swift": [1677503284, 648416757]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/SwiftyGif/SwiftyGif/SwiftyGifManager.swift": [1677503284, 651879787]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/SwiftyGif/SwiftyGif/UIImage+SwiftyGif.swift": [1677503284, 650401353]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/SwiftyGif/SwiftyGif/UIImageView+SwiftyGif.swift": [1677503284, 639077425]

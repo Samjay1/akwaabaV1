@@ -7,6 +7,7 @@ import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart'
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/attendance/excuse_model.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
+import 'package:akwaaba/utils/general_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -255,13 +256,19 @@ class EventAPI {
       var url = Uri.parse(
           '${getBaseUrl()}/attendance/meeting-event/attendance/clock-in/$clockingId');
 
+      var body = {
+        'time': time,
+        'checkDeviceInfo': true,
+        'systemDevice': (await getDeviceInfo())!.systemDevice,
+        'deviceType': (await getDeviceInfo())!.deviceType,
+        'deviceId': (await getDeviceInfo())!.deviceId
+      };
+
       http.Response response = await http
           .patch(
             url,
-            body: {
-              'time': time,
-            },
-            headers: await getTokenHeader(),
+            body: json.encode(body),
+            headers: await getAllHeaders(),
           )
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
@@ -269,6 +276,7 @@ class EventAPI {
               'Your internet connection is poor, please try again later!',
             ), // Time has run out, do what you wanted to do.
           );
+      //debugPrint("Response: ${await returnResponse(response)}");
       clockInResponse = ClockingResponse.fromJson(
         await returnResponse(response),
       );
@@ -294,6 +302,10 @@ class EventAPI {
             url,
             body: {
               'time': time,
+              'checkDeviceInfo': true,
+              'systemDevice': (await getDeviceInfo())!.systemDevice,
+              'deviceType': (await getDeviceInfo())!.deviceType,
+              'deviceId': (await getDeviceInfo())!.deviceId
             },
             headers: await getTokenHeader(),
           )
@@ -327,6 +339,10 @@ class EventAPI {
             url,
             body: {
               'time': time,
+              'checkDeviceInfo': true,
+              'systemDevice': (await getDeviceInfo())!.systemDevice,
+              'deviceType': (await getDeviceInfo())!.deviceType,
+              'deviceId': (await getDeviceInfo())!.deviceId
             },
             headers: await getTokenHeader(),
           )
@@ -360,6 +376,10 @@ class EventAPI {
             url,
             body: {
               'time': time,
+              'checkDeviceInfo': true,
+              'systemDevice': (await getDeviceInfo())!.systemDevice,
+              'deviceType': (await getDeviceInfo())!.deviceType,
+              'deviceId': (await getDeviceInfo())!.deviceId
             },
             headers: await getTokenHeader(),
           )

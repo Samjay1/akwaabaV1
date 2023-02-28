@@ -102,7 +102,9 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
 
   @override
   void dispose() {
-    attendanceHistoryProvider.clearData();
+    if (context.mounted) {
+      attendanceHistoryProvider.clearData();
+    }
     super.dispose();
   }
 

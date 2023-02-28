@@ -300,6 +300,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => AllEventsProvider()),
         ChangeNotifierProvider(create: (_) => AttendanceProvider()),
+        //ChangeNotifierProvider.value(value: AttendanceProvider()),
         ChangeNotifierProvider(create: (_) => AttendanceHistoryProvider()),
         ChangeNotifierProvider(create: (_) => ClockingProvider()),
         ChangeNotifierProvider(create: (_) => PostClockingProvider()),

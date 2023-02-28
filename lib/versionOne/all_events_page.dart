@@ -52,7 +52,8 @@ class _AllEventsPageState extends State<AllEventsPage> {
         Provider.of<AllEventsProvider>(context, listen: false)
             .getUpcomingMeetingEvents();
       }
-      if (context.read<ClientProvider>().branch.id == 1) {
+      if (context.read<ClientProvider>().branch != null &&
+          context.read<ClientProvider>().branch.id == 1) {
         Provider.of<AllEventsProvider>(context, listen: false).getBranches();
       }
 

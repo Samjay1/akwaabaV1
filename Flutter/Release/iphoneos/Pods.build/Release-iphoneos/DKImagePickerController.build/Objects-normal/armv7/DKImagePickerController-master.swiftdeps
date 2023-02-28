@@ -1,0 +1,49 @@
+version: "Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)"
+options: "751f06100573f2923a915106207de42716a3bd8309de3ad30cfe925070cddea0"
+build_start_time: [1677508126, 534404039]
+build_end_time: [1677508146, 449739933]
+inputs:
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/DKImageBaseManager.swift"
+  : [1677503281, 573125839]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/DKImageDataManager.swift"
+  : [1677503281, 569982051]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/DKImageGroupDataManager.swift"
+  : [1677503281, 572444677]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/Model/DKAsset+Export.swift"
+  : [1677503281, 574764728]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/Model/DKAsset+Fetch.swift"
+  : [1677503281, 575648784]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/Model/DKAsset.swift": [1677503281, 576159477]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/Model/DKAssetGroup.swift"
+  : [1677503281, 575235366]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/DKImageAssetExporter.swift"
+  : [1677503281, 582183599]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/DKImageExtensionController.swift"
+  : [1677503281, 578966379]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/DKImagePickerController.swift"
+  : [1677503281, 584944009]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/DKImagePickerControllerBaseUIDelegate.swift"
+  : [1677503281, 587176322]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/DKPopoverViewController.swift"
+  : [1677503281, 587639570]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/Resource/DKImagePickerControllerResource.swift"
+  : [1677503281, 821536064]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/View/Cell/DKAssetGroupCellItemProtocol.swift"
+  : [1677503281, 593123435]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/View/Cell/DKAssetGroupDetailBaseCell.swift"
+  : [1677503281, 593627929]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/View/Cell/DKAssetGroupDetailCameraCell.swift"
+  : [1677503281, 591907024]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/View/Cell/DKAssetGroupDetailImageCell.swift"
+  : [1677503281, 594215393]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/View/Cell/DKAssetGroupDetailVideoCell.swift"
+  : [1677503281, 592408895]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/View/DKAssetGroupDetailVC.swift"
+  : [1677503281, 591001033]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/View/DKAssetGroupGridLayout.swift"
+  : [1677503281, 589798212]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/View/DKAssetGroupListVC.swift"
+  : [1677503281, 595875740]
+  ? "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/View/DKPermissionView.swift"
+  : [1677503281, 589159488]
+  "/Users/icode/Desktop/FlutterProjects/akwaabaV1/ios/Pods/DKImagePickerController/Sources/Extensions/DKImageExtensionGallery.swift": [1677503281, 564330577]

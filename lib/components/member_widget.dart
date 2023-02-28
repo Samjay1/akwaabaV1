@@ -87,7 +87,7 @@ class _MemberWidgetState extends State<MemberWidget> {
                         onTap: () => openEmailAppWithSubject(
                             widget.member!.email,
                             'SUBJECT',
-                            "Hello ${widget.member!.firstname!},"),
+                            'Hello ${widget.member!.firstname!},'),
                         child: Padding(
                           padding: const EdgeInsets.only(
                             left: 0.0,
@@ -119,7 +119,7 @@ class _MemberWidgetState extends State<MemberWidget> {
                         onTap: () => openWhatsapp(
                           context,
                           widget.member!.phone!,
-                          "Hello",
+                          'Hello ${widget.member!.firstname!},',
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),

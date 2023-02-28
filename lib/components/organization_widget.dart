@@ -86,10 +86,8 @@ class _OrganizationWidgetState extends State<OrganizationWidget> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => openWhatsapp(
-                                  context,
-                                  widget.organization!.organizationPhone!,
-                                  "Hello"),
+                              onTap: () => openWhatsapp(context,
+                                  widget.organization!.organizationPhone!, ""),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: SvgPicture.asset(

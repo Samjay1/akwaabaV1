@@ -30,29 +30,37 @@ class _DeviceActivationRequestPageState
   final TextEditingController _controllerEmailAddress = TextEditingController();
   SharedPreferences? prefs;
   var memberToken;
+  var memberId;
+  var deviceInfo;
 
-  void loadToken({var memberId}) async {
+  void loadToken() async {
     prefs = await SharedPreferences.getInstance();
     memberToken = prefs?.getString('token');
-    Provider.of<MemberProvider>(context, listen: false).callDeviceRequestList(
-        memberToken: memberToken, memberID: memberId, context: context);
-    print('DEVICE ACTIVATION TOKEN ${memberToken}');
+    Future.delayed(Duration.zero, () {
+      //GETS MEMBER PROFILE INFO
+      MemberProfile memberProfile =
+          Provider.of<MemberProvider>(context, listen: false).memberProfile;
+      memberId = memberProfile.user!.id; // GETS THE MEMBER ID
+      Provider.of<MemberProvider>(context, listen: false).callDeviceRequestList(
+          memberToken: memberToken, memberID: memberId, context: context);
+      debugPrint('DEVICE ACTIVATION TOKEN $memberToken');
+      //GETS DEVICE INFO
+      deviceInfo =
+          Provider.of<MemberProvider>(context, listen: false).deviceInfoModel;
+      setState(() {});
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    //GETS TOKEN AND LOADS DEVICE REQUEST LIST
+    loadToken();
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    //GETS MEMBER PROFILE INFO
-    MemberProfile memberProfile =
-        Provider.of<MemberProvider>(context, listen: false).memberProfile;
-    var memberId = memberProfile.user!.id; // GETS THE MEMBER ID
-
-    //GETS DEVICE INFO
-    var deviceInfo =
-        Provider.of<MemberProvider>(context, listen: false).deviceInfoModel;
-
-    //GETS TOKEN AND LOADS DEVICE REQUEST LIST
-    loadToken(memberId: memberId);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Device Activation"),
