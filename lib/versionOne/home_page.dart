@@ -160,7 +160,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(
-              height: 24,
+              height: 6,
             ),
 
             // eventProvider.loading

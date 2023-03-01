@@ -4,6 +4,7 @@ class ClockingResponse {
   int? memberId;
   int? accountType;
   bool? inOrOut;
+  String? justification;
   String? inTime;
   dynamic outTime;
   dynamic startBreak;
@@ -23,6 +24,7 @@ class ClockingResponse {
     this.memberId,
     this.accountType,
     this.inOrOut,
+    this.justification,
     this.inTime,
     this.outTime,
     this.startBreak,
@@ -43,6 +45,7 @@ class ClockingResponse {
     memberId = json['memberId'];
     accountType = json['accountType'];
     inOrOut = json['inOrOut'];
+    justification = json['justification'];
     inTime = json['inTime'];
     outTime = json['outTime'];
     startBreak = json['startBreak'];
@@ -64,6 +67,7 @@ class ClockingResponse {
     data['memberId'] = memberId;
     data['accountType'] = accountType;
     data['inOrOut'] = inOrOut;
+    data['justification'] = justification;
     data['inTime'] = inTime;
     data['outTime'] = outTime;
     data['startBreak'] = startBreak;

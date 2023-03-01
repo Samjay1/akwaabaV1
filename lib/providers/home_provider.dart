@@ -199,9 +199,7 @@ class HomeProvider extends ChangeNotifier {
       var response = await EventAPI.getMeetingCoordinates(
         meetingEventModel: meetingEventModel,
       );
-      // debugPrint("Latitude: ${response.results![0].latitude}");
-      // debugPrint("Longitude: ${response.results![0].longitude}");
-      if (response.results == null || response.results!.isEmpty) {
+      if (response.results == null && response.results!.isEmpty) {
         if (context.mounted) {
           Navigator.of(context).pop();
           showInfoDialog(
@@ -217,7 +215,9 @@ class HomeProvider extends ChangeNotifier {
       }
 
       double calculatedRadius = calculateDistance(
+        //5.674139,
         currentUserLocation.latitude,
+        //-0.023477,
         currentUserLocation.longitude,
         double.parse(response.results![0].latitude!),
         double.parse(response.results![0].longitude!),
@@ -240,13 +240,16 @@ class HomeProvider extends ChangeNotifier {
           showInfoDialog(
             'ok',
             context: context,
-            title: 'Hey there!',
+            title: AppString.heyThereTitle,
             content:
                 'Sorry, it looks like you\'re not within the specified location radius. Please get closer and try again.',
             onTap: () => Navigator.pop(context),
           );
         }
       }
+      debugPrint('Calculated radius: $calculatedRadius');
+      debugPrint('Current Location Lat: 5.674139');
+      debugPrint('Current Location Lng: -0.023477');
       debugPrint('Meeting Lat: ${response.results![0].latitude!}');
       debugPrint('Meeting Lng: ${response.results![0].longitude!}');
     } catch (err) {
@@ -255,7 +258,7 @@ class HomeProvider extends ChangeNotifier {
       showInfoDialog(
         'ok',
         context: context,
-        title: 'Hey there!',
+        title: AppString.heyThereTitle,
         content:
             'Sorry, an unexpected error occurred when getting the meeting or event coordinates.  Please be sure you have turned on your location and try again.',
         onTap: () => Navigator.pop(context),
@@ -339,13 +342,28 @@ class HomeProvider extends ChangeNotifier {
               // so show message
               if (context.mounted) {
                 Navigator.pop(context);
-                showNormalToast('You\'ve already ended your break. Good Bye!');
+                showInfoDialog(
+                  'ok',
+                  context: context,
+                  title: AppString.heyThereTitle,
+                  content:
+                      'Sorry, you have already ended your break. Good Bye!',
+                  onTap: () => Navigator.pop(context),
+                );
               }
             }
           } else {
-            showNormalToast(
-              'Hi there, you\'ve not clocked in. \nPlease clock-in before you can start your break.',
-            );
+            if (context.mounted) {
+              Navigator.pop(context);
+              showInfoDialog(
+                'ok',
+                context: context,
+                title: AppString.heyThereTitle,
+                content:
+                    'Sorry, you have not clocked in. \nPlease clock in before you can start your break',
+                onTap: () => Navigator.pop(context),
+              );
+            }
           }
           //debugPrint('ClockedIn: ${response.results![0].inOrOut!}');
         } else {
@@ -353,7 +371,7 @@ class HomeProvider extends ChangeNotifier {
             showInfoDialog(
               'ok',
               context: context,
-              title: 'Hey there!',
+              title: AppString.heyThereTitle,
               content:
                   'Sorry, you can\'t clock because you are not assigned to this meeting. Please contact your admin for asssistance.',
               onTap: () => Navigator.pop(context),
@@ -380,7 +398,15 @@ class HomeProvider extends ChangeNotifier {
               // hide loading widget
               // and display a user friendly message
               setClocking(false);
-              showNormalToast('You\'ve already clocked out. Good Bye!');
+              if (context.mounted) {
+                showInfoDialog(
+                  'ok',
+                  context: context,
+                  title: AppString.heyThereTitle,
+                  content: 'Sorry, you have already clocked out. Good Bye!.',
+                  onTap: () => Navigator.pop(context),
+                );
+              }
             }
           } else {
             if (context.mounted) {
@@ -399,7 +425,7 @@ class HomeProvider extends ChangeNotifier {
             showInfoDialog(
               'ok',
               context: context,
-              title: 'Hey there!',
+              title: AppString.heyThereTitle,
               content:
                   'Sorry, you can\'t clock because you are not assigned to this meeting. Please contact your admin for asssistance.',
               onTap: () => Navigator.pop(context),
@@ -408,7 +434,7 @@ class HomeProvider extends ChangeNotifier {
         }
       }
     } catch (err) {
-      Navigator.pop(context);
+      if (context.mounted) Navigator.pop(context);
       debugPrint('Error ATL: ${err.toString()}');
       //showErrorToast(err.toString());
     }
@@ -425,7 +451,7 @@ class HomeProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
-      if (response.nonFieldErrors != null ||
+      if (response.nonFieldErrors != null &&
           response.nonFieldErrors!.isNotEmpty) {
         if (context.mounted) {
           Navigator.pop(context);
@@ -439,16 +465,16 @@ class HomeProvider extends ChangeNotifier {
         }
         return;
       }
+      if (context.mounted) Navigator.pop(context);
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
       meetingEventModel.startBreak = response.startBreak;
       meetingEventModel.endBreak = response.endBreak;
       meetingEventModel.inTime = response.inTime;
       meetingEventModel.outTime = response.outTime;
       showNormalToast('You\'re Welcome');
-      if (context.mounted) Navigator.pop(context);
     } catch (err) {
-      Navigator.pop(context);
-      debugPrint('Error: ${err.toString()}');
+      if (context.mounted) Navigator.pop(context);
+      debugPrint('Clock in error: ${err.toString()}');
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -464,7 +490,7 @@ class HomeProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
-      if (response.nonFieldErrors != null ||
+      if (response.nonFieldErrors != null &&
           response.nonFieldErrors!.isNotEmpty) {
         if (context.mounted) {
           Navigator.pop(context);
@@ -478,16 +504,16 @@ class HomeProvider extends ChangeNotifier {
         }
         return;
       }
+      if (context.mounted) Navigator.pop(context);
       meetingEventModel.inOrOut = response.inOrOut; // update clock status
       meetingEventModel.startBreak = response.startBreak;
       meetingEventModel.endBreak = response.endBreak;
       meetingEventModel.inTime = response.inTime;
       meetingEventModel.outTime = response.outTime;
       showNormalToast('Good Bye!');
-      if (context.mounted) Navigator.pop(context);
     } catch (err) {
-      Navigator.pop(context);
-      debugPrint('Error ${err.toString()}');
+      if (context.mounted) Navigator.pop(context);
+      debugPrint('Clock out error: ${err.toString()}');
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -505,7 +531,7 @@ class HomeProvider extends ChangeNotifier {
         time: time ?? getClockingTime(),
       );
 
-      if (response.nonFieldErrors != null ||
+      if (response.nonFieldErrors != null &&
           response.nonFieldErrors!.isNotEmpty) {
         if (context.mounted) {
           Navigator.pop(context);
@@ -519,22 +545,17 @@ class HomeProvider extends ChangeNotifier {
         }
         return;
       }
-
-      if (response.message == null) {
-        showErrorToast(response.nonFieldErrors![0]);
-      } else {
-        // update fields of meeting event model
-        meetingEventModel.inOrOut = response.inOrOut;
-        meetingEventModel.startBreak = response.startBreak;
-        meetingEventModel.endBreak = response.endBreak;
-        meetingEventModel.inTime = response.inTime;
-        meetingEventModel.outTime = response.outTime;
-        showNormalToast('Enjoy Break Time!');
-      }
       if (context.mounted) Navigator.pop(context);
+      // update fields of meeting event model
+      meetingEventModel.inOrOut = response.inOrOut;
+      meetingEventModel.startBreak = response.startBreak;
+      meetingEventModel.endBreak = response.endBreak;
+      meetingEventModel.inTime = response.inTime;
+      meetingEventModel.outTime = response.outTime;
+      showNormalToast('Enjoy Break Time!');
     } catch (err) {
-      Navigator.pop(context);
-      debugPrint('Error ${err.toString()}');
+      if (context.mounted) Navigator.pop(context);
+      debugPrint('Start break error: ${err.toString()}');
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -551,7 +572,7 @@ class HomeProvider extends ChangeNotifier {
         clockingId: clockingId,
         time: time ?? getClockingTime(),
       );
-      if (response.nonFieldErrors != null ||
+      if (response.nonFieldErrors != null &&
           response.nonFieldErrors!.isNotEmpty) {
         if (context.mounted) {
           Navigator.pop(context);
@@ -565,21 +586,17 @@ class HomeProvider extends ChangeNotifier {
         }
         return;
       }
-      if (response.message == null) {
-        showErrorToast(response.nonFieldErrors![0]);
-      } else {
-        // update fields of meeting event model
-        meetingEventModel.inOrOut = response.inOrOut;
-        meetingEventModel.startBreak = response.startBreak;
-        meetingEventModel.endBreak = response.endBreak;
-        meetingEventModel.inTime = response.inTime;
-        meetingEventModel.outTime = response.outTime;
-        showNormalToast('Welcome Back!');
-      }
       if (context.mounted) Navigator.pop(context);
+      // update fields of meeting event model
+      meetingEventModel.inOrOut = response.inOrOut;
+      meetingEventModel.startBreak = response.startBreak;
+      meetingEventModel.endBreak = response.endBreak;
+      meetingEventModel.inTime = response.inTime;
+      meetingEventModel.outTime = response.outTime;
+      showNormalToast('Welcome Back!');
     } catch (err) {
-      Navigator.pop(context);
-      debugPrint('Error ${err.toString()}');
+      if (context.mounted) Navigator.pop(context);
+      debugPrint('End break error: ${err.toString()}');
       //showErrorToast(err.toString());
     }
     notifyListeners();

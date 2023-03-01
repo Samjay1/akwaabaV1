@@ -38,7 +38,7 @@ Future<void> main() async {
   //LocationServices().getUserCurrentLocation();
 
   await FlutterDownloader.initialize(
-    debug: true,
+    debug: false,
     ignoreSsl: false,
   ); // initialize downloader here
   SystemChrome.setPreferredOrientations([
