@@ -194,11 +194,12 @@ class HomeProvider extends ChangeNotifier {
     try {
       showLoadingDialog(context);
 
-      await getCurrentUserLocation();
+      getCurrentUserLocation();
 
       var response = await EventAPI.getMeetingCoordinates(
         meetingEventModel: meetingEventModel,
       );
+
       if (response.results == null && response.results!.isEmpty) {
         if (context.mounted) {
           Navigator.of(context).pop();
@@ -208,6 +209,22 @@ class HomeProvider extends ChangeNotifier {
             title: 'Hey there!',
             content:
                 'Sorry, we were unable to get your meeting location. Please contact your admin and try again.',
+            onTap: () => Navigator.pop(context),
+          );
+        }
+        return;
+      }
+
+      if (currentUserLocation.latitude == null &&
+          currentUserLocation.longitude == null) {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          showInfoDialog(
+            'ok',
+            context: context,
+            title: 'Hey there!',
+            content:
+                'Sorry, we were unable to get your location. Please go to setting and allows location access.',
             onTap: () => Navigator.pop(context),
           );
         }
@@ -248,13 +265,13 @@ class HomeProvider extends ChangeNotifier {
         }
       }
       debugPrint('Calculated radius: $calculatedRadius');
-      debugPrint('Current Location Lat: 5.674139');
-      debugPrint('Current Location Lng: -0.023477');
+      debugPrint('Current Location Lat: ${currentUserLocation.latitude}');
+      debugPrint('Current Location Lng: ${currentUserLocation.longitude}');
       debugPrint('Meeting Lat: ${response.results![0].latitude!}');
       debugPrint('Meeting Lng: ${response.results![0].longitude!}');
     } catch (err) {
-      Navigator.of(context).pop();
       debugPrint('Error MC: ${err.toString()}');
+      Navigator.of(context).pop();
       showInfoDialog(
         'ok',
         context: context,

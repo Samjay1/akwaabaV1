@@ -2,7 +2,10 @@
     package="com.akwaaba.app.akwaaba">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Always include this permission -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Include only if your app benefits from precise location access. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- Provide required visibility configuration for API level 30 and above -->
@@ -17,7 +20,7 @@
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="tel" />
         </intent>
-                <!-- To open phone's dialer app -->
+        <!-- To open phone's dialer app -->
         <intent>
             <action android:name="android.intent.action.DIAL" />
             <data android:scheme="tel" />

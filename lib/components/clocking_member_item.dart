@@ -70,7 +70,7 @@ class ClockingMemberItem extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.02,
+                      height: displayHeight(context) * 0.01,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,6 +83,9 @@ class ClockingMemberItem extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              SizedBox(
+                width: displayHeight(context) * 0.02,
               ),
               CustomOutlinedButton(
                 label: "IN",

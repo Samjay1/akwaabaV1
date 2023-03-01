@@ -164,12 +164,20 @@ class _DeviceActivationRequestPageState
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               const Text('Device ID'),
-                                              Text('${item.deviceId}',
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
+                                              SizedBox(
+                                                width: displayWidth(context) *
+                                                    0.02,
+                                              ),
+                                              Expanded(
+                                                child: Text('${item.deviceId}',
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                              ),
                                             ],
                                           ),
                                           SizedBox(
@@ -181,6 +189,10 @@ class _DeviceActivationRequestPageState
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               const Text('Device Type'),
+                                              SizedBox(
+                                                width: displayWidth(context) *
+                                                    0.02,
+                                              ),
                                               Text(
                                                 '${item.deviceType}',
                                                 style: const TextStyle(
@@ -198,6 +210,10 @@ class _DeviceActivationRequestPageState
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               const Text('Device Request'),
+                                              SizedBox(
+                                                width: displayWidth(context) *
+                                                    0.02,
+                                              ),
                                               item.approved
                                                   ? Container(
                                                       padding: const EdgeInsets
@@ -252,6 +268,10 @@ class _DeviceActivationRequestPageState
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               const Text('Request Date'),
+                                              SizedBox(
+                                                width: displayWidth(context) *
+                                                    0.02,
+                                              ),
                                               Text(
                                                 DateUtil.formatStringDate(
                                                     DateFormat.yMMMEd(),
