@@ -41,10 +41,12 @@ Future<void> main() async {
     debug: false,
     ignoreSsl: false,
   ); // initialize downloader here
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     // statusBarColor: Colors.transparent, // set color of status bar
     // statusBarIconBrightness: Brightness.dark, // set color of status bar icon

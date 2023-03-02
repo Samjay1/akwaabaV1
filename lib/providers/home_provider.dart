@@ -229,8 +229,6 @@ class HomeProvider extends ChangeNotifier {
       }
 
       double distanceInKilometers = calculateDistanceInKilo(
-        // 5.674139,
-        // -0.023477,
         currentUserLocation.latitude,
         currentUserLocation.longitude,
         double.parse(meetingEventModel.locationInfo![0].latitude!),
@@ -351,6 +349,22 @@ class HomeProvider extends ChangeNotifier {
                   clockingId: clockingId,
                   meetingEventModel: meetingEventModel,
                   time: null,
+                );
+              }
+            } else if (DateTime.now()
+                    .isAfter(DateTime.parse(response.results![0].endBreak!)) &&
+                response.results![0].startBreak == null) {
+              // user wants to start break after end break time
+              // so show message
+              if (context.mounted) {
+                Navigator.pop(context);
+                showInfoDialog(
+                  'ok',
+                  context: context,
+                  title: AppString.heyThereTitle,
+                  content:
+                      'Sorry, you cannot start break at this time because break time has elapsed. Thank you.',
+                  onTap: () => Navigator.pop(context),
                 );
               }
             } else if (response.results![0].startBreak != null &&
