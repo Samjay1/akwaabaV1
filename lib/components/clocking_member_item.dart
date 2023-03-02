@@ -23,7 +23,7 @@ class ClockingMemberItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var attendeeName =
-        "${absentee!.additionalInfo!.memberInfo!.firstname!.capitalize()} ${absentee!.additionalInfo!.memberInfo!.middlename!.isEmpty ? '' : absentee!.additionalInfo!.memberInfo!.middlename!.capitalize()} ${absentee!.additionalInfo!.memberInfo!.surname!.capitalize()}";
+        "${absentee!.additionalInfo!.memberInfo!.firstname!.isEmpty ? '' : absentee!.additionalInfo!.memberInfo!.firstname!.capitalize()} ${absentee!.additionalInfo!.memberInfo!.middlename!.isEmpty ? '' : absentee!.additionalInfo!.memberInfo!.middlename!.capitalize()} ${absentee!.additionalInfo!.memberInfo!.surname!.isEmpty ? '' : absentee!.additionalInfo!.memberInfo!.surname!.capitalize()}";
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),

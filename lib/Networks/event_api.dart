@@ -26,8 +26,7 @@ class EventAPI {
 
     MeetingEventResponse eventResponse;
     var url = Uri.parse(
-        '${getBaseUrl()}/attendance/meeting-event/schedule/today?with_location&filter_recuring=both&page=$page&branchId=$branchId&filter_memberId=${memberId ?? ''}');
-    debugPrint("URL: ${url.toString()}");
+        '${getBaseUrl()}/attendance/meeting-event/schedule/today?filter_recuring=both&page=$page&branchId=$branchId&filter_memberId=${memberId ?? ''}&with_location=');
     try {
       http.Response response = await http.get(
         url,
@@ -36,12 +35,6 @@ class EventAPI {
       var decodedresponse = jsonDecode(response.body);
       eventResponse = MeetingEventResponse.fromJson(decodedresponse);
       debugPrint("TODAY Meetings: $decodedresponse");
-      // Iterable meetingList = decodedresponse['results'];
-      // todayMeetings = meetingList
-      //     .map(
-      //       (data) => MeetingEventModel.fromJson(data),
-      //     )
-      //     .toList();
     } on SocketException catch (_) {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
@@ -252,18 +245,16 @@ class EventAPI {
     required String time,
   }) async {
     ClockingResponse clockInResponse;
+    var body = {
+      'time': time,
+      'checkDeviceInfo': true,
+      'systemDevice': (await getDeviceInfo())!.systemDevice,
+      'deviceType': (await getDeviceInfo())!.deviceType,
+      'deviceId': (await getDeviceInfo())!.deviceId
+    };
     try {
       var url = Uri.parse(
           '${getBaseUrl()}/attendance/meeting-event/attendance/clock-in/$clockingId');
-
-      var body = {
-        'time': time,
-        'checkDeviceInfo': true,
-        'systemDevice': (await getDeviceInfo())!.systemDevice,
-        'deviceType': (await getDeviceInfo())!.deviceType,
-        'deviceId': (await getDeviceInfo())!.deviceId
-      };
-
       http.Response response = await http
           .patch(
             url,
@@ -293,6 +284,13 @@ class EventAPI {
     required String time,
   }) async {
     ClockingResponse clockOutResponse;
+    var body = {
+      'time': time,
+      'checkDeviceInfo': true,
+      'systemDevice': (await getDeviceInfo())!.systemDevice,
+      'deviceType': (await getDeviceInfo())!.deviceType,
+      'deviceId': (await getDeviceInfo())!.deviceId
+    };
     var url = Uri.parse(
       '${getBaseUrl()}/attendance/meeting-event/attendance/clock-out/$clockingId',
     );
@@ -300,14 +298,8 @@ class EventAPI {
       http.Response response = await http
           .patch(
             url,
-            body: {
-              'time': time,
-              'checkDeviceInfo': true,
-              'systemDevice': (await getDeviceInfo())!.systemDevice,
-              'deviceType': (await getDeviceInfo())!.deviceType,
-              'deviceId': (await getDeviceInfo())!.deviceId
-            },
-            headers: await getTokenHeader(),
+            body: json.encode(body),
+            headers: await getAllHeaders(),
           )
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
@@ -332,19 +324,20 @@ class EventAPI {
   }) async {
     ClockingResponse clockInResponse;
     try {
+      var body = {
+        'time': time,
+        'checkDeviceInfo': true,
+        'systemDevice': (await getDeviceInfo())!.systemDevice,
+        'deviceType': (await getDeviceInfo())!.deviceType,
+        'deviceId': (await getDeviceInfo())!.deviceId
+      };
       var url = Uri.parse(
           '${getBaseUrl()}/attendance/meeting-event/attendance/start-break/$clockingId');
       http.Response response = await http
           .patch(
             url,
-            body: {
-              'time': time,
-              'checkDeviceInfo': true,
-              'systemDevice': (await getDeviceInfo())!.systemDevice,
-              'deviceType': (await getDeviceInfo())!.deviceType,
-              'deviceId': (await getDeviceInfo())!.deviceId
-            },
-            headers: await getTokenHeader(),
+            body: json.encode(body),
+            headers: await getAllHeaders(),
           )
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
@@ -352,6 +345,7 @@ class EventAPI {
               'Your internet connection is poor, please try again later!',
             ), // Time has run out, do what you wanted to do.
           );
+      debugPrint("Response: ${await returnResponse(response)}");
       clockInResponse = ClockingResponse.fromJson(
         await returnResponse(response),
       );
@@ -369,19 +363,20 @@ class EventAPI {
   }) async {
     ClockingResponse clockInResponse;
     try {
+      var body = {
+        'time': time,
+        'checkDeviceInfo': true,
+        'systemDevice': (await getDeviceInfo())!.systemDevice,
+        'deviceType': (await getDeviceInfo())!.deviceType,
+        'deviceId': (await getDeviceInfo())!.deviceId
+      };
       var url = Uri.parse(
           '${getBaseUrl()}/attendance/meeting-event/attendance/end-break/$clockingId');
       http.Response response = await http
           .patch(
             url,
-            body: {
-              'time': time,
-              'checkDeviceInfo': true,
-              'systemDevice': (await getDeviceInfo())!.systemDevice,
-              'deviceType': (await getDeviceInfo())!.deviceType,
-              'deviceId': (await getDeviceInfo())!.deviceId
-            },
-            headers: await getTokenHeader(),
+            body: json.encode(body),
+            headers: await getAllHeaders(),
           )
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
@@ -389,6 +384,7 @@ class EventAPI {
               'Your internet connection is poor, please try again later!',
             ), // Time has run out, do what you wanted to do.
           );
+      debugPrint("Response: ${await returnResponse(response)}");
       clockInResponse = ClockingResponse.fromJson(
         await returnResponse(response),
       );

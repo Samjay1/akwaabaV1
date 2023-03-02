@@ -15,7 +15,6 @@ class Attendance {
   int? accountType;
   bool? inOrOut;
   dynamic justification;
-
   String? inTime;
   String? outTime;
   String? startBreak;
@@ -29,6 +28,7 @@ class Attendance {
   String? date;
   String? clockingMethodName;
   String? message;
+  String? identification;
 
   Attendance({
     this.id,
@@ -50,6 +50,7 @@ class Attendance {
     this.date,
     this.clockingMethodName,
     this.message,
+    this.identification,
   });
 
   Attendance.fromJson(Map<String, dynamic> json) {
@@ -79,6 +80,7 @@ class Attendance {
     date = json['date'];
     clockingMethodName = json['clockingMethodName'];
     message = json['SUCCESS_RESPONSE_MESSAGE'];
+    identification = json['identification'];
   }
 
   Map<String, dynamic> toJson() {
@@ -111,6 +113,7 @@ class Attendance {
     data['date'] = date;
     data['clockingMethodName'] = clockingMethodName;
     data['SUCCESS_RESPONSE_MESSAGE'] = message;
+    data['identification'] = identification;
     return data;
   }
 }

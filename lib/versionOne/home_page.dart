@@ -1088,9 +1088,9 @@ class _HomePageState extends State<HomePage> {
                           );
                         }
                       },
-                      child: Text(meetingEventModel.inOrOut!
-                          ? 'Clock Out'
-                          : 'Clock In'),
+                      child: Text(
+                        meetingEventModel.inOrOut! ? 'Clock Out' : 'Clock In',
+                      ),
                     ),
 
                     // if user has clocked out, there is no need to show 'Start Break' button
@@ -1107,7 +1107,6 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () {
                               Provider.of<HomeProvider>(context, listen: false)
                                   .setSelectedMeeting(meetingEventModel);
-
                               if (meetingEventModel.startBreak != null &&
                                   meetingEventModel.endBreak != null) {
                                 showInfoDialog(

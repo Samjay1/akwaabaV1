@@ -6,9 +6,9 @@ class ClockingResponse {
   bool? inOrOut;
   String? justification;
   String? inTime;
-  dynamic outTime;
-  dynamic startBreak;
-  dynamic endBreak;
+  String? outTime;
+  String? startBreak;
+  String? endBreak;
   int? clockedBy;
   int? clockingMethod;
   int? validate;

@@ -87,8 +87,9 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getCurrentUserLocation() async {
+  Future<void> getCurrentUserLocation() async {
     _currentUserLocation = await LocationServices().getUserCurrentLocation();
+    //return _currentUserLocation!;
     debugPrint("Current user location: ${_currentUserLocation.toString()}");
     notifyListeners();
   }
@@ -190,38 +191,39 @@ class HomeProvider extends ChangeNotifier {
     required MeetingEventModel meetingEventModel,
     required String? time,
   }) async {
-    //setClocking(true);
     try {
-      getCurrentUserLocation();
+      showLoadingDialog(context);
 
-      // var response = await EventAPI.getMeetingCoordinates(
-      //   meetingEventModel: meetingEventModel,
-      // );
-
-      if (meetingEventModel.locationInfo == null &&
-          meetingEventModel.locationInfo!.isEmpty) {
-        if (context.mounted) {
-          showInfoDialog(
-            'ok',
-            context: context,
-            title: 'Hey there!',
-            content:
-                'Sorry, we were unable to get your meeting location. Please contact your admin and try again.',
-            onTap: () => Navigator.pop(context),
-          );
-        }
-        return;
+      if (_currentUserLocation == null) {
+        await getCurrentUserLocation();
       }
 
-      if (currentUserLocation.latitude == null &&
-          currentUserLocation.longitude == null) {
+      if (currentUserLocation!.latitude == null &&
+          currentUserLocation!.longitude == null) {
         if (context.mounted) {
+          Navigator.pop(context);
           showInfoDialog(
             'ok',
             context: context,
             title: 'Hey there!',
             content:
                 'Sorry, we were unable to get your location. Please go to setting and allows location access.',
+            onTap: () => Navigator.pop(context),
+          );
+        }
+        return;
+      }
+
+      if (meetingEventModel.locationInfo == null &&
+          meetingEventModel.locationInfo!.isEmpty) {
+        if (context.mounted) {
+          Navigator.pop(context);
+          showInfoDialog(
+            'ok',
+            context: context,
+            title: 'Hey there!',
+            content:
+                'Sorry, we were unable to get your meeting location. Please contact your admin and try again.',
             onTap: () => Navigator.pop(context),
           );
         }
@@ -248,6 +250,7 @@ class HomeProvider extends ChangeNotifier {
       } else {
         if (context.mounted) {
           debugPrint('You\'re not within the radius of the premise');
+          Navigator.pop(context);
           showInfoDialog(
             'ok',
             context: context,
@@ -261,14 +264,14 @@ class HomeProvider extends ChangeNotifier {
       debugPrint('Calculated distance: $distanceInKilometers km');
       debugPrint('Current Location Lat: ${currentUserLocation.latitude}');
       debugPrint('Current Location Lng: ${currentUserLocation.longitude}');
+      debugPrint('Meeting Lat: ${meetingEventModel.locationInfo![0].latitude}');
       debugPrint(
-          'Meeting Lat: ${meetingEventModel.locationInfo![0].latitude!}');
+          'Meeting Lng: ${meetingEventModel.locationInfo![0].longitude}');
       debugPrint(
-          'Meeting Lng: ${meetingEventModel.locationInfo![0].longitude!}');
-      debugPrint(
-          'Meeting Radius: ${meetingEventModel.locationInfo![0].radius!}');
+          'Meeting Radius: ${meetingEventModel.locationInfo![0].radius}');
     } catch (err) {
       debugPrint('Error MC: ${err.toString()}');
+      Navigator.pop(context);
       showInfoDialog(
         'ok',
         context: context,
@@ -318,7 +321,7 @@ class HomeProvider extends ChangeNotifier {
     required String? time,
   }) async {
     try {
-      showLoadingDialog(context);
+      //showLoadingDialog(context);
       var response = await EventAPI.getAttendanceList(
         meetingEventModel: meetingEventModel,
         filterDate: getFilterDate(),
@@ -351,8 +354,8 @@ class HomeProvider extends ChangeNotifier {
                   time: null,
                 );
               }
-            } else if (DateTime.now()
-                    .isAfter(DateTime.parse(response.results![0].endBreak!)) &&
+            } else if (DateTime.now().isAfter(DateTime.parse(
+                    response.results![0].meetingEventId!.endBreakTime!)) &&
                 response.results![0].startBreak == null) {
               // user wants to start break after end break time
               // so show message
@@ -363,7 +366,23 @@ class HomeProvider extends ChangeNotifier {
                   context: context,
                   title: AppString.heyThereTitle,
                   content:
-                      'Sorry, you cannot start break at this time because break time has elapsed. Thank you.',
+                      'Sorry, you cannot start break at this time because break time is over. Thank you.',
+                  onTap: () => Navigator.pop(context),
+                );
+              }
+            } else if (DateTime.now().isBefore(DateTime.parse(
+                    response.results![0].meetingEventId!.startBreakTime!)) &&
+                response.results![0].startBreak == null) {
+              // user wants to start break before break starts
+              // so show message
+              if (context.mounted) {
+                Navigator.pop(context);
+                showInfoDialog(
+                  'ok',
+                  context: context,
+                  title: AppString.heyThereTitle,
+                  content:
+                      'Sorry, you cannot start break at this time because time is not up for break. Thank you.',
                   onTap: () => Navigator.pop(context),
                 );
               }
@@ -551,11 +570,12 @@ class HomeProvider extends ChangeNotifier {
   }
 
 // starts break time for meeting
-  Future<void> startMeetingBreak(
-      {required BuildContext context,
-      required MeetingEventModel meetingEventModel,
-      required int clockingId,
-      required String? time}) async {
+  Future<void> startMeetingBreak({
+    required BuildContext context,
+    required MeetingEventModel meetingEventModel,
+    required int clockingId,
+    required String? time,
+  }) async {
     try {
       var response = await EventAPI.startBreak(
         clockingId: clockingId,

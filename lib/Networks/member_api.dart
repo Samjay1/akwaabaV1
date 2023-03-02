@@ -861,11 +861,11 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("SubGroup success: $decodedresponse");
+        debugPrint("SubGroup success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => SubGroup.fromJson(data)).toList();
       } else {
-        print('SubGroup error ${jsonDecode(response.body)}');
+        debugPrint('SubGroup error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -881,7 +881,7 @@ class MemberAPI {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
-          Uri.parse('$mybaseUrl/members/user-status/occupation'),
+          Uri.parse('$mybaseUrl/members/user-status/occupation?memberId=0'),
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
@@ -889,7 +889,7 @@ class MemberAPI {
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => AbstractModel.fromJson(data)).toList();
       } else {
-        print('Occupation error ${jsonDecode(response.body)}');
+        debugPrint('Occupation error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -911,7 +911,7 @@ class MemberAPI {
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => AbstractModel.fromJson(data)).toList();
       } else {
-        print('profession error ${jsonDecode(response.body)}');
+        debugPrint('profession error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -925,7 +925,7 @@ class MemberAPI {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
-          Uri.parse('$mybaseUrl/members/user-status/marital'),
+          Uri.parse('$mybaseUrl/members/user-status/marital?memberId=0'),
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
@@ -933,7 +933,7 @@ class MemberAPI {
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => AbstractModel.fromJson(data)).toList();
       } else {
-        print('marital error ${jsonDecode(response.body)}');
+        debugPrint('marital error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -947,7 +947,7 @@ class MemberAPI {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {
       http.Response response = await http.get(
-          Uri.parse('$mybaseUrl/members/user-status/education'),
+          Uri.parse('$mybaseUrl/members/user-status/education?memberId=0'),
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
@@ -955,7 +955,7 @@ class MemberAPI {
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => AbstractModel.fromJson(data)).toList();
       } else {
-        print('Education error ${jsonDecode(response.body)}');
+        debugPrint('Education error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -978,11 +978,11 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("MemberType success: $decodedresponse");
+        debugPrint("MemberType success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => MemberType.fromJson(data)).toList();
       } else {
-        print('MemberType error ${jsonDecode(response.body)}');
+        debugPrint('MemberType error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -1004,11 +1004,11 @@ class MemberAPI {
           });
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("OrganisationType success: $decodedresponse");
+        debugPrint("OrganisationType success: $decodedresponse");
         Iterable dataList = decodedresponse['data'];
         return dataList.map((data) => OrganisationType.fromJson(data)).toList();
       } else {
-        print('OrganisationType error ${jsonDecode(response.body)}');
+        debugPrint('OrganisationType error ${jsonDecode(response.body)}');
         return null;
       }
     } on SocketException catch (_) {
@@ -1028,7 +1028,7 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
-        print("searchRegCode success: $decodedresponse");
+        debugPrint("searchRegCode success: $decodedresponse");
         var clientID = decodedresponse['data']['clientId'];
         var clientLogo = decodedresponse['data']['clientInfo']['logo'];
         var clientName = decodedresponse['data']['clientInfo']['name'];
@@ -1039,7 +1039,7 @@ class MemberAPI {
         };
         return clientInfo;
       } else {
-        print('searchRegCode error ${jsonDecode(response.body)}');
+        debugPrint('searchRegCode error ${jsonDecode(response.body)}');
         //showErrorToast("Please a valid Registration Code");
         return null;
       }
@@ -1053,7 +1053,6 @@ class MemberAPI {
   }
 
   // GET TOKEN
-
   Future<String?> getToken({required var clientID}) async {
     var mybaseUrl = 'https://db-api-v2.akwaabasoftware.com';
     try {

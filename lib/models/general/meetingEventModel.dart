@@ -16,6 +16,8 @@ class MeetingEventModel {
   bool? hasBreakTime;
   bool? hasDuty;
   bool? hasOvertime;
+  String? startBreakTime;
+  String? endBreakTime;
   String? virtualMeetingLink;
   int? virtualMeetingType;
   int? meetingLocation;
@@ -51,6 +53,8 @@ class MeetingEventModel {
     this.hasBreakTime,
     this.hasDuty,
     this.hasOvertime,
+    this.startBreakTime,
+    this.endBreakTime,
     this.virtualMeetingLink,
     this.virtualMeetingType,
     this.meetingLocation,
@@ -88,6 +92,8 @@ class MeetingEventModel {
     latenessTime = json['latenessTime'];
     isRecuring = json['isRecuring'];
     hasBreakTime = json['hasBreakTime'];
+    startBreakTime = json['startBreakTime'];
+    endBreakTime = json['endBreakTime'];
     hasDuty = json['hasDuty'];
     hasOvertime = json['hasOvertime'];
     virtualMeetingLink = json['virtualMeetingLink'];
@@ -135,6 +141,8 @@ class MeetingEventModel {
     data['latenessTime'] = latenessTime;
     data['isRecuring'] = isRecuring;
     data['hasBreakTime'] = hasBreakTime;
+    data['startBreakTime'] = startBreakTime;
+    data['endBreakTime'] = endBreakTime;
     data['hasDuty'] = hasDuty;
     data['hasOvertime'] = hasOvertime;
     data['virtualMeetingLink'] = virtualMeetingLink;
@@ -254,15 +262,16 @@ class LocationInfo {
   String? updateDate;
   String? date;
 
-  LocationInfo(
-      {this.id,
-      this.meetingEventId,
-      this.latitude,
-      this.longitude,
-      this.radius,
-      this.updatedBy,
-      this.updateDate,
-      this.date});
+  LocationInfo({
+    this.id,
+    this.meetingEventId,
+    this.latitude,
+    this.longitude,
+    this.radius,
+    this.updatedBy,
+    this.updateDate,
+    this.date,
+  });
 
   LocationInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -276,15 +285,15 @@ class LocationInfo {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['meetingEventId'] = this.meetingEventId;
-    data['latitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-    data['radius'] = this.radius;
-    data['updatedBy'] = this.updatedBy;
-    data['updateDate'] = this.updateDate;
-    data['date'] = this.date;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['meetingEventId'] = meetingEventId;
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
+    data['radius'] = radius;
+    data['updatedBy'] = updatedBy;
+    data['updateDate'] = updateDate;
+    data['date'] = date;
     return data;
   }
 }
