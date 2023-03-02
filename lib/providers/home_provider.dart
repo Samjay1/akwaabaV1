@@ -229,6 +229,8 @@ class HomeProvider extends ChangeNotifier {
       }
 
       double distanceInKilometers = calculateDistanceInKilo(
+        // 5.674139,
+        // -0.023477,
         currentUserLocation.latitude,
         currentUserLocation.longitude,
         double.parse(meetingEventModel.locationInfo![0].latitude!),
@@ -269,7 +271,6 @@ class HomeProvider extends ChangeNotifier {
           'Meeting Radius: ${meetingEventModel.locationInfo![0].radius!}');
     } catch (err) {
       debugPrint('Error MC: ${err.toString()}');
-      Navigator.of(context).pop();
       showInfoDialog(
         'ok',
         context: context,
