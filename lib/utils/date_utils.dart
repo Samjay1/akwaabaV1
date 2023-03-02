@@ -37,26 +37,38 @@ class DateUtil {
       initialTime: TimeOfDay.now(),
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
           child: child!,
         );
       },
     );
     if (timePicked != null && timePicked != selectedTime) {
-      selectedTime = timePicked.replacing(hour: timePicked.hourOfPeriod);
+      //selectedTime = timePicked.replacing(hour: timePicked.hourOfPeriod);
+      selectedTime = timePicked;
     }
     return selectedTime;
   }
 
   static String convertTimeOfDayTo12hour(
-      {required TimeOfDay timeOfDay, required bool showAMPM}) {
+      {required TimeOfDay timeOfDay,
+      required BuildContext context,
+      required showAMPM}) {
     if (showAMPM) {
-      debugPrint(timeOfDay.period.name);
-      return '${timeOfDay.hour}:${timeOfDay.minute < 9 ? '0${timeOfDay.minute}' : '${timeOfDay.minute}'} ${timeOfDay.period.name.toUpperCase()}';
+      return '${timeOfDay.format(context)} ${timeOfDay.period.name.toUpperCase()}';
     } else {
-      return '${timeOfDay.hour}:${timeOfDay.minute < 9 ? '0${timeOfDay.minute}' : '${timeOfDay.minute}'}';
+      return timeOfDay.format(context);
     }
   }
+
+  // static String convertTimeOfDayTo12hour(
+  //     {required TimeOfDay timeOfDay, required bool showAMPM}) {
+  //   if (showAMPM) {
+  //     debugPrint(timeOfDay.period.name);
+  //     return '${timeOfDay.hour}:${timeOfDay.minute < 9 ? '0${timeOfDay.minute}' : '${timeOfDay.minute}'} ${timeOfDay.period.name.toUpperCase()}';
+  //   } else {
+  //     return '${timeOfDay.hour}:${timeOfDay.minute < 9 ? '0${timeOfDay.minute}' : '${timeOfDay.minute}'}';
+  //   }
+  // }
 
   // format date
   static String formatStringDate(DateFormat dateFormat,

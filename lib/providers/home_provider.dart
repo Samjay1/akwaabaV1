@@ -192,17 +192,15 @@ class HomeProvider extends ChangeNotifier {
   }) async {
     //setClocking(true);
     try {
-      showLoadingDialog(context);
-
       getCurrentUserLocation();
 
-      var response = await EventAPI.getMeetingCoordinates(
-        meetingEventModel: meetingEventModel,
-      );
+      // var response = await EventAPI.getMeetingCoordinates(
+      //   meetingEventModel: meetingEventModel,
+      // );
 
-      if (response.results == null && response.results!.isEmpty) {
+      if (meetingEventModel.locationInfo == null &&
+          meetingEventModel.locationInfo!.isEmpty) {
         if (context.mounted) {
-          Navigator.of(context).pop();
           showInfoDialog(
             'ok',
             context: context,
@@ -218,7 +216,6 @@ class HomeProvider extends ChangeNotifier {
       if (currentUserLocation.latitude == null &&
           currentUserLocation.longitude == null) {
         if (context.mounted) {
-          Navigator.of(context).pop();
           showInfoDialog(
             'ok',
             context: context,
@@ -231,16 +228,14 @@ class HomeProvider extends ChangeNotifier {
         return;
       }
 
-      double calculatedRadius = calculateDistance(
-        //5.674139,
+      double distanceInKilometers = calculateDistanceInKilo(
         currentUserLocation.latitude,
-        //-0.023477,
         currentUserLocation.longitude,
-        double.parse(response.results![0].latitude!),
-        double.parse(response.results![0].longitude!),
+        double.parse(meetingEventModel.locationInfo![0].latitude!),
+        double.parse(meetingEventModel.locationInfo![0].longitude!),
       );
 
-      if (calculatedRadius <= response.results![0].radius!) {
+      if (distanceInKilometers <= meetingEventModel.locationInfo![0].radius!) {
         if (context.mounted) {
           debugPrint('You\'re within the radius of the premise');
           await getAttendanceList(
@@ -252,7 +247,6 @@ class HomeProvider extends ChangeNotifier {
         }
       } else {
         if (context.mounted) {
-          Navigator.of(context).pop();
           debugPrint('You\'re not within the radius of the premise');
           showInfoDialog(
             'ok',
@@ -264,11 +258,15 @@ class HomeProvider extends ChangeNotifier {
           );
         }
       }
-      debugPrint('Calculated radius: $calculatedRadius');
+      debugPrint('Calculated distance: $distanceInKilometers km');
       debugPrint('Current Location Lat: ${currentUserLocation.latitude}');
       debugPrint('Current Location Lng: ${currentUserLocation.longitude}');
-      debugPrint('Meeting Lat: ${response.results![0].latitude!}');
-      debugPrint('Meeting Lng: ${response.results![0].longitude!}');
+      debugPrint(
+          'Meeting Lat: ${meetingEventModel.locationInfo![0].latitude!}');
+      debugPrint(
+          'Meeting Lng: ${meetingEventModel.locationInfo![0].longitude!}');
+      debugPrint(
+          'Meeting Radius: ${meetingEventModel.locationInfo![0].radius!}');
     } catch (err) {
       debugPrint('Error MC: ${err.toString()}');
       Navigator.of(context).pop();
@@ -321,6 +319,7 @@ class HomeProvider extends ChangeNotifier {
     required String? time,
   }) async {
     try {
+      showLoadingDialog(context);
       var response = await EventAPI.getAttendanceList(
         meetingEventModel: meetingEventModel,
         filterDate: getFilterDate(),

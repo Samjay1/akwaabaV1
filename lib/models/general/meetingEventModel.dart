@@ -33,36 +33,39 @@ class MeetingEventModel {
   dynamic outTime;
   List<UpcomingDays>? upcomingDays;
   List<UpcomingDates>? upcomingDates;
+  List<LocationInfo>? locationInfo;
 
-  MeetingEventModel(
-      {this.id,
-      this.type,
-      this.memberType,
-      this.name,
-      this.clientId,
-      this.branchId,
-      this.memberCategoryId,
-      this.meetingSpan,
-      this.startTime,
-      this.closeTime,
-      this.latenessTime,
-      this.isRecuring,
-      this.hasBreakTime,
-      this.hasDuty,
-      this.hasOvertime,
-      this.virtualMeetingLink,
-      this.virtualMeetingType,
-      this.meetingLocation,
-      this.expectedMonthlyAttendance,
-      this.activeMonthlyAttendance,
-      this.agenda,
-      this.agendaFile,
-      this.updatedBy,
-      this.updateDate,
-      this.date,
-      this.inOrOut,
-      this.upcomingDays,
-      this.upcomingDates});
+  MeetingEventModel({
+    this.id,
+    this.type,
+    this.memberType,
+    this.name,
+    this.clientId,
+    this.branchId,
+    this.memberCategoryId,
+    this.meetingSpan,
+    this.startTime,
+    this.closeTime,
+    this.latenessTime,
+    this.isRecuring,
+    this.hasBreakTime,
+    this.hasDuty,
+    this.hasOvertime,
+    this.virtualMeetingLink,
+    this.virtualMeetingType,
+    this.meetingLocation,
+    this.expectedMonthlyAttendance,
+    this.activeMonthlyAttendance,
+    this.agenda,
+    this.agendaFile,
+    this.updatedBy,
+    this.updateDate,
+    this.date,
+    this.inOrOut,
+    this.upcomingDays,
+    this.upcomingDates,
+    this.locationInfo,
+  });
 
   MeetingEventModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -109,6 +112,12 @@ class MeetingEventModel {
         upcomingDates!.add(UpcomingDates.fromJson(v));
       });
     }
+    if (json['locationInfo'] != null) {
+      locationInfo = <LocationInfo>[];
+      json['locationInfo'].forEach((v) {
+        locationInfo!.add(LocationInfo.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -143,6 +152,9 @@ class MeetingEventModel {
     }
     if (upcomingDates != null) {
       data['upcoming_dates'] = upcomingDates!.map((v) => v.toJson()).toList();
+    }
+    if (locationInfo != null) {
+      data['locationInfo'] = locationInfo!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -228,6 +240,51 @@ class UpcomingDates {
     data['updatedBy'] = updatedBy;
     data['updateDate'] = updateDate;
     data['creationDate'] = creationDate;
+    return data;
+  }
+}
+
+class LocationInfo {
+  int? id;
+  int? meetingEventId;
+  String? latitude;
+  String? longitude;
+  double? radius;
+  int? updatedBy;
+  String? updateDate;
+  String? date;
+
+  LocationInfo(
+      {this.id,
+      this.meetingEventId,
+      this.latitude,
+      this.longitude,
+      this.radius,
+      this.updatedBy,
+      this.updateDate,
+      this.date});
+
+  LocationInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    meetingEventId = json['meetingEventId'];
+    latitude = json['latitude'];
+    longitude = json['longitude'];
+    radius = json['radius'];
+    updatedBy = json['updatedBy'];
+    updateDate = json['updateDate'];
+    date = json['date'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['meetingEventId'] = this.meetingEventId;
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
+    data['radius'] = this.radius;
+    data['updatedBy'] = this.updatedBy;
+    data['updateDate'] = this.updateDate;
+    data['date'] = this.date;
     return data;
   }
 }

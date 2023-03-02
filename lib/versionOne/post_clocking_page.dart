@@ -256,20 +256,29 @@ class _PostClockingPageState extends State<PostClockingPage> {
                             InkWell(
                               onTap: () async {
                                 var time = await DateUtil.selectTime(context);
+                                if (!mounted) return;
                                 postClockingProvider.postClockTime =
                                     DateUtil.convertTimeOfDayTo12hour(
-                                        timeOfDay: time!, showAMPM: false);
+                                  timeOfDay: time!,
+                                  context: context,
+                                  showAMPM: false,
+                                );
                                 postClockingProvider.displayClockTime =
                                     DateUtil.convertTimeOfDayTo12hour(
-                                        timeOfDay: time, showAMPM: true);
+                                  timeOfDay: time,
+                                  context: context,
+                                  showAMPM: true,
+                                );
                                 debugPrint(
-                                    "Selected: ${postClockingProvider.postClockTime}");
+                                  "Selected: ${postClockingProvider.postClockTime}",
+                                );
                                 debugPrint(
-                                    "Display: ${postClockingProvider.displayClockTime}");
+                                  "Display: ${postClockingProvider.displayClockTime}",
+                                );
                                 setState(() {});
                               },
                               child: Container(
-                                padding: EdgeInsets.all(AppPadding.p14),
+                                padding: const EdgeInsets.all(AppPadding.p14),
                                 decoration: BoxDecoration(
                                   color: blackColor,
                                   borderRadius: BorderRadius.circular(

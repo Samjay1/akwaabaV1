@@ -11,6 +11,7 @@ import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:open_mail_app/open_mail_app.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -67,6 +68,10 @@ Future<DeviceInfoModel?> getDeviceInfo() async {
 //       "Calculated radius of member to the meeting radius: ${12742 * asin(sqrt(a))}");
 //   return 12742 * asin(sqrt(a));
 // }
+
+double calculateDistanceInKilo(lat1, lon1, lat2, lon2) {
+  return (Geolocator.distanceBetween(lat1, lon1, lat2, lon2)) / 1000;
+}
 
 double calculateDistance(lat1, lon1, lat2, lon2) {
   var p = 0.017453292519943295;

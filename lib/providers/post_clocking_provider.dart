@@ -780,6 +780,7 @@ class PostClockingProvider extends ChangeNotifier {
   String getPostClockDateTime() {
     var date = selectedDate!.toIso8601String().substring(0, 11);
     var time = '$postClockTime:00';
+    debugPrint("Clocking time: $date$time");
     return '$date$time';
   }
 
