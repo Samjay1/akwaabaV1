@@ -4,6 +4,7 @@ import 'package:akwaaba/components/pagination_loader.dart';
 import 'package:akwaaba/components/self_clocking_member_item.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/dialogs_modals/confirm_dialog.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:akwaaba/providers/self_clocking_provider.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -58,7 +59,24 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
   }
 
   Future<bool> logout() async {
-    SharedPrefs().logout(context);
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        insetPadding: const EdgeInsets.all(10),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        content: ConfirmDialog(
+          title: 'Logout',
+          content:
+              'You are about to logout. \n\nAre you sure you really want to perform this operation?',
+          onConfirmTap: () => SharedPrefs().logout(context),
+          onCancelTap: () => Navigator.pop(context),
+          confirmText: 'Confirm',
+          cancelText: 'Cancel',
+        ),
+      ),
+    );
+    // SharedPrefs().logout(context);
     return true;
   }
 
@@ -81,7 +99,7 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(
-                  height: displayHeight(context) * 0.03,
+                  height: displayHeight(context) * 0.02,
                 ),
                 Container(
                   padding: const EdgeInsets.all(AppPadding.p12),
@@ -124,7 +142,7 @@ class _SelfClockingPageState extends State<SelfClockingPage> {
                 ),
 
                 SizedBox(
-                  height: displayHeight(context) * 0.05,
+                  height: displayHeight(context) * 0.04,
                 ),
                 CupertinoSearchTextField(
                   padding: const EdgeInsets.all(AppPadding.p18),
