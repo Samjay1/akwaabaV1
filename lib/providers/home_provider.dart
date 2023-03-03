@@ -87,11 +87,8 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getCurrentUserLocation() async {
-    _currentUserLocation = await LocationServices().getUserCurrentLocation();
-    //return _currentUserLocation!;
-    debugPrint("Current user location: ${_currentUserLocation.toString()}");
-    notifyListeners();
+  Future<Position?> getCurrentUserLocation() async {
+    return await LocationServices().getUserCurrentLocation();
   }
 
   Future<void> getTodayMeetingEvents() async {
@@ -162,27 +159,7 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> getUpcomingMeetingEvents({
-  //   required var memberToken,
-  //   required BuildContext context,
-  // }) async {
-  //   _upcomingMeetingEventList.clear();
-  //   setLoading(true);
-  //   try {
-  //     _upcomingMeetingEventList = await EventAPI.getUpcomingMeetingEventList();
-  //     getCurrentUserLocation();
-  //     // getAttendanceList();
-  //     getTodayMeetingEvents(
-  //       memberToken: memberToken,
-  //       context: context,
-  //     );
-  //   } catch (err) {
-  //     debugPrint('Error UM ${err.toString()}');
-  //     showErrorToast(err.toString());
-  //   }
-
-  //   notifyListeners();
-  // }
+  var isLocationLoaded = false;
 
   // queries for coordinates of a particular meeting
   Future<void> getMeetingCoordinates({
@@ -194,25 +171,7 @@ class HomeProvider extends ChangeNotifier {
     try {
       showLoadingDialog(context);
 
-      if (_currentUserLocation == null) {
-        await getCurrentUserLocation();
-      }
-
-      if (currentUserLocation!.latitude == null &&
-          currentUserLocation!.longitude == null) {
-        if (context.mounted) {
-          Navigator.pop(context);
-          showInfoDialog(
-            'ok',
-            context: context,
-            title: 'Hey there!',
-            content:
-                'Sorry, we were unable to get your location. Please go to setting and allows location access.',
-            onTap: () => Navigator.pop(context),
-          );
-        }
-        return;
-      }
+      Position? currentUserLocation = await getCurrentUserLocation();
 
       if (meetingEventModel.locationInfo == null &&
           meetingEventModel.locationInfo!.isEmpty) {
@@ -231,7 +190,7 @@ class HomeProvider extends ChangeNotifier {
       }
 
       double distanceInKilometers = calculateDistanceInKilo(
-        currentUserLocation.latitude,
+        currentUserLocation!.latitude,
         currentUserLocation.longitude,
         double.parse(meetingEventModel.locationInfo![0].latitude!),
         double.parse(meetingEventModel.locationInfo![0].longitude!),

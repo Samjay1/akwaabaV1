@@ -1,4 +1,5 @@
 import 'package:akwaaba/utils/shared_prefs.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationServices {
@@ -22,7 +23,7 @@ class LocationServices {
         .then((value) {})
         .onError((error, stackTrace) async {
       await Geolocator.requestPermission();
-      print("ERROR " + error.toString());
+      debugPrint("ERROR $error");
     });
     return await Geolocator.getCurrentPosition();
   }
@@ -70,4 +71,40 @@ class LocationServices {
       desiredAccuracy: LocationAccuracy.high,
     );
   }
+
+  // Future<LocationData> getUserCurrentLocation() async {
+  //   Location location = Location();
+
+  //   bool serviceEnabled;
+  //   PermissionStatus permissionGranted;
+  //   LocationData locationData;
+
+  //   serviceEnabled = await location.serviceEnabled();
+  //   if (!serviceEnabled) {
+  //     serviceEnabled = await location.requestService();
+  //     if (!serviceEnabled) {
+  //       return Future.error('Location services are disabled.');
+  //     }
+  //   }
+
+  //   permissionGranted = await location.hasPermission();
+  //   if (permissionGranted == PermissionStatus.denied) {
+  //     permissionGranted = await location.requestPermission();
+  //     if (permissionGranted != PermissionStatus.granted) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
+
+  //   // locationData = await Future.any([
+  //   //   location.getLocation(),
+  //   //   Future.delayed(const Duration(seconds: 5),
+  //   //       () => Future.error('Unable to get location')),
+  //   // ]);
+  //   // if (locationData == null) {
+  //   //   locationData = await location.getLocation();
+  //   // }
+  //   // return locationData;
+
+  //   return locationData = await location.getLocation();
+  // }
 }
