@@ -23,7 +23,8 @@ class ClientAccountInfo {
   String? profilePicture;
   int? status;
   int? archive;
-  AccountCategory? accountCategory;
+  //AccountCategory? accountCategory;
+  dynamic accountCategory;
   String? website;
   String? creationDate;
   int? updatedBy;
@@ -84,9 +85,12 @@ class ClientAccountInfo {
     logo = json['logo'];
     status = json['status'];
     archive = json['archive'];
-    accountCategory = json['accountCategory'] != null
-        ? AccountCategory.fromJson(json['accountCategory'])
-        : null;
+    accountCategory = json['accountCategory'];
+    // accountCategory = json['accountCategory'] is String
+    //     ? null
+    //     : json['accountCategory'] != null
+    //         ? AccountCategory.fromJson(json['accountCategory'])
+    //         : null;
     website = json['website'];
     creationDate = json['creationDate'];
     updatedBy = json['updatedBy'];
@@ -125,9 +129,10 @@ class ClientAccountInfo {
     data['logo'] = logo;
     data['status'] = status;
     data['archive'] = archive;
-    if (accountCategory != null) {
-      data['accountCategory'] = accountCategory!.toJson();
-    }
+    // if (accountCategory != null) {
+    //   data['accountCategory'] = accountCategory!.toJson();
+    // }
+    data['accountCategory'] = accountCategory;
     data['website'] = website;
     data['creationDate'] = creationDate;
     data['updatedBy'] = updatedBy;

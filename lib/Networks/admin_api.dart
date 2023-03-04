@@ -62,34 +62,34 @@ class UserApi {
           'Authorization': 'Token $clientToken',
           'Content-Type': 'application/json'
         };
-        http.Response branchResponse = await http.get(
-            Uri.parse('$baseUrl/clients/branch/$branchId'),
-            headers: headers);
-        var branchNameResp = jsonDecode(branchResponse.body);
-        if (branchResponse.statusCode == 200) {
-          debugPrint('BRANCH-NAME: $branchNameResp');
-          var branchName = branchNameResp['data']['name'];
-          http.Response clientResponse = await http.get(
-            Uri.parse('$baseUrl/clients/account/$accountId'),
-            headers: headers,
-          );
-          var clientDecodedResponse = jsonDecode(clientResponse.body);
-          if (clientResponse.statusCode == 200) {
-            var clientData = clientDecodedResponse['data'];
-            // debugPrint('FULL CLIENT INFO ${clientData.toString()}');
-            return ClientAccountInfo.fromJson(clientData);
 
-            //      ERROR FOR CLIENT INFO HTTP REQUEST
-          } else {
-            debugPrint('ERROR:FULL CLIENT INFO $clientDecodedResponse');
-            return 'login_error';
-          }
-
-          //      ERROR FOR BRANCH HTTP REQUEST
+        http.Response clientResponse = await http.get(
+          Uri.parse('$baseUrl/clients/account/$accountId'),
+          headers: headers,
+        );
+        var clientDecodedResponse = jsonDecode(clientResponse.body);
+        if (clientResponse.statusCode == 200) {
+          var clientData = clientDecodedResponse['data'];
+          // debugPrint('FULL CLIENT INFO ${clientData.toString()}');
+          return ClientAccountInfo.fromJson(clientData);
+          // ERROR FOR CLIENT INFO HTTP REQUEST
         } else {
-          debugPrint('ERROR: branchName $branchNameResp');
+          debugPrint('ERROR:FULL CLIENT INFO $clientDecodedResponse');
           return 'login_error';
         }
+        // http.Response branchResponse = await http.get(
+        //     Uri.parse('$baseUrl/clients/branch/$branchId'),
+        //     headers: headers);
+        // var branchNameResp = jsonDecode(branchResponse.body);
+        // if (branchResponse.statusCode == 200) {
+        //   debugPrint('BRANCH-NAME: $branchNameResp');
+        //   var branchName = branchNameResp['data']['name'];
+
+        //   //      ERROR FOR BRANCH HTTP REQUEST
+        // } else {
+        //   debugPrint('ERROR: branchName $branchNameResp');
+        //   return 'login_error';
+        // }
 
         //      ERROR FOR LOGIN HTTP REQUEST
       } else {

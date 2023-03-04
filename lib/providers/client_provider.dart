@@ -103,7 +103,7 @@ class ClientProvider extends ChangeNotifier {
       }
     } catch (err) {
       setLoading(false);
-      debugPrint('Error: ${err.toString()}');
+      debugPrint('Error login: ${err.toString()}');
       showErrorToast(err.toString());
     }
     notifyListeners();

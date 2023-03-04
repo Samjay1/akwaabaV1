@@ -304,18 +304,10 @@ class PostClockingProvider extends ChangeNotifier {
         // admin if he is also a member
         _absentees = response.results!;
         _absentees.removeWhere((absentee) =>
-            absentee!.attendance!.memberId!.firstname ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .firstname ||
-            absentee.attendance!.memberId!.surname ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .surname ||
-            absentee.attendance!.memberId!.email ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .email);
+            absentee!.attendance!.memberId!.email ==
+            Provider.of<ClientProvider>(_context!, listen: false)
+                .adminProfile!
+                .email);
 
         debugPrint('Absentees: ${_absentees.length}');
       } else {
@@ -373,18 +365,10 @@ class PostClockingProvider extends ChangeNotifier {
           hasNextAbsentees = response.next == null ? false : true;
           var newAbsenteesList = response.results!;
           newAbsenteesList.removeWhere((absentee) =>
-              absentee.attendance!.memberId!.firstname ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .firstname ||
-              absentee.attendance!.memberId!.surname ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .surname ||
               absentee.attendance!.memberId!.email ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .email);
+              Provider.of<ClientProvider>(_context!, listen: false)
+                  .adminProfile!
+                  .email);
 
           _absentees.addAll(newAbsenteesList);
         } else {
@@ -437,18 +421,10 @@ class PostClockingProvider extends ChangeNotifier {
         _attendees = response.results!;
 
         _attendees.removeWhere((attendee) =>
-            attendee!.attendance!.memberId!.firstname ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .firstname ||
-            attendee.attendance!.memberId!.surname ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .surname ||
-            attendee.attendance!.memberId!.email ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .email);
+            attendee!.attendance!.memberId!.email ==
+            Provider.of<ClientProvider>(_context!, listen: false)
+                .adminProfile!
+                .email);
       } else {
         _attendees.clear();
       }
@@ -498,18 +474,10 @@ class PostClockingProvider extends ChangeNotifier {
           var newAttendeesList = response.results!;
 
           newAttendeesList.removeWhere((attendee) =>
-              attendee.attendance!.memberId!.firstname ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .firstname ||
-              attendee.attendance!.memberId!.surname ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .surname ||
               attendee.attendance!.memberId!.email ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .email);
+              Provider.of<ClientProvider>(_context!, listen: false)
+                  .adminProfile!
+                  .email);
           _attendees.addAll(newAttendeesList);
         } else {
           hasNextAttendees = false;

@@ -288,17 +288,9 @@ class ClockingProvider extends ChangeNotifier {
 
         _absentees.removeWhere((absentee) =>
             absentee!.attendance!.memberId!.email ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .email ||
-            absentee.attendance!.memberId!.firstname ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .firstname ||
-            absentee.attendance!.memberId!.surname ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .surname);
+            Provider.of<ClientProvider>(_context!, listen: false)
+                .adminProfile!
+                .email);
       } else {
         _absentees.clear();
       }
@@ -357,17 +349,9 @@ class ClockingProvider extends ChangeNotifier {
 
           newAbsenteesList.removeWhere((absentee) =>
               absentee.attendance!.memberId!.email ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .email ||
-              absentee.attendance!.memberId!.firstname ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .firstname ||
-              absentee.attendance!.memberId!.surname ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .surname);
+              Provider.of<ClientProvider>(_context!, listen: false)
+                  .adminProfile!
+                  .email);
 
           _absentees.addAll(newAbsenteesList);
         } else {
@@ -422,17 +406,9 @@ class ClockingProvider extends ChangeNotifier {
 
         _attendees.removeWhere((attendee) =>
             attendee!.attendance!.memberId!.email ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .email ||
-            attendee.attendance!.memberId!.firstname ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .firstname ||
-            attendee.attendance!.memberId!.surname ==
-                Provider.of<ClientProvider>(_context!, listen: false)
-                    .adminProfile!
-                    .surname);
+            Provider.of<ClientProvider>(_context!, listen: false)
+                .adminProfile!
+                .email);
       } else {
         _attendees.clear();
       }
@@ -483,18 +459,10 @@ class ClockingProvider extends ChangeNotifier {
           var newAtendeesList = response.results!;
 
           newAtendeesList.removeWhere((attendee) =>
-              attendee.attendance!.memberId!.firstname ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .firstname ||
-              attendee.attendance!.memberId!.surname ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .surname ||
               attendee.attendance!.memberId!.email ==
-                  Provider.of<ClientProvider>(_context!, listen: false)
-                      .adminProfile!
-                      .email);
+              Provider.of<ClientProvider>(_context!, listen: false)
+                  .adminProfile!
+                  .email);
           _attendees.addAll(newAtendeesList);
         } else {
           hasNextAttendees = false;
