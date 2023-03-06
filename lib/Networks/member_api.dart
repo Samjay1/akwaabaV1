@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
+import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/general/abstractModel.dart';
 import 'package:akwaaba/models/general/branch.dart';
@@ -45,7 +46,13 @@ class MemberAPI {
       http.Response response = await http.post(
           Uri.parse('$baseUrl/members/login'),
           body: json.encode(data),
-          headers: {'Content-Type': 'application/json'});
+          headers: {'Content-Type': 'application/json'}).timeout(
+        const Duration(seconds: AppConstants.timOutDuration),
+        onTimeout: () => throw FetchDataException(
+          'Your internet connection is poor, please try again later!',
+        ), // Time has run out, do what you wanted to do.
+      );
+      ;
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         var memberToken = decodedResponse['token'];
@@ -74,10 +81,17 @@ class MemberAPI {
     ClientAccountInfo accountInfo;
     var url = Uri.parse('$baseUrl/clients/account/$clientId');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              'Your internet connection is poor, please try again later!',
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Client Info Res: ${jsonDecode(response.body)}");
       var res = jsonDecode(response.body);
       accountInfo = ClientAccountInfo.fromJson(

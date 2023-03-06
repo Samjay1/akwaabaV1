@@ -54,9 +54,9 @@ class DateUtil {
       required BuildContext context,
       required showAMPM}) {
     if (showAMPM) {
-      return '${timeOfDay.format(context)} ${timeOfDay.period.name.toUpperCase()}';
+      return '${timeOfDay.hour}:${timeOfDay.minute < 10 ? '0${timeOfDay.minute}' : timeOfDay.minute} ${timeOfDay.period.name.toUpperCase()}';
     } else {
-      return timeOfDay.format(context);
+      return '${timeOfDay.hour}:${timeOfDay.minute < 10 ? '0${timeOfDay.minute}' : timeOfDay.minute}';
     }
   }
 

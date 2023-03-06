@@ -6,6 +6,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DownloadUtil {
+  
   static downloadFile({required String url}) async {
     await FlutterDownloader.enqueue(
       url: url,
@@ -27,7 +28,6 @@ class DownloadUtil {
     } else if (Platform.isIOS) {
       dir = (await getApplicationDocumentsDirectory()).path;
     }
-    debugPrint(dir);
     return dir;
   }
 }

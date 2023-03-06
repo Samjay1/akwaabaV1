@@ -725,7 +725,7 @@ class _MainPageState extends State<MainPage> {
           _selectedBottomNavIndex == 0
               ? "AKWAABA"
               : _selectedBottomNavIndex == 1
-                  ? "All Events & Meetings"
+                  ? "Upcoming Events & Meetings"
                   : _selectedBottomNavIndex == 2
                       ? "Post Clocking"
                       : "More",

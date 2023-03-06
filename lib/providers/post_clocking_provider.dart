@@ -305,9 +305,17 @@ class PostClockingProvider extends ChangeNotifier {
         _absentees = response.results!;
         _absentees.removeWhere((absentee) =>
             absentee!.attendance!.memberId!.email ==
-            Provider.of<ClientProvider>(_context!, listen: false)
-                .adminProfile!
-                .email);
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .email ||
+            (absentee.attendance!.memberId!.firstname ==
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .adminProfile!
+                        .firstname &&
+                absentee.attendance!.memberId!.surname ==
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .adminProfile!
+                        .surname));
 
         debugPrint('Absentees: ${_absentees.length}');
       } else {
@@ -366,9 +374,17 @@ class PostClockingProvider extends ChangeNotifier {
           var newAbsenteesList = response.results!;
           newAbsenteesList.removeWhere((absentee) =>
               absentee.attendance!.memberId!.email ==
-              Provider.of<ClientProvider>(_context!, listen: false)
-                  .adminProfile!
-                  .email);
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .email ||
+              (absentee.attendance!.memberId!.firstname ==
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .adminProfile!
+                          .firstname &&
+                  absentee.attendance!.memberId!.surname ==
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .adminProfile!
+                          .surname));
 
           _absentees.addAll(newAbsenteesList);
         } else {
@@ -422,9 +438,17 @@ class PostClockingProvider extends ChangeNotifier {
 
         _attendees.removeWhere((attendee) =>
             attendee!.attendance!.memberId!.email ==
-            Provider.of<ClientProvider>(_context!, listen: false)
-                .adminProfile!
-                .email);
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .email ||
+            (attendee.attendance!.memberId!.firstname ==
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .adminProfile!
+                        .firstname &&
+                attendee.attendance!.memberId!.surname ==
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .adminProfile!
+                        .surname));
       } else {
         _attendees.clear();
       }
@@ -475,9 +499,17 @@ class PostClockingProvider extends ChangeNotifier {
 
           newAttendeesList.removeWhere((attendee) =>
               attendee.attendance!.memberId!.email ==
-              Provider.of<ClientProvider>(_context!, listen: false)
-                  .adminProfile!
-                  .email);
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .email ||
+              (attendee.attendance!.memberId!.firstname ==
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .adminProfile!
+                          .firstname &&
+                  attendee.attendance!.memberId!.surname ==
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .adminProfile!
+                          .surname));
           _attendees.addAll(newAttendeesList);
         } else {
           hasNextAttendees = false;
@@ -758,6 +790,8 @@ class PostClockingProvider extends ChangeNotifier {
     selectedGender = null;
     selectedGroup = null;
     selectedSubGroup = null;
+    postClockTime == null;
+    displayClockTime == null;
     selectedMemberCategory = null;
     selectedPastMeetingEvent = null;
     searchName = '';

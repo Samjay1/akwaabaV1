@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
@@ -45,6 +46,8 @@ class ClockingAPI {
     debugPrint("toAge: $toAge");
     var url = Uri.parse(
         '${getBaseUrl()}/attendance/meeting-event/attendance/absentees?page=$page&filter_name=$searchName&filter_identity=$searchIdentity&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge');
+    final client = http.Client();
+
     try {
       debugPrint("URL: ${url.toString()}");
 
@@ -102,6 +105,12 @@ class ClockingAPI {
     var url = Uri.parse(
       '${getBaseUrl()}/attendance/meeting-event/attendance/attendees?page=$page&filter_name=$searchName&filter_identity=$searchIdentity&meetingEventId=${meetingEventModel.id}&filter_date=$filterDate&filter_branch=$branchId&filter_member_category=$memberCategoryId&filter_group=$groupId&filter_subgroup=$subGroupId&filter_gender=$genderId&filter_from_age=$fromAge&filter_to_age=$toAge',
     );
+    // var client = io.HttpClient();
+    // var request = await client
+    //       .getUrl(
+    //         url,
+    //         headers: await getAllHeaders(),
+    //       );
     try {
       http.Response response = await http
           .get(

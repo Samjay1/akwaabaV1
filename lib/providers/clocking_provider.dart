@@ -288,9 +288,17 @@ class ClockingProvider extends ChangeNotifier {
 
         _absentees.removeWhere((absentee) =>
             absentee!.attendance!.memberId!.email ==
-            Provider.of<ClientProvider>(_context!, listen: false)
-                .adminProfile!
-                .email);
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .email ||
+            (absentee.attendance!.memberId!.firstname ==
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .adminProfile!
+                        .firstname &&
+                absentee.attendance!.memberId!.surname ==
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .adminProfile!
+                        .surname));
       } else {
         _absentees.clear();
       }
@@ -349,9 +357,17 @@ class ClockingProvider extends ChangeNotifier {
 
           newAbsenteesList.removeWhere((absentee) =>
               absentee.attendance!.memberId!.email ==
-              Provider.of<ClientProvider>(_context!, listen: false)
-                  .adminProfile!
-                  .email);
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .email ||
+              (absentee.attendance!.memberId!.firstname ==
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .adminProfile!
+                          .firstname &&
+                  absentee.attendance!.memberId!.surname ==
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .adminProfile!
+                          .surname));
 
           _absentees.addAll(newAbsenteesList);
         } else {
@@ -406,9 +422,17 @@ class ClockingProvider extends ChangeNotifier {
 
         _attendees.removeWhere((attendee) =>
             attendee!.attendance!.memberId!.email ==
-            Provider.of<ClientProvider>(_context!, listen: false)
-                .adminProfile!
-                .email);
+                Provider.of<ClientProvider>(_context!, listen: false)
+                    .adminProfile!
+                    .email ||
+            (attendee.attendance!.memberId!.firstname ==
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .adminProfile!
+                        .firstname &&
+                attendee.attendance!.memberId!.surname ==
+                    Provider.of<ClientProvider>(_context!, listen: false)
+                        .adminProfile!
+                        .surname));
       } else {
         _attendees.clear();
       }
@@ -460,9 +484,17 @@ class ClockingProvider extends ChangeNotifier {
 
           newAtendeesList.removeWhere((attendee) =>
               attendee.attendance!.memberId!.email ==
-              Provider.of<ClientProvider>(_context!, listen: false)
-                  .adminProfile!
-                  .email);
+                  Provider.of<ClientProvider>(_context!, listen: false)
+                      .adminProfile!
+                      .email ||
+              (attendee.attendance!.memberId!.firstname ==
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .adminProfile!
+                          .firstname &&
+                  attendee.attendance!.memberId!.surname ==
+                      Provider.of<ClientProvider>(_context!, listen: false)
+                          .adminProfile!
+                          .surname));
           _attendees.addAll(newAtendeesList);
         } else {
           hasNextAttendees = false;
@@ -486,9 +518,12 @@ class ClockingProvider extends ChangeNotifier {
     searchIdentity = '';
     minAgeTEC.clear();
     maxAgeTEC.clear();
-    getAllAbsentees(
-      meetingEventModel: selectedCurrentMeeting,
-    );
+    if (_meetingEventModel != null) {
+      getAllAbsentees(
+        meetingEventModel: selectedCurrentMeeting,
+      );
+    }
+
     notifyListeners();
   }
 
