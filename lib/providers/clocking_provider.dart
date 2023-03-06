@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/event_api.dart';
@@ -313,6 +314,14 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () =>
+              getAllAbsentees(meetingEventModel: meetingEventModel),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -376,6 +385,12 @@ class ClockingProvider extends ChangeNotifier {
         setLoadingMore(false);
       } catch (err) {
         setLoadingMore(false);
+        if (err is FetchDataException) {
+          showIndefiniteSnackBar(
+              context: currentContext,
+              message: err.toString(),
+              onPressed: _loadMoreAbsentees);
+        }
         debugPrint("error --> $err");
       }
     }
@@ -441,6 +456,13 @@ class ClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Attendees: ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: () =>
+                getAllAttendees(meetingEventModel: meetingEventModel));
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -502,6 +524,12 @@ class ClockingProvider extends ChangeNotifier {
         setLoadingMore(false);
       } catch (err) {
         setLoadingMore(false);
+        if (err is FetchDataException) {
+          showIndefiniteSnackBar(
+              context: currentContext,
+              message: err.toString(),
+              onPressed: _loadMoreAttendees);
+        }
         debugPrint("error --> $err");
       }
     }

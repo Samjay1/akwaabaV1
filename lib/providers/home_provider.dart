@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/event_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_strings.dart';
@@ -96,7 +97,6 @@ class HomeProvider extends ChangeNotifier {
     try {
       _page = 1;
       var userType = await SharedPrefs().getUserType();
-
       var branch = await getUserBranch(currentContext);
       var response = await EventAPI.getTodayMeetingEventList(
         branchId: branch.id!,
@@ -121,6 +121,13 @@ class HomeProvider extends ChangeNotifier {
       }
     } catch (err) {
       debugPrint('Error TM ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => getTodayMeetingEvents(),
+        );
+      }
       //showErrorToast(err.toString());
     }
 
@@ -150,10 +157,13 @@ class HomeProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("Error --> $err");
-        showIndefiniteSnackBar(
+        if (err is FetchDataException) {
+          showIndefiniteSnackBar(
             context: currentContext,
             message: err.toString(),
-            onPressed: () => _loadMoreTodayMeetingEvents());
+            onPressed: _loadMoreTodayMeetingEvents,
+          );
+        }
       }
     }
     notifyListeners();
@@ -313,9 +323,10 @@ class HomeProvider extends ChangeNotifier {
                   time: null,
                 );
               }
-            } else if (DateTime.now().isAfter(DateTime.parse(
-                    response.results![0].meetingEventId!.endBreakTime!)) &&
-                response.results![0].startBreak == null) {
+            } else if (meetingEventModel.breakInfo!.isNotEmpty &&
+                (DateTime.now().isAfter(DateTime.parse(
+                        meetingEventModel.breakInfo![0].endBreak!)) &&
+                    response.results![0].startBreak == null)) {
               // user wants to start break after end break time
               // so show message
               if (context.mounted) {
@@ -329,9 +340,10 @@ class HomeProvider extends ChangeNotifier {
                   onTap: () => Navigator.pop(context),
                 );
               }
-            } else if (DateTime.now().isBefore(DateTime.parse(
-                    response.results![0].meetingEventId!.startBreakTime!)) &&
-                response.results![0].startBreak == null) {
+            } else if (meetingEventModel.breakInfo!.isNotEmpty &&
+                (DateTime.now().isBefore(DateTime.parse(
+                        meetingEventModel.breakInfo![0].startBreak!)) &&
+                    response.results![0].startBreak == null)) {
               // user wants to start break before break starts
               // so show message
               if (context.mounted) {
@@ -445,6 +457,17 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       if (context.mounted) Navigator.pop(context);
       debugPrint('Error ATL: ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => getAttendanceList(
+              context: context,
+              isBreak: isBreak,
+              meetingEventModel: meetingEventModel,
+              time: time),
+        );
+      }
       //showErrorToast(err.toString());
     }
   }
@@ -484,6 +507,17 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       if (context.mounted) Navigator.pop(context);
       debugPrint('Clock in error: ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => clockMemberIn(
+              context: context,
+              meetingEventModel: meetingEventModel,
+              clockingId: clockingId,
+              time: time),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -523,6 +557,17 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       if (context.mounted) Navigator.pop(context);
       debugPrint('Clock out error: ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => clockMemberOut(
+              context: context,
+              meetingEventModel: meetingEventModel,
+              clockingId: clockingId,
+              time: time),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -566,6 +611,17 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       if (context.mounted) Navigator.pop(context);
       debugPrint('Start break error: ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => startMeetingBreak(
+              context: context,
+              meetingEventModel: meetingEventModel,
+              clockingId: clockingId,
+              time: time),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -607,6 +663,18 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       if (context.mounted) Navigator.pop(context);
       debugPrint('End break error: ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => endMeetingBreak(
+            context: context,
+            meetingEventModel: meetingEventModel,
+            clockingId: clockingId,
+            time: time,
+          ),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -637,6 +705,16 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error CCM: ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => checkClockedMeetings(
+            meetingEventModel: meetingEventModel,
+            branchId: branchId,
+          ),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -684,7 +762,19 @@ class HomeProvider extends ChangeNotifier {
     } catch (err) {
       setSubmitting(false);
       debugPrint('Error: ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => submitExcuse(
+            context: context,
+            meetingId: meetingId,
+            clockingId: clockingId,
+            excuse: excuse,
+          ),
+        );
+      }
+      // showErrorToast(err.toString());
     }
     notifyListeners();
   }

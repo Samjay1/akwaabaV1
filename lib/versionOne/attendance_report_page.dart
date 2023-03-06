@@ -173,268 +173,271 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
       appBar: AppBar(
         title: const Text("Attendance Report"),
       ),
-      body: RefreshIndicator(
-        onRefresh: () => attendanceProvider.refreshList(),
-        child: Padding(
-          padding: const EdgeInsets.all(AppPadding.p16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              isShowTopView
-                  ? SizedBox(
-                      height: isTileExpanded
-                          ? displayHeight(context) * 0.40
-                          : displayHeight(context) * 0.07,
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Column(
-                          children: [
-                            filterButton(),
-                          ],
-                        ),
-                      ),
-                    )
-                  : const SizedBox(),
-
-              const SizedBox(
-                height: 12,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      const Text('Total Users'),
-                      Text(
-                        _selectedIndex == 0
-                            ? attendanceProvider.totalAttendees.toString()
-                            : attendanceProvider.totalAbsentees.toString(),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text('Total Males'),
-                      Text(
-                        _selectedIndex == 0
-                            ? attendanceProvider.totalMaleAttendees.length
-                                .toString()
-                            : attendanceProvider.totalMaleAbsentees.length
-                                .toString(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text('Total Females'),
-                      Text(
-                        _selectedIndex == 0
-                            ? attendanceProvider.totalFemaleAttendees.length
-                                .toString()
-                            : attendanceProvider.totalFemaleAbsentees.length
-                                .toString(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-
-              const SizedBox(
-                height: 12,
-              ),
-
-              CustomTabWidget(
-                selectedIndex: _selectedIndex,
-                tabTitles: const [
-                  'Attendees',
-                  'Absentees',
-                ],
-                onTaps: [
-                  () {
-                    setState(() {
-                      _selectedIndex = 0;
-                      checkAll = false;
-                      attendanceProvider.selectedClockingIds.clear();
-                      debugPrint('Selected Index: $_selectedIndex');
-                    });
-                  },
-                  () {
-                    setState(() {
-                      _selectedIndex = 1;
-                      checkAll = false;
-                      attendanceProvider.selectedClockingIds.clear();
-                      debugPrint('Selected Index: $_selectedIndex');
-                    });
-                  },
-                ],
-              ),
-
-              const SizedBox(
-                height: 12,
-              ),
-
-              (userType == AppConstants.admin && _selectedIndex == 0)
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Checkbox(
-                              activeColor: primaryColor,
-                              shape: const CircleBorder(),
-                              value: checkAll,
-                              onChanged: (val) {
-                                setState(() {
-                                  checkAll = val!;
-                                });
-
-                                if (_selectedIndex == 0) {
-                                  for (Attendee? attendee in attendees) {
-                                    attendee!.selected = checkAll;
-                                    if (attendee.selected!) {
-                                      attendanceProvider.selectedAttendees
-                                          .add(attendee);
-                                      attendanceProvider.selectedClockingIds
-                                          .add(attendee.attendance!.id!);
-                                    }
-                                    if (!attendee.selected!) {
-                                      attendanceProvider.selectedAttendees
-                                          .remove(attendee);
-                                      attendanceProvider.selectedClockingIds
-                                          .remove(attendee.attendance!.id!);
-                                    }
-                                  }
-                                  debugPrint(
-                                    "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
-                                  );
-                                }
-                              },
-                            ),
-                            const Text("Select All")
-                          ],
-                        ),
-                        const SizedBox(
-                          width: 25,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            if (attendanceProvider
-                                .selectedClockingIds.isEmpty) {
-                              showInfoDialog(
-                                'ok',
-                                context: context,
-                                title: 'Sorry!',
-                                content:
-                                    'Please select attendees to perform validation',
-                                onTap: () => Navigator.pop(context),
-                              );
-                            } else {
-                              // perform bulk clock out
-                              showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                  insetPadding: const EdgeInsets.all(10),
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 0,
-                                  content: ConfirmDialog(
-                                    title: 'Validate',
-                                    content:
-                                        'Are you sure you want to perform \nthis bulk operation?',
-                                    onConfirmTap: () async {
-                                      Navigator.pop(context);
-                                      await attendanceProvider
-                                          .validateMemberAttendances();
-                                      resetSelectAllState();
-                                    },
-                                    onCancelTap: () => Navigator.pop(context),
-                                    confirmText: 'Yes',
-                                    cancelText: 'Cancel',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius: BorderRadius.circular(10)),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 10),
-                            child: const Text("Validate"),
-                          ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox(),
-
-              if (attendees.isNotEmpty || absentees.isNotEmpty)
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: blackColor,
-                      elevation: 0.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppRadius.borderRadius8),
+      body: Padding(
+        padding: const EdgeInsets.all(AppPadding.p16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            isShowTopView
+                ? SizedBox(
+                    height: isTileExpanded
+                        ? displayHeight(context) * 0.40
+                        : displayHeight(context) * 0.07,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          filterButton(),
+                        ],
                       ),
                     ),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16.0),
-                            topRight: Radius.circular(16.0),
-                          ),
-                        ),
-                        builder: (context) => AgendaDialog(
-                          meetingEventModel:
-                              attendanceProvider.selectedPastMeetingEvent,
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Agenda for ${attendanceProvider.selectedPastMeetingEvent!.name!}",
-                      style: const TextStyle(color: Colors.white),
-                    )),
+                  )
+                : const SizedBox(),
 
-              attendanceProvider.loading
-                  ? Expanded(
-                      child: Shimmer.fromColors(
-                        baseColor: greyColorShade300,
-                        highlightColor: greyColorShade100,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemBuilder: (_, __) => const EventShimmerItem(),
-                          itemCount: 10,
-                        ),
+            const SizedBox(
+              height: 12,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    const Text('Total Users'),
+                    Text(
+                      _selectedIndex == 0
+                          ? attendanceProvider.totalAttendees.toString()
+                          : attendanceProvider.totalAbsentees.toString(),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18),
+                    )
+                  ],
+                ),
+                Column(
+                  children: [
+                    const Text('Total Males'),
+                    Text(
+                      _selectedIndex == 0
+                          ? attendanceProvider.totalMaleAttendees.length
+                              .toString()
+                          : attendanceProvider.totalMaleAbsentees.length
+                              .toString(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
                     )
-                  : _selectedIndex == 0
-                      ? Expanded(
-                          child: attendees.isEmpty
-                              ? const EmptyStateWidget(
-                                  text: 'No attendees found!',
-                                )
-                              : Column(
-                                  children: [
-                                    Expanded(
+                  ],
+                ),
+                Column(
+                  children: [
+                    const Text('Total Females'),
+                    Text(
+                      _selectedIndex == 0
+                          ? attendanceProvider.totalFemaleAttendees.length
+                              .toString()
+                          : attendanceProvider.totalFemaleAbsentees.length
+                              .toString(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+
+            const SizedBox(
+              height: 12,
+            ),
+
+            CustomTabWidget(
+              selectedIndex: _selectedIndex,
+              tabTitles: const [
+                'Attendees',
+                'Absentees',
+              ],
+              onTaps: [
+                () {
+                  setState(() {
+                    _selectedIndex = 0;
+                    checkAll = false;
+                    attendanceProvider.selectedClockingIds.clear();
+                    debugPrint('Selected Index: $_selectedIndex');
+                  });
+                },
+                () {
+                  setState(() {
+                    _selectedIndex = 1;
+                    checkAll = false;
+                    attendanceProvider.selectedClockingIds.clear();
+                    debugPrint('Selected Index: $_selectedIndex');
+                  });
+                },
+              ],
+            ),
+
+            const SizedBox(
+              height: 12,
+            ),
+
+            (userType == AppConstants.admin && _selectedIndex == 0)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Checkbox(
+                            activeColor: primaryColor,
+                            shape: const CircleBorder(),
+                            value: checkAll,
+                            onChanged: (val) {
+                              setState(() {
+                                checkAll = val!;
+                              });
+
+                              if (_selectedIndex == 0) {
+                                for (Attendee? attendee in attendees) {
+                                  attendee!.selected = checkAll;
+                                  if (attendee.selected!) {
+                                    attendanceProvider.selectedAttendees
+                                        .add(attendee);
+                                    attendanceProvider.selectedClockingIds
+                                        .add(attendee.attendance!.id!);
+                                  }
+                                  if (!attendee.selected!) {
+                                    attendanceProvider.selectedAttendees
+                                        .remove(attendee);
+                                    attendanceProvider.selectedClockingIds
+                                        .remove(attendee.attendance!.id!);
+                                  }
+                                }
+                                debugPrint(
+                                  "Selected clockingIDs: ${attendanceProvider.selectedClockingIds.toString()}",
+                                );
+                              }
+                            },
+                          ),
+                          const Text("Select All")
+                        ],
+                      ),
+                      const SizedBox(
+                        width: 25,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          if (attendanceProvider.selectedClockingIds.isEmpty) {
+                            showInfoDialog(
+                              'ok',
+                              context: context,
+                              title: 'Sorry!',
+                              content:
+                                  'Please select attendees to perform validation',
+                              onTap: () => Navigator.pop(context),
+                            );
+                          } else {
+                            // perform bulk clock out
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                insetPadding: const EdgeInsets.all(10),
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                content: ConfirmDialog(
+                                  title: 'Validate',
+                                  content:
+                                      'Are you sure you want to perform \nthis bulk operation?',
+                                  onConfirmTap: () async {
+                                    Navigator.pop(context);
+                                    await attendanceProvider
+                                        .validateMemberAttendances();
+                                    resetSelectAllState();
+                                  },
+                                  onCancelTap: () => Navigator.pop(context),
+                                  confirmText: 'Yes',
+                                  cancelText: 'Cancel',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.orange,
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 10),
+                          child: const Text("Validate"),
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox(),
+
+            if (attendees.isNotEmpty || absentees.isNotEmpty)
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: blackColor,
+                    elevation: 0.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(AppRadius.borderRadius8),
+                    ),
+                  ),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16.0),
+                          topRight: Radius.circular(16.0),
+                        ),
+                      ),
+                      builder: (context) => AgendaDialog(
+                        meetingEventModel:
+                            attendanceProvider.selectedPastMeetingEvent,
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Agenda for ${attendanceProvider.selectedPastMeetingEvent!.name!}",
+                    style: const TextStyle(color: Colors.white),
+                  )),
+
+            attendanceProvider.loading
+                ? Expanded(
+                    child: Shimmer.fromColors(
+                      baseColor: greyColorShade300,
+                      highlightColor: greyColorShade100,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: (_, __) => const EventShimmerItem(),
+                        itemCount: 10,
+                      ),
+                    ),
+                  )
+                : _selectedIndex == 0
+                    ? Expanded(
+                        child: attendees.isEmpty
+                            ? const EmptyStateWidget(
+                                text: 'No attendees found!',
+                              )
+                            : Column(
+                                children: [
+                                  Expanded(
+                                    child: RefreshIndicator(
+                                      onRefresh: () =>
+                                          attendanceProvider.refreshList(),
                                       child: NotificationListener<
                                           ScrollNotification>(
                                         onNotification:
                                             _handleScrollNotification,
                                         child: ListView.builder(
                                             physics:
-                                                const BouncingScrollPhysics(),
+                                                const BouncingScrollPhysics(
+                                              parent:
+                                                  AlwaysScrollableScrollPhysics(),
+                                            ),
                                             controller: attendanceProvider
                                                 .attendeesScrollController,
                                             itemCount: attendees.length,
@@ -509,28 +512,35 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                             }),
                                       ),
                                     ),
-                                    if (attendanceProvider.loadingMore)
-                                      const PaginationLoader(
-                                        loadingText: 'Loading. please wait...',
-                                      )
-                                  ],
-                                ),
-                        )
-                      : Expanded(
-                          child: absentees.isEmpty
-                              ? const EmptyStateWidget(
-                                  text: 'No absentees found!',
-                                )
-                              : Column(
-                                  children: [
-                                    Expanded(
+                                  ),
+                                  if (attendanceProvider.loadingMore)
+                                    const PaginationLoader(
+                                      loadingText: 'Loading. please wait...',
+                                    )
+                                ],
+                              ),
+                      )
+                    : Expanded(
+                        child: absentees.isEmpty
+                            ? const EmptyStateWidget(
+                                text: 'No absentees found!',
+                              )
+                            : Column(
+                                children: [
+                                  Expanded(
+                                    child: RefreshIndicator(
+                                      onRefresh: () =>
+                                          attendanceProvider.refreshList(),
                                       child: NotificationListener<
                                           ScrollNotification>(
                                         onNotification:
                                             _handleScrollNotification,
                                         child: ListView.builder(
                                             physics:
-                                                const BouncingScrollPhysics(),
+                                                const BouncingScrollPhysics(
+                                              parent:
+                                                  AlwaysScrollableScrollPhysics(),
+                                            ),
                                             controller: attendanceProvider
                                                 .absenteesScrollController,
                                             itemCount: absentees.length,
@@ -600,47 +610,47 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                             }),
                                       ),
                                     ),
-                                    if (attendanceProvider.loadingMore)
-                                      const PaginationLoader(
-                                        loadingText: 'Loading. please wait...',
-                                      )
-                                  ],
-                                ),
-                        ),
+                                  ),
+                                  if (attendanceProvider.loadingMore)
+                                    const PaginationLoader(
+                                      loadingText: 'Loading. please wait...',
+                                    )
+                                ],
+                              ),
+                      ),
 
-              // Column(
-              //   children: List.generate(members.length, (index) {
-              //     return GestureDetector(
-              //         onTap: () {
-              //           setState(() {
-              //             if (members[index]["status"]) {
-              //               //remove it
-              //               members[index]["status"] = false;
-              //               selectedMembersList.remove(members[index]);
-              //             } else {
-              //               members[index]["status"] = true;
-              //               selectedMembersList.add(members[index]);
-              //             }
-              //             if (selectedMembersList.isNotEmpty) {
-              //               itemHasBeenSelected = true;
-              //             } else {
-              //               itemHasBeenSelected = false;
-              //             }
-              //           });
-              //         },
-              //         child: AttendanceReportItem(members[index], true));
-              //   }),
-              // ),
-              // Container(
-              //   child:  Column(
-              //       children: List.generate(1, (index) {
-              //         return  AttendanceReportItemWidget(
-              //             isLate: index % 3==0);
-              //       })
-              //   ),
-              // )
-            ],
-          ),
+            // Column(
+            //   children: List.generate(members.length, (index) {
+            //     return GestureDetector(
+            //         onTap: () {
+            //           setState(() {
+            //             if (members[index]["status"]) {
+            //               //remove it
+            //               members[index]["status"] = false;
+            //               selectedMembersList.remove(members[index]);
+            //             } else {
+            //               members[index]["status"] = true;
+            //               selectedMembersList.add(members[index]);
+            //             }
+            //             if (selectedMembersList.isNotEmpty) {
+            //               itemHasBeenSelected = true;
+            //             } else {
+            //               itemHasBeenSelected = false;
+            //             }
+            //           });
+            //         },
+            //         child: AttendanceReportItem(members[index], true));
+            //   }),
+            // ),
+            // Container(
+            //   child:  Column(
+            //       children: List.generate(1, (index) {
+            //         return  AttendanceReportItemWidget(
+            //             isLate: index % 3==0);
+            //       })
+            //   ),
+            // )
+          ],
         ),
       ),
     );

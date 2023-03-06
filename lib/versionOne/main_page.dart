@@ -705,7 +705,7 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-// display dialog explaining why background location is important for clocking
+  // display dialog explaining why background location is important for clocking
   void showBackgroundLocationDialog() {
     showDialog(
         barrierDismissible: false,

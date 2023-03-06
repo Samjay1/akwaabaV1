@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/event_api.dart';
@@ -332,7 +333,15 @@ class PostClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error CK: ${err.toString()}');
-      // showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () =>
+              getAllAbsentees(meetingEventModel: meetingEventModel),
+        );
+      }
     }
     notifyListeners();
   }
@@ -394,6 +403,14 @@ class PostClockingProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("error --> $err");
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreAbsentees,
+          );
+        }
       }
     }
     notifyListeners();
@@ -457,6 +474,15 @@ class PostClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error CK: ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () =>
+              getAllAttendees(meetingEventModel: meetingEventModel),
+        );
+      }
       // showErrorToast(err.toString());
     }
     notifyListeners();
@@ -518,6 +544,14 @@ class PostClockingProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("error --> $err");
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreAttendees,
+          );
+        }
       }
     }
     notifyListeners();
@@ -568,6 +602,15 @@ class PostClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error Clocking In: ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () =>
+              clockMemberIn(context: context, attendee: attendee, time: time),
+        );
+      }
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -613,7 +656,18 @@ class PostClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => clockMemberOut(
+            context: context,
+            attendee: attendee,
+            time: time,
+          ),
+        );
+      }
     }
     notifyListeners();
   }
@@ -660,7 +714,18 @@ class PostClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => startMeetingBreak(
+            context: context,
+            attendee: attendee,
+            time: time,
+          ),
+        );
+      }
     }
     notifyListeners();
   }
@@ -706,7 +771,18 @@ class PostClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => endMeetingBreak(
+            context: context,
+            attendee: attendee,
+            time: time,
+          ),
+        );
+      }
     }
     notifyListeners();
   }
@@ -752,7 +828,18 @@ class PostClockingProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => cancelClocking(
+            context: context,
+            attendee: attendee,
+            time: time,
+          ),
+        );
+      }
     }
     notifyListeners();
   }

@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/attendance_history_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/event_api.dart';
@@ -350,6 +351,14 @@ class AttendanceHistoryProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error AH: ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => getAttendanceHistory(),
+        );
+      }
       //showErrorToast('No records found');
     }
     notifyListeners();
@@ -412,6 +421,14 @@ class AttendanceHistoryProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint('Error AH: ${err.toString()}');
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreAttendanceHistory,
+          );
+        }
         //showErrorToast(err.toString());
       }
     }

@@ -36,6 +36,7 @@ class MeetingEventModel {
   List<UpcomingDays>? upcomingDays;
   List<UpcomingDates>? upcomingDates;
   List<LocationInfo>? locationInfo;
+  List<BreakInfo>? breakInfo;
 
   MeetingEventModel({
     this.id,
@@ -69,6 +70,7 @@ class MeetingEventModel {
     this.upcomingDays,
     this.upcomingDates,
     this.locationInfo,
+    this.breakInfo,
   });
 
   MeetingEventModel.fromJson(Map<String, dynamic> json) {
@@ -124,6 +126,12 @@ class MeetingEventModel {
         locationInfo!.add(LocationInfo.fromJson(v));
       });
     }
+    if (json['breakInfo'] != null) {
+      breakInfo = <BreakInfo>[];
+      json['breakInfo'].forEach((v) {
+        breakInfo!.add(BreakInfo.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -163,6 +171,9 @@ class MeetingEventModel {
     }
     if (locationInfo != null) {
       data['locationInfo'] = locationInfo!.map((v) => v.toJson()).toList();
+    }
+    if (breakInfo != null) {
+      data['breakInfo'] = breakInfo!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -294,6 +305,47 @@ class LocationInfo {
     data['updatedBy'] = updatedBy;
     data['updateDate'] = updateDate;
     data['date'] = date;
+    return data;
+  }
+}
+
+class BreakInfo {
+  int? id;
+  int? meetingEventId;
+  String? startBreak;
+  String? endBreak;
+  int? updatedBy;
+  String? updateDate;
+  String? date;
+
+  BreakInfo(
+      {this.id,
+      this.meetingEventId,
+      this.startBreak,
+      this.endBreak,
+      this.updatedBy,
+      this.updateDate,
+      this.date});
+
+  BreakInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    meetingEventId = json['meetingEventId'];
+    startBreak = json['startBreak'];
+    endBreak = json['endBreak'];
+    updatedBy = json['updatedBy'];
+    updateDate = json['updateDate'];
+    date = json['date'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['meetingEventId'] = this.meetingEventId;
+    data['startBreak'] = this.startBreak;
+    data['endBreak'] = this.endBreak;
+    data['updatedBy'] = this.updatedBy;
+    data['updateDate'] = this.updateDate;
+    data['date'] = this.date;
     return data;
   }
 }

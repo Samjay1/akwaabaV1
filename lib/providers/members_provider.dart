@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/group_api.dart';
@@ -587,6 +588,14 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => getAllIndividualMembers(),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -649,6 +658,14 @@ class MembersProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("error --> $err");
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreIndividualMembers,
+          );
+        }
       }
     }
     notifyListeners();
@@ -740,6 +757,14 @@ class MembersProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => getAllOrganizations(),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -825,6 +850,14 @@ class MembersProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("error --> $err");
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreOrganizationalMembers,
+          );
+        }
       }
     }
     notifyListeners();

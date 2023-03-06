@@ -373,7 +373,7 @@ class _AttendanceReportDetailsPageState
                 height: 8,
               ),
               LabelWidgetContainer(
-                label: "Clocked out by",
+                label: "Clocked Out By",
                 child: Text(
                   (widget.attendee!.attendance!.outTime == null)
                       ? 'N/A'
@@ -381,6 +381,23 @@ class _AttendanceReportDetailsPageState
                               widget.attendee!.attendance!.clockedBy == 0)
                           ? "Self"
                           : "Admin (${widget.attendee!.attendance!.clockedByInfo!.firstname} ${widget.attendee!.attendance!.clockedByInfo!.surname})",
+                ),
+              ),
+
+              const Divider(
+                color: textColorPrimary,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              LabelWidgetContainer(
+                label: "Validated By",
+                child: Text(
+                  (widget.attendee!.attendance!.validatedBy == null)
+                      ? 'N/A'
+                      : widget.attendee!.attendance!.clockedBy == 0
+                          ? "N/A"
+                          : "Admin ${widget.attendee!.attendance!.validatedByInfo != null ? '(${widget.attendee!.attendance!.validatedByInfo!.firstname} ${widget.attendee!.attendance!.validatedByInfo!.surname})' : ''}",
                 ),
               ),
 

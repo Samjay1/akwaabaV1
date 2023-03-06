@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/Networks/notification_api.dart';
 import 'package:akwaaba/fcm/messaging_service.dart';
@@ -39,7 +40,7 @@ class ClientProvider extends ChangeNotifier {
     required String phoneEmail,
     required String password,
   }) {
-    FocusManager.instance.primaryFocus?.unfocus(); //hide keyboard
+    FocusManager.instance.primaryFocus?.unfocus(); // hide keyboard
     if (phoneEmail.isEmpty) {
       showErrorSnackBar(context, "Please input your email address or phone");
       return;
@@ -104,7 +105,19 @@ class ClientProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error login: ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: context,
+          message: err.toString(),
+          onPressed: () => login(
+            context: context,
+            isAdmin: isAdmin,
+            phoneEmail: phoneEmail,
+            password: password,
+          ),
+        );
+      }
     }
     notifyListeners();
   }
@@ -131,7 +144,18 @@ class ClientProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Group: ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: context,
+          message: err.toString(),
+          onPressed: () => getAdminBranch(
+            context: context,
+            phoneEmail: phoneEmail,
+            password: password,
+          ),
+        );
+      }
     }
     notifyListeners();
   }

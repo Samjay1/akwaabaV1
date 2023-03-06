@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/event_api.dart';
 import 'package:akwaaba/Networks/group_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
@@ -113,7 +114,14 @@ class AllEventsProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error UM ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => getUpcomingMeetingEvents(),
+        );
+      }
     }
     notifyListeners();
   }
@@ -160,6 +168,14 @@ class AllEventsProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("Error --> $err");
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreEventMeetings,
+          );
+        }
         // showIndefiniteSnackBar(
         //     context: currentContext,
         //     message: err.toString(),
@@ -202,7 +218,14 @@ class AllEventsProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error PMs: ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => getPastMeetingEvents(),
+        );
+      }
     }
     notifyListeners();
   }

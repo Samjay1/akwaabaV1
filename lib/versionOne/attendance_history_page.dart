@@ -116,60 +116,57 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
       appBar: AppBar(
         title: const Text("Attendance History"),
       ),
-      body: RefreshIndicator(
-        onRefresh: () => attendanceHistoryProvider.refreshList(),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              isShowTopView
-                  ? SizedBox(
-                      height: isTileExpanded
-                          ? displayHeight(context) * 0.50
-                          : displayHeight(context) * 0.07,
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Column(
-                          children: [
-                            filterButton(),
-                          ],
-                        ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            isShowTopView
+                ? SizedBox(
+                    height: isTileExpanded
+                        ? displayHeight(context) * 0.50
+                        : displayHeight(context) * 0.07,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          filterButton(),
+                        ],
                       ),
-                    )
-                  : const SizedBox(),
-              //filterButton(),
-              userType == AppConstants.member
-                  ? const SizedBox()
-                  : SizedBox(
-                      height: displayHeight(context) * 0.02,
                     ),
-              userType == AppConstants.member
-                  ? const SizedBox()
-                  : CupertinoSearchTextField(
-                      padding: const EdgeInsets.all(AppPadding.p14),
-                      controller: attendanceHistoryProvider.searchNameTEC,
-                      onChanged: (val) {
-                        setState(() {
-                          attendanceHistoryProvider.search = val;
-                        });
-                        _debouncer.run(() {
-                          attendanceHistoryProvider.getAttendanceHistory();
-                        });
-                      },
-                      onSubmitted: (val) {
-                        setState(() {
-                          attendanceHistoryProvider.search = val;
-                        });
+                  )
+                : const SizedBox(),
+            //filterButton(),
+            userType == AppConstants.member
+                ? const SizedBox()
+                : SizedBox(
+                    height: displayHeight(context) * 0.02,
+                  ),
+            userType == AppConstants.member
+                ? const SizedBox()
+                : CupertinoSearchTextField(
+                    padding: const EdgeInsets.all(AppPadding.p14),
+                    controller: attendanceHistoryProvider.searchNameTEC,
+                    onChanged: (val) {
+                      setState(() {
+                        attendanceHistoryProvider.search = val;
+                      });
+                      _debouncer.run(() {
                         attendanceHistoryProvider.getAttendanceHistory();
-                      },
-                    ),
-              SizedBox(
-                height: displayHeight(context) * 0.01,
-              ),
-              _historyList(),
-            ],
-          ),
+                      });
+                    },
+                    onSubmitted: (val) {
+                      setState(() {
+                        attendanceHistoryProvider.search = val;
+                      });
+                      attendanceHistoryProvider.getAttendanceHistory();
+                    },
+                  ),
+            SizedBox(
+              height: displayHeight(context) * 0.01,
+            ),
+            _historyList(),
+          ],
         ),
       ),
     );
@@ -720,22 +717,30 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                 NotificationListener<ScrollNotification>(
                   onNotification: _handleScrollNotification,
                   child: Expanded(
-                    child: ListView(
-                      physics: const BouncingScrollPhysics(),
-                      controller:
-                          attendanceHistoryProvider.historyScrollController,
-                      children: attendanceHistoryProvider
-                              .attendanceRecords.isEmpty
-                          ? [const EmptyStateWidget(text: 'No records found!')]
-                          : List.generate(
-                              attendanceHistoryProvider
-                                  .attendanceRecords.length, (index) {
-                              return AttendanceHistoryItemWidget(
-                                attendanceHistory: attendanceHistoryProvider
-                                    .attendanceRecords[index],
-                                userType: userType,
-                              );
-                            }),
+                    child: RefreshIndicator(
+                      onRefresh: () => attendanceHistoryProvider.refreshList(),
+                      child: ListView(
+                        physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
+                        ),
+                        controller:
+                            attendanceHistoryProvider.historyScrollController,
+                        children: attendanceHistoryProvider
+                                .attendanceRecords.isEmpty
+                            ? [
+                                const EmptyStateWidget(
+                                    text: 'No records found!')
+                              ]
+                            : List.generate(
+                                attendanceHistoryProvider
+                                    .attendanceRecords.length, (index) {
+                                return AttendanceHistoryItemWidget(
+                                  attendanceHistory: attendanceHistoryProvider
+                                      .attendanceRecords[index],
+                                  userType: userType,
+                                );
+                              }),
+                      ),
                     ),
                   ),
                 ),

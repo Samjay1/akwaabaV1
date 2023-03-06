@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/clocking_api.dart';
@@ -175,7 +176,15 @@ class SelfClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Absentees: ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () =>
+              getAllAbsentees(meetingEventModel: meetingEventModel),
+        );
+      }
     }
     notifyListeners();
   }
@@ -227,6 +236,14 @@ class SelfClockingProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("error --> $err");
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreAbsentees,
+          );
+        }
       }
     }
     notifyListeners();
@@ -280,7 +297,15 @@ class SelfClockingProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error Attendees: ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () =>
+              getAllAttendees(meetingEventModel: meetingEventModel),
+        );
+      }
     }
     notifyListeners();
   }
@@ -312,8 +337,8 @@ class SelfClockingProvider extends ChangeNotifier {
           toAge: maxAgeTEC.text.isEmpty ? '' : maxAgeTEC.text,
         );
         if (response.results!.isNotEmpty) {
-          var newAtendeesList = response.results!;
-          newAtendeesList.removeWhere((attendee) =>
+          var newAttendeesList = response.results!;
+          newAttendeesList.removeWhere((attendee) =>
               attendee.attendance!.memberId!.email ==
                   Provider.of<ClientProvider>(_context!, listen: false)
                       .adminProfile!
@@ -326,7 +351,7 @@ class SelfClockingProvider extends ChangeNotifier {
                       Provider.of<ClientProvider>(_context!, listen: false)
                           .adminProfile!
                           .surname));
-          _attendees.addAll(newAtendeesList);
+          _attendees.addAll(newAttendeesList);
         } else {
           hasNextPage = false;
         }
@@ -334,6 +359,14 @@ class SelfClockingProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("error --> $err");
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreAttendees,
+          );
+        }
       }
     }
     notifyListeners();

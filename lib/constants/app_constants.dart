@@ -10,7 +10,7 @@ class AppConstants {
   static const int female = 2;
   static const int meetingTypeMeeting = 1;
   static const int meetingTypeEvent = 2;
-  static const int timOutDuration = 3;
+  static const int timOutDuration = 10;
   static const int searchTimerDuration = 600;
   static String? token;
 

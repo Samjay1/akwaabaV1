@@ -112,7 +112,9 @@ class _ViewLeavePageState extends State<ViewLeavePage> {
                                 : ListView.builder(
                                     itemCount:
                                         _leaveProvider.absentLeaveList.length,
-                                    physics: const BouncingScrollPhysics(),
+                                    physics: const BouncingScrollPhysics(
+                                      parent: AlwaysScrollableScrollPhysics(),
+                                    ),
                                     controller: _leaveProvider.scrollController,
                                     itemBuilder: (context, index) {
                                       return AbsentLeaveWidget(

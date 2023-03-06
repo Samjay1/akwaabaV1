@@ -763,7 +763,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                       child: Expanded(
                                         child: ListView.builder(
                                             physics:
-                                                const BouncingScrollPhysics(),
+                                                const BouncingScrollPhysics(
+                                              parent:
+                                                  AlwaysScrollableScrollPhysics(),
+                                            ),
                                             controller: postClockingProvider
                                                 .absenteesScrollController,
                                             itemCount: absentees.length,
@@ -830,7 +833,10 @@ class _PostClockingPageState extends State<PostClockingPage> {
                                             _handleScrollNotification,
                                         child: ListView.builder(
                                             physics:
-                                                const BouncingScrollPhysics(),
+                                                const BouncingScrollPhysics(
+                                              parent:
+                                                  AlwaysScrollableScrollPhysics(),
+                                            ),
                                             controller: postClockingProvider
                                                 .attendeesScrollController,
                                             itemCount: attendees.length,

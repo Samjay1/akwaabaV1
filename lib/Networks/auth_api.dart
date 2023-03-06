@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/models/general/account_type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,9 +91,8 @@ class AuthAPI {
         headers: {'Content-Type': 'application/json'},
       ).timeout(
         const Duration(seconds: AppConstants.timOutDuration),
-        onTimeout: () => throw FetchDataException(
-          'Your internet connection is poor, please try again later!',
-        ), // Time has run out, do what you wanted to do.
+        onTimeout: () => throw FetchDataException(AppString
+            .internetPoorMsg), // Time has run out, do what you wanted to do.
       );
       debugPrint("Reset Password Type Res: ${await returnResponse(response)}");
       _passwordResponse = ResetPasswordResponse.fromJson(
@@ -128,7 +128,7 @@ class AuthAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Reset Password Type Res: ${await returnResponse(response)}");

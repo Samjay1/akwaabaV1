@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/leave_api.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/models/general/absent_leave.dart';
@@ -164,6 +165,13 @@ class LeaveProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error ABL: ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: () => getAllAbsentLeave());
+      }
       //showErrorToast('No records found');
     }
     notifyListeners();
@@ -198,6 +206,13 @@ class LeaveProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint('Error ABL: ${err.toString()}');
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+              context: currentContext,
+              message: err.toString(),
+              onPressed: _loadMoreAbsentLeave);
+        }
         //showErrorToast(err.toString());
       }
     }

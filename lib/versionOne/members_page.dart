@@ -347,7 +347,10 @@ class _MembersPageState extends State<MembersPage> {
                                     )
                                   : Expanded(
                                       child: ListView.builder(
-                                        physics: const BouncingScrollPhysics(),
+                                        physics: const BouncingScrollPhysics(
+                                          parent:
+                                              AlwaysScrollableScrollPhysics(),
+                                        ),
                                         controller: _membersProvider
                                             .restrictedMembersScrollController,
                                         itemCount: _membersProvider
@@ -403,7 +406,10 @@ class _MembersPageState extends State<MembersPage> {
                                       : Expanded(
                                           child: ListView.builder(
                                             physics:
-                                                const BouncingScrollPhysics(),
+                                                const BouncingScrollPhysics(
+                                              parent:
+                                                  AlwaysScrollableScrollPhysics(),
+                                            ),
                                             controller: _membersProvider
                                                 .indMembersScrollController,
                                             itemCount: _membersProvider
@@ -480,7 +486,10 @@ class _MembersPageState extends State<MembersPage> {
                                       : Expanded(
                                           child: ListView.builder(
                                             physics:
-                                                const BouncingScrollPhysics(),
+                                                const BouncingScrollPhysics(
+                                              parent:
+                                                  AlwaysScrollableScrollPhysics(),
+                                            ),
                                             controller: _membersProvider
                                                 .orgMembersScrollController,
                                             itemCount: _membersProvider

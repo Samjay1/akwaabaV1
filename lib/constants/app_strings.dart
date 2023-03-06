@@ -15,4 +15,7 @@ class AppString {
   static const String heyThereTitle = 'Hey there!';
   static const String deviceNotAllowedMsg =
       'Sorry this mobile device is not assigned to your account for clocking. \nRequest device activation and contact your admin to activate it before you can clock.';
+
+  static const String internetPoorMsg =
+      "Sorry, it either your internet is weak or the server connection is poor. We're sorry for the inconvenience, Please wait for a while and try again.";
 }

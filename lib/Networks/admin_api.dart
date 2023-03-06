@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/models/admin/admin_profile.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
@@ -63,10 +64,17 @@ class UserApi {
           'Content-Type': 'application/json'
         };
 
-        http.Response clientResponse = await http.get(
-          Uri.parse('$baseUrl/clients/account/$accountId'),
-          headers: headers,
-        );
+        http.Response clientResponse = await http
+            .get(
+              Uri.parse('$baseUrl/clients/account/$accountId'),
+              headers: headers,
+            )
+            .timeout(
+              const Duration(seconds: AppConstants.timOutDuration),
+              onTimeout: () => throw FetchDataException(
+                AppString.internetPoorMsg,
+              ), // Time has run out, do what you wanted to do.
+            );
         var clientDecodedResponse = jsonDecode(clientResponse.body);
         if (clientResponse.statusCode == 200) {
           var clientData = clientDecodedResponse['data'];

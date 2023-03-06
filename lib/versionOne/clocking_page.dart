@@ -636,7 +636,10 @@ class _ClockingPageState extends State<ClockingPage> {
                                             _handleScrollNotification,
                                         child: ListView.builder(
                                             physics:
-                                                const BouncingScrollPhysics(),
+                                                const BouncingScrollPhysics(
+                                              parent:
+                                                  AlwaysScrollableScrollPhysics(),
+                                            ),
                                             controller: clockingProvider
                                                 .absenteesScrollController,
                                             itemCount: clockingProvider
@@ -710,7 +713,10 @@ class _ClockingPageState extends State<ClockingPage> {
                                             _handleScrollNotification,
                                         child: ListView.builder(
                                             physics:
-                                                const BouncingScrollPhysics(),
+                                                const BouncingScrollPhysics(
+                                              parent:
+                                                  AlwaysScrollableScrollPhysics(),
+                                            ),
                                             controller: clockingProvider
                                                 .attendeesScrollController,
                                             itemCount: clockingProvider

@@ -5,19 +5,16 @@ import 'package:akwaaba/Networks/api_responses/ind_member_response.dart';
 import 'package:akwaaba/Networks/api_responses/org_member_response.dart';
 import 'package:akwaaba/Networks/api_responses/restricted_member_response.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/models/admin/clocked_member.dart';
-import 'package:akwaaba/models/general/account_type.dart';
 import 'package:akwaaba/models/general/client_stat.dart';
 import 'package:akwaaba/models/general/member_stat.dart';
 import 'package:akwaaba/models/general/member_status.dart';
 import 'package:akwaaba/models/general/organization.dart';
-import 'package:akwaaba/models/general/restricted_member.dart';
 import 'package:akwaaba/models/general/restriction.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
-import 'api_responses/reset_password_response.dart';
 
 class MembersAPI {
   /// MEMBERS
@@ -71,10 +68,17 @@ class MembersAPI {
     debugPrint("occupationalStatus: $occupationalStatus");
 
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              AppString.internetPoorMsg,
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Ind Members Res: ${await returnResponse(response)}");
       //var res = await returnResponse(response);
       memberResponse =
@@ -102,10 +106,17 @@ class MembersAPI {
     var url =
         Uri.parse('${getBaseUrl()}/members/user/$memberId?branchId=$branchId');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              AppString.internetPoorMsg,
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Member Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       member = Member.fromJson(
@@ -127,10 +138,17 @@ class MembersAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/clients/dashboard-statistics?currentBranchId=$currentBranchId');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              AppString.internetPoorMsg,
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Stats Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       stats = ClientStat.fromJson(
@@ -151,10 +169,17 @@ class MembersAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/members/access/restriction?page=$page&clientId=$clientId&branchId=$branchId');
     try {
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              AppString.internetPoorMsg,
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("Restrictions: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -200,7 +225,7 @@ class MembersAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Restrictions: ${await returnResponse(response)}");
@@ -240,7 +265,7 @@ class MembersAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Stats Res: ${await returnResponse(response)}");
@@ -312,7 +337,7 @@ class MembersAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Org Members Res: ${await returnResponse(response)}");

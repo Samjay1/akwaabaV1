@@ -247,6 +247,9 @@ class _HomePageState extends State<HomePage> {
                             return ListView.builder(
                                 controller: data.scrollController,
                                 itemCount: data.todayMeetings.length,
+                                physics: const BouncingScrollPhysics(
+                                  parent: AlwaysScrollableScrollPhysics(),
+                                ),
                                 itemBuilder: (context, index) {
                                   final item = data.todayMeetings[index];
                                   return todaysEvents(
@@ -257,7 +260,8 @@ class _HomePageState extends State<HomePage> {
                           return ListView.builder(
                               controller: data.scrollController,
                               itemCount: data.todayMeetings.length,
-                              physics: const BouncingScrollPhysics(),
+                              physics: const BouncingScrollPhysics(
+                                  parent: AlwaysScrollableScrollPhysics()),
                               itemBuilder: (context, index) {
                                 final item = data.todayMeetings[index];
                                 return InkWell(

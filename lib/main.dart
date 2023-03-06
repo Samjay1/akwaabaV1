@@ -53,7 +53,7 @@ Future<void> main() async {
     systemNavigationBarColor: Colors.white, // set color of navigation bar
     systemNavigationBarIconBrightness:
         Brightness.dark, // set color of icons on the navigation bar
-  )); //
+  ));
   FirebaseMessaging.onBackgroundMessage(_registerBackgroundMessageHandler);
   FirebaseMessaging.onMessageOpenedApp.listen(_registerMessageOpenedHandler);
   runApp(

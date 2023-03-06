@@ -226,7 +226,9 @@ class _AllEventsPageState extends State<AllEventsPage> {
                                           : selectedEventType == 1
                                               ? data.eventsList.length
                                               : data.meetingsList.length,
-                                      physics: const BouncingScrollPhysics(),
+                                      physics: const BouncingScrollPhysics(
+                                        parent: AlwaysScrollableScrollPhysics(),
+                                      ),
                                       //shrinkWrap: true,
                                       itemBuilder: (context, index) {
                                         var item = selectedEventType == 0

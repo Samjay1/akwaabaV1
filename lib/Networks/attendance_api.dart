@@ -6,6 +6,8 @@ import 'package:akwaaba/Networks/api_responses/clocking_response.dart';
 import 'package:akwaaba/Networks/api_responses/coordinates_response.dart';
 import 'package:akwaaba/Networks/api_responses/meeting_attendance_response.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_dimens.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/models/attendance/attendance.dart';
 import 'package:akwaaba/models/attendance/excuse_model.dart';
 import 'package:akwaaba/models/general/meetingEventModel.dart';
@@ -36,7 +38,7 @@ class AttendanceAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Attendance Response: ${jsonDecode(response.body)}");
@@ -113,7 +115,7 @@ class AttendanceAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint(
@@ -147,7 +149,7 @@ class AttendanceAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Validate Attendance Response: ${jsonDecode(response.body)}");
@@ -180,7 +182,7 @@ class AttendanceAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Validate Attendances Response: ${jsonDecode(response.body)}");
@@ -207,7 +209,7 @@ class AttendanceAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("MessagingType Response: ${await returnResponse(response)}");
@@ -250,7 +252,7 @@ class AttendanceAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Submit Excuse Response: ${jsonDecode(response.body)}");

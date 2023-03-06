@@ -21,6 +21,7 @@ class Attendance {
   String? endBreak;
   int? clockedBy;
   ClockedByInfo? clockedByInfo;
+  ClockedByInfo? validatedByInfo;
   int? clockingMethod;
   dynamic validate;
   dynamic validationDate;
@@ -43,6 +44,7 @@ class Attendance {
     this.endBreak,
     this.clockedBy,
     this.clockedByInfo,
+    this.validatedByInfo,
     this.clockingMethod,
     this.validate,
     this.validationDate,
@@ -71,6 +73,9 @@ class Attendance {
     clockedBy = json['clockedBy'];
     clockedByInfo = json['clockedByInfo'] != null
         ? ClockedByInfo.fromJson(json['clockedByInfo'])
+        : null;
+    validatedByInfo = json['validatedByInfo'] != null
+        ? ClockedByInfo.fromJson(json['validatedByInfo'])
         : null;
     clockingMethod = json['clockingMethod'];
     validate =
@@ -103,6 +108,9 @@ class Attendance {
     data['clockedBy'] = clockedBy;
     if (clockedByInfo != null) {
       data['clockedByInfo'] = clockedByInfo!.toJson();
+    }
+    if (validatedByInfo != null) {
+      data['validatedByInfo'] = validatedByInfo!.toJson();
     }
     data['clockingMethod'] = clockingMethod;
     if (validate != null) {

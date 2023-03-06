@@ -1,3 +1,4 @@
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/api_responses/clocked_member_response.dart';
 import 'package:akwaaba/Networks/attendance_api.dart';
 import 'package:akwaaba/Networks/event_api.dart';
@@ -240,6 +241,17 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error: ${err.toString()}');
+      if (err is FetchDataException) {
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () => submitFollowUp(
+              meetingEventId: meetingEventId,
+              clockingId: clockingId,
+              messagingType: messagingType,
+              followUp: followUp),
+        );
+      }
       showErrorToast(err.toString());
     }
     notifyListeners();
@@ -286,6 +298,7 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
+
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -442,6 +455,15 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint("Error Attendees --> $err");
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () =>
+              getAllAttendees(meetingEventModel: meetingEventModel),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -499,6 +521,14 @@ class AttendanceProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("Error Attendees --> $err");
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreAttendees,
+          );
+        }
       }
     }
     notifyListeners();
@@ -559,6 +589,15 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint("Error Absentees --> $err");
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () =>
+              getAllAbsentees(meetingEventModel: meetingEventModel),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();
@@ -619,6 +658,14 @@ class AttendanceProvider extends ChangeNotifier {
       } catch (err) {
         setLoadingMore(false);
         debugPrint("Error Absentees --> $err");
+        if (err is FetchDataException) {
+          // ignore: use_build_context_synchronously
+          showIndefiniteSnackBar(
+            context: currentContext,
+            message: err.toString(),
+            onPressed: _loadMoreAbsentees,
+          );
+        }
       }
     }
     notifyListeners();
@@ -678,6 +725,15 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       Navigator.pop(context);
       debugPrint('Error ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: currentContext,
+          message: err.toString(),
+          onPressed: () =>
+              cancelClocking(context: context, attendee: attendee, time: time),
+        );
+      }
       //showErrorToast(err.toString());
     }
     notifyListeners();

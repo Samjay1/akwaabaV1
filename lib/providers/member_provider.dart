@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/Networks/group_api.dart';
 import 'package:akwaaba/Networks/member_api.dart';
 import 'package:akwaaba/Networks/notification_api.dart';
@@ -159,7 +160,19 @@ class MemberProvider with ChangeNotifier {
     } catch (err) {
       setLoading(false);
       debugPrint('Error: ${err.toString()}');
-      showErrorToast(err.toString());
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: context,
+          message: err.toString(),
+          onPressed: () => login(
+            context: context,
+            phoneEmail: phoneEmail,
+            password: password,
+            isAdmin: isAdmin,
+          ),
+        );
+      }
     }
     notifyListeners();
   }
@@ -171,32 +184,37 @@ class MemberProvider with ChangeNotifier {
     required phoneEmail,
     required password,
   }) async {
-    MemberAPI()
-        .getClientAccountInfo(
-      clientId: clientId,
-    )
-        .then((value) {
-      if (value == 'login_error') {
-        setLoading(false);
-        showErrorSnackBar(context, "Incorrect Login Details");
-        return;
-      }
-      if (value == 'network_error') {
-        setLoading(false);
-        showErrorSnackBar(context, "Network Issue");
-        return;
-      } else {
-        _clientAccountInfo = value;
-        getMemberBranch(
+    try {
+      var result = await MemberAPI().getClientAccountInfo(
+        clientId: clientId,
+      );
+      _clientAccountInfo = result;
+      // ignore: use_build_context_synchronously
+      getMemberBranch(
+        context: context,
+        branchId: branchId,
+        phoneEmail: phoneEmail,
+        password: password,
+      );
+      debugPrint('Client name ${result.applicantFirstname}');
+      debugPrint('Client id ${result.id}');
+    } catch (err) {
+      debugPrint('Error: ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
           context: context,
-          branchId: branchId,
-          phoneEmail: phoneEmail,
-          password: password,
+          message: err.toString(),
+          onPressed: () => getMemberBranch(
+            context: context,
+            branchId: branchId,
+            phoneEmail: phoneEmail,
+            password: password,
+          ),
         );
-        debugPrint('Client name ${value.applicantFirstname}');
-        debugPrint('Client id ${value.id}');
       }
-    });
+    }
+
     notifyListeners();
   }
 

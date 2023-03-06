@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/models/general/absent_leave.dart';
 import 'package:akwaaba/models/general/group.dart';
 import 'package:akwaaba/models/general/leave_status.dart';
@@ -28,7 +29,7 @@ class LeaveAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Leave Res: ${await returnResponse(response)}");
@@ -74,7 +75,7 @@ class LeaveAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Assignment Res: ${await returnResponse(response)}");
@@ -116,7 +117,7 @@ class LeaveAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Leaves: ${await returnResponse(response)}");

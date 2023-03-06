@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/constants/app_constants.dart';
+import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/models/client_account_info.dart';
 import 'package:akwaaba/models/general/abstractModel.dart';
 import 'package:akwaaba/models/general/branch.dart';
@@ -49,10 +50,9 @@ class MemberAPI {
           headers: {'Content-Type': 'application/json'}).timeout(
         const Duration(seconds: AppConstants.timOutDuration),
         onTimeout: () => throw FetchDataException(
-          'Your internet connection is poor, please try again later!',
+          AppString.internetPoorMsg,
         ), // Time has run out, do what you wanted to do.
       );
-      ;
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         var memberToken = decodedResponse['token'];
@@ -89,7 +89,7 @@ class MemberAPI {
           .timeout(
             const Duration(seconds: AppConstants.timOutDuration),
             onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
+              AppString.internetPoorMsg,
             ), // Time has run out, do what you wanted to do.
           );
       debugPrint("Client Info Res: ${jsonDecode(response.body)}");
@@ -112,10 +112,17 @@ class MemberAPI {
     try {
       var url = Uri.parse('$baseUrl/members/user/$memberId');
       debugPrint("URL: $url");
-      http.Response response = await http.get(
-        url,
-        headers: await getAllHeaders(),
-      );
+      http.Response response = await http
+          .get(
+            url,
+            headers: await getAllHeaders(),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              AppString.internetPoorMsg,
+            ), // Time has run out, do what you wanted to do.
+          );
       debugPrint("PreviewMemberProfile Info Res: ${jsonDecode(response.body)}");
       var res = jsonDecode(response.body);
       // print('')
@@ -347,6 +354,11 @@ class MemberAPI {
         Uri.parse('$baseUrl/members/login'),
         body: json.encode(data),
         headers: {'Content-Type': 'application/json'},
+      ).timeout(
+        const Duration(seconds: AppConstants.timOutDuration),
+        onTimeout: () => throw FetchDataException(
+          AppString.internetPoorMsg,
+        ), // Time has run out, do what you wanted to do.
       );
       var decodedResponse = await returnResponse(response);
       debugPrint('decodedResponse $decodedResponse');
@@ -430,7 +442,12 @@ class MemberAPI {
           headers: {
             'Authorization': 'Token $memberToken',
             'Content-Type': 'application/json'
-          });
+          }).timeout(
+        const Duration(seconds: AppConstants.timOutDuration),
+        onTimeout: () => throw FetchDataException(
+          AppString.internetPoorMsg,
+        ), // Time has run out, do what you wanted to do.
+      );
       var decodedResponse = jsonDecode(response.body);
       debugPrint('DEVICE ACTIVATION REQUEST -------------- $decodedResponse');
       if (response.statusCode == 201) {
@@ -458,7 +475,12 @@ class MemberAPI {
           headers: {
             'Authorization': 'Token $memberToken',
             'Content-Type': 'application/json'
-          });
+          }).timeout(
+        const Duration(seconds: AppConstants.timOutDuration),
+        onTimeout: () => throw FetchDataException(
+          AppString.internetPoorMsg,
+        ), // Time has run out, do what you wanted to do.
+      );
       if (response.statusCode == 200) {
         var decodedresponse = jsonDecode(response.body);
         print("DeviceRequestModel success: $decodedresponse");

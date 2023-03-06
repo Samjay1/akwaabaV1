@@ -157,6 +157,9 @@ class _DeviceActivationRequestPageState
                                 : ListView.builder(
                                     itemCount: data.deviceRequestList.length,
                                     shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(
+                                      parent: AlwaysScrollableScrollPhysics(),
+                                    ),
                                     itemBuilder: (context, index) {
                                       var item = data.deviceRequestList[index];
                                       return Column(
