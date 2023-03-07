@@ -103,9 +103,10 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
       );
 
       //isLate = latenessTime.compareTo(inTime) < 0 ? true : false;
-      isLate = inTime.isBefore(latenessTime) || inTime.isAtSameMomentAs(inTime)
-          ? false
-          : true;
+      isLate =
+          inTime.isBefore(latenessTime) || inTime.isAtSameMomentAs(latenessTime)
+              ? false
+              : true;
     }
 
     var formattedInTime = 'N/A';
