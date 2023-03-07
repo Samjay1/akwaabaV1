@@ -20,17 +20,10 @@ class GroupAPI {
 
     var url = Uri.parse('${getBaseUrl()}/clients/branch');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("Branch Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -54,17 +47,10 @@ class GroupAPI {
 
     var url = Uri.parse('${getBaseUrl()}/clients/branch/$branchId');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("Branch Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       branch = Branch.fromJson(
@@ -87,17 +73,10 @@ class GroupAPI {
 
     var url = Uri.parse('${getBaseUrl()}/generic/gender/$genderId');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("Single Gender Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       gender = Gender.fromJson(
@@ -116,17 +95,10 @@ class GroupAPI {
 
     var url = Uri.parse('${getBaseUrl()}/generic/gender');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("Gender Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -183,17 +155,10 @@ class GroupAPI {
     var url =
         Uri.parse('${getBaseUrl()}/attendance/meeting-event/group/$groupId');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("Single Group Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       group = Group.fromJson(
@@ -216,17 +181,10 @@ class GroupAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/members/groupings/group?branchId=$branchId&memberCategoryId=$memberCategoryId');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("Group Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -252,18 +210,11 @@ class GroupAPI {
     var url =
         Uri.parse('${getBaseUrl()}/attendance/meeting-event/group/$groupId');
     try {
-      http.Response response = await http
-          .patch(
-            url,
-            body: {"groupId": newGroupId},
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.patch(
+        url,
+        body: {"groupId": newGroupId},
+        headers: await getAllHeaders(),
+      );
       debugPrint("Updated Group Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       group = Group.fromJson(
@@ -326,17 +277,10 @@ class GroupAPI {
     var url =
         Uri.parse('${getBaseUrl()}/members/groupings/sub-group/$subGroupId');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("Single SubGroup Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       subGroup = SubGroup.fromJson(
@@ -358,17 +302,10 @@ class GroupAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/members/groupings/sub-group?groupId=$groupId');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("Group Response: ${jsonDecode(response.body)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {
@@ -396,22 +333,15 @@ class GroupAPI {
     var url =
         Uri.parse('${getBaseUrl()}/members/groupings/sub-group/$subGroupId');
     try {
-      http.Response response = await http
-          .patch(
-            url,
-            body: {
-              "subgroup": name,
-              "branchId": branchId,
-              "memberCategoryId": memberCategoryId
-            },
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.patch(
+        url,
+        body: {
+          "subgroup": name,
+          "branchId": branchId,
+          "memberCategoryId": memberCategoryId
+        },
+        headers: await getAllHeaders(),
+      );
       debugPrint("Updated SubGroup Res: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       subGroup = SubGroup.fromJson(
@@ -466,17 +396,10 @@ class GroupAPI {
     var url = Uri.parse(
         '${getBaseUrl()}/members/groupings/member-category/$categoryId');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("Get MC Res: ${jsonDecode(response.body)}");
       var res = await returnResponse(response);
       memberCategory = MemberCategory.fromJson(
@@ -495,17 +418,10 @@ class GroupAPI {
 
     var url = Uri.parse('${getBaseUrl()}/members/groupings/member-category');
     try {
-      http.Response response = await http
-          .get(
-            url,
-            headers: await getAllHeaders(),
-          )
-          .timeout(
-            const Duration(seconds: AppConstants.timOutDuration),
-            onTimeout: () => throw FetchDataException(
-              'Your internet connection is poor, please try again later!',
-            ), // Time has run out, do what you wanted to do.
-          );
+      http.Response response = await http.get(
+        url,
+        headers: await getAllHeaders(),
+      );
       debugPrint("MCs Response: ${await returnResponse(response)}");
       var res = await returnResponse(response);
       if (res['data'] != null) {

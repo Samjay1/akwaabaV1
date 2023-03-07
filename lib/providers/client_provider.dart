@@ -84,12 +84,6 @@ class ClientProvider extends ChangeNotifier {
         showErrorToast("account and password combination not found");
         return;
       }
-      if (value == 'network_error') {
-        setLoading(false);
-        // ignore: use_build_context_synchronously
-        showErrorSnackBar(context, "No internet connection");
-        return;
-      }
       setLoading(false);
       debugPrint('USER INFO: $value');
       _user = value;
@@ -123,13 +117,14 @@ class ClientProvider extends ChangeNotifier {
   }
 
   // get branch of the admin
-  Future<void> getAdminBranch(
-      {required BuildContext context,
-      required var phoneEmail,
-      required var password}) async {
+  Future<void> getAdminBranch({
+    required BuildContext context,
+    required var phoneEmail,
+    required var password,
+  }) async {
     try {
       var profile = await SharedPrefs().getAdminProfile();
-      _branch = await MemberAPI().getBranch(
+      _branch = await UserApi().getBranch(
         branchId: profile!.branchId,
         //adminProfile.branchId!,
       );

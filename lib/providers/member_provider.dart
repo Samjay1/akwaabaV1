@@ -224,33 +224,37 @@ class MemberProvider with ChangeNotifier {
     required phoneEmail,
     required password,
   }) async {
-    MemberAPI()
-        .getBranch(
-      branchId: branchId,
-    )
-        .then((value) {
-      notifyListeners();
-      if (value == 'login_error') {
-        setLoading(false);
-        showErrorSnackBar(context, "Incorrect Login Details");
-        return;
-      }
-      if (value == 'network_error') {
-        setLoading(false);
-        showErrorSnackBar(context, "Network Issue");
-        return;
-      } else {
-        _branch = value;
-        getIdentityNumber(
+    try {
+      var response = await MemberAPI().getBranch(
+        branchId: branchId,
+      );
+      _branch = response;
+      // ignore: use_build_context_synchronously
+      getIdentityNumber(
+        context: context,
+        memberId: 0,
+        phoneEmail: phoneEmail,
+        password: password,
+      );
+      debugPrint('Branch name ${response.name}');
+      debugPrint('Branch id ${response.id}');
+    } catch (err) {
+      debugPrint('Error: ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
           context: context,
-          memberId: 0,
-          phoneEmail: phoneEmail,
-          password: password,
+          message: err.toString(),
+          onPressed: () => getMemberBranch(
+            context: context,
+            branchId: branchId,
+            phoneEmail: phoneEmail,
+            password: password,
+          ),
         );
-        debugPrint('Branch name ${value.name}');
-        debugPrint('Branch id ${value.id}');
       }
-    });
+    }
+
     notifyListeners();
   }
 
@@ -260,46 +264,50 @@ class MemberProvider with ChangeNotifier {
     required phoneEmail,
     required password,
   }) async {
-    MemberAPI()
-        .getIdentityNumber(
-      memberId: _memberProfile!.user!.id!,
-    )
-        .then((value) async {
-      if (value == 'login_error') {
-        setLoading(false);
-        showErrorSnackBar(context, "Incorrect Login Details");
-        return;
+    try {
+      var response = await MemberAPI().getIdentityNumber(
+        memberId: _memberProfile!.user!.id!,
+      );
+      setLoading(false);
+      _identityNumber = response;
+      await getAssignedFees(
+          context: context); // fetch assigned fees for a member
+      //showNormalToast('Login successful');
+      if (context.mounted) {
+        Provider.of<GeneralProvider>(context, listen: false)
+            .setAdminStatus(isAdmin: false);
+        SharedPrefs().setUserType(userType: "member");
+        SharedPrefs()
+            .saveLoginCredentials(emailOrPhone: phoneEmail, password: password);
+        SharedPrefs().saveMemberInfo(memberProfile: _memberProfile!);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const MainPage(),
+          ),
+        );
       }
-      if (value == 'network_error') {
-        setLoading(false);
-        showErrorSnackBar(context, "Network Issue");
-        return;
-      } else {
-        setLoading(false);
-        _identityNumber = value;
-        await getAssignedFees(); // fetch assigned fees for a member
-        //showNormalToast('Login successful');
-        if (context.mounted) {
-          Provider.of<GeneralProvider>(context, listen: false)
-              .setAdminStatus(isAdmin: false);
-          SharedPrefs().setUserType(userType: "member");
-          SharedPrefs().saveLoginCredentials(
-              emailOrPhone: phoneEmail, password: password);
-          SharedPrefs().saveMemberInfo(memberProfile: _memberProfile!);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const MainPage(),
-            ),
-          );
-        }
+    } catch (err) {
+      debugPrint('Error: ${err.toString()}');
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: context,
+          message: err.toString(),
+          onPressed: () => getIdentityNumber(
+            context: context,
+            memberId: memberId,
+            phoneEmail: phoneEmail,
+            password: password,
+          ),
+        );
       }
-    });
+    }
     notifyListeners();
   }
 
   // get member assigned fees
-  Future<void> getAssignedFees() async {
+  Future<void> getAssignedFees({required BuildContext context}) async {
     try {
       var result = await MemberAPI().getAssignedFees();
       if (result != null) {
@@ -309,6 +317,14 @@ class MemberProvider with ChangeNotifier {
       }
     } catch (err) {
       setLoading(false);
+      if (err is FetchDataException) {
+        // ignore: use_build_context_synchronously
+        showIndefiniteSnackBar(
+          context: context,
+          message: err.toString(),
+          onPressed: () => getAssignedFees(context: context),
+        );
+      }
     }
     notifyListeners();
   }

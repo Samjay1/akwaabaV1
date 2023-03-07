@@ -1,7 +1,5 @@
 import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/fcm/messaging_service.dart';
-import 'package:akwaaba/fcm/noti.dart';
-import 'package:akwaaba/location/location_services.dart';
 import 'package:akwaaba/providers/all_events_provider.dart';
 import 'package:akwaaba/providers/attendance_history_provider.dart';
 import 'package:akwaaba/providers/attendance_provider.dart';
@@ -17,6 +15,8 @@ import 'package:akwaaba/providers/members_provider.dart';
 import 'package:akwaaba/providers/schoolManager_provider.dart';
 import 'package:akwaaba/providers/profile_provider.dart';
 import 'package:akwaaba/providers/self_clocking_provider.dart';
+import 'package:akwaaba/utils/connectivity_util.dart';
+import 'package:akwaaba/utils/size_helper.dart';
 import 'package:akwaaba/versionOne/main_page.dart';
 import 'package:akwaaba/versionOne/splash_screen.dart';
 import 'package:akwaaba/utils/app_theme.dart';
@@ -36,6 +36,10 @@ Future<void> main() async {
   await initFirebaseApp();
 
   //LocationServices().getUserCurrentLocation();
+
+  // NetworkConnectivity.instance.initialise();
+
+  // ConnectivityManager().init();
 
   await FlutterDownloader.initialize(
     debug: false,
@@ -285,6 +289,27 @@ void checkIncomingPayload(RemoteMessage message) {
   }
 }
 
+class SnackbarGlobal {
+  static GlobalKey<ScaffoldMessengerState> key =
+      GlobalKey<ScaffoldMessengerState>();
+
+  static void show(String message) {
+    key.currentState!
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        backgroundColor: redColor,
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(minutes: 10),
+        margin: EdgeInsets.only(
+          bottom: displayHeight(key.currentContext!) - 100,
+          right: 20,
+          left: 20,
+        ),
+      ));
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -292,6 +317,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     context = context;
     //Noti().init(context);
+    //ConnectivityManager().init();
+    NetworkConnectivity.instance.initialise(context);
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GeneralProvider()),
@@ -313,7 +341,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SelfClockingProvider()),
       ],
       child: MaterialApp(
-        key: scaffoldMessengerKey,
+        scaffoldMessengerKey: SnackbarGlobal.key,
         initialRoute: 'splashScreen',
         onGenerateRoute: (RouteSettings settings) {
           assert(false, 'Need to implement ${settings.name}');

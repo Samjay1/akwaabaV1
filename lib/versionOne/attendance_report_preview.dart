@@ -395,7 +395,7 @@ class _AttendanceReportDetailsPageState
                 child: Text(
                   (widget.attendee!.attendance!.validatedBy == null)
                       ? 'N/A'
-                      : widget.attendee!.attendance!.clockedBy == 0
+                      : widget.attendee!.attendance!.validatedBy == 0
                           ? "N/A"
                           : "Admin ${widget.attendee!.attendance!.validatedByInfo != null ? '(${widget.attendee!.attendance!.validatedByInfo!.firstname} ${widget.attendee!.attendance!.validatedByInfo!.surname})' : ''}",
                 ),

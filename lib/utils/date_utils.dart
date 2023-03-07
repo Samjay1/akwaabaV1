@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:akwaaba/models/general/meetingEventModel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -75,6 +76,53 @@ class DateUtil {
       {required DateTime date}) {
     final formattedDate = dateFormat.format(date);
     return formattedDate.toString();
+  }
+
+  static String getNextMeetingDate(DateFormat dateFormat,
+      {required DateTime date}) {
+    final formattedDate = dateFormat.format(date);
+    return formattedDate.toString();
+  }
+
+  // calculate the next upcoming date for a meeting that occur once a week
+  static String calculateUpcomingMeetingDate(
+    DateFormat dateFormat, {
+    required List<UpcomingDays> upcomingDays,
+  }) {
+    String date = '';
+    if (upcomingDays.length == 1) {
+      if (upcomingDays[0].dayId! > DateTime.now().weekday) {
+        // when meeting dayId is greater than current week day
+        int diff = upcomingDays[0].dayId! - DateTime.now().weekday;
+        date = formatStringDate(DateFormat.yMMMEd(),
+            date: DateTime.now().add(Duration(days: diff)));
+      } else {
+        // calculte the date when meeting dayId is less than current week day
+        const totalWeekDays = 7;
+        int diff = DateTime.now().weekday - upcomingDays[0].dayId!;
+        int f = totalWeekDays -
+            diff; // subtract the difference from totalWeekDays(thus, 7)
+        int newDiff = diff + f; // add difference to the value after subtraction
+        date = formatStringDate(DateFormat.yMMMEd(),
+            date: DateTime.now().add(Duration(days: newDiff)));
+      }
+    } else {
+      for (var day in upcomingDays) {
+        if (day.dayId == DateTime.now().weekday) {
+          date = DateUtil.formatStringDate(DateFormat.yMMMEd(),
+              date: DateTime.now().add(const Duration(days: 7)));
+          debugPrint(
+            "Next Date: $date",
+          );
+          debugPrint(
+            "Upcoming Day: ${day.dayId}",
+          );
+          debugPrint("Today Day: ${DateTime.now().weekday}");
+        }
+      }
+    }
+
+    return date;
   }
 
   // convert invalid dateformat to datetime

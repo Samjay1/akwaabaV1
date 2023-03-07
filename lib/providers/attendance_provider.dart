@@ -298,7 +298,6 @@ class AttendanceProvider extends ChangeNotifier {
     } catch (err) {
       setLoadingFilters(false);
       debugPrint('Error Branch: ${err.toString()}');
-
       //showErrorToast(err.toString());
     }
     notifyListeners();

@@ -97,6 +97,7 @@ class HomeProvider extends ChangeNotifier {
     try {
       _page = 1;
       var userType = await SharedPrefs().getUserType();
+      // ignore: use_build_context_synchronously
       var branch = await getUserBranch(currentContext);
       var response = await EventAPI.getTodayMeetingEventList(
         branchId: branch.id!,
@@ -120,7 +121,7 @@ class HomeProvider extends ChangeNotifier {
         setLoading(false);
       }
     } catch (err) {
-      debugPrint('Error TM ${err.toString()}');
+      debugPrint('Error TM: ${err.toString()}');
       if (err is FetchDataException) {
         showIndefiniteSnackBar(
           context: currentContext,

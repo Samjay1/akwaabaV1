@@ -5,6 +5,7 @@ import 'package:akwaaba/Networks/api_helpers/api_exception.dart';
 import 'package:akwaaba/constants/app_constants.dart';
 import 'package:akwaaba/constants/app_strings.dart';
 import 'package:akwaaba/models/admin/admin_profile.dart';
+import 'package:akwaaba/models/general/branch.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +28,14 @@ class UserApi {
       prefs = await SharedPreferences.getInstance();
       var data = {'phone_email': phoneEmail, 'password': password};
 
-      http.Response response =
-          await http.post(Uri.parse('$baseUrl/clients/login'), body: data);
+      http.Response response = await http
+          .post(Uri.parse('$baseUrl/clients/login'), body: data)
+          .timeout(
+            const Duration(seconds: AppConstants.timOutDuration),
+            onTimeout: () => throw FetchDataException(
+              AppString.internetPoorMsg,
+            ), // Time has run out, do what you wanted to do.
+          );
       var decodedResponse = jsonDecode(response.body);
       if (response.statusCode == 200) {
         var clientToken = decodedResponse['token'];
@@ -104,7 +111,7 @@ class UserApi {
         return 'login_error';
       }
     } on SocketException catch (_) {
-      return 'network_error';
+      throw FetchDataException('No Internet connection');
     }
   }
 
@@ -133,6 +140,42 @@ class UserApi {
 
       return '';
     }
+  }
+
+  // get a  branch
+  Future<Branch> getBranch({
+    required int branchId,
+  }) async {
+    Branch branch;
+
+    var url = Uri.parse('$baseUrl/clients/branch/$branchId');
+    try {
+      http.Response response =
+          await http.get(url, headers: await getAllHeaders()).timeout(
+                const Duration(seconds: AppConstants.timOutDuration),
+                onTimeout: () => throw FetchDataException(
+                  AppString.internetPoorMsg,
+                ), // Time has run out, do what you wanted to do.
+              );
+      debugPrint("Branch Res: ${jsonDecode(response.body)}");
+      var res = jsonDecode(response.body);
+      branch = Branch.fromJson(
+        res['data'],
+      );
+    } on SocketException catch (_) {
+      debugPrint('No net');
+      throw FetchDataException('No Internet connection');
+    }
+    return branch;
+  }
+
+  static Future<Map<String, String>> getAllHeaders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? memberToken = prefs.getString('token');
+    return {
+      'Authorization': 'Token $memberToken',
+      'Content-Type': 'application/json'
+    };
   }
 
   Future register({var phoneEmail, var password}) async {

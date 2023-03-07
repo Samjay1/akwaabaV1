@@ -65,6 +65,12 @@ class MeetingEventWidget extends StatelessWidget {
           date: DateTime.parse(meetingEventModel!.upcomingDates![0].date!),
         );
       }
+    } else if (meetingEventModel!.isRecuring! &&
+        meetingEventModel!.upcomingDays != null) {
+      date = DateUtil.calculateUpcomingMeetingDate(
+        DateFormat.yMMMEd(),
+        upcomingDays: meetingEventModel!.upcomingDays!,
+      );
     } else {
       date = DateUtil.formatStringDate(
         DateFormat.yMMMEd(),
