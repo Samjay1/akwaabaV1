@@ -107,9 +107,10 @@ class _AttendanceReportDetailsPageState
         DateTime.now().microsecond,
       );
 
-      isLate = inTime.isBefore(latenessTime) || inTime.isAtSameMomentAs(inTime)
-          ? false
-          : true;
+      isLate =
+          inTime.isBefore(latenessTime) || inTime.isAtSameMomentAs(latenessTime)
+              ? false
+              : true;
     }
     return Scaffold(
       appBar: AppBar(

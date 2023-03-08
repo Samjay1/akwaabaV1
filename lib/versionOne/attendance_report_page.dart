@@ -300,14 +300,14 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                                 for (Attendee? attendee in attendees) {
                                   attendee!.selected = checkAll;
                                   if (attendee.selected!) {
-                                    attendanceProvider.selectedAttendees
-                                        .add(attendee);
+                                    // attendanceProvider.selectedAttendees
+                                    //     .add(attendee);
                                     attendanceProvider.selectedClockingIds
                                         .add(attendee.attendance!.id!);
                                   }
                                   if (!attendee.selected!) {
-                                    attendanceProvider.selectedAttendees
-                                        .remove(attendee);
+                                    // attendanceProvider.selectedAttendees
+                                    //     .remove(attendee);
                                     attendanceProvider.selectedClockingIds
                                         .remove(attendee.attendance!.id!);
                                   }

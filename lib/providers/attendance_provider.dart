@@ -187,6 +187,7 @@ class AttendanceProvider extends ChangeNotifier {
       );
       Navigator.of(_context!).pop();
       showNormalToast(message);
+      _selectedClockingIds.clear();
       getAllAttendees(
         meetingEventModel: selectedPastMeetingEvent!,
       );
