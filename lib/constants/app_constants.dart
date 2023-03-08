@@ -14,6 +14,10 @@ class AppConstants {
   static const int searchTimerDuration = 600;
   static String? token;
 
+  static const int physicalMeetingLocation = 1;
+  static const int virtualMeetingLocation = 2;
+  static const int physicalVirtualMeetingLocation = 3;
+
   static String supportNumber = '+233206007255';
 
   static int notificationChannelId = 001;

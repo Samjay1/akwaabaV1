@@ -1069,6 +1069,7 @@ class _HomePageState extends State<HomePage> {
                                         .getMeetingCoordinates(
                                       context: context,
                                       isBreak: false,
+                                      isVirtual: false,
                                       meetingEventModel: meetingEventModel,
                                       time: null,
                                     );
@@ -1158,6 +1159,7 @@ class _HomePageState extends State<HomePage> {
                                             .getMeetingCoordinates(
                                           context: context,
                                           isBreak: true,
+                                          isVirtual: false,
                                           time: null,
                                           meetingEventModel: meetingEventModel,
                                         );
@@ -1183,6 +1185,62 @@ class _HomePageState extends State<HomePage> {
                             : const SizedBox()
                   ],
                 ),
+                (meetingEventModel.meetingLocation ==
+                            AppConstants.virtualMeetingLocation ||
+                        meetingEventModel.meetingLocation ==
+                            AppConstants.physicalVirtualMeetingLocation)
+                    ? Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.black,
+                                elevation: 0.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      AppRadius.borderRadius16),
+                                ),
+                              ),
+                              onPressed: () {
+                                // join meeting online
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    insetPadding: const EdgeInsets.all(10),
+                                    backgroundColor: Colors.transparent,
+                                    elevation: 0,
+                                    content: ConfirmDialog(
+                                      title: 'Join Virtual Meeting',
+                                      content:
+                                          'Are you sure you want to join this meeting virtually?',
+                                      onConfirmTap: () {
+                                        Navigator.pop(context);
+                                        Provider.of<HomeProvider>(context,
+                                                listen: false)
+                                            .getAttendanceList(
+                                          context: context,
+                                          isBreak: false,
+                                          isVirtual: true,
+                                          meetingEventModel: meetingEventModel,
+                                          time: null,
+                                        );
+                                      },
+                                      onCancelTap: () => Navigator.pop(context),
+                                      confirmText: 'Yes',
+                                      cancelText: 'Cancel',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                "Virtual",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -1218,26 +1276,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    // ElevatedButton(
-                    //   style: ElevatedButton.styleFrom(
-                    //       primary: Colors.red,
-                    //     elevation: 0.0,
-                    //       shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(23))),
-                    //   onPressed: () {
-                    //     // set meeting as selected
-                    //     context
-                    //         .read<AttendanceProvider>()
-                    //         .setSelectedMeeting(meetingEventModel);
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (_) => ExcuseInputPage(),
-                    //       ),
-                    //     );
-                    //   },
-                    //   child: const Text("Excuse"),
-                    // ),
                   ],
                 ),
               ],

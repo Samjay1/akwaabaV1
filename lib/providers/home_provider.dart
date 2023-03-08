@@ -8,6 +8,7 @@ import 'package:akwaaba/utils/date_utils.dart';
 import 'package:akwaaba/utils/general_utils.dart';
 import 'package:akwaaba/utils/shared_prefs.dart';
 import 'package:akwaaba/utils/widget_utils.dart';
+import 'package:akwaaba/versionOne/webview_page.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -176,6 +177,7 @@ class HomeProvider extends ChangeNotifier {
   Future<void> getMeetingCoordinates({
     required BuildContext context,
     required bool isBreak,
+    required bool isVirtual,
     required MeetingEventModel meetingEventModel,
     required String? time,
   }) async {
@@ -211,11 +213,11 @@ class HomeProvider extends ChangeNotifier {
         if (context.mounted) {
           debugPrint('You\'re within the radius of the premise');
           await getAttendanceList(
-            context: context,
-            meetingEventModel: meetingEventModel,
-            time: null,
-            isBreak: isBreak,
-          );
+              context: context,
+              meetingEventModel: meetingEventModel,
+              time: null,
+              isBreak: isBreak,
+              isVirtual: isVirtual);
         }
       } else {
         if (context.mounted) {
@@ -287,11 +289,12 @@ class HomeProvider extends ChangeNotifier {
   Future<void> getAttendanceList({
     required BuildContext context,
     required bool isBreak,
+    required bool isVirtual,
     required MeetingEventModel meetingEventModel,
     required String? time,
   }) async {
     try {
-      //showLoadingDialog(context);
+      showLoadingDialog(context);
       var response = await EventAPI.getAttendanceList(
         meetingEventModel: meetingEventModel,
         filterDate: getFilterDate(),
@@ -408,12 +411,22 @@ class HomeProvider extends ChangeNotifier {
               // user has not clocked out
               // so clock user out of meeting
               if (context.mounted) {
-                clockMemberOut(
-                  context: context,
-                  clockingId: clockingId,
-                  meetingEventModel: meetingEventModel,
-                  time: null,
-                );
+                if (isVirtual) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    joinVirtualMeeting(
+                      context: context,
+                      meetingEventModel: meetingEventModel,
+                    );
+                  }
+                } else {
+                  clockMemberOut(
+                    context: context,
+                    clockingId: clockingId,
+                    meetingEventModel: meetingEventModel,
+                    time: null,
+                  );
+                }
               }
             } else {
               // user has already clocked out
@@ -435,6 +448,7 @@ class HomeProvider extends ChangeNotifier {
               clockMemberIn(
                 context: context,
                 clockingId: clockingId,
+                isVirtual: isVirtual,
                 meetingEventModel: meetingEventModel,
                 time: null,
               );
@@ -465,6 +479,7 @@ class HomeProvider extends ChangeNotifier {
           onPressed: () => getAttendanceList(
               context: context,
               isBreak: isBreak,
+              isVirtual: isVirtual,
               meetingEventModel: meetingEventModel,
               time: time),
         );
@@ -473,10 +488,11 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-// clocks a member in of a meeting or event
+  // clocks a member in of a meeting or event
   Future<void> clockMemberIn(
       {required BuildContext context,
       required MeetingEventModel meetingEventModel,
+      required bool isVirtual,
       required int clockingId,
       required String? time}) async {
     try {
@@ -504,7 +520,17 @@ class HomeProvider extends ChangeNotifier {
       meetingEventModel.endBreak = response.endBreak;
       meetingEventModel.inTime = response.inTime;
       meetingEventModel.outTime = response.outTime;
-      showNormalToast('You\'re Welcome');
+      // when meeting is virtual
+      if (isVirtual) {
+        if (context.mounted) {
+          joinVirtualMeeting(
+            context: context,
+            meetingEventModel: meetingEventModel,
+          );
+        }
+      } else {
+        showNormalToast('You\'re Welcome');
+      }
     } catch (err) {
       if (context.mounted) Navigator.pop(context);
       debugPrint('Clock in error: ${err.toString()}');
@@ -515,6 +541,7 @@ class HomeProvider extends ChangeNotifier {
           onPressed: () => clockMemberIn(
               context: context,
               meetingEventModel: meetingEventModel,
+              isVirtual: isVirtual,
               clockingId: clockingId,
               time: time),
         );
@@ -778,6 +805,23 @@ class HomeProvider extends ChangeNotifier {
       // showErrorToast(err.toString());
     }
     notifyListeners();
+  }
+
+  // allow member to join virtual meeting
+  void joinVirtualMeeting(
+      {required BuildContext context,
+      required MeetingEventModel meetingEventModel}) {
+    debugPrint("Virtual URL: ${meetingEventModel.virtualMeetingLink}");
+    launchURL(meetingEventModel.virtualMeetingLink!);
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (_) => WebViewPage(
+    //       url: meetingEventModel.virtualMeetingLink,
+    //       title: meetingEventModel.name,
+    //     ),
+    //   ),
+    // );
   }
 
   void clearData() {
