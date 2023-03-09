@@ -293,7 +293,9 @@ class HomeProvider extends ChangeNotifier {
     required String? time,
   }) async {
     try {
-      showLoadingDialog(context);
+      if (isVirtual) {
+        showLoadingDialog(context);
+      }
       var response = await EventAPI.getAttendanceList(
         meetingEventModel: meetingEventModel,
         filterDate: getFilterDate(),
