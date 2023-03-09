@@ -340,6 +340,79 @@ class _MainPageState extends State<MainPage> {
             onTap: logout,
           );
         }
+      } else {
+        // Restrict access to app if client has not subscribed to any module
+        showAppAccessDialog(
+          'ok',
+          dismissible: false,
+          context: context,
+          title: 'Hey there!',
+          content: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(children: [
+              const TextSpan(
+                text:
+                    'Sorry you don\'t have access to the services of this app, you have not subscribed to any module.\n\nCall/WhatsApp Service Provider on ',
+                style: TextStyle(
+                  letterSpacing: 1.0,
+                  color: blackColor,
+                  fontSize: AppSize.s18,
+                ),
+              ),
+              TextSpan(
+                text: AppConstants.supportNumber,
+                style: const TextStyle(
+                  letterSpacing: 1.0,
+                  decoration: TextDecoration.underline,
+                  color: Colors.blue,
+                  fontSize: AppSize.s18,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(AppRadius.borderRadius16),
+                            topRight: Radius.circular(AppRadius.borderRadius16),
+                          ),
+                        ),
+                        context: context,
+                        builder: (context) {
+                          return ContactAdminDialog(
+                              title: 'Contact your service provider?',
+                              subtitle:
+                                  'You can reach out to your service provider on',
+                              firstText: 'Call',
+                              secondText: 'Whatsapp',
+                              onCallTap: () {
+                                Navigator.of(context).pop();
+                                makePhoneCall(
+                                  AppConstants.supportNumber,
+                                );
+                              },
+                              onWhatsappTap: () async {
+                                Navigator.of(context).pop();
+                                openWhatsapp(
+                                  context,
+                                  AppConstants.supportNumber,
+                                  'Hello there, \n\nI need assistance with my account.',
+                                );
+                              });
+                        });
+                  },
+              ),
+              const TextSpan(
+                text: ' for any assistance.',
+                style: TextStyle(
+                  letterSpacing: 1.0,
+                  color: blackColor,
+                  fontSize: AppSize.s18,
+                ),
+              ),
+            ]),
+          ),
+          onTap: logout,
+        );
       }
     } else {
       if (_memberProvider.assignedFee != null &&

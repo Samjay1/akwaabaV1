@@ -132,7 +132,6 @@ class HomeProvider extends ChangeNotifier {
       }
       //showErrorToast(err.toString());
     }
-
     notifyListeners();
   }
 

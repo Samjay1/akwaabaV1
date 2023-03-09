@@ -17,6 +17,7 @@ const textColorDark = Color(0xFF000000);
 const textColorLight = Color(0xFF3F3E3E);
 
 const whiteColor = Colors.white;
+const offWhite = Color(0xFFEBECEE);
 const blackColor = Colors.black;
 
 const fillColor = Color(0xFFEBECEE);

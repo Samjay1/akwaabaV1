@@ -1102,7 +1102,7 @@ class _HomePageState extends State<HomePage> {
                     meetingEventModel.hasBreakTime!
                         ? ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: primaryColor,
+                              primary: Colors.green,
                               elevation: 0.0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
@@ -1175,8 +1175,8 @@ class _HomePageState extends State<HomePage> {
                             child: Text(
                               (meetingEventModel.startBreak == null &&
                                       meetingEventModel.endBreak == null)
-                                  ? 'Start Break'
-                                  : 'End Break',
+                                  ? 'Break'
+                                  : 'Resume',
                             ),
                           )
                         : (meetingEventModel.hasBreakTime! &&
@@ -1194,7 +1194,7 @@ class _HomePageState extends State<HomePage> {
                           Expanded(
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.black,
+                                primary: offWhite,
                                 elevation: 0.0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
@@ -1233,8 +1233,8 @@ class _HomePageState extends State<HomePage> {
                                 );
                               },
                               child: const Text(
-                                "Virtual",
-                                style: TextStyle(color: Colors.white),
+                                "Join Online",
+                                style: TextStyle(color: Colors.green),
                               ),
                             ),
                           ),
@@ -1247,7 +1247,7 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.grey,
+                          primary: primaryColor,
                           elevation: 0.0,
                           shape: RoundedRectangleBorder(
                             borderRadius:
@@ -1272,7 +1272,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         child: const Text(
                           "Agenda",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: blackColor),
                         ),
                       ),
                     ),
