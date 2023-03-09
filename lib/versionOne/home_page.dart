@@ -1022,8 +1022,9 @@ class _HomePageState extends State<HomePage> {
                               onTap: () => Navigator.pop(context),
                             );
                           } else {
-                            if ((!currentTime.isAtSameMomentAs(closeTime) &&
-                                    meetingEventModel.hasOvertime!) &&
+                            if ((currentTime.isBefore(closeTime) &&
+                                    (!meetingEventModel.hasOvertime! ||
+                                        meetingEventModel.hasOvertime!)) &&
                                 (meetingEventModel.inTime != null &&
                                     meetingEventModel.outTime == null)) {
                               showInfoDialog(
