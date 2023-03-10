@@ -1009,6 +1009,12 @@ class _HomePageState extends State<HomePage> {
                         Provider.of<HomeProvider>(context, listen: false)
                             .setSelectedMeeting(meetingEventModel);
 
+                        debugPrint("Start time: $startTime");
+                        debugPrint("Close time: $closeTime");
+                        debugPrint(
+                          "Has overtime: ${meetingEventModel.hasOvertime}",
+                        );
+
                         if (currentTime.isAtSameMomentAs(startTime) ||
                             currentTime.isAfter(startTime)) {
                           debugPrint("Meeting time is up");
@@ -1021,67 +1027,59 @@ class _HomePageState extends State<HomePage> {
                                   'You have already clocked out. \nGood Bye!',
                               onTap: () => Navigator.pop(context),
                             );
-                          } else {
-                            if ((currentTime.isBefore(closeTime) &&
-                                    (!meetingEventModel.hasOvertime! ||
-                                        meetingEventModel.hasOvertime!)) &&
-                                (meetingEventModel.inTime != null &&
-                                    meetingEventModel.outTime == null)) {
-                              showInfoDialog(
-                                'ok',
-                                context: context,
-                                title: 'Hey there!',
-                                content:
-                                    'Sorry time is not up for clocking out. \nPlease clockout when meeting ends.',
-                                onTap: () => Navigator.pop(context),
-                              );
-                              return;
-                            }
-                            if ((currentTime.isAfter(closeTime) &&
-                                    !meetingEventModel.hasOvertime!) &&
-                                (meetingEventModel.inTime != null &&
-                                    meetingEventModel.outTime == null)) {
-                              showInfoDialog(
-                                'ok',
-                                context: context,
-                                title: 'Hey there!',
-                                content:
-                                    'Sorry meeting has ended, contact admin for assistance.',
-                                onTap: () => Navigator.pop(context),
-                              );
-                              return;
-                            }
-                            showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                insetPadding: const EdgeInsets.all(10),
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                content: ConfirmDialog(
-                                  title: meetingEventModel.inOrOut!
-                                      ? 'Clock Out'
-                                      : 'Clock In',
-                                  content:
-                                      '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock out?' : 'Are you sure you want to clock in?'} \nMake sure you are within the meeting premises to continue.',
-                                  onConfirmTap: () {
-                                    Navigator.pop(context);
-                                    Provider.of<HomeProvider>(context,
-                                            listen: false)
-                                        .getMeetingCoordinates(
-                                      context: context,
-                                      isBreak: false,
-                                      isVirtual: false,
-                                      meetingEventModel: meetingEventModel,
-                                      time: null,
-                                    );
-                                  },
-                                  onCancelTap: () => Navigator.pop(context),
-                                  confirmText: 'Yes',
-                                  cancelText: 'Cancel',
-                                ),
-                              ),
-                            );
+                            return;
                           }
+                          if ((currentTime.isAfter(closeTime) &&
+                                      !meetingEventModel.hasOvertime!) &&
+                                  (meetingEventModel.inTime != null &&
+                                      meetingEventModel.outTime == null) ||
+                              (currentTime.isAfter(closeTime) &&
+                                      !meetingEventModel.hasOvertime!) &&
+                                  (meetingEventModel.inTime == null &&
+                                      meetingEventModel.outTime == null) ||
+                              (currentTime.isAfter(closeTime) &&
+                                      meetingEventModel.hasOvertime!) &&
+                                  meetingEventModel.inTime == null) {
+                            showInfoDialog(
+                              'ok',
+                              context: context,
+                              title: 'Hey there!',
+                              content:
+                                  'Sorry meeting has ended, contact admin for assistance.',
+                              onTap: () => Navigator.pop(context),
+                            );
+                            return;
+                          }
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              insetPadding: const EdgeInsets.all(10),
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              content: ConfirmDialog(
+                                title: meetingEventModel.inOrOut!
+                                    ? 'Clock Out'
+                                    : 'Clock In',
+                                content:
+                                    '${meetingEventModel.inOrOut! ? 'Are you sure you want to clock out?' : 'Are you sure you want to clock in?'} \nMake sure you are within the meeting premises to continue.',
+                                onConfirmTap: () {
+                                  Navigator.pop(context);
+                                  Provider.of<HomeProvider>(context,
+                                          listen: false)
+                                      .getMeetingCoordinates(
+                                    context: context,
+                                    isBreak: false,
+                                    isVirtual: false,
+                                    meetingEventModel: meetingEventModel,
+                                    time: null,
+                                  );
+                                },
+                                onCancelTap: () => Navigator.pop(context),
+                                confirmText: 'Yes',
+                                cancelText: 'Cancel',
+                              ),
+                            ),
+                          );
                         } else {
                           debugPrint("Meeting time is not up");
                           showInfoDialog(

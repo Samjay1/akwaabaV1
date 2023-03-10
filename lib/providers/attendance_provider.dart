@@ -177,6 +177,14 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Future<void> validateMember() async {
+  //   if (_selectedClockingIds.length == 1) {
+  //     await validateMemberAttendance(clockingId: _selectedClockingIds[0]);
+  //   } else {
+  //     await validateMemberAttendances();
+  //   }
+  // }
+
   // validate member attendances - bulk
   Future<void> validateMemberAttendances() async {
     try {
@@ -185,9 +193,9 @@ class AttendanceProvider extends ChangeNotifier {
       var message = await AttendanceAPI.validateMemberAttendances(
         clockingIds: _selectedClockingIds,
       );
-      Navigator.of(_context!).pop();
       showNormalToast(message);
       _selectedClockingIds.clear();
+      Navigator.of(_context!).pop();
       getAllAttendees(
         meetingEventModel: selectedPastMeetingEvent!,
       );

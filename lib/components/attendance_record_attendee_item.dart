@@ -310,7 +310,7 @@ class AttendanceReportAttendeeItem extends StatelessWidget {
                     ),
                     if (attendee!.attendance!.inTime != null &&
                         userType == AppConstants.admin)
-                      attendee!.attendance!.validate! == 1
+                      attendee!.attendance!.validatedByInfo != null
                           ? const SizedBox(
                               width: double.infinity,
                               child: TagWidget(
